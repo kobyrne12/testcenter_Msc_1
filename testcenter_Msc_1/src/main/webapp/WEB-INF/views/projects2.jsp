@@ -421,7 +421,7 @@ $(document).ready(function ()
 							var rowData = grid.getRowData(ids);
 							subGrid.setGridParam({url : "project/projectRelatedObjects/"+ ids,page : 1})
 							//subGrid.setGridParam({ url: "company/${company.companyID}", page: 1 });						
-							subGrid.setCaption(rowData['projectName']).trigger('reloadGrid');
+							//subGrid.setCaption(rowData['projectName']).trigger('reloadGrid');
 						}
 					},
 					// Double Click
@@ -472,10 +472,22 @@ $(document).ready(function ()
 						//alert("Please select row");
 					}
 				});
+				
+				jQuery("#searchTable").click( function(){
+					$("#search_report").trigger('click');			
+				});
+				jQuery("#columnSelector").click( function(){
+					grid.jqGrid('columnChooser');			
+				});
+				jQuery("#refreshTable").click( function(){
+					grid.trigger('reloadGrid');	
+					subGrid.trigger('reloadGrid');	
+				});
+				
 				subGrid.jqGrid(
 				{
-					caption : "Project:",
-					height : 200,
+					//caption : "Project:",
+					height : '100%',
 					width : 220,
 					datatype : "json",
 					colNames : ['Related object',	'Value' ],
@@ -498,7 +510,7 @@ $(document).ready(function ()
 								],
 					//rowNum: 5,
 					//rowList: [5, 10, 20],
-					pager : jQuery('#subpager'),
+					//pager : jQuery('#subpager'),
 					sortname: 'relatedobjectIDrelatedobjectID',
 					scroll : 1,
 					emptyrecords : '0',
@@ -775,11 +787,11 @@ $("#deleteProject").click(function(){
 			</div>
 			<!--<h3 class="ui-widget-header" style="height: 10px; font-size:12px; padding-top: 2px;">Projects</h3>-->
 			<div style="left:800px;padding-right:10px;background:#FFF;" align="right"> 				
-					<img id="refresh" src="images/refresh.jpg" /> 
+					<img id="refreshTable" style="cursor:pointer" src="images/refresh.jpg" /> 
 					&nbsp;&nbsp;
-					<img id="search" src="images/search.jpg" /> 
+					<img id="searchTable" style="cursor:pointer" src="images/search.jpg" /> 
 					&nbsp;&nbsp;
-					<img id="columnselector" src="images/column.jpg" /> 				
+					<img id="columnSelector" style="cursor:pointer" src="images/column.jpg" /> 				
 			</div>			
 			<div class="ui-layout-content ui-widget-content">
 				<div id="grid_container">
@@ -813,7 +825,7 @@ $("#deleteProject").click(function(){
 	<div id="accordion2" class="basic" >
 		<h3 style="height: 30px; font-size:12px; padding-top: 4px;"><a href="#">Related Objects</a></h3>
 			<div style="background:#FFF;">	
-				<!--<table id="sub"></table><div id="subpager"></div>-->
+				<!--<table id="sub"></table><div id="subpager"></div>
 				<fieldset style="width:90%;">
 				  <legend>Part Of:</legend>
 					<div id="fieldS" >
@@ -843,7 +855,7 @@ $("#deleteProject").click(function(){
 					  Senior Developers - 17	<BR />	
 					</div>
 				</fieldset>
-				<BR />		
+				<BR />		-->
 				<table id="sub"></table>
 				<div id="subpager"></div>
 			</div>
