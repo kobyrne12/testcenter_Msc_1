@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>TestCenter - ${company.companyName} - Projects</title>
+<title>TestCenter - ${companyID} - Projects</title>
 	
 	<!-- Needed -->
 		
@@ -419,7 +419,7 @@ $(document).ready(function ()
 						if (ids != null) 
 						{							
 							var rowData = grid.getRowData(ids);
-							subGrid.setGridParam({url : "project/projectRelatedObjects/"+ ids,page : 1})
+							subGrid.setGridParam({url : "project/projectRelatedObjects/"+ ids,page : 1}).trigger('reloadGrid');
 							//subGrid.setGridParam({ url: "company/${company.companyID}", page: 1 });						
 							//subGrid.setCaption(rowData['projectName']).trigger('reloadGrid');
 						}
@@ -488,7 +488,7 @@ $(document).ready(function ()
 				{
 					//caption : "Project:",
 					height : '100%',
-					width : 220,
+					width : 200,
 					datatype : "json",
 					colNames : ['Related object',	'Value' ],
 					colModel : [
