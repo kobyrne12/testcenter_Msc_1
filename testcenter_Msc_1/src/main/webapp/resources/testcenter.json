@@ -1,0 +1,261 @@
+{
+    "creationDate": "2012/Oct/10 12:37:47",
+    "lastModifiedDate": "2012/Oct/10 12:37:47",
+    "companyName": "IBM",
+    "cycleDisplayName": "Cycle",
+    "companyID": 4,
+    "projects": [
+        {
+            "creationDate": "2012/Oct/10 12:39:20",
+            "lastModifiedDate": "2012/Oct/10 12:39:20",
+            "companyID": 4,
+            "lastModifiedBy": "anonymousUser",
+            "projectID": 6,
+            "projectName": "IBM 1",
+            "parentID": 0,
+            "regressionRequiredPercent": 96,
+            "newFeatureRequiredPercent": 94,
+            "allowedSev1": 10,
+            "allowedSev2": 25,
+            "allowedSev3": 50,
+            "allowedSev4": 100,
+            "createdBy": "Ken",
+            "cycles": []
+        },
+        {
+            "creationDate": "2012/Oct/10 15:29:55",
+            "lastModifiedDate": "2012/Oct/10 15:29:55",
+            "companyID": 4,
+            "lastModifiedBy": "anonymousUser",
+            "projectID": 7,
+            "projectName": "IBM 2",
+            "parentID": 0,
+            "regressionRequiredPercent": 96,
+            "newFeatureRequiredPercent": 94,
+            "allowedSev1": 10,
+            "allowedSev2": 25,
+            "allowedSev3": 50,
+            "allowedSev4": 100,
+            "createdBy": "Ken",
+            "cycles": []
+        },
+        {
+            "creationDate": "2012/Oct/10 15:54:51",
+            "lastModifiedDate": "2012/Oct/10 15:54:51",
+            "companyID": 4,
+            "lastModifiedBy": "anonymousUser",
+            "projectID": 8,
+            "projectName": "IBM 3",
+            "parentID": 0,
+            "regressionRequiredPercent": 96,
+            "newFeatureRequiredPercent": 94,
+            "allowedSev1": 10,
+            "allowedSev2": 25,
+            "allowedSev3": 50,
+            "allowedSev4": 100,
+            "createdBy": "Ken",
+            "cycles": []
+        },
+        {
+            "creationDate": "2012/Oct/10 15:54:56",
+            "lastModifiedDate": "2012/Oct/10 15:54:56",
+            "companyID": 4,
+            "lastModifiedBy": "anonymousUser",
+            "projectID": 9,
+            "projectName": "IBM 4",
+            "parentID": 0,
+            "regressionRequiredPercent": 96,
+            "newFeatureRequiredPercent": 94,
+            "allowedSev1": 10,
+            "allowedSev2": 25,
+            "allowedSev3": 50,
+            "allowedSev4": 100,
+            "createdBy": "Ken",
+            "cycles": [
+				{
+					"cycleID": "1",
+					"cycleName": "CD 1",					
+					"projectID": 12,
+					"testRuns": [
+						{
+							"testRunID": "1",
+							"testCaseID": "10",
+							"testRunName": "Test Case 1",					
+							"cycleID": 1,
+							"defects": [
+								{
+									"defectID": "1",									
+									"defectName": "Defect 1",	
+									"severity": 1,	
+									"testRunID": 1									
+								}	,
+								{
+									"defectID": "1",									
+									"defectName": "Defect 1",
+									"severity": 2,	
+									"testRunID": 1									
+								},	
+								{
+									"defectID": "1",									
+									"defectName": "Defect 1",
+									"severity": 2,	
+									"testRunID": 1									
+								}	
+							]							
+						}						
+					]
+				},
+				{
+					"cycleID": "2",
+					"cycleName": "CD 2",					
+					"projectID": 12,
+					"testRuns": [
+						{
+							"testRunID": "3",
+							"testRunName": "Test Case 3",					
+							"cycleID": 2,
+							"defects": [
+								{
+									"defectID": "1",									
+									"defectName": "Defect 1",	
+									"severity": 3,	
+									"testRunID": 1									
+								},								
+								{
+									"defectID": "1",									
+									"defectName": "Defect 1",	
+									"severity": 3,	
+									"testRunID": 1									
+								}	
+							]		
+							
+						},
+						{
+							"testRunID": "4",
+							"testRunName": "Test Case 4",					
+							"cycleID": 2
+						}
+					]
+				}
+			]
+        },
+        {
+            "creationDate": "2012/Oct/10 15:55:01",
+            "lastModifiedDate": "2012/Oct/10 15:55:01",
+            "companyID": 4,
+            "lastModifiedBy": "anonymousUser",
+            "projectID": 10,
+            "projectName": "IBM 5",
+            "parentID": 0,
+            "regressionRequiredPercent": 96,
+            "newFeatureRequiredPercent": 94,
+            "allowedSev1": 10,
+            "allowedSev2": 25,
+            "allowedSev3": 50,
+            "allowedSev4": 100,
+            "createdBy": "Ken",
+            "cycles": []
+        },
+        {
+            "creationDate": "2012/Oct/10 15:55:04",
+            "lastModifiedDate": "2012/Oct/10 15:55:04",
+            "companyID": 4,
+            "lastModifiedBy": "anonymousUser",
+            "projectID": 11,
+            "projectName": "IBM 6",
+            "parentID": 0,
+            "regressionRequiredPercent": 96,
+            "newFeatureRequiredPercent": 94,
+            "allowedSev1": 10,
+            "allowedSev2": 25,
+            "allowedSev3": 50,
+            "allowedSev4": 100,
+            "createdBy": "Ken",
+            "cycles": []
+        },
+        {
+            "creationDate": "2012/Oct/10 15:55:10",
+            "lastModifiedDate": "2012/Oct/10 15:55:10",
+            "companyID": 4,
+            "lastModifiedBy": "anonymousUser",
+            "projectID": 12,
+            "projectName": "IBM 7",
+            "parentID": 0,
+            "regressionRequiredPercent": 96,
+            "newFeatureRequiredPercent": 94,
+            "allowedSev1": 10,
+            "allowedSev2": 25,
+            "allowedSev3": 50,
+            "allowedSev4": 100,
+            "createdBy": "Ken",           
+			"cycles": [
+				{
+					"cycleID": "1",
+					"cycleName": "CD 1",					
+					"projectID": 12,
+					"testRuns": [
+						{
+							"testRunID": "1",
+							"testRunName": "Test Case 1",					
+							"cycleID": 1
+							
+						},
+						{
+							"testRunID": "2",
+							"testRunName": "Test Case 1",					
+							"cycleID": 1
+						}
+					]
+				},
+				{
+					"cycleID": "2",
+					"cycleName": "CD 2",					
+					"projectID": 12,
+					"testRuns": [
+						{
+							"testRunID": "3",
+							"testRunName": "Test Case 3",					
+							"cycleID": 2
+							
+						},
+						{
+							"testRunID": "4",
+							"testRunName": "Test Case 4",					
+							"cycleID": 2
+						}
+					]
+				}
+			]
+        }
+    ],
+    "lastModifiedBy": "anonymousUser",
+    "projectDisplayName": "Project",
+    "projectsDisplayName": "Projects",
+    "reportDisplayName": "Report",
+    "reportsDisplayName": "Reports",
+    "defectDisplayName": "Defect",
+    "defectsDisplayName": "Defects",
+    "requirementDisplayName": "Requirement",
+    "requirementsDisplayName": "Requirements",
+    "cyclesDisplayName": "Cycles",
+    "userDisplayName": "User",
+    "usersDisplayName": "Users",
+    "environmentDisplayName": "Environment",
+    "environmentsDisplayName": "Environments",
+    "testplanDisplayName": "Test Plan",
+    "testplansDisplayName": "Test Plans",
+    "testcaseDisplayName": "Test Case",
+    "testcasesDisplayName": "Test Cases",
+    "testrunDisplayName": "Test Run",
+    "testrunsDisplayName": "Test Runs",
+    "testerDisplayName": "Tester",
+    "testersDisplayName": "Testers",
+    "developerDisplayName": "Senior Tester",
+    "developersDisplayName": "Senior Testers",
+    "seniorTesterDisplayName": "Developer",
+    "seniorTestersDisplayName": "Developers",
+    "seniordeveloperDisplayName": "Senior Developer",
+    "seniordevelopersDisplayName": "Senior Developers",
+    "testLibraryDisplayName": "Test Library",
+    "createdBy": "KEN"
+}
