@@ -69,10 +69,10 @@ public class AjaxController {
 	 {
 
 		 System.out.println("************|||||||| ---: Received Ajax Request to create new Project");
+		
 		 try{
 			 // Project already exists    		
-			 System.out.println("here --- Project already exists: "+ projectService.getProjectByName(projectName));   
-			 
+			 System.out.println("here --- Project Name already exists: "+ projectService.getProjectByName(projectName));	 
 			 return projectName + " already Exists";	 
 		 }
 		 catch(NoResultException nre)
@@ -80,6 +80,44 @@ public class AjaxController {
 			 // No Project of this name Exist
 			 try{    					
 				 projectService.addNewProject(new Project(companyID,projectName,0,regression,newFeature,minSev1,minSev2,minSev3,minSev4,GetDateNow(),getCurrentUser()));
+				 return "ok";   
+
+			 }
+			 catch(ConstraintViolationException CVE)
+			 {   			
+				 System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
+				 return CVE.getConstraintViolations().toString();
+			 }
+		 }	
+
+	 }
+	 /**
+	  * Handles request for create a new Cycle
+	  */
+	 @RequestMapping(value = "/newprojectAJAX", method = RequestMethod.POST)
+	 public @ResponseBody String addNewCycleAJAX(
+			 @RequestParam(value="projectID", required=true) long projectID,
+			 @RequestParam(value="cycleName", required=true) String cycleName,
+			 @RequestParam(value="cycleStartDate", required=true) String cycleStartDate,
+			 @RequestParam(value="cycleEndDate", required=true) String cycleEndDate,
+			 @RequestParam(value="codeChangeRule", required=true) String codeChangeRule,
+			 @RequestParam(value="defectRule", required=true) String defectRule,
+			 @RequestParam(value="testHistoryRule", required=true) String testHistoryRule,
+			 @RequestParam(value="RequirementRule", required=true) String RequirementRule,
+			 Model model) 
+	 {
+		 System.out.println("************|||||||| ---: Received Ajax Request to create new Project");
+		
+		 try{
+			 // Project already exists    		
+			 System.out.println("here --- Project Name already exists: "+ projectService.getProjectByName(cycleName));	 
+			 return cycleName + " already Exists";	 
+		 }
+		 catch(NoResultException nre)
+		 {
+			 // No Project of this name Exist
+			 try{    					
+				// projectService.addNewProject(new Project(companyID,projectName,0,regression,newFeature,minSev1,minSev2,minSev3,minSev4,GetDateNow(),getCurrentUser()));
 				 return "ok";   
 
 			 }

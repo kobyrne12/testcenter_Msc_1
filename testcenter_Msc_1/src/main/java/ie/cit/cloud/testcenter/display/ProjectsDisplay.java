@@ -37,6 +37,9 @@ public class ProjectsDisplay {
 	public ProjectsDisplay(String name,String formatter, String unformat) {
 		this(name,name,false,20,"center",true,true, true, "number",null,false,formatter,unformat);		
 	}
+	public ProjectsDisplay(String name,String formatter, String unformat, int width) {
+		this(name,name,false,width,"center",true,true, true, "number",null,false,formatter,unformat);		
+	}
 	public ProjectsDisplay(String name, String index,boolean hidden, int width, String align,
 			boolean sortable, boolean resizable, boolean search, String sorttype, String jsonmap,
 			boolean key, String formatter, String unformat) 

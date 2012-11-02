@@ -113,10 +113,9 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		projectSummary.setProjectID(project.getProjectID());
 		projectSummary.setProjectName(project.getProjectName());	
-		
-			
-		// requirements
-		int numbOfChildProjs = 10;
+					
+		// Child Projects
+		int numbOfChildProjs = 55;
 		if(numbOfChildProjs == 1)
 		{
 			projectSummary.setChildProjects("GET ChildProjs NAME");		
@@ -125,26 +124,33 @@ public class ProjectServiceImpl implements ProjectService {
 		{			
 			projectSummary.setChildProjects(Integer.toString(numbOfChildProjs));
 		}
-		projectSummary.setNewFeatureRequiredPercent(94);				
-		projectSummary.setNewFeatureCurrentPercent(80);
-		projectSummary.setRegressionCurrentPercent(96);
-		projectSummary.setRegressionRequiredPercent(70);
 		
-		projectSummary.setAllowedSev1s(10);
-		projectSummary.setAllowedSev2s(25);
-		projectSummary.setAllowedSev3s(50);
-		projectSummary.setAllowedSev4s(100);
-		int currentSev1 = 20;
-		projectSummary.setCurrentSev1s(20);
-		int currentSev2 = 20;
-		projectSummary.setCurrentSev2s(60);
-		int currentSev3 = 20;
-		projectSummary.setCurrentSev3s(100);
-		int currentSev4 = 20;
-		projectSummary.setCurrentSev4s(200);	
+		projectSummary.setNewFeatureRequiredPercent(project.getNewFeatureRequiredPercent());
+		int currentNewFeaturePercent = 1 + (int)(Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
+		projectSummary.setNewFeatureCurrentPercent(currentNewFeaturePercent);
+		projectSummary.setRegressionCurrentPercent(project.getRegressionRequiredPercent());
+		int currentRegressionPercent = 1 + (int)(Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
+		projectSummary.setRegressionRequiredPercent(currentRegressionPercent);
+		
+		projectSummary.setAllowedSev1s(project.getAllowedSev1());
+		projectSummary.setAllowedSev2s(project.getAllowedSev2());
+		projectSummary.setAllowedSev3s(project.getAllowedSev3());
+		projectSummary.setAllowedSev4s(project.getAllowedSev4());
+		
+		int currentSev1 = 1 + (int)(Math.random() * ((50 - 1) + 1)); // just a random number until all entities are populated 
+		projectSummary.setCurrentSev1s(currentSev1);
+		int currentSev2 = 1 + (int)(Math.random() * ((70 - 1) + 1)); // just a random number until all entities are populated 
+		projectSummary.setCurrentSev2s(currentSev2);
+		int currentSev3 = 1 + (int)(Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
+		projectSummary.setCurrentSev3s(currentSev3);
+		int currentSev4 = 1 + (int)(Math.random() * ((200 - 1) + 1)); // just a random number until all entities are populated 
+		projectSummary.setCurrentSev4s(currentSev4);
+		
 		totalDefects = currentSev1 + currentSev2 + currentSev3 + currentSev4;
+		
 		projectSummary.setTotalDefects(totalDefects);
 		projectSummary.setCompanyID(project.getCompanyID());	
+		
 		// Cycles
 		if(project.getCycles().size() == 0)
 		{
@@ -249,12 +255,12 @@ public class ProjectServiceImpl implements ProjectService {
 			projectSummary.setSeniorDevelopers(Integer.toString(numOfSnrDevs));
 		}
 		
-		projectSummary.setLastModifiedBy("Ken");
-		projectSummary.setLastModifiedDate("2012/Oct/10 12:39:20");
-		projectSummary.setCreatedBy("Kenneth");
-		projectSummary.setCreationDate( "2012/Oct/11 10:55:20");
+		projectSummary.setLastModifiedBy(project.getLastModifiedBy());
+		projectSummary.setLastModifiedDate(project.getLastModifiedDate());
+		projectSummary.setCreatedBy(project.getCreatedBy());
+		projectSummary.setCreationDate(project.getCreationDate());
 		
-		projectSummary.setParentProjectName("Parent Name");	
+		projectSummary.setParentProjectName("NOT DONE");	
 		
 		return projectSummary;
 	}
@@ -308,15 +314,15 @@ public class ProjectServiceImpl implements ProjectService {
 	 Collection<ProjectsDisplay> columnModelCollection =  new ArrayList<ProjectsDisplay>();		 
 	 columnModelCollection.add(new ProjectsDisplay("projectID",10));	
 	 columnModelCollection.add(new ProjectsDisplay("projectName",40));
-	 columnModelCollection.add(new ProjectsDisplay("overAllState","setOverallBarChart","unSetBarChart"));		
-	 columnModelCollection.add(new ProjectsDisplay("regressionState","setRegressionBarChart","unSetBarChart"));	
-	 columnModelCollection.add(new ProjectsDisplay("newFeatureState","setNewFeatureBarChart","unSetBarChart"));	
-	 columnModelCollection.add(new ProjectsDisplay("parentProjectName"));
-	 columnModelCollection.add(new ProjectsDisplay("childProjects"));
-	 columnModelCollection.add(new ProjectsDisplay("regressionRequiredPercent","percentFmatter","unformatPercent"));
-	 columnModelCollection.add(new ProjectsDisplay("regressionCurrentPercent","percentFmatter","unformatPercent"));
-	 columnModelCollection.add(new ProjectsDisplay("newFeatureRequiredPercent","percentFmatter","unformatPercent"));
-	 columnModelCollection.add(new ProjectsDisplay("newFeatureCurrentPercent","percentFmatter","unformatPercent"));
+	 columnModelCollection.add(new ProjectsDisplay("overAllState","setOverallBarChart","unSetBarChart", 80));		
+	 columnModelCollection.add(new ProjectsDisplay("regressionState","setRegressionBarChart","unSetBarChart", 60));	
+	 columnModelCollection.add(new ProjectsDisplay("newFeatureState","setNewFeatureBarChart","unSetBarChart",60));	
+	 columnModelCollection.add(new ProjectsDisplay("parentProjectName",25));
+	 columnModelCollection.add(new ProjectsDisplay("childProjects",15));
+	 columnModelCollection.add(new ProjectsDisplay("regressionRequiredPercent","percentFmatter","unformatPercent",15));
+	 columnModelCollection.add(new ProjectsDisplay("regressionCurrentPercent","percentFmatter","unformatPercent",15));
+	 columnModelCollection.add(new ProjectsDisplay("newFeatureRequiredPercent","percentFmatter","unformatPercent",15));
+	 columnModelCollection.add(new ProjectsDisplay("newFeatureCurrentPercent","percentFmatter","unformatPercent",15));
 	 columnModelCollection.add(new ProjectsDisplay("allowedSev1s",true));
 	 columnModelCollection.add(new ProjectsDisplay("currentSev1s",true));
 	 columnModelCollection.add(new ProjectsDisplay("allowedSev2s",true));

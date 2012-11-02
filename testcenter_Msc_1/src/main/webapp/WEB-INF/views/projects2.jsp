@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>TestCenter - ${company.companyName} - Projects</title>
+<title>TestCenter - ${companyID} - Projects</title>
 	
 	<!-- Needed -->
 		
@@ -36,6 +36,10 @@
     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.3.3/js/jquery.jqGrid.min.js"></script>
     
 	<style type="text/css">
+	.grid .ui-jqgrid-htable th,
+	.grid .ui-jqgrid-btable .jqgrow td {
+	    height: 10em !important;
+	}
 	.ui-priority-secondary{background: #E8E8E8;}
 	.innerAccordian .ui-accordion-header  a
 	{
@@ -179,6 +183,59 @@
 		padding:		7px 10px;
 		margin:			0;
 	}
+	.progressBarDiv
+		{ 
+			
+			-moz-box-shadow: 0px 0px 4px #333; 
+			-webkit-box-shadow: 0px 0px 4px #333; 
+            box-shadow: 1px 1px 3px #333; 
+		}
+		.progressBarDiv:hover {
+			//zoom: 200%;		
+			//.redBar.background-color:#333;
+		}
+		.blueBar
+		{ 
+			
+			background-color:#4573a7;
+		
+			//background-image: url(images/redProgressBar.jpg); height:auto;
+		}
+		
+		.redBar
+		{ 	
+			background-color:#AE3B37; 			
+			//background-color:#C2423D; 			
+			//background-image: url(images/redProgressBar.jpg); height:auto
+		}
+		.redBar:hover {
+			
+			//background-color:#A64E5E; 
+		}
+		
+		.orangeBar 
+		{					
+			background-color:#DDC23F; 	
+			//background-color:#E9AF32; 	
+		}
+		.greenBar 
+		{			
+		
+			background-color:#6eaf37; 				
+			//background-color:#89a54e; 
+			//background-image: url(images/green_bg3.png);
+		}
+		.greenBar:hover {
+			//-moz-transform: scale(2);
+			//background-color:#89a54e; 
+		}
+		.pgPercent{
+			width:20%;
+			float: left;
+			color: #4573a7;
+			font-weight:bold;
+			display:inline-block;'
+		}
 </style>	
 <script type="text/javascript">
 $(function() {
@@ -230,52 +287,48 @@ $(document).ready(function ()
 				var barChartHtml = "";
 				var remainingPercent = 0;
 				var targetreached = false;
-				var currentPercent = rowObject.regressionRequiredPercent;
-				remainingPercent = 100 - currentPercent;
-
-				barChartHtml = "<div style='width:100%;display:inline-block;'  >";
-				barChartHtml = barChartHtml
-						+ "<div style='width:75%;display:inline-block;float: left;' class='progressBarDiv' id='progressBarDiv'  >";
-				if (targetreached) {
-					var barChartHtml = barChartHtml
-							+ "<div  class='greenBar' style='width:"+currentPercent+"%; float: left;display:inline-block;'> </div>";
-				} else {
-					var barChartHtml = barChartHtml
-							+ "<div  class='orangeBar' style='width:"+currentPercent+"%;  float: left;display:inline-block;'> </div>";
+				var currentPercent = rowObject.newFeatureCurrentPercent + rowObject.regressionCurrentPercent;
+				
+				if(rowObject.regressionCurrentPercent >= rowObject.regressionRequiredPercent && 
+						rowObject.newFeatureCurrentPercent >= rowObject.newFeatureRequiredPercent )
+				{
+					targetreached = true;
 				}
-				var barChartHtml = barChartHtml
-						+ "<div class='redBar' style='width:"+remainingPercent+"%;float: left; display:inline-block;'> </div>";
+				currentPercent = (currentPercent/200) * 100;
+				remainingPercent = 100 - currentPercent;
+				barChartHtml = "<div style='width:100%;display:inline-block;'  >";
+				barChartHtml = barChartHtml + "<div style='width:75%;display:inline-block;float: left;' class='progressBarDiv' id='progressBarDiv'  >";
+				if (targetreached) {
+					var barChartHtml = barChartHtml + "<div  class='greenBar' style='width:"+currentPercent+"%; float: left;display:inline-block;'> </div>";
+				} else {
+					var barChartHtml = barChartHtml + "<div  class='orangeBar' style='width:"+currentPercent+"%;  float: left;display:inline-block;'> </div>";
+				}
+				var barChartHtml = barChartHtml + "<div class='redBar' style='width:"+remainingPercent+"%;float: left; display:inline-block;'> </div>";
 				var barChartHtml = barChartHtml + "</div>";
-				var barChartHtml = barChartHtml
-						+ "<div id='spacer' style='width:5%; float: left;display:inline-block;'>&nbsp;</div>";
-				var barChartHtml = barChartHtml
-						+ "<div class='pgPercent'>"
-						+ rowObject.regressionRequiredPercent
-						+ "% </div>";
+				var barChartHtml = barChartHtml + "<div id='spacer' style='width:5%; float: left;display:inline-block;'>&nbsp;</div>";
+				var barChartHtml = barChartHtml + "<div class='pgPercent'>" + rowObject.regressionRequiredPercent+ "% </div>";
 				var barChartHtml = barChartHtml + "</div>";
 				return barChartHtml;
 			},
 
-			"setRegressionBarChart" : function(cellValue, opts,
-					rowObject) {
+			"setRegressionBarChart" : function(cellValue, opts,rowObject) {
 				var barChartHtml = "";
-				var remainingPercent = 0;
-				var targetreached = true;
+				var remainingPercent = 0;				
 				var currentPercent = rowObject.regressionCurrentPercent;
 				remainingPercent = 100 - currentPercent;
 
 				barChartHtml = "<div style='width:100%;display:inline-block;'  >";
 				barChartHtml = barChartHtml
 						+ "<div style='width:75%;display:inline-block;float: left;' class='progressBarDiv' id='progressBarDiv'  >";
-				if (rowObject.regressionCurrentPercent >= rowObject.regressionRequiredPercent) {
+				if (currentPercent >= rowObject.regressionRequiredPercent) {
 					var barChartHtml = barChartHtml
-							+ "<div  class='greenBar' style='width:80%; float: left;display:inline-block;'> </div>";
+							+ "<div  class='greenBar' style='width:"+currentPercent+"%; float: left;display:inline-block;'> </div>";
 				} else {
 					var barChartHtml = barChartHtml
-							+ "<div  class='orangeBar' style='width:80%; float: left;display:inline-block;'> </div>";
+							+ "<div  class='orangeBar' style='width:"+currentPercent+"%; float: left;display:inline-block;'> </div>";
 				}
 				var barChartHtml = barChartHtml
-						+ "<div class='redBar' style='width:20%;float: left; display:inline-block;'> </div>";
+						+ "<div class='redBar' style='width:"+remainingPercent+"%;float: left; display:inline-block;'> </div>";
 				var barChartHtml = barChartHtml + "</div>";
 				var barChartHtml = barChartHtml
 						+ "<div id='spacer' style='width:5%; float: left;display:inline-block;'>&nbsp;</div>";
@@ -286,18 +339,16 @@ $(document).ready(function ()
 				var barChartHtml = barChartHtml + "</div>";
 				return barChartHtml;
 			},
-			"setNewFeatureBarChart" : function(cellValue, opts,
-					rowObject) {
+			"setNewFeatureBarChart" : function(cellValue, opts,rowObject) {
 				var barChartHtml = "";
-				var remainingPercent = 0;
-				var targetreached = false;
+				var remainingPercent = 0;			
 				var currentPercent = rowObject.newFeatureCurrentPercent;
 				remainingPercent = 100 - currentPercent;
 
 				barChartHtml = "<div style='width:100%;display:inline-block;'  >";
 				barChartHtml = barChartHtml
 						+ "<div style='width:75%;display:inline-block;float: left;' class='progressBarDiv' id='progressBarDiv'  >";
-				if (rowObject.newFeatureCurrentPercent >= rowObject.newFeatureRequiredPercent) {
+				if (currentPercent >= rowObject.newFeatureRequiredPercent) {
 					var barChartHtml = barChartHtml
 							+ "<div  class='greenBar' style='width:"+currentPercent+"%; float: left;display:inline-block;'> </div>";
 				} else {
@@ -402,9 +453,9 @@ $(document).ready(function ()
 					sortable : true,
 					sortname : 'projectID',
 					sortorder : "DSC",
-					height:'100%',	
-					height : 400,
-					width : 900,
+					//height:'auto',	
+					height : 600,
+					width : 1200,
 					jsonReader : {
 						root : "projects",
 						id : "projectID",
@@ -419,7 +470,7 @@ $(document).ready(function ()
 						if (ids != null) 
 						{							
 							var rowData = grid.getRowData(ids);
-							subGrid.setGridParam({url : "project/projectRelatedObjects/"+ ids,page : 1})
+							subGrid.setGridParam({url : "project/projectRelatedObjects/"+ ids,page : 1}).trigger('reloadGrid');
 							//subGrid.setGridParam({ url: "company/${company.companyID}", page: 1 });						
 							//subGrid.setCaption(rowData['projectName']).trigger('reloadGrid');
 						}
@@ -430,7 +481,14 @@ $(document).ready(function ()
 						var proj = grid.getRowData(id);
 						// TODO :: Change URL to Details View 						
 						window.location = '/Clients/Details/'+ proj.projectID;
-					}            
+					},   
+					 loadComplete: function() {					       
+					        var ids = grid.getDataIDs();
+					        for (var i = 0; i < ids.length; i++) {
+					            grid.setRowData ( ids[i], false, {height: 35} );
+					        }
+					        // grid.setGridHeight('auto');
+					    }
         		});
 				grid.jqGrid('navGrid', '#pager', {del : false,add : false,edit : false,refresh : true}, {}, {}, {}, {
 					multipleSearch : true,
@@ -488,7 +546,7 @@ $(document).ready(function ()
 				{
 					//caption : "Project:",
 					height : '100%',
-					width : 220,
+					width : 200,
 					datatype : "json",
 					colNames : ['Related object',	'Value' ],
 					colModel : [
