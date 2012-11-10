@@ -439,7 +439,7 @@ $(document).ready(function ()
 		            //data: mydata,
 		            //datatype: "local",              
 				 	//rowNum: -1,			          		            
-		            loadonce : true, // wont sort (work) with tree grid - turn table into local data hence no refresh
+		     //       loadonce : true, // wont sort (work) with tree grid - turn table into local data hence no refresh
 					altClass: 'altRow',
 					altRows: true,					
 					emptyrecords : 'No Projects',
@@ -763,10 +763,10 @@ $("#dialog-form")
 									minSev4 : minSev4.val()
 								}, function(result) {
 									if (result == 'ok') {
-										$(this).dialog("close");
-										//$("#report").trigger("reloadGrid");
+										$("#dialog-form").dialog("close");
+										$("#report").trigger("reloadGrid");
 										//$entityList0.trigger("reloadGrid", [{page:1}]);**
-										window.location.reload();
+										//window.location.reload();
 									} else {
 										updateTips(result);
 									}

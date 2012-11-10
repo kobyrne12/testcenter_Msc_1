@@ -94,7 +94,7 @@ public class AjaxController {
 	 /**
 	  * Handles request for create a new Cycle
 	  */
-	 @RequestMapping(value = "/newprojectAJAX", method = RequestMethod.POST)
+	 @RequestMapping(value = "/newcycleAJAX", method = RequestMethod.POST)
 	 public @ResponseBody String addNewCycleAJAX(
 			 @RequestParam(value="projectID", required=true) long projectID,
 			 @RequestParam(value="cycleName", required=true) String cycleName,
