@@ -49,5 +49,9 @@ public interface ProjectService {
 	Collection<ProjectSummary> getAllProjectSummaryForCycle(long cycleID);
 	
 	ProjectsColMolsAndNames getProjectColumnModelAndNames(long companyID);
+
+	ProjectSummaryList getsummaryList(long companyID, String cycleID,
+			String testplanID, String userID, String environmentID,
+			String requirementID, String defectID, String testrunID);
 	
 }

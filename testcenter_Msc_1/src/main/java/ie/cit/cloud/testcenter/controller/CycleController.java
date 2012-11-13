@@ -68,11 +68,29 @@ public class CycleController {
 		catch(NoResultException nre)
 		{
 			// No Cycle of this name Exist
-			try{    							
-				long cycleID = cycleService.addNewCycle(new Cycle(projectID,cycleName,GetDateNow(),getCurrentUser()));
+			try{    
+				/**
+				 * @param cycleName
+				 * @param projectID
+				 * @param testruns
+				 * @param requiredPriority
+				 * @param projectPosition
+				 * @param totalCycleEstTime
+				 * @param cycleStartDate
+				 * @param cycleEndDate
+				 * @param codeChangeRule
+				 * @param defectRule
+				 * @param testHistoryRule
+				 * @param requirementRule
+				 * @param creationDate
+				 * @param createdBy
+				 * @param lastModifiedDate
+				 * @param lastModifiedBy
+				 */
+				//long cycleID = cycleService.addNewCycle(new Cycle(cycleName, projectID,null, 0, 0, cycleID, cycleName,GetDateNow(),0, 0, 0, 0, getCurrentUser(), cycleName, cycleName, cycleName));
 					
-				Cycle cycle = cycleService.getCycle(cycleID);    			
-				model.addAttribute("cycle", cycle);   
+			//	Cycle cycle = cycleService.getCycle(cycleID);    			
+			//	model.addAttribute("cycle", cycle);   
 				model.addAttribute("projectID", projectID);  
 				model.addAttribute("successmessage", cycleName+" Created");
 				return "redirect:viewcycles.html";   

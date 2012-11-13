@@ -7,249 +7,302 @@ package ie.cit.cloud.testcenter.model;
  * @author byrnek1
  *
  */
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Transient;
-
-
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity(name = "TestCase")
 public class TestCase {
 
-    @Id    
+  	@Id    
     @GeneratedValue
-    @Column(name="testCaseID")
-    private Long id;   
+    @Column(name="testcaseID")
+    private long testcaseID;  
     
     @Basic
     @Length(min = 2, max = 254, message = "Testcase name must be between 2 to 254 characters.")
 	@NotEmpty(message = "TestCase Name is required.")
-    private String testcasename;
+    private String testcaseName;
     
-    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    @JoinColumn(name="testplanID",nullable = false)  
-    @Transient
-    private TestPlan testplan;  
-    
-    @Basic
-    private String testplanName;
     @Basic
     @Column(name="testplanID")
-    private Long testplanID;
+    private long testplanID;
     @Basic
-    private String testcasesummary;
+    @Column(name="companyID")
+    private long companyID;    
+    
+    @Basic    
+    private long parentID;  
+    
     @Basic
-    private String testcasepre;
+    private String testcaseSection;
+    @Basic
+    private long testplanOrderNum;
+    
+    @Basic
+    private String level; // Regression/New Feature
+    @Basic
+    private String stage; // Draft/Ready For Review / Approved
+    
+    @Basic
+    private String testcaseSummary;
+    @Basic
+    private String testcasePreCondition;
     @Basic
     @Column(length=10000)
-    private String testcasesteps;
+    private String testcaseSteps;
     @Basic
-    private String testcasepass;
+    private String testcasePassCondition;
     @Basic
-    private String testcaseOS;
+    private String tester;
     @Basic
-    private boolean notrun;
-    @Basic
-    private boolean passed;
-    @Basic
-    private boolean failed;
-    @Basic
-    private boolean inprogress;
-    @Basic
-    private boolean deferred;
-    @Basic
-    private boolean blocked;
-    @Basic
-    private String user;
+    private String seniorTester;
     
     public TestCase() {	
     }
-    
-    public TestCase(TestPlan testplan,Long testplanID,String testcasename ,String testcasesummary,String testcasepre,String testcasesteps,String testcasepass,String testcaseOS) {
-    	this(testplan,testplanID,testcasename,testcasesummary,testcasepre,testcasesteps,testcasepass,testcaseOS,true,false,false,false,false,false);
-    }
+    /**
+  	 * @param testcaseName
+  	 * @param testplanID
+  	 * @param companyID
+  	 * @param parentID
+  	 * @param testcaseSection
+  	 * @param testplanOrderNum
+  	 * @param level
+  	 * @param stage
+  	 * @param testcaseSummary
+  	 * @param testcasePreCondition
+  	 * @param testcaseSteps
+  	 * @param testcasePassCondition
+  	 * @param tester
+  	 * @param seniorTester
+  	 */
+  	public TestCase(String testcaseName, long testplanID, long companyID,
+  			long parentID, String testcaseSection, long testplanOrderNum,
+  			String level, String stage, String testcaseSummary,
+  			String testcasePreCondition, String testcaseSteps,
+  			String testcasePassCondition, String tester, String seniorTester) {
+  		this.testcaseName = testcaseName;
+  		this.testplanID = testplanID;
+  		this.companyID = companyID;
+  		this.parentID = parentID;
+  		this.testcaseSection = testcaseSection;
+  		this.testplanOrderNum = testplanOrderNum;
+  		this.level = level;
+  		this.stage = stage;
+  		this.testcaseSummary = testcaseSummary;
+  		this.testcasePreCondition = testcasePreCondition;
+  		this.testcaseSteps = testcaseSteps;
+  		this.testcasePassCondition = testcasePassCondition;
+  		this.tester = tester;
+  		this.seniorTester = seniorTester;
+  	}
+	/**
+	 * @return the testcaseName
+	 */
+	public String getTestcaseName() {
+		return testcaseName;
+	}
 
-    public TestCase( TestPlan testplan,Long testplanID,String testcasename ,String testcasesummary,String testcasepre,String testcasesteps,String testcasepass,String testcaseOS, Boolean notrun, Boolean passed, Boolean failed, Boolean inprogress, Boolean deferred, Boolean blocked) {
-    	this.testplan = testplan;
-    	this.testplanID = testplanID;
-    	this.testcasename = testcasename;
-		this.testcasesummary = testcasesummary;
-		this.testcasepre = testcasepre;
-		this.testcasesteps = testcasesteps;
-		this.testcasepass = testcasepass;
-		this.testcaseOS = testcaseOS;
-		this.notrun = notrun;
-		this.passed = passed;
-		this.failed = failed;
-		this.inprogress = inprogress;
-		this.deferred = deferred;
-		this.blocked = blocked;
-    }
- // Get TestPlan
-    ////////////      
-	public TestPlan getTestPlan() {
-		return this.testplan;
+	/**
+	 * @param testcaseName the testcaseName to set
+	 */
+	public void setTestcaseName(String testcaseName) {
+		this.testcaseName = testcaseName;
 	}
- 
-	public void setTestPlan(TestPlan testplan) {
-		this.testplan = testplan;
+
+	/**
+	 * @return the testplanID
+	 */
+	public long getTestplanID() {
+		return testplanID;
 	}
-// Get TestPlanID
-	public Long getTestPlanID() {
-		return this.testplanID;
-	}
- 
-	public void setTestPlanID(Long testplanID) {
+
+	/**
+	 * @param testplanID the testplanID to set
+	 */
+	public void setTestplanID(long testplanID) {
 		this.testplanID = testplanID;
 	}
-  /////////////////
-    /*public TestPlan getTestPlan()
-    {
-    	return testplan;
-    }
-    public void setTestPlan(TestPlan testplan)
-    {
-    	this.testplan = testplan;
-    }*/
- // ID 
-    public Long getId() {
-    	return id;
-    }
- // Testplan name
-    public String getTestplanName()
-    {
-    	return testplanName;
-    }	
-    public void setTestplanName(String testplanName) 
-    {
-    	this.testplanName = testplanName;
-    }
-// Testcasename
-    public String getTestcasename()
-    {
-    	return testcasename;
-    }	
-    public void setTestcasename(String testcasename) 
-    {
-    	this.testcasename = testcasename;
-    }
-// testcasesummary
-    public String getTestcasesummary() 
-    {
-    	return testcasesummary;
-    }
-    public void setTestcasesummary(String testcasesummary)
-    {
-    	this.testcasesummary = testcasesummary;
-    }
- // testcasepre
-    public String getTestcasepre() 
-    {
-    	return testcasepre;
-    }
-    public void setTestcasepre(String testcasepre)
-    {
-    	this.testcasepre = testcasepre;
-    }
- // testcasesteps
-    public String getTestcasesteps() 
-    {
-    	return testcasesteps;
-    }
-    public void setTestcasesteps(String testcasesteps)
-    {
-    	this.testcasesteps= testcasesteps;
-    }
- // testcasepass
-    public String getTestcasepass() 
-    {
-    	return testcasepass;
-    }
-    public void setTestcasepass(String testcasepass)
-    {
-    	this.testcasepass = testcasepass;
-    }
-// TestcaseOS
-    public String getTestcaseOS()
-    {
-    	return testcaseOS;
-    }	
-    public void setTestcaseOS(String testcaseOS) 
-    {
-    	this.testcaseOS = testcaseOS;
-    }
-// Not Run
-    public boolean isNotrun() 
-    {
-    	return notrun;
-    }	
-    public void setNotrun(boolean notrun)
-    {
-    	this.notrun= notrun;
-    }
-// Passed 
-    public boolean isPassed() 
-    {
-    	return passed;
-    }	
-    public void setPassed(boolean passed)
-    {
-    	this.passed = passed;
-    }
- // Passed 
-    public boolean isFailed() 
-    {
-    	return failed;
-    }	
-    public void setFailed(boolean failed)
-    {
-    	this.failed = failed;
-    }
-// Inprogress 
-    public boolean isInprogress () 
-    {
-    	return inprogress;
-    }	
-    public void setInprogress (boolean inprogress)
-    {
-    	this.inprogress = inprogress;
-    }
-// Deferred
-    public boolean isDeferred() 
-    {
-    	return deferred;
-    }	
-    public void setDeferred(boolean deferred)
-    {
-    	this.deferred = deferred;
-    }
-// Blocked
-    public boolean isBlocked() 
-    {
-    	return blocked;
-    }	
-    public void setBlocked(boolean blocked)
-    {
-    	this.blocked = blocked;
-    }
-// User
-    public String getUser() {
-	return user;
-    }
 
-    public void setUser(String user) {
-	this.user = user;
-    }
+	/**
+	 * @return the companyID
+	 */
+	public long getCompanyID() {
+		return companyID;
+	}
+
+	/**
+	 * @param companyID the companyID to set
+	 */
+	public void setCompanyID(long companyID) {
+		this.companyID = companyID;
+	}
+
+	/**
+	 * @return the testcaseSummary
+	 */
+	public String getTestcaseSummary() {
+		return testcaseSummary;
+	}
+
+	/**
+	 * @param testcaseSummary the testcaseSummary to set
+	 */
+	public void setTestcaseSummary(String testcaseSummary) {
+		this.testcaseSummary = testcaseSummary;
+	}
+
+	/**
+	 * @return the testcasePreCondition
+	 */
+	public String getTestcasePreCondition() {
+		return testcasePreCondition;
+	}
+
+	/**
+	 * @param testcasePreCondition the testcasePreCondition to set
+	 */
+	public void setTestcasePreCondition(String testcasePreCondition) {
+		this.testcasePreCondition = testcasePreCondition;
+	}
+
+	/**
+	 * @return the testcaseSteps
+	 */
+	public String getTestcaseSteps() {
+		return testcaseSteps;
+	}
+
+	/**
+	 * @param testcaseSteps the testcaseSteps to set
+	 */
+	public void setTestcaseSteps(String testcaseSteps) {
+		this.testcaseSteps = testcaseSteps;
+	}
+
+	/**
+	 * @return the testcasePassCondition
+	 */
+	public String getTestcasePassCondition() {
+		return testcasePassCondition;
+	}
+
+	/**
+	 * @param testcasePassCondition the testcasePassCondition to set
+	 */
+	public void setTestcasePassCondition(String testcasePassCondition) {
+		this.testcasePassCondition = testcasePassCondition;
+	}
+
+	/**
+	 * @return the tester
+	 */
+	public String getTester() {
+		return tester;
+	}
+
+	/**
+	 * @param string the tester to set
+	 */
+	public void setTester(String string) {
+		this.tester = string;
+	}
+
+	/**
+	 * @return the testcaseID
+	 */
+	public long getTestcaseID() {
+		return testcaseID;
+	}
+
+	/**
+	 * @return the seniorTester
+	 */
+	public String getSeniorTester() {
+		return seniorTester;
+	}
+
+	/**
+	 * @param seniorTester the seniorTester to set
+	 */
+	public void setSeniorTester(String seniorTester) {
+		this.seniorTester = seniorTester;
+	}
+
+	/**
+	 * @return the parentID
+	 */
+	public long getParentID() {
+		return parentID;
+	}
+
+	/**
+	 * @param parentID the parentID to set
+	 */
+	public void setParentID(long parentID) {
+		this.parentID = parentID;
+	}
+
+	/**
+	 * @return the testcaseSection
+	 */
+	public String getTestcaseSection() {
+		return testcaseSection;
+	}
+
+	/**
+	 * @param testcaseSection the testcaseSection to set
+	 */
+	public void setTestcaseSection(String testcaseSection) {
+		this.testcaseSection = testcaseSection;
+	}
+
+	/**
+	 * @return the testplanOrderNum
+	 */
+	public long getTestplanOrderNum() {
+		return testplanOrderNum;
+	}
+
+	/**
+	 * @param testplanOrderNum the testplanOrderNum to set
+	 */
+	public void setTestplanOrderNum(long testplanOrderNum) {
+		this.testplanOrderNum = testplanOrderNum;
+	}
+
+	/**
+	 * @return the level
+	 */
+	public String getLevel() {
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	/**
+	 * @return the stage
+	 */
+	public String getStage() {
+		return stage;
+	}
+
+	/**
+	 * @param stage the stage to set
+	 */
+	public void setStage(String stage) {
+		this.stage = stage;
+	}
+
 }

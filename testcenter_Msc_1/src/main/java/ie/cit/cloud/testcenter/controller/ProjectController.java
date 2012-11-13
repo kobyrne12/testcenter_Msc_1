@@ -44,133 +44,10 @@ public class ProjectController {
 	@Autowired
 	private CompanyService companyService;
 
-	// new Project
-	@RequestMapping(value = { "newproject"}, method = GET)
-	public String newProject(@RequestParam(required = false) String errormessage,String successmessage,long companyID,Model model) {	
-		Company company = companyService.getCompany(companyID);
-		model.addAttribute("errormessage", errormessage);
-		model.addAttribute("company", company);
-		return "newproject";
-	}   
-
-
-	///////////////////////////// test
-	
-	@RequestMapping(value = { "projects2"}, method = GET)
-	public String TESTProject(@RequestParam(required = false) String errormessage,String successmessage,long companyID,Model model) {
-
-		Company company = companyService.getCompany(companyID);    		
-		//Collection<Project> allProjects = company.getProjects();
-		Collection<Project> allProjects = projectService.getAllProjectsByCompanyID(companyID);
-		String TempSuccessmessage = "";
-		String TempErrormessage = "";
-		model.addAttribute("projects", allProjects);		  
-		model.addAttribute("companyID", companyID);  
-		model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
-		model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
-		model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
-		model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
-		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
-		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
-		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
-
-		if(successmessage != null)
-		{
-			TempSuccessmessage =  successmessage;		
-		}
-		model.addAttribute("successmessage", TempSuccessmessage);
-
-		if(successmessage != null)
-		{
-			TempErrormessage =  errormessage;		
-		}
-		else
-		{
-			if (allProjects.isEmpty())
-			{
-				// No Projects Exist   					
-				model.addAttribute("errormessage", "No Projects exist");  				  	
-			}
-		}
-
-		model.addAttribute("errormessage", errormessage);
-		model.addAttribute("successmessage", TempErrormessage);	
-		model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));
-
-		return "projects2";
-
-
-	}  
-	///////////////
-	// Create new Project()
-	@RequestMapping(value = {"newproject"}, method = POST)     
-	public String createNewProject(@RequestParam String projectName, long companyID, Model model) {  		
-		try{
-			// Project already exists    		
-			System.out.println("here ---: "+ projectService.getProjectByName(projectName));   
-			model.addAttribute("companyID", companyID);
-			model.addAttribute("errormessage", projectName+" already exists");
-			return "redirect:newproject.html";	 
-		}
-		catch(NoResultException nre)
-		{
-			// No Project of this name Exist
-			try{    	
-
-				projectService.addNewProject(new Project(companyID,projectName,0,96,94,10,25,50,100,GetDateNow(),getCurrentUser()));
-				model.addAttribute("companyID", companyID);		
-				model.addAttribute("projectName", projectName);		
-				return "redirect:viewprojects.html";   
-
-			}
-			catch(ConstraintViolationException CVE)
-			{   			
-				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations());    			
-				model.addAttribute("companyID", companyID);
-				model.addAttribute("errormessage",CVE.getConstraintViolations());
-				return "redirect:newproject.html";
-			}
-		}
-
-	}     
-
-	@RequestMapping(value = { "viewprojects"}, method = GET)
-	public String viewAllProjects(@RequestParam(required = false) String errormessage,String successmessage,String projectName,long companyID,Model model) {
-
-		Company company = companyService.getCompany(companyID);    		
-		//Collection<Project> allProjects = company.getProjects();
-		Collection<Project> allProjects = projectService.getAllProjectsByCompanyID(companyID);
-		if (allProjects.isEmpty())
-		{
-			// No Projects Exist   
-			model.addAttribute("errormessage", "No Projects exist");   				
-			model.addAttribute("companyID", companyID); 
-			return "redirect:newproject.html";        	
-		}
-		else
-		{
-			model.addAttribute("errormessage", errormessage);
-			model.addAttribute("successmessage", successmessage);
-			model.addAttribute("projects", allProjects);		  
-			model.addAttribute("companyID", companyID);  
-			model.addAttribute("projectsDisplayName", (company.getProjectsDisplayName() != null) ?  company.getProjectsDisplayName() : "Projects");
-			model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
-			model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
-			model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
-			model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
-			model.addAttribute("usersDisplayName", company.getUsersDisplayName());
-			model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());			
-			model.addAttribute("successmessage", projectName +" Created");	
-			return "viewprojects";
-		}    
-
-	}  
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@RequestMapping(value = { "projects"}, method = GET)
-	public String viewCompanyProjects(@RequestParam(required = false) String errormessage,String successmessage,long companyID,Model model) {
-
-		Company company = companyService.getCompany(companyID);    		
-		//Collection<Project> allProjects = company.getProjects();
+	public String TESTProject(@RequestParam(required = false) String errormessage,String successmessage,long companyID,Model model) 
+	{
+		Company company = companyService.getCompany(companyID); 		
 		Collection<Project> allProjects = projectService.getAllProjectsByCompanyID(companyID);
 		String TempSuccessmessage = "";
 		String TempErrormessage = "";
@@ -183,7 +60,6 @@ public class ProjectController {
 		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
 		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
 		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
-
 		if(successmessage != null)
 		{
 			TempSuccessmessage =  successmessage;		
@@ -202,16 +78,13 @@ public class ProjectController {
 				model.addAttribute("errormessage", "No Projects exist");  				  	
 			}
 		}
-
 		model.addAttribute("errormessage", errormessage);
 		model.addAttribute("successmessage", TempErrormessage);	
 		model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));
-
 		return "projects";
-
-
 	}  
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 	public String GetDateNow()
 	{ 	 
 		Calendar currentDate = Calendar.getInstance();

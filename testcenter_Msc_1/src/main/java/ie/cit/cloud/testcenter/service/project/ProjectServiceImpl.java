@@ -13,6 +13,7 @@ import ie.cit.cloud.testcenter.display.ProjectsDisplay;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
+import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.respository.project.ProjectRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import java.util.ArrayList;
@@ -32,45 +33,45 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Autowired
     @Qualifier("hibernateProjectRespository")
-    ProjectRepository repo;    
+    ProjectRepository projectRepo;    
 	
 	@Autowired
 	CompanyService companyService;
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Collection<Project> getAllProjects() {
-	return repo.findAll();
+	return projectRepo.findAll();
     }
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Project getProject(long projectID) {
-	return repo.findById(projectID);
+	return projectRepo.findById(projectID);
     }
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Project getProjectByName(String projectName) {
-    	return repo.findProjectByName(projectName);
+    	return projectRepo.findProjectByName(projectName);
     }
     
    // @Secured("ROLE_ADMIN")
     @Transactional(rollbackFor=ConstraintViolationException.class)   
     public void addNewProject(Project project) {
-    	repo.create(project);	
+    	projectRepo.create(project);	
     }
    
    // @Secured("ROLE_ADMIN")
     public void update(Project project) {
-	repo.update(project);
+	projectRepo.update(project);
     }  
     
   //  @Secured("ROLE_ADMIN")
     public void remove(long projectID) {
-	repo.delete(repo.get(projectID));
+	projectRepo.delete(projectRepo.get(projectID));
     }
        
   //  @Secured("ROLE_ADMIN")    
     public void updateProjectWithId(long projectID, Project project) {
-    	Project oldProject = repo.findById(projectID);
+    	Project oldProject = projectRepo.findById(projectID);
     	oldProject.setProjectName(project.getProjectName());
     	oldProject.setParentID(project.getParentID());
     	oldProject.setRegressionRequiredPercent(project.getRegressionRequiredPercent());
@@ -79,11 +80,11 @@ public class ProjectServiceImpl implements ProjectService {
     	oldProject.setAllowedSev2(project.getAllowedSev2());
     	oldProject.setAllowedSev3(project.getAllowedSev3());
     	oldProject.setAllowedSev4(project.getAllowedSev4());   		
-    	repo.update(oldProject);
+    	projectRepo.update(oldProject);
     }
   //  @Secured("ROLE_ADMIN")
     public void updateProjectNameWithId(long projectID, Project project, String projectName) {
-    	Project oldProject = repo.findById(projectID);
+    	Project oldProject = projectRepo.findById(projectID);
     	oldProject.setProjectName(project.getProjectName());
     	oldProject.setParentID(project.getParentID());
     	oldProject.setRegressionRequiredPercent(project.getRegressionRequiredPercent());
@@ -92,7 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
     	oldProject.setAllowedSev2(project.getAllowedSev2());
     	oldProject.setAllowedSev3(project.getAllowedSev3());
     	oldProject.setAllowedSev4(project.getAllowedSev4());  	
-    	repo.update(oldProject);
+    	projectRepo.update(oldProject);
     }
 
 	public boolean updateProject(long projectID, Project project) {
@@ -102,13 +103,13 @@ public class ProjectServiceImpl implements ProjectService {
 		
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Collection<Project> getAllProjectsByCompanyID(long companyID) {
-		return repo.findAllProjectsByCompanyID(companyID);
+		return projectRepo.findAllProjectsByCompanyID(companyID);
 	}
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public ProjectSummary getProjectSummary(long projectID) {
 		int totalDefects = 0;
-		Project project = repo.findById(projectID);
+		Project project = projectRepo.findById(projectID);
 		ProjectSummary projectSummary = new ProjectSummary();
 		
 		projectSummary.setProjectID(project.getProjectID());
@@ -268,7 +269,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Collection<ProjectSummary> getAllProjectSummaryForCompany(long companyID) {
 		// Current List of Projects
-		Collection<Project> projects = repo.findAllProjectsByCompanyID(companyID);		
+		Collection<Project> projects = projectRepo.findAllProjectsByCompanyID(companyID);		
 		// New Project Summary Collection 
 		Collection<ProjectSummary> projectSummaryCollection = new ArrayList<ProjectSummary>();
 		// Project iterator
@@ -285,7 +286,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Collection<ProjectSummary> getAllProjectSummaryForCycle(long cycleID) {
 		//long projectSummaryID = 0;
-		Collection<Project> projects = repo.findAllProjectsByCycleID(cycleID);		
+		Collection<Project> projects = projectRepo.findAllProjectsByCycleID(cycleID);		
 		Collection<ProjectSummary> projectSummaryCollection = new ArrayList<ProjectSummary>();	
 		Iterator<Project> projectsItr = projects.iterator();
 		while (projectsItr.hasNext()) {	
@@ -419,5 +420,29 @@ public class ProjectServiceImpl implements ProjectService {
 	colModelAndName.setColModel(getProjectsColumnModel(companyID));
 	return colModelAndName;
  }
+
+public ProjectSummaryList getsummaryList(long companyID, String cycleID,
+		String testplanID, String userID, String environmentID,
+		String requirementID, String defectID, String testrunID) {
+	
+	Collection<Project> projects = new ArrayList<Project>();
+	
+	
+	if (cycleID != null)
+	{
+		long cycleID_long = Long.valueOf(cycleID).longValue();
+		// get a collection of projects for the cycle and add them to the current collection
+		//projectRepo.findAllProjectsByCompanyID(companyID);	
+		projects.addAll(projects);
+		
+	}
+	if (testplanID != null){long testplanID_long = Long.valueOf(testplanID).longValue();	}
+	if (environmentID != null){long environmentID_long = Long.valueOf(environmentID).longValue();	}
+	if (requirementID != null){long requirementID_long = Long.valueOf(requirementID).longValue();	}
+	if (defectID != null){long defectID_long = Long.valueOf(defectID).longValue();	}
+	if (testrunID != null){long testrunID_long = Long.valueOf(testrunID).longValue();	}
+	if (userID != null){long userID_long = Long.valueOf(userID).longValue();	}
+	return null;
+}
 
 }

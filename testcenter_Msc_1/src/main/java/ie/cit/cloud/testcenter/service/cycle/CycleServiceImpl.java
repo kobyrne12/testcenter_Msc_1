@@ -85,7 +85,7 @@ public class CycleServiceImpl implements CycleService {
 		Cycle cycle = repo.findById(cycleID);
 		CycleSummary cycleSummary = new CycleSummary();
 		cycleSummary.setCycleID(cycle.getCycleID());
-		cycleSummary.setTotalNumberOfTestRuns(cycle.getTestRuns().size());		
+		cycleSummary.setTotalNumberOfTestRuns(cycle.getTestruns().size());		
 		return cycleSummary;
 	}
 

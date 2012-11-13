@@ -35,6 +35,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Table(name = "Cycle")
 public class Cycle {
 
+	
+
 	@Id        
 	@GeneratedValue
 	@Column(name = "cycleID")
@@ -56,10 +58,10 @@ public class Cycle {
 	@Column(name="projectID")
 	private long projectID;
 	
-	@OneToMany(fetch=FetchType.EAGER, targetEntity=TestRun.class, cascade=CascadeType.ALL)
+	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<TestRun> testRuns;   
+	private Collection<Testrun> Testruns;   
 	  
 	@Basic    
 	private int requiredPriority;
@@ -92,30 +94,47 @@ public class Cycle {
     
     public Cycle() {	
     }
-    
-    public Cycle(long projectID,String cycleName,String lastModifiedDate,String lastModifiedBy ) {
-    	this(projectID,cycleName,null,2,0,1515,"01/10/2012","14/10/2012",1,2,3,4,"01/01/2012","Kenneth",lastModifiedDate, lastModifiedBy);
-    }
-
-    public Cycle(long projectID,String cycleName,Collection<TestRun> testRuns,int requiredPriority,int projectPosition,long totalCycleEstTime,String cycleStartDate, String cycleEndDate,
-    		int codeChangeRule,int defectRule, int testHistoryRule,int RequirementRule,String creationDate, String createdBy, String lastModifiedDate,String lastModifiedBy) {
-    	this.projectID = projectID;   	
-    	this.cycleName = cycleName;
-    	this.testRuns = testRuns;
-    	this.requiredPriority= requiredPriority;  
-    	this.projectPosition = projectPosition;  
-    	this.totalCycleEstTime = totalCycleEstTime;  
-    	this.cycleStartDate = cycleStartDate;  
-    	this.cycleEndDate = cycleEndDate;  
-    	this.codeChangeRule = codeChangeRule;  
-    	this.defectRule = defectRule;  
-    	this.testHistoryRule = testHistoryRule;  
-    	this.RequirementRule = RequirementRule;  
-    	this.creationDate = creationDate;  
-    	this.createdBy = createdBy;  
+    /**
+	 * @param cycleName
+	 * @param projectID
+	 * @param testruns
+	 * @param requiredPriority
+	 * @param projectPosition
+	 * @param totalCycleEstTime
+	 * @param cycleStartDate
+	 * @param cycleEndDate
+	 * @param codeChangeRule
+	 * @param defectRule
+	 * @param testHistoryRule
+	 * @param requirementRule
+	 * @param creationDate
+	 * @param createdBy
+	 * @param lastModifiedDate
+	 * @param lastModifiedBy
+	 */
+	public Cycle(String cycleName, long projectID,
+			Collection<Testrun> testruns, int requiredPriority,
+			int projectPosition, long totalCycleEstTime, String cycleStartDate,
+			String cycleEndDate, int codeChangeRule, int defectRule,
+			int testHistoryRule, int requirementRule, String creationDate,
+			String createdBy, String lastModifiedDate, String lastModifiedBy) {
+		this.cycleName = cycleName;
+		this.projectID = projectID;
+		this.Testruns = testruns;
+		this.requiredPriority = requiredPriority;
+		this.projectPosition = projectPosition;
+		this.totalCycleEstTime = totalCycleEstTime;
+		this.cycleStartDate = cycleStartDate;
+		this.cycleEndDate = cycleEndDate;
+		this.codeChangeRule = codeChangeRule;
+		this.defectRule = defectRule;
+		this.testHistoryRule = testHistoryRule;
+		this.RequirementRule = requirementRule;
+		this.creationDate = creationDate;
+		this.createdBy = createdBy;
 		this.lastModifiedDate = lastModifiedDate;
 		this.lastModifiedBy = lastModifiedBy;
-    }    
+	}
 	
 	/**
 	 * @return the cycleID
@@ -356,17 +375,17 @@ public class Cycle {
 	}
 
 	/**
-	 * @return the testRuns
+	 * @return the Testruns
 	 */
-	public Collection<TestRun> getTestRuns() {
-		return testRuns;
+	public Collection<Testrun> getTestruns() {
+		return Testruns;
 	}
 
 	/**
-	 * @param testRuns the testRuns to set
+	 * @param Testruns the Testruns to set
 	 */
-	public void setTestRuns(Collection<TestRun> testRuns) {
-		this.testRuns = testRuns;
+	public void setTestruns(Collection<Testrun> Testruns) {
+		this.Testruns = Testruns;
 	}	
 
 	

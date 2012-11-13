@@ -63,10 +63,25 @@ public class Company {
 	//@JoinColumn(name="companyID") 
 	//@OrderBy(value = "projectID" )
 	// @ForeignKey(name = "projectID")  
+	@OneToMany(fetch=FetchType.EAGER, targetEntity=Project.class, cascade=CascadeType.ALL)
+	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
+	private Collection<Project> projects; 
+	/*
+	@OneToMany(fetch=FetchType.EAGER, targetEntity=Project.class, cascade=CascadeType.ALL)
+	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
+	private Collection<Defect> defects;   	
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Project.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
-	private Collection<Project> projects;   
+	private Collection<Environment> environments;  
+	
+	@OneToMany(fetch=FetchType.EAGER, targetEntity=Project.class, cascade=CascadeType.ALL)
+	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
+	private Collection<Requirement> requirements;  
+	
+	@OneToMany(fetch=FetchType.EAGER, targetEntity=Project.class, cascade=CascadeType.ALL)
+	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
+	private Collection<TestPlan> testplan;  */
 	
 	@Basic    
     private String projectDisplayName;
