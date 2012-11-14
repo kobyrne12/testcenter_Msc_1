@@ -13,8 +13,7 @@ import java.util.Collection;
 
 public class ProjectSummaryList {	
 	
-    //private long companyID;	   
-    private int totalNumberOfProjects;     
+    //private long companyID;   
     private Collection<ProjectSummary> projects; 
     
    
@@ -22,27 +21,11 @@ public class ProjectSummaryList {
 	 * @return List of Projects for a Company
 	 */
     public ProjectSummaryList() 
-    {
-    	//this.companyID = companyID; 
-    	this.setTotalNumberOfProjects(totalNumberOfProjects);      	
+    {    		
     	this.setProjects(projects);
-    }
-    
+    }   
 	
-	/**
-	 * @return the totalNumberOfProjects
-	 */
-	public int getTotalNumberOfProjects() {
-		return totalNumberOfProjects;
-	}
-
-	/**
-	 * @param totalNumberOfProjects the totalNumberOfProjects to set
-	 */
-	public void setTotalNumberOfProjects(int totalNumberOfProjects) {
-		this.totalNumberOfProjects = totalNumberOfProjects;
-	}
-
+	
 	/**
 	 * @return the projectSummaries
 	 */

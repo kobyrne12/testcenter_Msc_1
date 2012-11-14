@@ -42,11 +42,7 @@ public interface ProjectService {
 
 	Collection<Project> getAllProjectsByCompanyID(long companyID);
 	
-	ProjectSummary getProjectSummary(long projectID);
-	
-	Collection<ProjectSummary> getAllProjectSummaryForCompany(long companyID);
-
-	Collection<ProjectSummary> getAllProjectSummaryForCycle(long cycleID);
+	ProjectSummary getProjectSummary(long projectID);	
 	
 	ProjectsColMolsAndNames getProjectColumnModelAndNames(long companyID);
 

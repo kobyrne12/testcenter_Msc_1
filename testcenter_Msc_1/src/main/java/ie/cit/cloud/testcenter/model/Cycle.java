@@ -66,7 +66,7 @@ public class Cycle {
 	@Basic    
 	private int requiredPriority;
 	@Basic    
-	private int projectPosition;
+	private long projectPosition;
 	@Basic    
 	private long totalCycleEstTime;
 	@Basic    
@@ -82,9 +82,9 @@ public class Cycle {
 	@Basic    
 	private int RequirementRule; 
 	@Basic    
-	private String creationDate = GetDateNow();
+	private String creationDate;
 	@Basic    
-	private String createdBy = "KEN";
+	private String createdBy;
 //	@Temporal(TemporalType.DATE)
 //	@Column(name = "DATE", unique = true, nullable = false, length = 10)
 	@Basic    
@@ -114,7 +114,7 @@ public class Cycle {
 	 */
 	public Cycle(String cycleName, long projectID,
 			Collection<Testrun> testruns, int requiredPriority,
-			int projectPosition, long totalCycleEstTime, String cycleStartDate,
+			long projectPosition, long totalCycleEstTime, String cycleStartDate,
 			String cycleEndDate, int codeChangeRule, int defectRule,
 			int testHistoryRule, int requirementRule, String creationDate,
 			String createdBy, String lastModifiedDate, String lastModifiedBy) {
@@ -208,14 +208,14 @@ public class Cycle {
 	/**
 	 * @return the projectPosition
 	 */
-	public int getProjectPosition() {
+	public long getProjectPosition() {
 		return projectPosition;
 	}
 
 	/**
 	 * @param projectPosition the projectPosition to set
 	 */
-	public void setProjectPosition(int projectPosition) {
+	public void setProjectPosition(long projectPosition) {
 		this.projectPosition = projectPosition;
 	}
 
@@ -348,32 +348,16 @@ public class Cycle {
 	/**
 	 * @return the projectID
 	 */
-	public long getCompanyID() {
+	public long getProjectID() {
 		return projectID;
 	}	
 	/**
 	 * @param projectID the projectID to set
 	 */
-	public void setCompanyID(long projectID) {
+	public void setProjectID(long projectID) {
 		this.projectID = projectID;
-	}
+	}	
 	
-	public String GetDateNow()
-	{ 	 
-		Calendar currentDate = Calendar.getInstance();
-		SimpleDateFormat formatter= new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss");
-		String dateNow = formatter.format(currentDate.getTime()); 
-		//System.out.println("*********** Now the currentDate is :=>  " + currentDate);
-		System.out.println("*********** Now the dateNow is :=>  " + dateNow);
-		return dateNow;
-	}
-
-	private String getCurrentUser() 
-	{
-		System.out.println("*********** Current User is :=>  " + SecurityContextHolder.getContext().getAuthentication().getName());
-		return SecurityContextHolder.getContext().getAuthentication().getName();
-	}
-
 	/**
 	 * @return the Testruns
 	 */

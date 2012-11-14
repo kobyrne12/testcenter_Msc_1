@@ -47,11 +47,7 @@ public class ProjectController {
 	@RequestMapping(value = { "projects"}, method = GET)
 	public String TESTProject(@RequestParam(required = false) String errormessage,String successmessage,long companyID,Model model) 
 	{
-		Company company = companyService.getCompany(companyID); 		
-		Collection<Project> allProjects = projectService.getAllProjectsByCompanyID(companyID);
-		String TempSuccessmessage = "";
-		String TempErrormessage = "";
-		model.addAttribute("projects", allProjects);		  
+		Company company = companyService.getCompany(companyID); 				  
 		model.addAttribute("companyID", companyID);  
 		model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
 		model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
@@ -59,28 +55,9 @@ public class ProjectController {
 		model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
 		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
 		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
-		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
-		if(successmessage != null)
-		{
-			TempSuccessmessage =  successmessage;		
-		}
-		model.addAttribute("successmessage", TempSuccessmessage);
-
-		if(successmessage != null)
-		{
-			TempErrormessage =  errormessage;		
-		}
-		else
-		{
-			if (allProjects.isEmpty())
-			{
-				// No Projects Exist   					
-				model.addAttribute("errormessage", "No Projects exist");  				  	
-			}
-		}
-		model.addAttribute("errormessage", errormessage);
-		model.addAttribute("successmessage", TempErrormessage);	
+		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());		
 		model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));
+		model.addAttribute("projectsUrl", "project/summaryList/"+companyID+"?cycleID=4578965965");			
 		return "projects";
 	}  
 

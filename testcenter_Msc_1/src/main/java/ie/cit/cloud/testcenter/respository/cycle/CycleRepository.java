@@ -83,6 +83,16 @@ public interface CycleRepository {
      */
 
 	Collection<Cycle> findAllCyclesByProjectID(long projectID);
+	
+	 /**
+     * Returns the highest project position number for a project 
+     * 
+     * @param id
+     *            projectID
+     * @return highest position number for project, null if no other cycle exists
+     *      */
+
+	Long getMaxProjectPosNum(long projectID);
 
     
 

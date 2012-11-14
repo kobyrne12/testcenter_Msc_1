@@ -34,9 +34,5 @@ public interface CompanyService {
     
     void updateCompanyNameWithId(long companyID, Company company,String companyName);
     
-    boolean updateCompany(long companyID, Company company);
-    
-    ProjectSummaryList getAllProjectSummaryForCompany(long companyID);
-
-	ProjectSummaryList getAllProjectSummaryForCycle(long cycleID);
+    boolean updateCompany(long companyID, Company company);  
 }

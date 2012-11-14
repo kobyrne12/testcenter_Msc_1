@@ -41,4 +41,6 @@ public interface CycleService {
 	
 	CycleSummary getCycleSummary(long cycleID);
 
+	long getMaxProjectPosNum(long projectID);
+
 }

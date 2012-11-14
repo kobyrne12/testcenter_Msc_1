@@ -74,6 +74,14 @@ public class HibernateCycleRespository implements CycleRepository {
 		Query query = em.createQuery("from Cycle where projectID=:projectID"); 		
 		query.setParameter("projectID", projectID);
 		return ( Collection<Cycle>) query.getResultList();
-	}	
+	}
+
+    public Long getMaxProjectPosNum(long projectID)
+    {
+    	Query query = em.createQuery("max(projectPosition) from Cycle where projectID=:projectID");
+    	query.setParameter("projectID", projectID);
+    	return (Long) query.getSingleResult();
+
+    }	
 	
 }

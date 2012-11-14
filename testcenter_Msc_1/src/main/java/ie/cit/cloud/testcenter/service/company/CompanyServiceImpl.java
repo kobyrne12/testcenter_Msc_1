@@ -88,48 +88,6 @@ public class CompanyServiceImpl implements CompanyService {
 	public boolean updateCompany(long companyID, Company company) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-	
-	
-	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public ProjectSummaryList getAllProjectSummaryForCompany(long companyID) {
-		int TotalCycles = 0;
-		
-		Company company = repo.findById(companyID);
-		ProjectSummaryList projectList = new ProjectSummaryList();
-		//projectList.setCompanyID(company.getCompanyID());			
-		/*
-		Iterator<Project> projects = company.getProjects().iterator();
-		while (projects.hasNext()) {	
-			Project project = projects.next();
-			TotalCycles = TotalCycles + project.getCycles().size();			
-			Iterator<Cycle> cycles = project.getCycles().iterator();
-			while (cycles.hasNext()) {
-				Cycle cycle = cycles.next();
-				//TotalTestRuns = TotalTestRuns + cycle.getTestRuns().size();				
-			}
-			
-		}
-		*/
-		projectList.setProjects(projectService.getAllProjectSummaryForCompany(companyID));
-		projectList.setTotalNumberOfProjects(company.getProjects().size());			
-		return projectList;
-	}
-	
-	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public ProjectSummaryList getAllProjectSummaryForCycle(long cycleID) {
-		int TotalCycles = 0;		
-		//Cycle cycle = repo.findById(cycleID);		
-		ProjectSummaryList projectList = new ProjectSummaryList();
-		
-		
-		
-		projectList.setProjects(projectService.getAllProjectSummaryForCycle(cycleID));
-		//projectList.setTotalNumberOfProjects(company.getProjects().size());		
-	
-		return projectList;
-	}
-
-
+	}	
 
 }

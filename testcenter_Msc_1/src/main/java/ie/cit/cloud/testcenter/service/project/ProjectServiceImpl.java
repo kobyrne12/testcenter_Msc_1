@@ -11,11 +11,14 @@ package ie.cit.cloud.testcenter.service.project;
 import ie.cit.cloud.testcenter.display.ProjectsColMolsAndNames;
 import ie.cit.cloud.testcenter.display.ProjectsDisplay;
 import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.respository.project.ProjectRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -37,6 +40,8 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Autowired
 	CompanyService companyService;
+	@Autowired
+	CycleService cycleService;
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Collection<Project> getAllProjects() {
@@ -108,8 +113,8 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public ProjectSummary getProjectSummary(long projectID) {
-		int totalDefects = 0;
-		Project project = projectRepo.findById(projectID);
+		long totalDefects = 0;
+		Project project = getProject(projectID);
 		ProjectSummary projectSummary = new ProjectSummary();
 		
 		projectSummary.setProjectID(project.getProjectID());
@@ -127,10 +132,10 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		
 		projectSummary.setNewFeatureRequiredPercent(project.getNewFeatureRequiredPercent());
-		int currentNewFeaturePercent = 1 + (int)(Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
+		Long currentNewFeaturePercent = (long) (1 + (double)(Math.random() * ((100 - 1) + 1))); // just a random number until all entities are populated 
 		projectSummary.setNewFeatureCurrentPercent(currentNewFeaturePercent);
 		projectSummary.setRegressionCurrentPercent(project.getRegressionRequiredPercent());
-		int currentRegressionPercent = 1 + (int)(Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
+		Long currentRegressionPercent = (long) (1 + (double)(Math.random() * ((100 - 1) + 1))); // just a random number until all entities are populated 
 		projectSummary.setRegressionRequiredPercent(currentRegressionPercent);
 		
 		projectSummary.setAllowedSev1s(project.getAllowedSev1());
@@ -138,13 +143,13 @@ public class ProjectServiceImpl implements ProjectService {
 		projectSummary.setAllowedSev3s(project.getAllowedSev3());
 		projectSummary.setAllowedSev4s(project.getAllowedSev4());
 		
-		int currentSev1 = 1 + (int)(Math.random() * ((50 - 1) + 1)); // just a random number until all entities are populated 
+		Long currentSev1 = (long) (1 + (double)(Math.random() * ((50 - 1) + 1))); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev1s(currentSev1);
-		int currentSev2 = 1 + (int)(Math.random() * ((70 - 1) + 1)); // just a random number until all entities are populated 
+		Long currentSev2 = (long) (1 + (double)(Math.random() * ((70 - 1) + 1))); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev2s(currentSev2);
-		int currentSev3 = 1 + (int)(Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
+		Long currentSev3 = (long) (1 + (double)(Math.random() * ((100 - 1) + 1))); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev3s(currentSev3);
-		int currentSev4 = 1 + (int)(Math.random() * ((200 - 1) + 1)); // just a random number until all entities are populated 
+		Long currentSev4 = (long) (1 + (double)(Math.random() * ((200 - 1) + 1))); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev4s(currentSev4);
 		
 		totalDefects = currentSev1 + currentSev2 + currentSev3 + currentSev4;
@@ -266,43 +271,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectSummary;
 	}
 
-	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Collection<ProjectSummary> getAllProjectSummaryForCompany(long companyID) {
-		// Current List of Projects
-		Collection<Project> projects = projectRepo.findAllProjectsByCompanyID(companyID);		
-		// New Project Summary Collection 
-		Collection<ProjectSummary> projectSummaryCollection = new ArrayList<ProjectSummary>();
-		// Project iterator
-		Iterator<Project> projectsItr = projects.iterator();
-		// loop through all projects and add a summary of the project to the summary list
-		while (projectsItr.hasNext()) {				
-			Project project = projectsItr.next();						
-			ProjectSummary projectSummary = getProjectSummary(project.getProjectID());	
-			projectSummaryCollection.add(projectSummary);
-		}
-		return projectSummaryCollection;
-	}
-
-	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Collection<ProjectSummary> getAllProjectSummaryForCycle(long cycleID) {
-		//long projectSummaryID = 0;
-		Collection<Project> projects = projectRepo.findAllProjectsByCycleID(cycleID);		
-		Collection<ProjectSummary> projectSummaryCollection = new ArrayList<ProjectSummary>();	
-		Iterator<Project> projectsItr = projects.iterator();
-		while (projectsItr.hasNext()) {	
-				long projectID = 0;
-				long projectSummaryID = 0;
-				Project project = projectsItr.next();					
-				projectID = project.getProjectID();
-				System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Project -- " + projectID);				
-				ProjectSummary projectSummary = getProjectSummary(projectID);
-				projectSummaryID = projectSummary.getProjectID();
-				System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Project Summary -- " + projectSummaryID);
-				
-				projectSummaryCollection.add(projectSummary);
-		}
-		return projectSummaryCollection;
-	}
 	
 
  private Collection<ProjectsDisplay> getProjectsColumnModel(long companyID)
@@ -416,33 +384,56 @@ public class ProjectServiceImpl implements ProjectService {
  public ProjectsColMolsAndNames getProjectColumnModelAndNames(long companyID)
  {
  	ProjectsColMolsAndNames colModelAndName = new ProjectsColMolsAndNames();
-	colModelAndName.setColName(getProjectsColumnNames(companyID));    	
-	colModelAndName.setColModel(getProjectsColumnModel(companyID));
-	return colModelAndName;
+ 	colModelAndName.setColName(getProjectsColumnNames(companyID));    	
+ 	colModelAndName.setColModel(getProjectsColumnModel(companyID));
+ 	return colModelAndName;
  }
 
-public ProjectSummaryList getsummaryList(long companyID, String cycleID,
-		String testplanID, String userID, String environmentID,
-		String requirementID, String defectID, String testrunID) {
-	
-	Collection<Project> projects = new ArrayList<Project>();
-	
-	
-	if (cycleID != null)
-	{
-		long cycleID_long = Long.valueOf(cycleID).longValue();
-		// get a collection of projects for the cycle and add them to the current collection
-		//projectRepo.findAllProjectsByCompanyID(companyID);	
-		projects.addAll(projects);
-		
-	}
-	if (testplanID != null){long testplanID_long = Long.valueOf(testplanID).longValue();	}
-	if (environmentID != null){long environmentID_long = Long.valueOf(environmentID).longValue();	}
-	if (requirementID != null){long requirementID_long = Long.valueOf(requirementID).longValue();	}
-	if (defectID != null){long defectID_long = Long.valueOf(defectID).longValue();	}
-	if (testrunID != null){long testrunID_long = Long.valueOf(testrunID).longValue();	}
-	if (userID != null){long userID_long = Long.valueOf(userID).longValue();	}
-	return null;
-}
 
+ public ProjectSummaryList getsummaryList(long companyID, String cycleID,
+		 String testplanID, String userID, String environmentID,
+		 String requirementID, String defectID, String testrunID) {
+
+	 Collection<Project> projects = new ArrayList<Project>();
+	 Collection<ProjectSummary> projectSummaryCollection = new ArrayList<ProjectSummary>();
+	 ProjectSummaryList projectSummaryList = new ProjectSummaryList();
+
+	 if (cycleID != null)
+	 {
+		 long cycleID_long = Long.valueOf(cycleID).longValue();
+		 Cycle cycle = cycleService.getCycle(cycleID_long);		
+		 Project cycleProject = getProject(cycle.getProjectID());
+		 projects.add(cycleProject);
+
+	 }
+	 else
+	 {
+		 projects.addAll(projectRepo.findAllProjectsByCompanyID(companyID));	
+		 // Remove all projects that are not associated with the following
+		 if (testplanID != null){long testplanID_long = Long.valueOf(testplanID).longValue();	}
+		 if (environmentID != null){long environmentID_long = Long.valueOf(environmentID).longValue();	}
+		 if (requirementID != null){long requirementID_long = Long.valueOf(requirementID).longValue();	}
+		 if (defectID != null){long defectID_long = Long.valueOf(defectID).longValue();	}
+		 if (testrunID != null){long testrunID_long = Long.valueOf(testrunID).longValue();	}
+		 if (userID != null){long userID_long = Long.valueOf(userID).longValue();	}
+	 }	 
+	 
+	 if(projects.isEmpty())
+	 {
+		 return null;
+	 }
+	 else
+	 {
+		 Iterator<Project> projectsItr = projects.iterator();	
+		 while (projectsItr.hasNext()) 
+		 {				
+			 Project project = projectsItr.next();						
+			 ProjectSummary projectSummary = getProjectSummary(project.getProjectID());	
+			 projectSummaryCollection.add(projectSummary);
+		 }
+
+		 projectSummaryList.setProjects(projectSummaryCollection);
+		 return projectSummaryList;
+	 }
+ }
 }

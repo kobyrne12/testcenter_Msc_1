@@ -13,8 +13,10 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import ie.cit.cloud.testcenter.service.project.ProjectService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,96 +42,31 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 public class CycleController {
 	@Autowired
-	private CycleService cycleService;
-	@Autowired
 	private CompanyService companyService;
+	@Autowired
+	private ProjectService projectService;
+	@Autowired
+	private CycleService cycleService;
 
-	// new Cycle
-	@RequestMapping(value = { "newcycle"}, method = GET)
-	public String newCycle(@RequestParam(required = false) String errormessage,String successmessage,long projectID,Model model) {	
-		Company company = companyService.getCompany(projectID);
-		model.addAttribute("errormessage", errormessage);
-		model.addAttribute("company", company);
-		return "newcycle";
-	}   
-	
-	
-	
-	// Create new Cycle()
-	@RequestMapping(value = {"newcycle"}, method = POST)     
-	public String createNewCycle(@RequestParam String cycleName, long projectID, Model model) {  		
-		try{
-			// Cycle already exists    		
-			System.out.println("here ---: "+ cycleService.getCycleByName(cycleName));   
-			model.addAttribute("projectID", projectID);
-			model.addAttribute("errormessage", cycleName+" already exists");
-			return "redirect:newcycle.html";	 
-		}
-		catch(NoResultException nre)
-		{
-			// No Cycle of this name Exist
-			try{    
-				/**
-				 * @param cycleName
-				 * @param projectID
-				 * @param testruns
-				 * @param requiredPriority
-				 * @param projectPosition
-				 * @param totalCycleEstTime
-				 * @param cycleStartDate
-				 * @param cycleEndDate
-				 * @param codeChangeRule
-				 * @param defectRule
-				 * @param testHistoryRule
-				 * @param requirementRule
-				 * @param creationDate
-				 * @param createdBy
-				 * @param lastModifiedDate
-				 * @param lastModifiedBy
-				 */
-				//long cycleID = cycleService.addNewCycle(new Cycle(cycleName, projectID,null, 0, 0, cycleID, cycleName,GetDateNow(),0, 0, 0, 0, getCurrentUser(), cycleName, cycleName, cycleName));
-					
-			//	Cycle cycle = cycleService.getCycle(cycleID);    			
-			//	model.addAttribute("cycle", cycle);   
-				model.addAttribute("projectID", projectID);  
-				model.addAttribute("successmessage", cycleName+" Created");
-				return "redirect:viewcycles.html";   
-
-			}
-			catch(ConstraintViolationException CVE)
-			{   			
-				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations());    			
-				model.addAttribute("projectID", projectID);
-				model.addAttribute("errormessage",CVE.getConstraintViolations());
-				return "redirect:newcycle.html";
-			}
-		}
-
-	}     
-
-	@RequestMapping(value = { "viewcycles"}, method = GET)
-	public String viewAllCycles(@RequestParam(required = false) String errormessage,String successmessage,long projectID,Model model) {
-
-		Company company = companyService.getCompany(projectID);    		
-		//Collection<Cycle> allCycles = company.getCycles();
-		Collection<Cycle> allCycles = cycleService.getAllCyclesByProjectID(projectID);
-		if (allCycles.isEmpty())
-		{
-			// No Cycles Exist   
-			model.addAttribute("errormessage", "No Cycles exist");   				
-			model.addAttribute("projectID", projectID); 
-			return "redirect:newcycle.html";        	
-		}
-		else
-		{
-			model.addAttribute("errormessage", errormessage);
-			model.addAttribute("successmessage", successmessage);
-			model.addAttribute("cycles", allCycles);  	
-			model.addAttribute("company", company);
-			return "viewcycles";
-		}    
-
+	@RequestMapping(value = { "cycles"}, method = GET)
+	public String TESTProject(@RequestParam(required = false) String errormessage,String successmessage,long projectID,Model model) 
+	{
+		Project project = projectService.getProject(projectID);
+		Long companyID = project.getCompanyID();
+		Company company = companyService.getCompany(companyID); 		
+		model.addAttribute("companyID", companyID);  
+		model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
+		model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
+		model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
+		model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
+		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
+		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
+		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());		
+		model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));
+		model.addAttribute("cyclesUrl", "cycle/summaryList/"+projectID);	
+		return "cycles";
 	}  
+
 
 	public String GetDateNow()
 	{ 	 
