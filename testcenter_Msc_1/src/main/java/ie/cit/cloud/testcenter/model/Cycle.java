@@ -62,7 +62,8 @@ public class Cycle {
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<Testrun> Testruns;   
-	  
+	@Basic    
+    private long parentID; 
 	@Basic    
 	private int requiredPriority;
 	@Basic    
@@ -112,7 +113,7 @@ public class Cycle {
 	 * @param lastModifiedDate
 	 * @param lastModifiedBy
 	 */
-	public Cycle(String cycleName, long projectID,
+	public Cycle(String cycleName, long projectID, long parentID,
 			Collection<Testrun> testruns, int requiredPriority,
 			long projectPosition, long totalCycleEstTime, String cycleStartDate,
 			String cycleEndDate, int codeChangeRule, int defectRule,
@@ -120,6 +121,7 @@ public class Cycle {
 			String createdBy, String lastModifiedDate, String lastModifiedBy) {
 		this.cycleName = cycleName;
 		this.projectID = projectID;
+		this.parentID = parentID;
 		this.Testruns = testruns;
 		this.requiredPriority = requiredPriority;
 		this.projectPosition = projectPosition;
@@ -370,6 +372,18 @@ public class Cycle {
 	 */
 	public void setTestruns(Collection<Testrun> Testruns) {
 		this.Testruns = Testruns;
+	}
+	/**
+	 * @return the parentID
+	 */
+	public long getParentID() {
+		return parentID;
+	}
+	/**
+	 * @param parentID the parentID to set
+	 */
+	public void setParentID(long parentID) {
+		this.parentID = parentID;
 	}	
 
 	

@@ -78,17 +78,17 @@ public class Project {
     @Basic    
     private long parentID;    
     @Basic    
-    private Long regressionRequiredPercent;
+    private int regressionRequiredPercent;
     @Basic    
-    private Long newFeatureRequiredPercent;
+    private int newFeatureRequiredPercent;
     @Basic    
-    private Long allowedSev1;
+    private int allowedSev1;
     @Basic    
-    private Long allowedSev2;
+    private int allowedSev2;
     @Basic    
-    private Long allowedSev3;
+    private int allowedSev3;
     @Basic    
-    private Long allowedSev4;
+    private int allowedSev4;
     @Basic    
     private String creationDate = GetDateNow();
     @Basic    
@@ -109,11 +109,11 @@ public class Project {
     public Project() {	
     }
     
-    public Project(long companyID, String projectName,long parentID,Long regressionRequiredPercent,Long newFeatureRequiredPercent, Long allowedSev1,Long allowedSev2,Long allowedSev3,Long allowedSev4,String lastModifiedDate,String lastModifiedBy ) {
+    public Project(long companyID, String projectName,long parentID,int regressionRequiredPercent,int newFeatureRequiredPercent, int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,String lastModifiedDate,String lastModifiedBy ) {
     	this(companyID,projectName,null,parentID,regressionRequiredPercent,newFeatureRequiredPercent,allowedSev1,allowedSev2,allowedSev3,allowedSev4, lastModifiedDate, lastModifiedBy);
     }
 
-    public Project(long companyID, String projectName,Collection<Cycle> cycles, long parentID ,Long regressionRequiredPercent,Long newFeatureRequiredPercent, Long allowedSev1,Long allowedSev2,Long allowedSev3,Long allowedSev4,String lastModifiedDate,String lastModifiedBy) {
+    public Project(long companyID, String projectName,Collection<Cycle> cycles, long parentID ,int regressionRequiredPercent,int newFeatureRequiredPercent, int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,String lastModifiedDate,String lastModifiedBy) {
     	//this.company = company;
     	this.projectName = projectName;
     	this.companyID = companyID;    	
@@ -158,10 +158,10 @@ public class Project {
 //    	return createdBy;
 //    }
     // Regression Required Percent 
-    public Long getRegressionRequiredPercent() {
+    public int getRegressionRequiredPercent() {
 		return regressionRequiredPercent;
 	}
-	public void setRegressionRequiredPercent(Long regressionRequiredPercent) {
+	public void setRegressionRequiredPercent(int regressionRequiredPercent) {
 		this.regressionRequiredPercent = regressionRequiredPercent;
 	}
 	
@@ -169,70 +169,70 @@ public class Project {
 	/**
 	 * @return the newFeatureRequiredPercent
 	 */
-	public Long getNewFeatureRequiredPercent() {
+	public int getNewFeatureRequiredPercent() {
 		return newFeatureRequiredPercent;
 	}
 
 	/**
 	 * @param newFeatureRequiredPercent the newFeatureRequiredPercent to set
 	 */
-	public void setNewFeatureRequiredPercent(Long newFeatureRequiredPercent) {
+	public void setNewFeatureRequiredPercent(int newFeatureRequiredPercent) {
 		this.newFeatureRequiredPercent = newFeatureRequiredPercent;
 	}
 
 	/**
 	 * @return the allowedSev1
 	 */
-	public Long getAllowedSev1() {
+	public int getAllowedSev1() {
 		return allowedSev1;
 	}
 
 	/**
 	 * @param allowedSev1 the allowedSev1 to set
 	 */
-	public void setAllowedSev1(Long allowedSev1) {
+	public void setAllowedSev1(int allowedSev1) {
 		this.allowedSev1 = allowedSev1;
 	}
 
 	/**
 	 * @return the allowedSev2
 	 */
-	public Long getAllowedSev2() {
+	public int getAllowedSev2() {
 		return allowedSev2;
 	}
 
 	/**
 	 * @param allowedSev2 the allowedSev2 to set
 	 */
-	public void setAllowedSev2(Long allowedSev2) {
+	public void setAllowedSev2(int allowedSev2) {
 		this.allowedSev2 = allowedSev2;
 	}
 
 	/**
 	 * @return the allowedSev3
 	 */
-	public Long getAllowedSev3() {
+	public int getAllowedSev3() {
 		return allowedSev3;
 	}
 
 	/**
 	 * @param allowedSev3 the allowedSev3 to set
 	 */
-	public void setAllowedSev3(Long allowedSev3) {
+	public void setAllowedSev3(int allowedSev3) {
 		this.allowedSev3 = allowedSev3;
 	}
 
 	/**
 	 * @return the allowedSev4
 	 */
-	public Long getAllowedSev4() {
+	public int getAllowedSev4() {
 		return allowedSev4;
 	}
 
 	/**
 	 * @param allowedSev4 the allowedSev4 to set
 	 */
-	public void setAllowedSev4(Long allowedSev4) {
+	public void setAllowedSev4(int allowedSev4) {
 		this.allowedSev4 = allowedSev4;
 	}
 

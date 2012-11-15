@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.service.project;
  *
  */
 
-import ie.cit.cloud.testcenter.display.ProjectsColMolsAndNames;
-import ie.cit.cloud.testcenter.display.ProjectsDisplay;
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
@@ -113,7 +113,7 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public ProjectSummary getProjectSummary(long projectID) {
-		long totalDefects = 0;
+		
 		Project project = getProject(projectID);
 		ProjectSummary projectSummary = new ProjectSummary();
 		
@@ -132,10 +132,10 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		
 		projectSummary.setNewFeatureRequiredPercent(project.getNewFeatureRequiredPercent());
-		Long currentNewFeaturePercent = (long) (1 + (double)(Math.random() * ((100 - 1) + 1))); // just a random number until all entities are populated 
+		int currentNewFeaturePercent = (int) (Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
 		projectSummary.setNewFeatureCurrentPercent(currentNewFeaturePercent);
 		projectSummary.setRegressionCurrentPercent(project.getRegressionRequiredPercent());
-		Long currentRegressionPercent = (long) (1 + (double)(Math.random() * ((100 - 1) + 1))); // just a random number until all entities are populated 
+		int currentRegressionPercent = (int) (Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
 		projectSummary.setRegressionRequiredPercent(currentRegressionPercent);
 		
 		projectSummary.setAllowedSev1s(project.getAllowedSev1());
@@ -143,16 +143,16 @@ public class ProjectServiceImpl implements ProjectService {
 		projectSummary.setAllowedSev3s(project.getAllowedSev3());
 		projectSummary.setAllowedSev4s(project.getAllowedSev4());
 		
-		Long currentSev1 = (long) (1 + (double)(Math.random() * ((50 - 1) + 1))); // just a random number until all entities are populated 
+		int currentSev1 = (int) (Math.random() * ((50 - 1) + 1)); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev1s(currentSev1);
-		Long currentSev2 = (long) (1 + (double)(Math.random() * ((70 - 1) + 1))); // just a random number until all entities are populated 
+		int currentSev2 = (int) (Math.random() * ((70 - 1) + 1)); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev2s(currentSev2);
-		Long currentSev3 = (long) (1 + (double)(Math.random() * ((100 - 1) + 1))); // just a random number until all entities are populated 
+		int currentSev3 = (int) (Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev3s(currentSev3);
-		Long currentSev4 = (long) (1 + (double)(Math.random() * ((200 - 1) + 1))); // just a random number until all entities are populated 
+		int currentSev4 = (int) (Math.random() * ((200 - 1) + 1)); // just a random number until all entities are populated 
 		projectSummary.setCurrentSev4s(currentSev4);
 		
-		totalDefects = currentSev1 + currentSev2 + currentSev3 + currentSev4;
+		int totalDefects = currentSev1 + currentSev2 + currentSev3 + currentSev4;
 		
 		projectSummary.setTotalDefects(totalDefects);
 		projectSummary.setCompanyID(project.getCompanyID());	
@@ -273,47 +273,47 @@ public class ProjectServiceImpl implements ProjectService {
 
 	
 
- private Collection<ProjectsDisplay> getProjectsColumnModel(long companyID)
+ private Collection<GridAttributes> getProjectsColumnModel(long companyID)
  {
 	 // Constructor in order
 	 // name;index;hidden;width;align;
 	 // sortable;resizable;search;sorttype;jsonmap;key;
 	 
 	// Company company = companyService.getCompany(companyID);
-	 Collection<ProjectsDisplay> columnModelCollection =  new ArrayList<ProjectsDisplay>();		 
-	 columnModelCollection.add(new ProjectsDisplay("projectID",10));	
-	 columnModelCollection.add(new ProjectsDisplay("projectName",40));
-	 columnModelCollection.add(new ProjectsDisplay("overAllState","setOverallBarChart","unSetBarChart", 80));		
-	 columnModelCollection.add(new ProjectsDisplay("regressionState","setRegressionBarChart","unSetBarChart", 60));	
-	 columnModelCollection.add(new ProjectsDisplay("newFeatureState","setNewFeatureBarChart","unSetBarChart",60));	
-	 columnModelCollection.add(new ProjectsDisplay("parentProjectName",25));
-	 columnModelCollection.add(new ProjectsDisplay("childProjects",15));
-	 columnModelCollection.add(new ProjectsDisplay("regressionRequiredPercent","percentFmatter","unformatPercent",15));
-	 columnModelCollection.add(new ProjectsDisplay("regressionCurrentPercent","percentFmatter","unformatPercent",15));
-	 columnModelCollection.add(new ProjectsDisplay("newFeatureRequiredPercent","percentFmatter","unformatPercent",15));
-	 columnModelCollection.add(new ProjectsDisplay("newFeatureCurrentPercent","percentFmatter","unformatPercent",15));
-	 columnModelCollection.add(new ProjectsDisplay("allowedSev1s",true));
-	 columnModelCollection.add(new ProjectsDisplay("currentSev1s",true));
-	 columnModelCollection.add(new ProjectsDisplay("allowedSev2s",true));
-	 columnModelCollection.add(new ProjectsDisplay("currentSev2s",true));
-	 columnModelCollection.add(new ProjectsDisplay("allowedSev3s",true));
-	 columnModelCollection.add(new ProjectsDisplay("currentSev3s",true));	 
-	 columnModelCollection.add(new ProjectsDisplay("allowedSev4s",true));
-	 columnModelCollection.add(new ProjectsDisplay("currentSev4s",true));
-	 columnModelCollection.add(new ProjectsDisplay("companyID",true));
-	 columnModelCollection.add(new ProjectsDisplay("cycles",true));
-	 columnModelCollection.add(new ProjectsDisplay("environments",true));
-	 columnModelCollection.add(new ProjectsDisplay("testRuns",true));
-	 columnModelCollection.add(new ProjectsDisplay("testcases",true));
-	 columnModelCollection.add(new ProjectsDisplay("testplans",true));	 
-	 columnModelCollection.add(new ProjectsDisplay("testers",true));
-	 columnModelCollection.add(new ProjectsDisplay("seniorTesters",true));	 
-	 columnModelCollection.add(new ProjectsDisplay("developers",true));
-	 columnModelCollection.add(new ProjectsDisplay("seniorDevelopers",true));
-	 columnModelCollection.add(new ProjectsDisplay("lastModifiedDate",true));
-	 columnModelCollection.add(new ProjectsDisplay("lastModifiedBy",true));	 
-	 columnModelCollection.add(new ProjectsDisplay("createdBy",true));
-	 columnModelCollection.add(new ProjectsDisplay("creationDate",true));	
+	 Collection<GridAttributes> columnModelCollection =  new ArrayList<GridAttributes>();		 
+	 columnModelCollection.add(new GridAttributes("projectID",10));	
+	 columnModelCollection.add(new GridAttributes("projectName",40));
+	 columnModelCollection.add(new GridAttributes("overAllState","setOverallBarChart","unSetBarChart", 80));		
+	 columnModelCollection.add(new GridAttributes("regressionState","setRegressionBarChart","unSetBarChart", 60));	
+	 columnModelCollection.add(new GridAttributes("newFeatureState","setNewFeatureBarChart","unSetBarChart",60));	
+	 columnModelCollection.add(new GridAttributes("parentProjectName",25));
+	 columnModelCollection.add(new GridAttributes("childProjects",15));
+	 columnModelCollection.add(new GridAttributes("regressionRequiredPercent","percentFmatter","unformatPercent",15));
+	 columnModelCollection.add(new GridAttributes("regressionCurrentPercent","percentFmatter","unformatPercent",15));
+	 columnModelCollection.add(new GridAttributes("newFeatureRequiredPercent","percentFmatter","unformatPercent",15));
+	 columnModelCollection.add(new GridAttributes("newFeatureCurrentPercent","percentFmatter","unformatPercent",15));
+	 columnModelCollection.add(new GridAttributes("allowedSev1s",true));
+	 columnModelCollection.add(new GridAttributes("currentSev1s",true));
+	 columnModelCollection.add(new GridAttributes("allowedSev2s",true));
+	 columnModelCollection.add(new GridAttributes("currentSev2s",true));
+	 columnModelCollection.add(new GridAttributes("allowedSev3s",true));
+	 columnModelCollection.add(new GridAttributes("currentSev3s",true));	 
+	 columnModelCollection.add(new GridAttributes("allowedSev4s",true));
+	 columnModelCollection.add(new GridAttributes("currentSev4s",true));
+	 columnModelCollection.add(new GridAttributes("companyID",true));
+	 columnModelCollection.add(new GridAttributes("cycles",true));
+	 columnModelCollection.add(new GridAttributes("environments",true));
+	 columnModelCollection.add(new GridAttributes("testRuns",true));
+	 columnModelCollection.add(new GridAttributes("testcases",true));
+	 columnModelCollection.add(new GridAttributes("testplans",true));	 
+	 columnModelCollection.add(new GridAttributes("testers",true));
+	 columnModelCollection.add(new GridAttributes("seniorTesters",true));	 
+	 columnModelCollection.add(new GridAttributes("developers",true));
+	 columnModelCollection.add(new GridAttributes("seniorDevelopers",true));
+	 columnModelCollection.add(new GridAttributes("lastModifiedDate",true));
+	 columnModelCollection.add(new GridAttributes("lastModifiedBy",true));	 
+	 columnModelCollection.add(new GridAttributes("createdBy",true));
+	 columnModelCollection.add(new GridAttributes("creationDate",true));	
 	// if customValue1 set then 
 	//columnModelCollection.add(getColumnModel("customColumn1"));	
 	// if customValue2 set then 
@@ -381,11 +381,30 @@ public class ProjectServiceImpl implements ProjectService {
 	 return colNames;
  }
 	
- public ProjectsColMolsAndNames getProjectColumnModelAndNames(long companyID)
+ public ColModelAndNames getProjectColumnModelAndNames(long companyID)
  {
- 	ProjectsColMolsAndNames colModelAndName = new ProjectsColMolsAndNames();
+ 	ColModelAndNames colModelAndName = new ColModelAndNames();
  	colModelAndName.setColName(getProjectsColumnNames(companyID));    	
  	colModelAndName.setColModel(getProjectsColumnModel(companyID));
+ 	
+ 	 // TODO: get distinct list of test run levels ---> Regression/ New Feature/ Sanity 
+	 //  For each Level 
+	 //  Create a column for each level 
+	 //	 colNames.add(company.getRegressionDisplayName());
+	 //	 columnModelCollection.add(new GridAttributes("regressionState","setRegressionBarChart","unSetBarChart", 60));
+	 //	 colNames.add(company.getNewFeatureDisplayName());
+	 //	 columnModelCollection.add(new GridAttributes("newFeatureState","setNewFeatureBarChart","unSetBarChart",60));	
+
+	 //	 colNames.add("Min " + company.getRegressionDisplayName());
+	 //	 columnModelCollection.add(new GridAttributes("regressionRequiredPercent","percentFmatter","unformatPercent",15,true));
+	 //	 colNames.add("Current " + company.getRegressionDisplayName());
+	 //	 columnModelCollection.add(new GridAttributes("regressionCurrentPercent","percentFmatter","unformatPercent",15,true));
+	 //	 colNames.add("Min " + company.getNewFeatureDisplayName());
+	 //	 columnModelCollection.add(new GridAttributes("newFeatureRequiredPercent","percentFmatter","unformatPercent",15,true));
+	 //	 colNames.add("Current " + company.getNewFeatureDisplayName());
+	 //	 columnModelCollection.add(new GridAttributes("newFeatureCurrentPercent","percentFmatter","unformatPercent",15,true));
+
+ 	
  	return colModelAndName;
  }
 

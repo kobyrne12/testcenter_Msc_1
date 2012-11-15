@@ -5,8 +5,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import ie.cit.cloud.testcenter.display.ProjectsColMolsAndNames;
-import ie.cit.cloud.testcenter.display.ProjectsDisplay;
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
@@ -80,7 +80,7 @@ public class ProjectJSONController {
     // Columns for project CHANGE companyID TO UserID
     @RequestMapping(value = "/projectColsAndNames/{index}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody ProjectsColMolsAndNames testArray(@PathVariable("index") long companyID) {		
+    public @ResponseBody ColModelAndNames testArray(@PathVariable("index") long companyID) {		
     	return projectService.getProjectColumnModelAndNames(companyID);    	
     } 
     

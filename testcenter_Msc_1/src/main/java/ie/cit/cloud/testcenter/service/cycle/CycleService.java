@@ -8,6 +8,7 @@ package ie.cit.cloud.testcenter.service.cycle;
  *
  */
 
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
@@ -30,17 +31,19 @@ public interface CycleService {
     void update(Cycle cycle);
     
     void remove(long cycleID);
-
-    void updateCycleWithId(long cycleID, Cycle cycle);
-    
-    void updateCycleNameWithId(long cycleID, Cycle cycle,String cycleName);
-    
-    boolean updateCycle(long cycleID, Cycle cycle);
+   
+    boolean updateCycle(Cycle cycle);
 
 	Collection<Cycle> getAllCyclesByProjectID(long projectID);
 	
 	CycleSummary getCycleSummary(long cycleID);
 
 	long getMaxProjectPosNum(long projectID);
+	
+	CycleSummaryList getGridCycles(long projectID, String testplanID,
+			String testcaseID, String userID, String environmentID,
+			String requirementID, String defectID, String testrunID);
+
+	ColModelAndNames getColumnModelAndNames(Long companyID);
 
 }

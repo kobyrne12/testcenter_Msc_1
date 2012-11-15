@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.service.project;
  *
  */
 
-import ie.cit.cloud.testcenter.display.ProjectsColMolsAndNames;
-import ie.cit.cloud.testcenter.display.ProjectsDisplay;
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
@@ -44,7 +44,7 @@ public interface ProjectService {
 	
 	ProjectSummary getProjectSummary(long projectID);	
 	
-	ProjectsColMolsAndNames getProjectColumnModelAndNames(long companyID);
+	ColModelAndNames getProjectColumnModelAndNames(long companyID);
 
 	ProjectSummaryList getsummaryList(long companyID, String cycleID,
 			String testplanID, String userID, String environmentID,

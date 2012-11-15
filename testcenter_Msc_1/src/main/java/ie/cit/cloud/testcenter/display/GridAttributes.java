@@ -9,7 +9,7 @@ package ie.cit.cloud.testcenter.display;
  */
 
 
-public class ProjectsDisplay {
+public class GridAttributes {
 
 	private String name;
 	private String index;
@@ -25,22 +25,30 @@ public class ProjectsDisplay {
 	private String formatter;
 	private String unformat;	
 	
-	public ProjectsDisplay(String name) {
+	public GridAttributes(String name) {
 		this(name,name,false,20,"center",true,true, true, "number",null,false,"","");		
 	}
-	public ProjectsDisplay(String name,int width) {
+	public GridAttributes(String name,int width) {
 		this(name,name,false,width,"center",true,true, true, "number",null,false,"","");		
 	}
-	public ProjectsDisplay(String name,boolean hidden) {
+	public GridAttributes(String name,int width, boolean hidden) {
+		this(name,name,hidden,width,"center",true,true, true, "number",null,false,"","");	
+	}
+	public GridAttributes(String name,boolean hidden) {
 		this(name,name,hidden,20,"center",true,true, true, "number",null,false,"","");		
 	}
-	public ProjectsDisplay(String name,String formatter, String unformat) {
+	
+	public GridAttributes(String name,String formatter, String unformat) {
 		this(name,name,false,20,"center",true,true, true, "number",null,false,formatter,unformat);		
 	}
-	public ProjectsDisplay(String name,String formatter, String unformat, int width) {
+	public GridAttributes(String name,String formatter, String unformat, int width) {
 		this(name,name,false,width,"center",true,true, true, "number",null,false,formatter,unformat);		
 	}
-	public ProjectsDisplay(String name, String index,boolean hidden, int width, String align,
+	public GridAttributes(String name, String formatter, String unformat, int width ,boolean hidden)
+	{
+		this(name,name,hidden,width,"center",true,true, true, "number",null,false,formatter,unformat);	
+	}
+	public GridAttributes(String name, String index,boolean hidden, int width, String align,
 			boolean sortable, boolean resizable, boolean search, String sorttype, String jsonmap,
 			boolean key, String formatter, String unformat) 
 	{	
@@ -59,6 +67,8 @@ public class ProjectsDisplay {
 		this.unformat = unformat;  
 	}
 
+
+	
 	/**
 	 * @return the name
 	 */

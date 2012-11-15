@@ -16,46 +16,43 @@ public class CycleSummary {
     private long projectID;
     private long companyID;    
 	
-	private long projectPosition;
+	private int projectPosition;	
+	private int requiredPriority;	
 	
-	private long requiredPriority;
-	private long totalCycleEstTime;
+	private int requiredTestruns;  
+	private int allTestruns;  	
+	private int testrunsPassed; 
+	private int testrunsFailed; 
+	private int testrunsNotRun; 
+	private int testrunsInProg; 
+	private int testrunsDeferred; 
+	private int testrunsBlocked;
+	private int testrunsCompleted; 
+	private int testrunsNotCompleted; 
 	
+	private double totalCycleEstTime;
 	private String cycleStartDate;
 	private String cycleEndDate;
 	
-	private String testRuns;  
-	private Long testrunsPassed; 
-	private Long testrunsFailed; 
-	private Long testrunsNotRun; 
-	private Long testrunsInProg; 
-	private Long testrunsDeferred; 
-	private Long testrunsBlocked;
-	
-	private Long totalNumberOfDefectRules; 
-	private Long totalNumberOfTestHistoryRules; 
-	private Long totalNumberOfCodeImpactRules; 
-	private Long totalNumberOfReqRules; 	 
+	private int totalNumberOfDefectRules; 
+	private int totalNumberOfTestHistoryRules; 
+	private int totalNumberOfCodeImpactRules; 
+	private int totalNumberOfReqRules; 	 
 	
 	private String creationDate;   
 	private String createdBy; 
 	private String lastModifiedDate;	
-	private String lastModifiedBy;	
-   
-    private Long regressionRequiredPercent;
-    private Long regressionCurrentPercent;
-    private Long newFeatureRequiredPercent;
-    private Long newFeatureCurrentPercent;
+	private String lastModifiedBy;	   
     
-    private Long allowedSev1s;
-    private Long currentSev1s;
-    private Long allowedSev2s;
-    private Long currentSev2s;
-    private Long allowedSev3s;  
-    private Long currentSev3s;
-    private Long allowedSev4s;  
-    private Long currentSev4s;   
-    private Long totalDefects;  
+    private int allowedSev1s;
+    private int currentSev1s;
+    private int allowedSev2s;
+    private int currentSev2s;
+    private int allowedSev3s;  
+    private int currentSev3s;
+    private int allowedSev4s;  
+    private int currentSev4s;   
+    private int totalDefects;  
     
     private String projects;
     private String environments;
@@ -68,7 +65,7 @@ public class CycleSummary {
     private String seniorDevelopers;
     
     private String parentCycleName;
-    private String childCycles;
+    private int childCycles;
     
     private String customObject1;
     private String customObject2;
@@ -82,9 +79,9 @@ public class CycleSummary {
     public CycleSummary(long cycleID) 
     {
     	this.cycleID = cycleID;     	
-    } 
-    
-    /**
+    }
+
+	/**
 	 * @return the cycleID
 	 */
 	public long getCycleID() {
@@ -141,44 +138,44 @@ public class CycleSummary {
 	}
 
 	/**
-	 * @return the requiredPriority
-	 */
-	public Long getRequiredPriority() {
-		return requiredPriority;
-	}
-
-	/**
-	 * @param requiredPriority the requiredPriority to set
-	 */
-	public void setRequiredPriority(Long requiredPriority) {
-		this.requiredPriority = requiredPriority;
-	}
-
-	/**
 	 * @return the projectPosition
 	 */
-	public long getProjectPosition() {
+	public int getProjectPosition() {
 		return projectPosition;
 	}
 
 	/**
 	 * @param projectPosition the projectPosition to set
 	 */
-	public void setProjectPosition(long projectPosition) {
+	public void setProjectPosition(int projectPosition) {
 		this.projectPosition = projectPosition;
+	}
+
+	/**
+	 * @return the requiredPriority
+	 */
+	public int getRequiredPriority() {
+		return requiredPriority;
+	}
+
+	/**
+	 * @param requiredPriority the requiredPriority to set
+	 */
+	public void setRequiredPriority(int requiredPriority) {
+		this.requiredPriority = requiredPriority;
 	}
 
 	/**
 	 * @return the totalCycleEstTime
 	 */
-	public long getTotalCycleEstTime() {
+	public double getTotalCycleEstTime() {
 		return totalCycleEstTime;
 	}
 
 	/**
 	 * @param totalCycleEstTime the totalCycleEstTime to set
 	 */
-	public void setTotalCycleEstTime(long totalCycleEstTime) {
+	public void setTotalCycleEstTime(double totalCycleEstTime) {
 		this.totalCycleEstTime = totalCycleEstTime;
 	}
 
@@ -208,6 +205,146 @@ public class CycleSummary {
 	 */
 	public void setCycleEndDate(String cycleEndDate) {
 		this.cycleEndDate = cycleEndDate;
+	}	
+
+	/**
+	 * @return the testrunsPassed
+	 */
+	public int getTestrunsPassed() {
+		return testrunsPassed;
+	}
+
+	/**
+	 * @param testrunsPassed the testrunsPassed to set
+	 */
+	public void setTestrunsPassed(int testrunsPassed) {
+		this.testrunsPassed = testrunsPassed;
+	}
+
+	/**
+	 * @return the testrunsFailed
+	 */
+	public int getTestrunsFailed() {
+		return testrunsFailed;
+	}
+
+	/**
+	 * @param testrunsFailed the testrunsFailed to set
+	 */
+	public void setTestrunsFailed(int testrunsFailed) {
+		this.testrunsFailed = testrunsFailed;
+	}
+
+	/**
+	 * @return the testrunsNotRun
+	 */
+	public int getTestrunsNotRun() {
+		return testrunsNotRun;
+	}
+
+	/**
+	 * @param testrunsNotRun the testrunsNotRun to set
+	 */
+	public void setTestrunsNotRun(int testrunsNotRun) {
+		this.testrunsNotRun = testrunsNotRun;
+	}
+
+	/**
+	 * @return the testrunsInProg
+	 */
+	public int getTestrunsInProg() {
+		return testrunsInProg;
+	}
+
+	/**
+	 * @param testrunsInProg the testrunsInProg to set
+	 */
+	public void setTestrunsInProg(int testrunsInProg) {
+		this.testrunsInProg = testrunsInProg;
+	}
+
+	/**
+	 * @return the testrunsDeferred
+	 */
+	public int getTestrunsDeferred() {
+		return testrunsDeferred;
+	}
+
+	/**
+	 * @param testrunsDeferred the testrunsDeferred to set
+	 */
+	public void setTestrunsDeferred(int testrunsDeferred) {
+		this.testrunsDeferred = testrunsDeferred;
+	}
+
+	/**
+	 * @return the testrunsBlocked
+	 */
+	public int getTestrunsBlocked() {
+		return testrunsBlocked;
+	}
+
+	/**
+	 * @param testrunsBlocked the testrunsBlocked to set
+	 */
+	public void setTestrunsBlocked(int testrunsBlocked) {
+		this.testrunsBlocked = testrunsBlocked;
+	}
+
+	/**
+	 * @return the totalNumberOfDefectRules
+	 */
+	public int getTotalNumberOfDefectRules() {
+		return totalNumberOfDefectRules;
+	}
+
+	/**
+	 * @param totalNumberOfDefectRules the totalNumberOfDefectRules to set
+	 */
+	public void setTotalNumberOfDefectRules(int totalNumberOfDefectRules) {
+		this.totalNumberOfDefectRules = totalNumberOfDefectRules;
+	}
+
+	/**
+	 * @return the totalNumberOfTestHistoryRules
+	 */
+	public int getTotalNumberOfTestHistoryRules() {
+		return totalNumberOfTestHistoryRules;
+	}
+
+	/**
+	 * @param totalNumberOfTestHistoryRules the totalNumberOfTestHistoryRules to set
+	 */
+	public void setTotalNumberOfTestHistoryRules(int totalNumberOfTestHistoryRules) {
+		this.totalNumberOfTestHistoryRules = totalNumberOfTestHistoryRules;
+	}
+
+	/**
+	 * @return the totalNumberOfCodeImpactRules
+	 */
+	public int getTotalNumberOfCodeImpactRules() {
+		return totalNumberOfCodeImpactRules;
+	}
+
+	/**
+	 * @param totalNumberOfCodeImpactRules the totalNumberOfCodeImpactRules to set
+	 */
+	public void setTotalNumberOfCodeImpactRules(int totalNumberOfCodeImpactRules) {
+		this.totalNumberOfCodeImpactRules = totalNumberOfCodeImpactRules;
+	}
+
+	/**
+	 * @return the totalNumberOfReqRules
+	 */
+	public int getTotalNumberOfReqRules() {
+		return totalNumberOfReqRules;
+	}
+
+	/**
+	 * @param totalNumberOfReqRules the totalNumberOfReqRules to set
+	 */
+	public void setTotalNumberOfReqRules(int totalNumberOfReqRules) {
+		this.totalNumberOfReqRules = totalNumberOfReqRules;
 	}
 
 	/**
@@ -265,348 +402,130 @@ public class CycleSummary {
 	public void setLastModifiedBy(String lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
-	
-
-	/**
-	 * @return the testRuns
-	 */
-	public String getTestRuns() {
-		return testRuns;
-	}
-
-	/**
-	 * @param string the testRuns to set
-	 */
-	public void setTestRuns(String testRuns) {
-		this.testRuns = testRuns;
-	}
-
-	/**
-	 * @return the testrunsPassed
-	 */
-	public Long getTestrunsPassed() {
-		return testrunsPassed;
-	}
-
-	/**
-	 * @param testrunsPassed the testrunsPassed to set
-	 */
-	public void setTestrunsPassed(Long testrunsPassed) {
-		this.testrunsPassed = testrunsPassed;
-	}
-
-	/**
-	 * @return the testrunsFailed
-	 */
-	public Long getTestrunsFailed() {
-		return testrunsFailed;
-	}
-
-	/**
-	 * @param testrunsFailed the testrunsFailed to set
-	 */
-	public void setTestrunsFailed(Long testrunsFailed) {
-		this.testrunsFailed = testrunsFailed;
-	}
-
-	/**
-	 * @return the testrunsNotRun
-	 */
-	public Long getTestrunsNotRun() {
-		return testrunsNotRun;
-	}
-
-	/**
-	 * @param testrunsNotRun the testrunsNotRun to set
-	 */
-	public void setTestrunsNotRun(Long testrunsNotRun) {
-		this.testrunsNotRun = testrunsNotRun;
-	}
-
-	/**
-	 * @return the testrunsInProg
-	 */
-	public Long getTestrunsInProg() {
-		return testrunsInProg;
-	}
-
-	/**
-	 * @param testrunsInProg the testrunsInProg to set
-	 */
-	public void setTestrunsInProg(Long testrunsInProg) {
-		this.testrunsInProg = testrunsInProg;
-	}
-
-	/**
-	 * @return the testrunsDeferred
-	 */
-	public Long getTestrunsDeferred() {
-		return testrunsDeferred;
-	}
-
-	/**
-	 * @param testrunsDeferred the testrunsDeferred to set
-	 */
-	public void setTestrunsDeferred(Long testrunsDeferred) {
-		this.testrunsDeferred = testrunsDeferred;
-	}
-
-	/**
-	 * @return the testrunsBlocked
-	 */
-	public Long getTestrunsBlocked() {
-		return testrunsBlocked;
-	}
-
-	/**
-	 * @param testrunsBlocked the testrunsBlocked to set
-	 */
-	public void setTestrunsBlocked(Long testrunsBlocked) {
-		this.testrunsBlocked = testrunsBlocked;
-	}
-
-	/**
-	 * @param requiredPriority the requiredPriority to set
-	 */
-	public void setRequiredPriority(long requiredPriority) {
-		this.requiredPriority = requiredPriority;
-	}
-
-	/**
-	 * @return the totalNumberOfDefectRules
-	 */
-	public Long getTotalNumberOfDefectRules() {
-		return totalNumberOfDefectRules;
-	}
-
-	/**
-	 * @param totalNumberOfDefectRules the totalNumberOfDefectRules to set
-	 */
-	public void setTotalNumberOfDefectRules(Long totalNumberOfDefectRules) {
-		this.totalNumberOfDefectRules = totalNumberOfDefectRules;
-	}
-
-	/**
-	 * @return the totalNumberOfTestHistoryRules
-	 */
-	public Long getTotalNumberOfTestHistoryRules() {
-		return totalNumberOfTestHistoryRules;
-	}
-
-	/**
-	 * @param totalNumberOfTestHistoryRules the totalNumberOfTestHistoryRules to set
-	 */
-	public void setTotalNumberOfTestHistoryRules(Long totalNumberOfTestHistoryRules) {
-		this.totalNumberOfTestHistoryRules = totalNumberOfTestHistoryRules;
-	}
-
-	/**
-	 * @return the totalNumberOfCodeImpactRules
-	 */
-	public Long getTotalNumberOfCodeImpactRules() {
-		return totalNumberOfCodeImpactRules;
-	}
-
-	/**
-	 * @param totalNumberOfCodeImpactRules the totalNumberOfCodeImpactRules to set
-	 */
-	public void setTotalNumberOfCodeImpactRules(Long totalNumberOfCodeImpactRules) {
-		this.totalNumberOfCodeImpactRules = totalNumberOfCodeImpactRules;
-	}
-
-	/**
-	 * @return the totalNumberOfReqRules
-	 */
-	public Long getTotalNumberOfReqRules() {
-		return totalNumberOfReqRules;
-	}
-
-	/**
-	 * @param totalNumberOfReqRules the totalNumberOfReqRules to set
-	 */
-	public void setTotalNumberOfReqRules(Long totalNumberOfReqRules) {
-		this.totalNumberOfReqRules = totalNumberOfReqRules;
-	}
-
-	/**
-	 * @return the regressionRequiredPercent
-	 */
-	public Long getRegressionRequiredPercent() {
-		return regressionRequiredPercent;
-	}
-
-	/**
-	 * @param regressionRequiredPercent the regressionRequiredPercent to set
-	 */
-	public void setRegressionRequiredPercent(Long regressionRequiredPercent) {
-		this.regressionRequiredPercent = regressionRequiredPercent;
-	}
-
-	/**
-	 * @return the regressionCurrentPercent
-	 */
-	public Long getRegressionCurrentPercent() {
-		return regressionCurrentPercent;
-	}
-
-	/**
-	 * @param regressionCurrentPercent the regressionCurrentPercent to set
-	 */
-	public void setRegressionCurrentPercent(Long regressionCurrentPercent) {
-		this.regressionCurrentPercent = regressionCurrentPercent;
-	}
-
-	/**
-	 * @return the newFeatureRequiredPercent
-	 */
-	public Long getNewFeatureRequiredPercent() {
-		return newFeatureRequiredPercent;
-	}
-
-	/**
-	 * @param newFeatureRequiredPercent the newFeatureRequiredPercent to set
-	 */
-	public void setNewFeatureRequiredPercent(Long newFeatureRequiredPercent) {
-		this.newFeatureRequiredPercent = newFeatureRequiredPercent;
-	}
-
-	/**
-	 * @return the newFeatureCurrentPercent
-	 */
-	public Long getNewFeatureCurrentPercent() {
-		return newFeatureCurrentPercent;
-	}
-
-	/**
-	 * @param newFeatureCurrentPercent the newFeatureCurrentPercent to set
-	 */
-	public void setNewFeatureCurrentPercent(Long newFeatureCurrentPercent) {
-		this.newFeatureCurrentPercent = newFeatureCurrentPercent;
-	}
 
 	/**
 	 * @return the allowedSev1s
 	 */
-	public Long getAllowedSev1s() {
+	public int getAllowedSev1s() {
 		return allowedSev1s;
 	}
 
 	/**
 	 * @param allowedSev1s the allowedSev1s to set
 	 */
-	public void setAllowedSev1s(Long allowedSev1s) {
+	public void setAllowedSev1s(int allowedSev1s) {
 		this.allowedSev1s = allowedSev1s;
 	}
 
 	/**
 	 * @return the currentSev1s
 	 */
-	public Long getCurrentSev1s() {
+	public int getCurrentSev1s() {
 		return currentSev1s;
 	}
 
 	/**
 	 * @param currentSev1s the currentSev1s to set
 	 */
-	public void setCurrentSev1s(Long currentSev1s) {
+	public void setCurrentSev1s(int currentSev1s) {
 		this.currentSev1s = currentSev1s;
 	}
 
 	/**
 	 * @return the allowedSev2s
 	 */
-	public Long getAllowedSev2s() {
+	public int getAllowedSev2s() {
 		return allowedSev2s;
 	}
 
 	/**
 	 * @param allowedSev2s the allowedSev2s to set
 	 */
-	public void setAllowedSev2s(Long allowedSev2s) {
+	public void setAllowedSev2s(int allowedSev2s) {
 		this.allowedSev2s = allowedSev2s;
 	}
 
 	/**
 	 * @return the currentSev2s
 	 */
-	public Long getCurrentSev2s() {
+	public int getCurrentSev2s() {
 		return currentSev2s;
 	}
 
 	/**
 	 * @param currentSev2s the currentSev2s to set
 	 */
-	public void setCurrentSev2s(Long currentSev2s) {
+	public void setCurrentSev2s(int currentSev2s) {
 		this.currentSev2s = currentSev2s;
 	}
 
 	/**
 	 * @return the allowedSev3s
 	 */
-	public Long getAllowedSev3s() {
+	public int getAllowedSev3s() {
 		return allowedSev3s;
 	}
 
 	/**
 	 * @param allowedSev3s the allowedSev3s to set
 	 */
-	public void setAllowedSev3s(Long allowedSev3s) {
+	public void setAllowedSev3s(int allowedSev3s) {
 		this.allowedSev3s = allowedSev3s;
 	}
 
 	/**
 	 * @return the currentSev3s
 	 */
-	public Long getCurrentSev3s() {
+	public int getCurrentSev3s() {
 		return currentSev3s;
 	}
 
 	/**
 	 * @param currentSev3s the currentSev3s to set
 	 */
-	public void setCurrentSev3s(Long currentSev3s) {
+	public void setCurrentSev3s(int currentSev3s) {
 		this.currentSev3s = currentSev3s;
 	}
 
 	/**
 	 * @return the allowedSev4s
 	 */
-	public Long getAllowedSev4s() {
+	public int getAllowedSev4s() {
 		return allowedSev4s;
 	}
 
 	/**
 	 * @param allowedSev4s the allowedSev4s to set
 	 */
-	public void setAllowedSev4s(Long allowedSev4s) {
+	public void setAllowedSev4s(int allowedSev4s) {
 		this.allowedSev4s = allowedSev4s;
 	}
 
 	/**
 	 * @return the currentSev4s
 	 */
-	public Long getCurrentSev4s() {
+	public int getCurrentSev4s() {
 		return currentSev4s;
 	}
 
 	/**
 	 * @param currentSev4s the currentSev4s to set
 	 */
-	public void setCurrentSev4s(Long currentSev4s) {
+	public void setCurrentSev4s(int currentSev4s) {
 		this.currentSev4s = currentSev4s;
 	}
 
 	/**
 	 * @return the totalDefects
 	 */
-	public Long getTotalDefects() {
+	public int getTotalDefects() {
 		return totalDefects;
 	}
 
 	/**
 	 * @param totalDefects the totalDefects to set
 	 */
-	public void setTotalDefects(Long totalDefects) {
+	public void setTotalDefects(int totalDefects) {
 		this.totalDefects = totalDefects;
 	}
 
@@ -650,7 +569,7 @@ public class CycleSummary {
 	 */
 	public void setRequirements(String requirements) {
 		this.requirements = requirements;
-	}	
+	}
 
 	/**
 	 * @return the testcases
@@ -753,14 +672,14 @@ public class CycleSummary {
 	/**
 	 * @return the childCycles
 	 */
-	public String getChildCycles() {
+	public int getChildCycles() {
 		return childCycles;
 	}
 
 	/**
 	 * @param childCycles the childCycles to set
 	 */
-	public void setChildCycles(String childCycles) {
+	public void setChildCycles(int childCycles) {
 		this.childCycles = childCycles;
 	}
 
@@ -834,9 +753,60 @@ public class CycleSummary {
 		this.customObject5 = customObject5;
 	}
 
+	/**
+	 * @return the requiredTestruns
+	 */
+	public int getRequiredTestruns() {
+		return requiredTestruns;
+	}
 
+	/**
+	 * @param requiredTestruns the requiredTestruns to set
+	 */
+	public void setRequiredTestruns(int requiredTestruns) {
+		this.requiredTestruns = requiredTestruns;
+	}
 
+	/**
+	 * @return the allTestruns
+	 */
+	public int getAllTestruns() {
+		return allTestruns;
+	}
 
-	
-  
+	/**
+	 * @param allTestruns the allTestruns to set
+	 */
+	public void setAllTestruns(int allTestruns) {
+		this.allTestruns = allTestruns;
+	}
+
+	/**
+	 * @return the testrunsCompleted
+	 */
+	public int getTestrunsCompleted() {
+		return testrunsCompleted;
+	}
+
+	/**
+	 * @param testrunsCompleted the testrunsCompleted to set
+	 */
+	public void setTestrunsCompleted(int testrunsCompleted) {
+		this.testrunsCompleted = testrunsCompleted;
+	}
+
+	/**
+	 * @return the testrunsNoCompleted
+	 */
+	public int getTestrunsNotCompleted() {
+		return testrunsNotCompleted;
+	}
+
+	/**
+	 * @param testrunsNoCompleted the testrunsNoCompleted to set
+	 */
+	public void setTestrunsNotCompleted(int testrunsNotCompleted) {
+		this.testrunsNotCompleted = testrunsNotCompleted;
+	}	
+   
 }

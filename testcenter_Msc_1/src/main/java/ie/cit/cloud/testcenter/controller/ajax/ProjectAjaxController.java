@@ -43,12 +43,12 @@ public class ProjectAjaxController {
 	public @ResponseBody String addNewProjectAJAX(
 			@RequestParam(value="companyID", required=true) long companyID,
 			@RequestParam(value="projectName", required=true) String projectName,
-			@RequestParam(value="regression", required=true) Long regression,
-			@RequestParam(value="newFeature", required=true) Long newFeature,
-			@RequestParam(value="minSev1", required=true) Long minSev1,
-			@RequestParam(value="minSev2", required=true) Long minSev2,
-			@RequestParam(value="minSev3", required=true) Long minSev3,
-			@RequestParam(value="minSev4", required=true) Long minSev4,
+			@RequestParam(value="regression", required=true) int regression,
+			@RequestParam(value="newFeature", required=true) int newFeature,
+			@RequestParam(value="minSev1", required=true) int minSev1,
+			@RequestParam(value="minSev2", required=true) int minSev2,
+			@RequestParam(value="minSev3", required=true) int minSev3,
+			@RequestParam(value="minSev4", required=true) int minSev4,
 			Model model) 
 	{
 		Project project = projectService.getProjectByName(projectName);	

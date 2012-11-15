@@ -62,7 +62,7 @@ public class CycleController {
 		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
 		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
 		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());		
-		model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));
+		model.addAttribute("columnModel", cycleService.getColumnModelAndNames(companyID));
 		model.addAttribute("cyclesUrl", "cycle/summaryList/"+projectID);	
 		return "cycles";
 	}  

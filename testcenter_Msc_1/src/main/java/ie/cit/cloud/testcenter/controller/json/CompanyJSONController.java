@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import ie.cit.cloud.testcenter.display.ProjectsColMolsAndNames;
-import ie.cit.cloud.testcenter.display.ProjectsDisplay;
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;

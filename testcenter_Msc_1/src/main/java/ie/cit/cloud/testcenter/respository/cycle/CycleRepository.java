@@ -11,6 +11,7 @@ package ie.cit.cloud.testcenter.respository.cycle;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Testrun;
 
 import java.util.Collection;
 
@@ -94,6 +95,6 @@ public interface CycleRepository {
 
 	Long getMaxProjectPosNum(long projectID);
 
-    
-
+	Collection<Cycle> findAllCyclesByParentID(long cycleID);
+	
 }

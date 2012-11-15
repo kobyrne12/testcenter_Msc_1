@@ -13,19 +13,19 @@ public class ProjectSummary {
     private long projectID;	   
     private String projectName;   
     private String childProjects;
-    private Long regressionRequiredPercent;
-    private Long regressionCurrentPercent;
-    private Long newFeatureRequiredPercent;
-    private Long newFeatureCurrentPercent;
-    private Long allowedSev1s;
-    private Long currentSev1s;
-    private Long allowedSev2s;
-    private Long currentSev2s;
-    private Long allowedSev3s;
-    private Long currentSev3s;
-    private Long allowedSev4s;  
-    private Long currentSev4s;   
-    private Long totalDefects;  
+    private int regressionRequiredPercent;
+    private int regressionCurrentPercent;
+    private int newFeatureRequiredPercent;
+    private int newFeatureCurrentPercent;
+    private int allowedSev1s;
+    private int currentSev1s;
+    private int allowedSev2s;
+    private int currentSev2s;
+    private int allowedSev3s;
+    private int currentSev3s;
+    private int allowedSev4s;  
+    private int currentSev4s;   
+    private int totalDefects;  
     private long companyID;
     private String cycles;
     private String environments;
@@ -48,13 +48,13 @@ public class ProjectSummary {
     private String customObject3;
     private String customObject4;
     private String customObject5;
-   // private Long level = 0; 			
+   // private int level = 0; 			
   //  private Boolean isLeaf = false;
     
     public ProjectSummary() {	
     }    
    
-    public ProjectSummary(long projectID) 
+    public ProjectSummary(int projectID) 
     {
     	this.projectID = projectID;     	
     }
@@ -104,42 +104,42 @@ public class ProjectSummary {
 	/**
 	 * @return the regressionRequiredPercent
 	 */
-	public Long getRegressionRequiredPercent() {
+	public int getRegressionRequiredPercent() {
 		return regressionRequiredPercent;
 	}
 
 	/**
 	 * @param regressionRequiredPercent the regressionRequiredPercent to set
 	 */
-	public void setRegressionRequiredPercent(Long regressionRequiredPercent) {
+	public void setRegressionRequiredPercent(int regressionRequiredPercent) {
 		this.regressionRequiredPercent = regressionRequiredPercent;
 	}
 
 	/**
 	 * @return the regressionCurrentPercent
 	 */
-	public Long getRegressionCurrentPercent() {
+	public int getRegressionCurrentPercent() {
 		return regressionCurrentPercent;
 	}
 
 	/**
 	 * @param regressionCurrentPercent the regressionCurrentPercent to set
 	 */
-	public void setRegressionCurrentPercent(Long regressionCurrentPercent) {
+	public void setRegressionCurrentPercent(int regressionCurrentPercent) {
 		this.regressionCurrentPercent = regressionCurrentPercent;
 	}
 
 	/**
 	 * @return the newFeatureRequiredPercent
 	 */
-	public Long getNewFeatureRequiredPercent() {
+	public int getNewFeatureRequiredPercent() {
 		return newFeatureRequiredPercent;
 	}
 
 	/**
 	 * @param newFeatureRequiredPercent the newFeatureRequiredPercent to set
 	 */
-	public void setNewFeatureRequiredPercent(Long newFeatureRequiredPercent) {
+	public void setNewFeatureRequiredPercent(int newFeatureRequiredPercent) {
 		this.newFeatureRequiredPercent = newFeatureRequiredPercent;
 	}
 
@@ -148,112 +148,112 @@ public class ProjectSummary {
 	/**
 	 * @return the allowedSev1s
 	 */
-	public Long getAllowedSev1s() {
+	public int getAllowedSev1s() {
 		return allowedSev1s;
 	}
 
 	/**
 	 * @param long1 the allowedSev1s to set
 	 */
-	public void setAllowedSev1s(Long long1) {
+	public void setAllowedSev1s(int long1) {
 		this.allowedSev1s = long1;
 	}
 
 	/**
 	 * @return the currentSev1s
 	 */
-	public Long getCurrentSev1s() {
+	public int getCurrentSev1s() {
 		return currentSev1s;
 	}
 
 	/**
 	 * @param currentSev1s the currentSev1s to set
 	 */
-	public void setCurrentSev1s(Long currentSev1s) {
+	public void setCurrentSev1s(int currentSev1s) {
 		this.currentSev1s = currentSev1s;
 	}
 
 	/**
 	 * @return the allowedSev2s
 	 */
-	public Long getAllowedSev2s() {
+	public int getAllowedSev2s() {
 		return allowedSev2s;
 	}
 
 	/**
 	 * @param allowedSev2s the allowedSev2s to set
 	 */
-	public void setAllowedSev2s(Long allowedSev2s) {
+	public void setAllowedSev2s(int allowedSev2s) {
 		this.allowedSev2s = allowedSev2s;
 	}
 
 	/**
 	 * @return the currentSev2s
 	 */
-	public Long getCurrentSev2s() {
+	public int getCurrentSev2s() {
 		return currentSev2s;
 	}
 
 	/**
 	 * @param currentSev2s the currentSev2s to set
 	 */
-	public void setCurrentSev2s(Long currentSev2s) {
+	public void setCurrentSev2s(int currentSev2s) {
 		this.currentSev2s = currentSev2s;
 	}
 
 	/**
 	 * @return the allowedSev3s
 	 */
-	public Long getAllowedSev3s() {
+	public int getAllowedSev3s() {
 		return allowedSev3s;
 	}
 
 	/**
 	 * @param allowedSev3s the allowedSev3s to set
 	 */
-	public void setAllowedSev3s(Long allowedSev3s) {
+	public void setAllowedSev3s(int allowedSev3s) {
 		this.allowedSev3s = allowedSev3s;
 	}
 
 	/**
 	 * @return the currentSev3s
 	 */
-	public Long getCurrentSev3s() {
+	public int getCurrentSev3s() {
 		return currentSev3s;
 	}
 
 	/**
 	 * @param currentSev3s the currentSev3s to set
 	 */
-	public void setCurrentSev3s(Long currentSev3s) {
+	public void setCurrentSev3s(int currentSev3s) {
 		this.currentSev3s = currentSev3s;
 	}
 
 	/**
 	 * @return the allowedSev4s
 	 */
-	public Long getAllowedSev4s() {
+	public int getAllowedSev4s() {
 		return allowedSev4s;
 	}
 
 	/**
 	 * @param allowedSev4s the allowedSev4s to set
 	 */
-	public void setAllowedSev4s(Long allowedSev4s) {
+	public void setAllowedSev4s(int allowedSev4s) {
 		this.allowedSev4s = allowedSev4s;
 	}
 
 	/**
 	 * @return the currentSev4s
 	 */
-	public Long getCurrentSev4s() {
+	public int getCurrentSev4s() {
 		return currentSev4s;
 	}
 
 	/**
 	 * @param currentSev4s the currentSev4s to set
 	 */
-	public void setCurrentSev4s(Long currentSev4s) {
+	public void setCurrentSev4s(int currentSev4s) {
 		this.currentSev4s = currentSev4s;
 	}
 
@@ -265,10 +265,10 @@ public class ProjectSummary {
 	}
 
 	/**
-	 * @param companyID2 the companyID to set
+	 * @param companyID the companyID to set
 	 */
-	public void setCompanyID(long companyID2) {
-		this.companyID = companyID2;
+	public void setCompanyID(long companyID) {
+		this.companyID = companyID;
 	}
 
 	/**
@@ -470,14 +470,14 @@ public class ProjectSummary {
 	/**
 	 * @return the newFeatureCurrentPercent
 	 */
-	public Long getNewFeatureCurrentPercent() {
+	public int getNewFeatureCurrentPercent() {
 		return newFeatureCurrentPercent;
 	}
 
 	/**
 	 * @param newFeatureCurrentPercent the newFeatureCurrentPercent to set
 	 */
-	public void setNewFeatureCurrentPercent(Long newFeatureCurrentPercent) {
+	public void setNewFeatureCurrentPercent(int newFeatureCurrentPercent) {
 		this.newFeatureCurrentPercent = newFeatureCurrentPercent;
 	}
 
@@ -551,11 +551,11 @@ public class ProjectSummary {
 		this.customObject5 = customObject5;
 	}
 
-	public Long getTotalDefects() {
+	public int getTotalDefects() {
 		return totalDefects;
 	}
 
-	public void setTotalDefects(Long totalDefects) {
+	public void setTotalDefects(int totalDefects) {
 		this.totalDefects = totalDefects;
 	}
 

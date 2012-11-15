@@ -5,8 +5,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import ie.cit.cloud.testcenter.display.ProjectsColMolsAndNames;
-import ie.cit.cloud.testcenter.display.ProjectsDisplay;
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
@@ -52,7 +52,7 @@ public class CycleJSONController {
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody CycleSummaryList returnCycles(
     		@PathVariable long projectID,    		
-    		@RequestParam(required = false) String testplanID_String,// +1 projects
+    		@RequestParam(required = false) String testplanID,// +1 projects
     		@RequestParam(required = false) String testcaseID,// +1 projects    		
     		@RequestParam(required = false) String userID, // +1 projects
     		@RequestParam(required = false) String environmentID,
@@ -61,15 +61,14 @@ public class CycleJSONController {
     		@RequestParam(required = false) String testrunID
     		) 
     {
-    	//return projectService.getsummaryList(projectID,cycleID_string,testplanID,userID,environmentID,
-    	//		requirementID,defectID,testrunID);    
-    	 return null;  	   	
+    	return cycleService.getGridCycles(projectID,testplanID,testcaseID,userID,environmentID,
+    		    		requirementID,defectID,testrunID);  	   	
     }  
  
     // Columns for project CHANGE companyID TO UserID
     @RequestMapping(value = "/projectColsAndNames/{index}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody ProjectsColMolsAndNames testArray(@PathVariable("index") long companyID) {		
+    public @ResponseBody ColModelAndNames testArray(@PathVariable("index") long companyID) {		
     	return projectService.getProjectColumnModelAndNames(companyID);    	
     } 
     

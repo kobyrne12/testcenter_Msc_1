@@ -11,16 +11,16 @@ import java.util.Collection;
  *
  */
 
-public class ProjectsColMolsAndNames {	
+public class ColModelAndNames {	
 	
      
-    private Collection<ProjectsDisplay> colModel; 
+    private Collection<GridAttributes> colModel; 
     private Collection<String> colNames;
    
     /**
 	 * @return Column Model List for project Page
 	 */
-    public ProjectsColMolsAndNames() 
+    public ColModelAndNames() 
     {
     	
     }
@@ -29,7 +29,7 @@ public class ProjectsColMolsAndNames {
 	/**
 	 * @return the colModel
 	 */
-	public Collection<ProjectsDisplay> getColModel() {
+	public Collection<GridAttributes> getColModel() {
 		return colModel;
 	}
 
@@ -37,7 +37,7 @@ public class ProjectsColMolsAndNames {
 	/**
 	 * @param colModel the colModel to set
 	 */
-	public void setColModel(Collection<ProjectsDisplay> colModel) {
+	public void setColModel(Collection<GridAttributes> colModel) {
 		this.colModel = colModel;
 	}
 

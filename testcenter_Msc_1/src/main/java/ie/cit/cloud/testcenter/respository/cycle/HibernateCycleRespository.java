@@ -11,6 +11,7 @@ import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.TestCase;
 import ie.cit.cloud.testcenter.model.TestPlan;
+import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.respository.cycle.CycleRepository;
 import java.util.Collection;
 import java.util.List;
@@ -75,6 +76,13 @@ public class HibernateCycleRespository implements CycleRepository {
 		query.setParameter("projectID", projectID);
 		return ( Collection<Cycle>) query.getResultList();
 	}
+    @SuppressWarnings("unchecked")
+	public  Collection<Cycle> findAllCyclesByParentID(long cycleID)
+	{
+		Query query = em.createQuery("from Cycle where parentID=:parentID"); 		
+		query.setParameter("parentID", cycleID);
+		return ( Collection<Cycle>) query.getResultList();
+	}	
 
     public Long getMaxProjectPosNum(long projectID)
     {
@@ -82,6 +90,6 @@ public class HibernateCycleRespository implements CycleRepository {
     	query.setParameter("projectID", projectID);
     	return (Long) query.getSingleResult();
 
-    }	
-	
+    }
+
 }

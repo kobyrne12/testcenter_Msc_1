@@ -60,7 +60,7 @@ public class CycleAjaxController {
 		{
 			try{    
 				long projectPosition = cycleService.getMaxProjectPosNum(projectID);				
-				cycleService.addNewCycle(new Cycle(cycleName,projectID,null,3,projectPosition,0,
+				cycleService.addNewCycle(new Cycle(cycleName,projectID,0,null,3,projectPosition,0,
 						GetDateNow(),GetDateNow(),1,2,3,4,GetDateNow(),"KENNETH",GetDateNow(),"KENNETH"));
 				return "ok";   
 			}
