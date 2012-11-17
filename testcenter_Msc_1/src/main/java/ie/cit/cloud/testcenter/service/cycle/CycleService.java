@@ -38,12 +38,13 @@ public interface CycleService {
 	
 	CycleSummary getCycleSummary(long cycleID);
 
-	long getMaxProjectPosNum(long projectID);
+	int getMaxProjectPosNum(long projectID);
 	
-	CycleSummaryList getGridCycles(long projectID, String testplanID,
+	CycleSummaryList getGridCycles(long companyID,String projectID, String testplanID,
 			String testcaseID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID);
 
 	ColModelAndNames getColumnModelAndNames(Long companyID);
-
+	
+	Collection<Cycle> getChildCycles(long cycleID);
 }

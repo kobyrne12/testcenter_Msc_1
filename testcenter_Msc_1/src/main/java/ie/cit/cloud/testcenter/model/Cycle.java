@@ -67,7 +67,7 @@ public class Cycle {
 	@Basic    
 	private int requiredPriority;
 	@Basic    
-	private long projectPosition;
+	private int projectPosition;
 	@Basic    
 	private long totalCycleEstTime;
 	@Basic    
@@ -75,7 +75,7 @@ public class Cycle {
 	@Basic    
 	private String cycleEndDate;
 	@Basic    
-	private int codeChangeRule;
+	private int codeImpactRule;
 	@Basic    
 	private int defectRule;
 	@Basic    
@@ -104,7 +104,7 @@ public class Cycle {
 	 * @param totalCycleEstTime
 	 * @param cycleStartDate
 	 * @param cycleEndDate
-	 * @param codeChangeRule
+	 * @param codeImpactRule
 	 * @param defectRule
 	 * @param testHistoryRule
 	 * @param requirementRule
@@ -115,8 +115,8 @@ public class Cycle {
 	 */
 	public Cycle(String cycleName, long projectID, long parentID,
 			Collection<Testrun> testruns, int requiredPriority,
-			long projectPosition, long totalCycleEstTime, String cycleStartDate,
-			String cycleEndDate, int codeChangeRule, int defectRule,
+			int projectPosition, long totalCycleEstTime, String cycleStartDate,
+			String cycleEndDate, int codeImpactRule, int defectRule,
 			int testHistoryRule, int requirementRule, String creationDate,
 			String createdBy, String lastModifiedDate, String lastModifiedBy) {
 		this.cycleName = cycleName;
@@ -128,7 +128,7 @@ public class Cycle {
 		this.totalCycleEstTime = totalCycleEstTime;
 		this.cycleStartDate = cycleStartDate;
 		this.cycleEndDate = cycleEndDate;
-		this.codeChangeRule = codeChangeRule;
+		this.codeImpactRule = codeImpactRule;
 		this.defectRule = defectRule;
 		this.testHistoryRule = testHistoryRule;
 		this.RequirementRule = requirementRule;
@@ -210,14 +210,14 @@ public class Cycle {
 	/**
 	 * @return the projectPosition
 	 */
-	public long getProjectPosition() {
+	public int getProjectPosition() {
 		return projectPosition;
 	}
 
 	/**
 	 * @param projectPosition the projectPosition to set
 	 */
-	public void setProjectPosition(long projectPosition) {
+	public void setProjectPosition(int projectPosition) {
 		this.projectPosition = projectPosition;
 	}
 
@@ -264,17 +264,17 @@ public class Cycle {
 	}
 
 	/**
-	 * @return the codeChangeRule
+	 * @return the codeImpactRule
 	 */
-	public int getCodeChangeRule() {
-		return codeChangeRule;
+	public int getCodeImpactRule() {
+		return codeImpactRule;
 	}
 
 	/**
-	 * @param codeChangeRule the codeChangeRule to set
+	 * @param codeImpactRule the codeImpactRule to set
 	 */
-	public void setCodeChangeRule(int codeChangeRule) {
-		this.codeChangeRule = codeChangeRule;
+	public void setCodeImpactRule(int codeImpactRule) {
+		this.codeImpactRule = codeImpactRule;
 	}
 
 	/**

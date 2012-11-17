@@ -84,12 +84,16 @@ public class HibernateCycleRespository implements CycleRepository {
 		return ( Collection<Cycle>) query.getResultList();
 	}	
 
-    public Long getMaxProjectPosNum(long projectID)
+    public int getMaxProjectPosNum(long projectID)
     {
-    	Query query = em.createQuery("max(projectPosition) from Cycle where projectID=:projectID");
+    	Query query = em.createQuery("select max(projectPosition) from Cycle where projectID=:projectID");
     	query.setParameter("projectID", projectID);
-    	return (Long) query.getSingleResult();
-
+    	return (query.getSingleResult()) != null ? (Integer)query.getSingleResult() : 0 ;    	
     }
+
+	public Collection<Cycle> findAllChildCycles(Cycle cycle) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

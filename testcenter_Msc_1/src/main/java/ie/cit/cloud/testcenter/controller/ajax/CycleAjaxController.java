@@ -51,24 +51,36 @@ public class CycleAjaxController {
 			Model model) 
 	{
 		System.out.println("************|||||||| ---: Received Ajax Request to create new Cycle");
-		Cycle cycle = cycleService.getCycleByName(cycleName);	
-		if (cycle.getProjectID() == projectID )
-		{
-			return cycleName + " already Exists";	 
+		boolean alreadyExists = false;
+		try
+		{  
+			Cycle cycle = cycleService.getCycleByName(cycleName);	
+			if (cycle.getProjectID() == projectID )
+			{				
+				alreadyExists = true;
+			}
 		}
-		else
+		catch(NoResultException e)
+		{   			
+			System.out.println("No Cycle Exists with that name "); 			
+		}
+		if(alreadyExists == false)
 		{
 			try{    
-				long projectPosition = cycleService.getMaxProjectPosNum(projectID);				
+				int projectPosition = cycleService.getMaxProjectPosNum(projectID);				
 				cycleService.addNewCycle(new Cycle(cycleName,projectID,0,null,3,projectPosition,0,
 						GetDateNow(),GetDateNow(),1,2,3,4,GetDateNow(),"KENNETH",GetDateNow(),"KENNETH"));
 				return "ok";   
 			}
 			catch(ConstraintViolationException CVE)
 			{   			
-				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
+				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 					
 				return CVE.getConstraintViolations().toString();
-			}
+			}			
+		}
+		else
+		{
+			return cycleName + " already Exists";	
 		}
 	}
 	

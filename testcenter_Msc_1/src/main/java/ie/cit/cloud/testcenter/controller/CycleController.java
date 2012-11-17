@@ -48,26 +48,67 @@ public class CycleController {
 	@Autowired
 	private CycleService cycleService;
 
+	
 	@RequestMapping(value = { "cycles"}, method = GET)
-	public String TESTProject(@RequestParam(required = false) String errormessage,String successmessage,long projectID,Model model) 
-	{
-		Project project = projectService.getProject(projectID);
-		Long companyID = project.getCompanyID();
-		Company company = companyService.getCompany(companyID); 		
-		model.addAttribute("companyID", companyID);  
-		model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
-		model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
-		model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
-		model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
-		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
-		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
-		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());		
-		model.addAttribute("columnModel", cycleService.getColumnModelAndNames(companyID));
-		model.addAttribute("cyclesUrl", "cycle/summaryList/"+projectID);	
-		return "cycles";
+	public String showCycles(@RequestParam(required = false) String url,long companyID,Model model) 
+	{	
+		try{
+			Company company = companyService.getCompany(companyID);
+			model.addAttribute("companyID", companyID);	
+			model.addAttribute("companyName", company.getCompanyName());	
+			model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
+			model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
+			model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
+			model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
+			model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
+			model.addAttribute("usersDisplayName", company.getUsersDisplayName());
+			model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());	
+			model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
+			model.addAttribute("columnModel", cycleService.getColumnModelAndNames(companyID));			
+
+			if(url != null)				
+			{
+				if(url.contains("projectID"))
+				{
+					long projectID = getModelID(url,"projectID");
+					Project project = projectService.getProject(projectID);
+					model.addAttribute("manyProjects", false);
+					model.addAttribute("projects", project);
+				}
+				else
+				{
+					model.addAttribute("projects", company.getProjects());
+				}
+				model.addAttribute("cyclesUrl", url);			
+			}
+			else
+			{				
+				model.addAttribute("manyProjects", true);
+				model.addAttribute("projects", company.getProjects());
+				model.addAttribute("cyclesUrl", "cycle/summaryList/"+companyID);	
+			}
+			return "cycles";
+		}catch(NoResultException nre)
+		{
+			return "cycles";
+		}
+
+		
 	}  
 
-
+	private long getModelID(String url, String tcModel)
+	{		
+		int beginIndex = url.indexOf(tcModel);
+		//System.out.println("*****(((((((( beginIndex : " + beginIndex);
+		int endIndex = url.indexOf("&", beginIndex);
+		//System.out.println("*****(((((((( endIndex : " + endIndex);	
+		String fullRequestParam = url.substring(beginIndex, endIndex); //projectID=45689
+		//System.out.println("*****(((((((( substring : " + fullRequestParam );	
+		String[] tempStringArray = fullRequestParam.split("=");		
+		//System.out.println("*****(((((((( id : " + tempStringArray[1] );	
+		Long ID = Long.valueOf(tempStringArray[1]) ;		
+		return ID;
+	}
 	public String GetDateNow()
 	{ 	 
 		Calendar currentDate = Calendar.getInstance();
