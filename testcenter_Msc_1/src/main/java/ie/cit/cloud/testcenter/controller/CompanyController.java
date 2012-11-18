@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.Collection;
 
 import javax.persistence.NoResultException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import ie.cit.cloud.testcenter.model.Company;
@@ -37,7 +39,38 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class CompanyController {
     @Autowired
     private CompanyService companyService;
-   
+    
+    @RequestMapping(value = { "index", ""}, method = GET)    
+    public String index(HttpServletResponse response,@RequestParam(required = false) Long companyID,Model model) {
+    	if(companyID == null)
+    	{
+    		companyID = (long) 1;
+    	}
+    	
+    	Cookie cookie = new Cookie("companyID",Long.toString(companyID));
+		cookie.setMaxAge(60*60); //1 hour
+		response.addCookie(cookie);
+		
+    	Company company = companyService.getCompany(companyID);
+    	model.addAttribute("companyID", companyID);	
+		model.addAttribute("companyName", company.getCompanyName());	
+		model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
+		model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
+		model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
+		model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
+		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
+		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
+		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
+		model.addAttribute("testLibraryDisplayName", company.getTestLibraryDisplayName());			
+		model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
+		Long projectID = (long) 1;
+		if(projectID != null)
+    	{
+			model.addAttribute("projectID", projectID);			
+    	}
+    	return "index";    	
+    }
+
     
     @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
     public String jsonprojectTEST(@RequestParam(required = false)long companyID, Model model) {

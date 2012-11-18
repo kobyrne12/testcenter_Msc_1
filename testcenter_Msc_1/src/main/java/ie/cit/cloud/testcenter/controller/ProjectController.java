@@ -30,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,24 +44,46 @@ public class ProjectController {
 	private ProjectService projectService;
 	@Autowired
 	private CompanyService companyService;
-
+	
 	@RequestMapping(value = { "projects"}, method = GET)
-	public String TESTProject(@RequestParam(required = false) String errormessage,String successmessage,long companyID,Model model) 
-	{
-		Company company = companyService.getCompany(companyID); 				  
-		model.addAttribute("companyID", companyID);  
-		model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
-		model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
-		model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
-		model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
-		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
-		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
-		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());		
-		model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));
-		model.addAttribute("projectsUrl", "project/summaryList/"+companyID+"?cycleID=4578965965");			
-		return "projects";
-	}  
-
+	public String showProjects(@CookieValue("companyID") String companyID_String,			
+			@RequestParam(required = false) String gridUrl,Model model) 
+	{	
+		if(companyID_String == null)
+		{
+			return "NO COMPANY COOKIE";
+		}
+		try{
+			Long companyID = Long.valueOf(companyID_String);
+			Company company = companyService.getCompany(companyID);
+			model.addAttribute("companyID", companyID);	
+			model.addAttribute("companyName", company.getCompanyName());	
+			model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
+			model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
+			model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
+			model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
+			model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
+			model.addAttribute("usersDisplayName", company.getUsersDisplayName());
+			model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
+			model.addAttribute("testLibraryDisplayName", company.getTestLibraryDisplayName());			
+			model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
+			model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));				
+			if(gridUrl != null)				
+			{				
+				model.addAttribute("breadCrumb", "FORMAT URL");
+				model.addAttribute("gridUrl", gridUrl);			
+			}
+			else
+			{		
+				model.addAttribute("breadCrumb", "<a href='index.html'>Home</a> > Projects");				
+				model.addAttribute("gridUrl", "project/summaryList/"+companyID);	
+			}
+			return "projects";
+		}catch(NoResultException nre)
+		{
+			return "projects";
+		}		
+	}  	
 
 	public String GetDateNow()
 	{ 	 
