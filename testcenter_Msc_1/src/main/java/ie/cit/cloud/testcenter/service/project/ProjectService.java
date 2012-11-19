@@ -46,7 +46,7 @@ public interface ProjectService {
 	
 	ColModelAndNames getProjectColumnModelAndNames(long companyID);
 
-	ProjectSummaryList getsummaryList(long companyID, String cycleID,
+	ProjectSummaryList getGridProjects(long companyID,String projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID);
 	

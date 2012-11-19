@@ -13,6 +13,8 @@ import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.summary.CycleSummary;
+import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.respository.project.ProjectRepository;
@@ -47,7 +49,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Collection<Project> getAllProjects() {
 	return projectRepo.findAll();
     }
-    
+   
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Project getProject(long projectID) {
 	return projectRepo.findById(projectID);
@@ -409,33 +411,40 @@ public class ProjectServiceImpl implements ProjectService {
  }
 
 
- public ProjectSummaryList getsummaryList(long companyID, String cycleID,
+ public ProjectSummaryList getGridProjects(long companyID, String projectID, String cycleID,
 		 String testplanID, String userID, String environmentID,
-		 String requirementID, String defectID, String testrunID) {
-
-	 Collection<Project> projects = new ArrayList<Project>();
+		 String requirementID, String defectID, String testrunID)
+ {
 	 Collection<ProjectSummary> projectSummaryCollection = new ArrayList<ProjectSummary>();
 	 ProjectSummaryList projectSummaryList = new ProjectSummaryList();
-
+	 Collection<Project> projects = new ArrayList<Project>();
+	 
+	
 	 if (cycleID != null)
 	 {
-		 long cycleID_long = Long.valueOf(cycleID).longValue();
-		 Cycle cycle = cycleService.getCycle(cycleID_long);		
-		 Project cycleProject = getProject(cycle.getProjectID());
-		 projects.add(cycleProject);
-
+		 long cycleID_long = Long.valueOf(cycleID).longValue();	
+		 Cycle cycle = cycleService.getCycle(cycleID_long);
+		 projects.add(getProject(cycle.getProjectID()));
+	 }
+	 else if (projectID != null)
+	 {
+		 long projectID_long = Long.valueOf(projectID).longValue();
+		 projects.add(getProject(projectID_long));
 	 }
 	 else
 	 {
-		 projects.addAll(projectRepo.findAllProjectsByCompanyID(companyID));	
-		 // Remove all projects that are not associated with the following
+		 projects.addAll(getAllProjectsByCompanyID(companyID));
+	 }
+	
+	
+	// Remove all projects that are not associated with the following
 		 if (testplanID != null){long testplanID_long = Long.valueOf(testplanID).longValue();	}
 		 if (environmentID != null){long environmentID_long = Long.valueOf(environmentID).longValue();	}
 		 if (requirementID != null){long requirementID_long = Long.valueOf(requirementID).longValue();	}
 		 if (defectID != null){long defectID_long = Long.valueOf(defectID).longValue();	}
 		 if (testrunID != null){long testrunID_long = Long.valueOf(testrunID).longValue();	}
 		 if (userID != null){long userID_long = Long.valueOf(userID).longValue();	}
-	 }	 
+	 
 	 
 	 if(projects.isEmpty())
 	 {
@@ -454,5 +463,7 @@ public class ProjectServiceImpl implements ProjectService {
 		 projectSummaryList.setProjects(projectSummaryCollection);
 		 return projectSummaryList;
 	 }
+			
  }
+
 }
