@@ -93,6 +93,31 @@ public class Cycle {
 	@Basic    
 	private String lastModifiedBy;
     
+	public int getAllTestRunCount()
+	{
+		if(Testruns == null || Testruns.isEmpty())
+		{
+			return 0;
+		}
+		return Testruns.size();
+	}
+	public int getRequiredTestRunCount()
+	{
+		int count = 0;
+		if(Testruns == null || Testruns.isEmpty())
+		{
+			return 0;
+		}
+		for(final Testrun testrun : Testruns)
+		{
+			if(testrun.getPriority() >= this.requiredPriority)
+			{
+				count++;
+			}
+		}
+		return count;
+	}
+	
     public Cycle() {	
     }
     /**

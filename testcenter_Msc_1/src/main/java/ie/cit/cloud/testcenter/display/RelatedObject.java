@@ -1,4 +1,4 @@
-package ie.cit.cloud.testcenter.model.summary;
+package ie.cit.cloud.testcenter.display;
 
 public class RelatedObject {
 	private int RelatedobjectID;

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.NoResultException;
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.RelatedObject;
+import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
-import ie.cit.cloud.testcenter.model.summary.RelatedObject;
-import ie.cit.cloud.testcenter.model.summary.RelatedObjectList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
@@ -70,10 +70,25 @@ public class CycleJSONController {
 		return cycleService.getColumnModelAndNames(companyID);    	
 	} 
 
-	// Project Related Items
-	@RequestMapping(value = "/projectRelatedObjects/{cycleID}", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody RelatedObjectList getProjectRelatedObjects(@PathVariable("cycleID") long cycleID) {
+	// Cycle Related Items
+	 // Cycle Related Items
+    @RequestMapping(value = "/relatedObjects/{cycleID}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody RelatedObjectList returnRelatedObjects(
+    		@PathVariable long cycleID,    		
+    		@RequestParam(required = false) String projectID,
+    		@RequestParam(required = false) String testplanID,// +1 projects
+    		@RequestParam(required = false) String testcaseID,// +1 projects    		
+    		@RequestParam(required = false) String userID, // +1 projects
+    		@RequestParam(required = false) String environmentID,
+    		@RequestParam(required = false) String requirementID,
+    		@RequestParam(required = false) String defectID,    		
+    		@RequestParam(required = false) String testrunID
+    		) 
+    {   	
+//	@RequestMapping(value = "/relatedObjects/{cycleID}", method = RequestMethod.GET)
+//	@ResponseStatus(HttpStatus.OK)
+//	public @ResponseBody RelatedObjectList getProjectRelatedObjects(@PathVariable("cycleID") long cycleID) {
 		//Cycle cycle = cycleService.getCycle(cycleID);
 		Collection<RelatedObject> relatedObjectCollection =  new ArrayList<RelatedObject>();
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	

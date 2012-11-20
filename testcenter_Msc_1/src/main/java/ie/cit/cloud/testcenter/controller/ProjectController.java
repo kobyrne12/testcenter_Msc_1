@@ -67,7 +67,7 @@ public class ProjectController {
 			model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
 			model.addAttribute("testLibraryDisplayName", company.getTestLibraryDisplayName());			
 			model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
-			model.addAttribute("columnModel", projectService.getProjectColumnModelAndNames(companyID));				
+			model.addAttribute("columnModel", projectService.getColumnModelAndNames(companyID));				
 			if(gridUrl != null)				
 			{				
 				model.addAttribute("breadCrumb", "FORMAT URL");

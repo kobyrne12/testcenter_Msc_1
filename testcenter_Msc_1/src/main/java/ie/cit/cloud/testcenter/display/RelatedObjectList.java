@@ -1,4 +1,5 @@
-package ie.cit.cloud.testcenter.model.summary;
+package ie.cit.cloud.testcenter.display;
+
 
 import java.util.Collection;
 

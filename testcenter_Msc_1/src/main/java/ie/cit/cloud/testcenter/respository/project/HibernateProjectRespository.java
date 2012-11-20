@@ -9,8 +9,8 @@ package ie.cit.cloud.testcenter.respository.project;
  */
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
-import ie.cit.cloud.testcenter.model.TestCase;
-import ie.cit.cloud.testcenter.model.TestPlan;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.respository.project.ProjectRepository;
 import java.util.Collection;
 import java.util.List;

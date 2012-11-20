@@ -148,6 +148,8 @@ public class Company {
     @Basic    
     private String newFeatureDisplayName;  
     @Basic    
+    private String sanityDisplayName;  
+    @Basic    
     private String creationDate = GetDateNow();
     @Basic    
     private String createdBy = "KEN";
@@ -163,7 +165,7 @@ public class Company {
     {
     	this(companyName,null, "Project","Projects","Report","Reports","Defect","Defects","Requirement","Requirements","Cycle","Cycles","User","Users","Environment",
     	"Environments","Test Plan","Test Plans", "Test Case","Test Cases","Test Run","Test Runs","Tester","Testers","Senior Tester","Senior Testers","Developer",
-    	"Developers","Senior Developer","Senior Developers","Test Library","Regression","New Feature",lastModifiedDate,lastModifiedBy);    	
+    	"Developers","Senior Developer","Senior Developers","Test Library","Regression","New Feature","Sanity",lastModifiedDate,lastModifiedBy);    	
     }
 
     public Company(String companyName,Collection<Project> projects, String projectDisplayName,String projectsDisplayName,
@@ -174,7 +176,7 @@ public class Company {
     		String testrunDisplayName,String testrunsDisplayName,String testerDisplayName,String testersDisplayName,
     		String developerDisplayName,String developersDisplayName, String seniorTesterDisplayName,
     		String seniorTestersDisplayName,String seniordeveloperDisplayName,String seniordevelopersDisplayName,String testLibraryDisplayName,
-    		String regressionDisplayName,String newFeatureDisplayName,
+    		String regressionDisplayName,String newFeatureDisplayName,String sanityDisplayName,
     		String lastModifiedDate,String lastModifiedBy) 
     {
     	this.companyName = companyName;     	
@@ -210,6 +212,7 @@ public class Company {
 	    this.testLibraryDisplayName = testLibraryDisplayName;   
 	    this.regressionDisplayName = regressionDisplayName;   
 	    this.newFeatureDisplayName = newFeatureDisplayName;   
+	    this.sanityDisplayName = sanityDisplayName;
 	    this.lastModifiedDate = lastModifiedDate;
 	    this.lastModifiedBy = lastModifiedBy;
 
@@ -738,6 +741,20 @@ public class Company {
 	 */
 	public void setNewFeatureDisplayName(String newFeatureDisplayName) {
 		this.newFeatureDisplayName = newFeatureDisplayName;
+	}
+
+	/**
+	 * @return the sanityDisplayName
+	 */
+	public String getSanityDisplayName() {
+		return sanityDisplayName;
+	}
+
+	/**
+	 * @param sanityDisplayName the sanityDisplayName to set
+	 */
+	public void setSanityDisplayName(String sanityDisplayName) {
+		this.sanityDisplayName = sanityDisplayName;
 	}
 
 	

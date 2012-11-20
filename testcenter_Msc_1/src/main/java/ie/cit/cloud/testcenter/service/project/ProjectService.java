@@ -10,6 +10,7 @@ package ie.cit.cloud.testcenter.service.project;
 
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.GridAttributes;
+import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
@@ -44,9 +45,13 @@ public interface ProjectService {
 	
 	ProjectSummary getProjectSummary(long projectID);	
 	
-	ColModelAndNames getProjectColumnModelAndNames(long companyID);
+	ColModelAndNames getColumnModelAndNames(Long companyID);
 
 	ProjectSummaryList getGridProjects(long companyID,String projectID, String cycleID,
+			String testplanID, String userID, String environmentID,
+			String requirementID, String defectID, String testrunID);
+
+	RelatedObjectList getRelatedObjects(long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID);
 	

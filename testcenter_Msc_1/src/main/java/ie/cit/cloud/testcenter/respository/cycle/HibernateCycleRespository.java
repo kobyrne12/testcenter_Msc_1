@@ -9,8 +9,8 @@ package ie.cit.cloud.testcenter.respository.cycle;
  */
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
-import ie.cit.cloud.testcenter.model.TestCase;
-import ie.cit.cloud.testcenter.model.TestPlan;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.respository.cycle.CycleRepository;
 import java.util.Collection;

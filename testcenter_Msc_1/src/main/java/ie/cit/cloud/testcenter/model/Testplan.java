@@ -34,7 +34,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity(name = "TestPlan")
-public class TestPlan {
+public class Testplan {
 
 	@Id        
 	@GeneratedValue
@@ -46,7 +46,7 @@ public class TestPlan {
 	private String testplanName;  	
 
 	@OneToMany(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
-	private Collection<TestCase> testcases;      
+	private Collection<Testcase> testcases;      
     
     @NotEmpty(message = "Tester Name is required.")
     private String testername;    
@@ -70,14 +70,14 @@ public class TestPlan {
     
 // @Pattern(regexp = "^\\D*$", message = "Middle initial must not contain numeric characters.")
     
-    public TestPlan() {	
+    public Testplan() {	
     }
     
-    public TestPlan(String testplanname,String testername) {
+    public Testplan(String testplanname,String testername) {
     	this(testplanname,testername,0,0,0,0,0,0,0);
     }
 
-    public TestPlan(String testplanName, String testername ,int totalTests,int totalNotRun, int totalPassed,int totalFailed,int totalInProgress,int totalDeferred, int totalBlocked) {
+    public Testplan(String testplanName, String testername ,int totalTests,int totalNotRun, int totalPassed,int totalFailed,int totalInProgress,int totalDeferred, int totalBlocked) {
     	this.testplanName = testplanName;
     	this.testername = testername;		
 		this.totalTests = totalTests;
@@ -90,11 +90,11 @@ public class TestPlan {
     }
     
 //All Test cases       
-    public Collection<TestCase> getTestCases() 
+    public Collection<Testcase> getTestCases() 
     {
     	return testcases;
     }
-    public void setTestCases(Collection<TestCase> Alltestcases)
+    public void setTestCases(Collection<Testcase> Alltestcases)
     {
     	testcases = Alltestcases;
     }

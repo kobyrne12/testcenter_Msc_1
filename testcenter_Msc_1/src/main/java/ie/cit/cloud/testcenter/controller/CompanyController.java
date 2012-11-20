@@ -48,21 +48,24 @@ public class CompanyController {
 	private ProjectService projectService;
 	@Autowired
 	private CycleService cycleService;
+	private Company company;
 	
 	//HttpServletResponse response
 	@RequestMapping(value = {"index",""}, method = GET)
-	public String openView(HttpServletResponse response,@CookieValue(value="companyID",defaultValue="") String companyID_String,
-			@CookieValue(required = false, value="projectID") String projectID_String,			
-			@RequestParam(value="userpath",defaultValue="") String userpath, Model model)	
+	public String openView(	@RequestParam(value="userpath",defaultValue="") String userpath, Model model)	
 	{		
-		if(companyID_String.isEmpty())
-		{
-			return "login?message=session Timed out"; 
-		}
-		else
-		{						
-			Long companyID = Long.valueOf(companyID_String);
-			Company company = companyService.getCompany(companyID);
+//		if(companyID_String.isEmpty())
+//		{
+//			Cookie cookie = new Cookie("companyID",Long.toString(1));
+//			cookie.setMaxAge(60*60); //1 hour
+//			response.addCookie(cookie);
+//			return "index"; 	
+//			//return "login?message=session Timed out"; 
+//		}
+//		else
+//		{						
+			Long companyID = Long.valueOf(1);
+			company = companyService.getCompany(companyID);
 			model.addAttribute("companyID", companyID);	
 			model.addAttribute("companyName", company.getCompanyName());	
 			model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
@@ -78,28 +81,28 @@ public class CompanyController {
 
 			if(userpath.isEmpty())			
 			{
-				System.out.println("HERE 1 :" + userpath);
-				
-				Cookie cookie = new Cookie("companyID",Long.toString(companyID));
-				cookie.setMaxAge(60*60); //1 hour
-				response.addCookie(cookie);
+				System.out.println("HERE 1 :" + userpath);								
 				return "index"; 	
 			}
 			else
 			{
 				System.out.println("HERE 2 :" + userpath);
 				Long projectID = null;
-				String breadCrumb = "";
-				String gridUrl = "";
-				boolean allCompanyProjects = true;			
+				boolean allCompanyProjects = true;	
+				
+								
+				String relatedObjects = "";
+				String gridUrl = "/summaryList/"+companyID;
+				String breadCrumb = "";			
+				String newuserpath = "Home";
+						
 				if (!userpath.toLowerCase().contains("home"))
 				{
-					userpath = "Home>"+userpath;
+					userpath = "Home>"+userpath;				
 				}
 				//Home>Projects>5>Cycles
-				String[] userPathArray = userpath.split(">");	
-				String newuserpath = "";
-				gridUrl = "/summaryList/"+companyID;
+				String[] userPathArray = userpath.split(">");				
+				
 				for(int x=0; x <userPathArray.length;x++)
 				{
 					if(userPathArray[x].equalsIgnoreCase("Home"))
@@ -110,9 +113,10 @@ public class CompanyController {
 						}	
 						else
 						{
-							breadCrumb = "Home";	
+							breadCrumb = "Home";						
 						}
 					}
+				    //   *********************************        Projects          ************************************
 					if(userPathArray[x].equalsIgnoreCase(company.getProjectsDisplayName()) || userPathArray[x].equalsIgnoreCase(company.getProjectDisplayName()))
 					{										
 						if(x < (userPathArray.length - 1))
@@ -120,12 +124,11 @@ public class CompanyController {
 							projectID = Long.valueOf(userPathArray[x+1]);
 							try{
 								Project project = projectService.getProject(projectID);
-
 								newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getProjectsDisplayName()+"</a> >";
-
 								newuserpath = newuserpath + ">"+project.getProjectID();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> >";
+								
 								if(gridUrl.contains("?"))
 								{
 									gridUrl = gridUrl +  "&";
@@ -135,13 +138,25 @@ public class CompanyController {
 									gridUrl = gridUrl +  "?";
 								}
 								gridUrl = gridUrl +  "projectID="+projectID;
+								
+								if(relatedObjects.contains("?"))
+								{
+									relatedObjects = relatedObjects +  "&";
+								}
+								else
+								{
+									relatedObjects = relatedObjects +  "?";
+								}
+								relatedObjects = relatedObjects +  "projectID="+projectID;								
+								
 								allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "project"+gridUrl);														
+									model.addAttribute("gridUrl", "project"+gridUrl);	
+									model.addAttribute("relatedObjects", relatedObjects);	
 									return "projectDetails";
 								}
 							}catch(NoResultException nre)
@@ -154,8 +169,10 @@ public class CompanyController {
 						{// Last item i.e //Home>Projects>5>Cycles>33>Projects
 							newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
 							breadCrumb = breadCrumb + " "+company.getProjectsDisplayName();
+							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
-							model.addAttribute("gridUrl", "project"+gridUrl);														
+							model.addAttribute("gridUrl", "project"+gridUrl);	
+							model.addAttribute("relatedObjects", relatedObjects);	
 							return "projects";						
 						}
 					}
@@ -184,13 +201,23 @@ public class CompanyController {
 									gridUrl = gridUrl +  "?";
 								}
 								gridUrl = gridUrl +  "cycleID="+cycleID;
+								if(relatedObjects.contains("?"))
+								{
+									relatedObjects = relatedObjects +  "&";
+								}
+								else
+								{
+									relatedObjects = relatedObjects +  "?";
+								}
+								relatedObjects = relatedObjects + "cycleID="+cycleID;			
 								allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "cycle"+gridUrl);														
+									model.addAttribute("gridUrl", "cycle"+gridUrl);	
+									model.addAttribute("relatedObjects", relatedObjects);	
 									return "cycleDetails";
 								}
 							}catch(NoResultException nre)
@@ -204,10 +231,10 @@ public class CompanyController {
 
 							newuserpath = newuserpath + ">"+company.getCyclesDisplayName();
 							breadCrumb = breadCrumb + " "+company.getCyclesDisplayName();
-							model.addAttribute("breadCrumb", breadCrumb);
-							System.out.println("GGGGGGGGGGGGGGRRRI :" + gridUrl);
-							model.addAttribute("gridUrl", "cycle"+gridUrl);	
 							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "cycle"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);	
 							model.addAttribute("allCompanyProjects", allCompanyProjects);
 							if(allCompanyProjects == true)
 							{
@@ -218,8 +245,7 @@ public class CompanyController {
 								Project project = projectService.getProject(projectID);
 								model.addAttribute("projectID", projectID);	
 								model.addAttribute("projects", project);
-							}
-							System.out.println("HERE 3 :" + newuserpath);
+							}						
 							return "cycles";						
 						}
 					}
@@ -227,12 +253,9 @@ public class CompanyController {
 
 					// TODO : complete rest  of related objects				
 				}
-
+				return "index"; 
 			}
-
-
-		}
-		return "index"; 
+		//}		
 	}  
 
   

@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity(name = "TestCase")
-public class TestCase {
+public class Testcase {
 
   	@Id    
     @GeneratedValue
@@ -64,7 +64,7 @@ public class TestCase {
     @Basic
     private String seniorTester;
     
-    public TestCase() {	
+    public Testcase() {	
     }
     /**
   	 * @param testcaseName
@@ -82,7 +82,7 @@ public class TestCase {
   	 * @param tester
   	 * @param seniorTester
   	 */
-  	public TestCase(String testcaseName, long testplanID, long companyID,
+  	public Testcase(String testcaseName, long testplanID, long companyID,
   			long parentID, String testcaseSection, long testplanOrderNum,
   			String level, String stage, String testcaseSummary,
   			String testcasePreCondition, String testcaseSteps,

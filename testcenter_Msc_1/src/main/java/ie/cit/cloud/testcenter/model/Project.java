@@ -11,6 +11,7 @@ package ie.cit.cloud.testcenter.model;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
@@ -75,8 +76,17 @@ public class Project {
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<Cycle> cycles;   
 	
+//	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testcase.class, cascade=CascadeType.ALL)
+//	@JoinColumn(name = "projectID", referencedColumnName="projectID")
+//	@Fetch(value = FetchMode.SUBSELECT)
+//	private Collection<Testcase> testcases;   
+	
     @Basic    
-    private long parentID;    
+    private long parentID;   
+    @Basic    
+    private boolean parent;  
+    @Basic    
+    private boolean child; 
     @Basic    
     private int regressionRequiredPercent;
     @Basic    
@@ -98,14 +108,48 @@ public class Project {
     @Basic    
     private String lastModifiedDate;
     @Basic    
-    private String lastModifiedBy;
-    
-    
+    private String lastModifiedBy;   
 //  @Basic
-//  private String user; 
-    
+//  private String user;     
 // @Pattern(regexp = "^\\D*$", message = "Middle initial must not contain numeric characters.")
     
+	public int getAllTestRunsCount()
+	{
+		int count = 0;
+		if(cycles == null || cycles.isEmpty())
+		{
+			return 0;
+		}
+		for(final Cycle cycle : cycles)
+		{
+			count += cycle.getAllTestRunCount();
+		}
+		return count;
+	}
+	public int getRequiredTestsRunCount()
+	{
+		int count = 0;
+		if(cycles == null || cycles.isEmpty())
+		{
+			return 0;
+		}
+		for(final Cycle cycle : cycles)
+		{
+			count += cycle.getRequiredTestRunCount();
+		}
+		return count;
+	}
+//	public int getTestCasesCount()
+//	{
+//		if(testcases == null || testcases.isEmpty())
+//		{
+//			return 0;
+//		}
+//		return testcases.size();	
+//	}
+//	
+	
+	
     public Project() {	
     }
     
@@ -320,7 +364,31 @@ public class Project {
 	public void setCycles(Collection<Cycle> cycles) {
 		this.cycles = cycles;
 	}
+	/**
+	 * @return the parent
+	 */
+	public boolean isParent() {
+		return parent;
+	}
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(boolean parent) {
+		this.parent = parent;
+	}
+	/**
+	 * @return the child
+	 */
+	public boolean isChild() {
+		return child;
+	}
+	/**
+	 * @param child the child to set
+	 */
+	public void setChild(boolean child) {
+		this.child = child;
+	}
 
-	
+
 
 }

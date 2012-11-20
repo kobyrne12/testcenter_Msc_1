@@ -11,37 +11,41 @@ package ie.cit.cloud.testcenter.model.summary;
 public class ProjectSummary {	
 	
     private long projectID;	   
-    private String projectName;   
-    private String childProjects;
+    private String projectName;  
+    private String parentProjectName;
+    private int childProjects;
     private int regressionRequiredPercent;
     private int regressionCurrentPercent;
     private int newFeatureRequiredPercent;
     private int newFeatureCurrentPercent;
-    private int allowedSev1s;
-    private int currentSev1s;
-    private int allowedSev2s;
-    private int currentSev2s;
-    private int allowedSev3s;
-    private int currentSev3s;
-    private int allowedSev4s;  
-    private int currentSev4s;   
+    private int sanityRequiredPercent;
+    private int sanityCurrentPercent;
+    private int totalAllowedSev1s;
+    private int totalCurrentSev1s;
+    private int totalAllowedSev2s;
+    private int totalCurrentSev2s;
+    private int totalAllowedSev3s;
+    private int totalCurrentSev3s;
+    private int totalAllowedSev4s;  
+    private int totalCurrentSev4s;   
     private int totalDefects;  
     private long companyID;
-    private String cycles;
-    private String environments;
-    private String requirements;
-    private String testRuns;
-    private String testcases;
-    private String testplans;
-    private String testers;
-    private String seniorTesters;
-    private String developers;
-    private String seniorDevelopers;
+    private int totalCycles;
+    private int totalEnvironments;
+    private int totalRequirements;
+    private int totalRequiredTestruns;
+    private int totalAllTestruns;
+    private int totalTestcases;
+    private int totalTestplans;
+    private int totalTesters;
+    private int totalSeniorTesters;
+    private int totalDevelopers;
+    private int totalSeniorDevelopers;
     private String lastModifiedBy;
     private String lastModifiedDate;    
     private String createdBy;
     private String creationDate;
-    private String parentProjectName;
+ 
     
     private String customObject1;
     private String customObject2;
@@ -52,11 +56,6 @@ public class ProjectSummary {
   //  private Boolean isLeaf = false;
     
     public ProjectSummary() {	
-    }    
-   
-    public ProjectSummary(int projectID) 
-    {
-    	this.projectID = projectID;     	
     }
 
 	/**
@@ -72,6 +71,7 @@ public class ProjectSummary {
 	public void setProjectID(long projectID) {
 		this.projectID = projectID;
 	}
+
 	/**
 	 * @return the projectName
 	 */
@@ -85,19 +85,32 @@ public class ProjectSummary {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-	
+
+	/**
+	 * @return the parentProjectName
+	 */
+	public String getParentProjectName() {
+		return parentProjectName;
+	}
+
+	/**
+	 * @param parentProjectName the parentProjectName to set
+	 */
+	public void setParentProjectName(String parentProjectName) {
+		this.parentProjectName = parentProjectName;
+	}
 
 	/**
 	 * @return the childProjects
 	 */
-	public String getChildProjects() {
+	public int getChildProjects() {
 		return childProjects;
 	}
 
 	/**
 	 * @param childProjects the childProjects to set
 	 */
-	public void setChildProjects(String childProjects) {
+	public void setChildProjects(int childProjects) {
 		this.childProjects = childProjects;
 	}
 
@@ -143,118 +156,172 @@ public class ProjectSummary {
 		this.newFeatureRequiredPercent = newFeatureRequiredPercent;
 	}
 
-	
-
 	/**
-	 * @return the allowedSev1s
+	 * @return the newFeatureCurrentPercent
 	 */
-	public int getAllowedSev1s() {
-		return allowedSev1s;
+	public int getNewFeatureCurrentPercent() {
+		return newFeatureCurrentPercent;
 	}
 
 	/**
-	 * @param long1 the allowedSev1s to set
+	 * @param newFeatureCurrentPercent the newFeatureCurrentPercent to set
 	 */
-	public void setAllowedSev1s(int long1) {
-		this.allowedSev1s = long1;
+	public void setNewFeatureCurrentPercent(int newFeatureCurrentPercent) {
+		this.newFeatureCurrentPercent = newFeatureCurrentPercent;
 	}
 
 	/**
-	 * @return the currentSev1s
+	 * @return the sanityRequiredPercent
 	 */
-	public int getCurrentSev1s() {
-		return currentSev1s;
+	public int getSanityRequiredPercent() {
+		return sanityRequiredPercent;
 	}
 
 	/**
-	 * @param currentSev1s the currentSev1s to set
+	 * @param sanityRequiredPercent the sanityRequiredPercent to set
 	 */
-	public void setCurrentSev1s(int currentSev1s) {
-		this.currentSev1s = currentSev1s;
+	public void setSanityRequiredPercent(int sanityRequiredPercent) {
+		this.sanityRequiredPercent = sanityRequiredPercent;
 	}
 
 	/**
-	 * @return the allowedSev2s
+	 * @return the sanityCurrentPercent
 	 */
-	public int getAllowedSev2s() {
-		return allowedSev2s;
+	public int getSanityCurrentPercent() {
+		return sanityCurrentPercent;
 	}
 
 	/**
-	 * @param allowedSev2s the allowedSev2s to set
+	 * @param sanityCurrentPercent the sanityCurrentPercent to set
 	 */
-	public void setAllowedSev2s(int allowedSev2s) {
-		this.allowedSev2s = allowedSev2s;
+	public void setSanityCurrentPercent(int sanityCurrentPercent) {
+		this.sanityCurrentPercent = sanityCurrentPercent;
 	}
 
 	/**
-	 * @return the currentSev2s
+	 * @return the totalAllowedSev1s
 	 */
-	public int getCurrentSev2s() {
-		return currentSev2s;
+	public int getTotalAllowedSev1s() {
+		return totalAllowedSev1s;
 	}
 
 	/**
-	 * @param currentSev2s the currentSev2s to set
+	 * @param totalAllowedSev1s the totalAllowedSev1s to set
 	 */
-	public void setCurrentSev2s(int currentSev2s) {
-		this.currentSev2s = currentSev2s;
+	public void setTotalAllowedSev1s(int totalAllowedSev1s) {
+		this.totalAllowedSev1s = totalAllowedSev1s;
 	}
 
 	/**
-	 * @return the allowedSev3s
+	 * @return the totalCurrentSev1s
 	 */
-	public int getAllowedSev3s() {
-		return allowedSev3s;
+	public int getTotalCurrentSev1s() {
+		return totalCurrentSev1s;
 	}
 
 	/**
-	 * @param allowedSev3s the allowedSev3s to set
+	 * @param totalCurrentSev1s the totalCurrentSev1s to set
 	 */
-	public void setAllowedSev3s(int allowedSev3s) {
-		this.allowedSev3s = allowedSev3s;
+	public void setTotalCurrentSev1s(int totalCurrentSev1s) {
+		this.totalCurrentSev1s = totalCurrentSev1s;
 	}
 
 	/**
-	 * @return the currentSev3s
+	 * @return the totalAllowedSev2s
 	 */
-	public int getCurrentSev3s() {
-		return currentSev3s;
+	public int getTotalAllowedSev2s() {
+		return totalAllowedSev2s;
 	}
 
 	/**
-	 * @param currentSev3s the currentSev3s to set
+	 * @param totalAllowedSev2s the totalAllowedSev2s to set
 	 */
-	public void setCurrentSev3s(int currentSev3s) {
-		this.currentSev3s = currentSev3s;
+	public void setTotalAllowedSev2s(int totalAllowedSev2s) {
+		this.totalAllowedSev2s = totalAllowedSev2s;
 	}
 
 	/**
-	 * @return the allowedSev4s
+	 * @return the totalCurrentSev2s
 	 */
-	public int getAllowedSev4s() {
-		return allowedSev4s;
+	public int getTotalCurrentSev2s() {
+		return totalCurrentSev2s;
 	}
 
 	/**
-	 * @param allowedSev4s the allowedSev4s to set
+	 * @param totalCurrentSev2s the totalCurrentSev2s to set
 	 */
-	public void setAllowedSev4s(int allowedSev4s) {
-		this.allowedSev4s = allowedSev4s;
+	public void setTotalCurrentSev2s(int totalCurrentSev2s) {
+		this.totalCurrentSev2s = totalCurrentSev2s;
 	}
 
 	/**
-	 * @return the currentSev4s
+	 * @return the totalAllowedSev3s
 	 */
-	public int getCurrentSev4s() {
-		return currentSev4s;
+	public int getTotalAllowedSev3s() {
+		return totalAllowedSev3s;
 	}
 
 	/**
-	 * @param currentSev4s the currentSev4s to set
+	 * @param totalAllowedSev3s the totalAllowedSev3s to set
 	 */
-	public void setCurrentSev4s(int currentSev4s) {
-		this.currentSev4s = currentSev4s;
+	public void setTotalAllowedSev3s(int totalAllowedSev3s) {
+		this.totalAllowedSev3s = totalAllowedSev3s;
+	}
+
+	/**
+	 * @return the totalCurrentSev3s
+	 */
+	public int getTotalCurrentSev3s() {
+		return totalCurrentSev3s;
+	}
+
+	/**
+	 * @param totalCurrentSev3s the totalCurrentSev3s to set
+	 */
+	public void setTotalCurrentSev3s(int totalCurrentSev3s) {
+		this.totalCurrentSev3s = totalCurrentSev3s;
+	}
+
+	/**
+	 * @return the totalAllowedSev4s
+	 */
+	public int getTotalAllowedSev4s() {
+		return totalAllowedSev4s;
+	}
+
+	/**
+	 * @param totalAllowedSev4s the totalAllowedSev4s to set
+	 */
+	public void setTotalAllowedSev4s(int totalAllowedSev4s) {
+		this.totalAllowedSev4s = totalAllowedSev4s;
+	}
+
+	/**
+	 * @return the totalCurrentSev4s
+	 */
+	public int getTotalCurrentSev4s() {
+		return totalCurrentSev4s;
+	}
+
+	/**
+	 * @param totalCurrentSev4s the totalCurrentSev4s to set
+	 */
+	public void setTotalCurrentSev4s(int totalCurrentSev4s) {
+		this.totalCurrentSev4s = totalCurrentSev4s;
+	}
+
+	/**
+	 * @return the totalDefects
+	 */
+	public int getTotalDefects() {
+		return totalDefects;
+	}
+
+	/**
+	 * @param totalDefects the totalDefects to set
+	 */
+	public void setTotalDefects(int totalDefects) {
+		this.totalDefects = totalDefects;
 	}
 
 	/**
@@ -272,143 +339,157 @@ public class ProjectSummary {
 	}
 
 	/**
-	 * @return the cycles
+	 * @return the totalCycles
 	 */
-	public String getCycles() {
-		return cycles;
+	public int getTotalCycles() {
+		return totalCycles;
 	}
 
 	/**
-	 * @param cycles the cycles to set
+	 * @param totalCycles the totalCycles to set
 	 */
-	public void setCycles(String cycles) {
-		this.cycles = cycles;
+	public void setTotalCycles(int totalCycles) {
+		this.totalCycles = totalCycles;
 	}
 
 	/**
-	 * @return the environments
+	 * @return the totalEnvironments
 	 */
-	public String getEnvironments() {
-		return environments;
+	public int getTotalEnvironments() {
+		return totalEnvironments;
 	}
 
 	/**
-	 * @param environments the environments to set
+	 * @param totalEnvironments the totalEnvironments to set
 	 */
-	public void setEnvironments(String environments) {
-		this.environments = environments;
+	public void setTotalEnvironments(int totalEnvironments) {
+		this.totalEnvironments = totalEnvironments;
 	}
 
 	/**
-	 * @return the testRuns
+	 * @return the totalRequirements
 	 */
-	public String getTestRuns() {
-		return testRuns;
+	public int getTotalRequirements() {
+		return totalRequirements;
 	}
 
 	/**
-	 * @param testRuns the testRuns to set
+	 * @param totalRequirements the totalRequirements to set
 	 */
-	public void setTestRuns(String testRuns) {
-		this.testRuns = testRuns;
+	public void setTotalRequirements(int totalRequirements) {
+		this.totalRequirements = totalRequirements;
 	}
 
 	/**
-	 * @return the testcases
+	 * @return the totalRequiredTestruns
 	 */
-	public String getTestcases() {
-		return testcases;
+	public int getTotalRequiredTestruns() {
+		return totalRequiredTestruns;
 	}
 
 	/**
-	 * @param testcases the testcases to set
+	 * @param totalRequiredTestruns the totalRequiredTestruns to set
 	 */
-	public void setTestcases(String testcases) {
-		this.testcases = testcases;
+	public void setTotalRequiredTestruns(int totalRequiredTestruns) {
+		this.totalRequiredTestruns = totalRequiredTestruns;
 	}
 
 	/**
-	 * @return the testplans
+	 * @return the totalAllTestruns
 	 */
-	public String getTestplans() {
-		return testplans;
+	public int getTotalAllTestruns() {
+		return totalAllTestruns;
 	}
 
 	/**
-	 * @param testplans the testplans to set
+	 * @param totalAllTestruns the totalAllTestruns to set
 	 */
-	public void setTestplans(String testplans) {
-		this.testplans = testplans;
+	public void setTotalAllTestruns(int totalAllTestruns) {
+		this.totalAllTestruns = totalAllTestruns;
 	}
 
 	/**
-	 * @return the testers
+	 * @return the totalTestcases
 	 */
-	public String getTesters() {
-		return testers;
+	public int getTotalTestcases() {
+		return totalTestcases;
 	}
 
 	/**
-	 * @param testers the testers to set
+	 * @param totalTestcases the totalTestcases to set
 	 */
-	public void setTesters(String testers) {
-		this.testers = testers;
+	public void setTotalTestcases(int totalTestcases) {
+		this.totalTestcases = totalTestcases;
 	}
 
 	/**
-	 * @return the seniorTesters
+	 * @return the totalTestplans
 	 */
-	public String getSeniorTesters() {
-		return seniorTesters;
+	public int getTotalTestplans() {
+		return totalTestplans;
 	}
 
 	/**
-	 * @param seniorTesters the seniorTesters to set
+	 * @param totalTestplans the totalTestplans to set
 	 */
-	public void setSeniorTesters(String seniorTesters) {
-		this.seniorTesters = seniorTesters;
+	public void setTotalTestplans(int totalTestplans) {
+		this.totalTestplans = totalTestplans;
 	}
 
 	/**
-	 * @return the developers
+	 * @return the totalTesters
 	 */
-	public String getDevelopers() {
-		return developers;
+	public int getTotalTesters() {
+		return totalTesters;
 	}
 
 	/**
-	 * @param developers the developers to set
+	 * @param totalTesters the totalTesters to set
 	 */
-	public void setDevelopers(String developers) {
-		this.developers = developers;
+	public void setTotalTesters(int totalTesters) {
+		this.totalTesters = totalTesters;
 	}
 
 	/**
-	 * @return the seniorDevelopers
+	 * @return the totalSeniorTesters
 	 */
-	public String getSeniorDevelopers() {
-		return seniorDevelopers;
+	public int getTotalSeniorTesters() {
+		return totalSeniorTesters;
 	}
 
 	/**
-	 * @param seniorDevelopers the seniorDevelopers to set
+	 * @param totalSeniorTesters the totalSeniorTesters to set
 	 */
-	public void setSeniorDevelopers(String seniorDevelopers) {
-		this.seniorDevelopers = seniorDevelopers;
+	public void setTotalSeniorTesters(int totalSeniorTesters) {
+		this.totalSeniorTesters = totalSeniorTesters;
 	}
 
 	/**
-	 * @return the lastModifiedDate
+	 * @return the totalDevelopers
 	 */
-	public String getLastModifiedDate() {
-		return lastModifiedDate;
+	public int getTotalDevelopers() {
+		return totalDevelopers;
 	}
 
 	/**
-	 * @param lastModifiedDate the lastModifiedDate to set
+	 * @param totalDevelopers the totalDevelopers to set
 	 */
-	public void setLastModifiedDate(String lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
+	public void setTotalDevelopers(int totalDevelopers) {
+		this.totalDevelopers = totalDevelopers;
+	}
+
+	/**
+	 * @return the totalSeniorDevelopers
+	 */
+	public int getTotalSeniorDevelopers() {
+		return totalSeniorDevelopers;
+	}
+
+	/**
+	 * @param totalSeniorDevelopers the totalSeniorDevelopers to set
+	 */
+	public void setTotalSeniorDevelopers(int totalSeniorDevelopers) {
+		this.totalSeniorDevelopers = totalSeniorDevelopers;
 	}
 
 	/**
@@ -423,6 +504,20 @@ public class ProjectSummary {
 	 */
 	public void setLastModifiedBy(String lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	/**
+	 * @return the lastModifiedDate
+	 */
+	public String getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	/**
+	 * @param lastModifiedDate the lastModifiedDate to set
+	 */
+	public void setLastModifiedDate(String lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 
 	/**
@@ -451,34 +546,6 @@ public class ProjectSummary {
 	 */
 	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
-	}
-
-	/**
-	 * @return the parentProjectName
-	 */
-	public String getParentProjectName() {
-		return parentProjectName;
-	}
-
-	/**
-	 * @param parentProjectName the parentProjectName to set
-	 */
-	public void setParentProjectName(String parentProjectName) {
-		this.parentProjectName = parentProjectName;
-	}
-
-	/**
-	 * @return the newFeatureCurrentPercent
-	 */
-	public int getNewFeatureCurrentPercent() {
-		return newFeatureCurrentPercent;
-	}
-
-	/**
-	 * @param newFeatureCurrentPercent the newFeatureCurrentPercent to set
-	 */
-	public void setNewFeatureCurrentPercent(int newFeatureCurrentPercent) {
-		this.newFeatureCurrentPercent = newFeatureCurrentPercent;
 	}
 
 	/**
@@ -549,24 +616,7 @@ public class ProjectSummary {
 	 */
 	public void setCustomObject5(String customObject5) {
 		this.customObject5 = customObject5;
-	}
-
-	public int getTotalDefects() {
-		return totalDefects;
-	}
-
-	public void setTotalDefects(int totalDefects) {
-		this.totalDefects = totalDefects;
-	}
-
-	public String getRequirements() {
-		return requirements;
-	}
-
-	public void setRequirements(String requirements) {
-		this.requirements = requirements;
-	}
-
-	
-  
+	}    
+   
+   
 }
