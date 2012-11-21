@@ -8,24 +8,16 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-
-import java.util.List;
-
+import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import org.hibernate.validator.constraints.Email;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-
 
 @Entity(name = "Requirement")
 public class Requirement {
@@ -34,6 +26,10 @@ public class Requirement {
 	@GeneratedValue
 	@Column(name = "requirementID")
 	private Long requirementID;
+	
+	@Basic
+	@Column(name="companyID")
+	private Long companyID;
 
 	@Length(min = 2, max = 200, message = "Summary must be between 2 to 200 characters.")
 	@NotEmpty(message = "Summary is required.")
@@ -44,49 +40,58 @@ public class Requirement {
 
 	@NotEmpty(message = "Section is required.")
 	private String  requirementSection; 
-
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "creationDate", nullable = false, length = 10) 
+	private Date creationDate;		
+	@Temporal(TemporalType.DATE)
+	@Column(name = "lastModifiedDate", nullable = false, length = 10) 
+	private Date lastModifiedDate;
+	
 	@Basic    
-	private String requirementType;
-
-	// @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-	//@JoinColumn(name="defectID",nullable = false)  
-	//@Transient
-	//private Defect defect;
-
-	@Basic
-	@Column(name="companyID")
-	private Long companyID;
-
-
-	// @Pattern(regexp = "^\\D*$", message = "Middle initial must not contain numeric characters.")
+	private String createdBy;
+	@Basic    
+	private String lastModifiedBy;
 
 	public Requirement() {	
 	}
 
-	//    public Requirement(Company company,long companyID,String requirementName,long parentID,String lastModifiedDate,String lastModifiedBy ) {
-	//    	this(company,companyID,requirementName,parentID,96,94,10,25,50,100, lastModifiedDate, lastModifiedBy);
-	//    }
-
-	public Requirement(long companyID,long requirementID, String requirementSummary,String requirementDetails, String requirementType)
-	{
+	/**
+	 * @param companyID
+	 * @param requirementSummary
+	 * @param requirementDetails
+	 * @param requirementSection
+	 * @param creationDate
+	 * @param lastModifiedDate
+	 * @param createdBy
+	 * @param lastModifiedBy
+	 */
+	public Requirement(Long companyID, String requirementSummary,
+			String requirementDetails, String requirementSection,
+			Date creationDate, Date lastModifiedDate, String createdBy,
+			String lastModifiedBy) {
 		this.companyID = companyID;
-		this.requirementID = requirementID;
 		this.requirementSummary = requirementSummary;
 		this.requirementDetails = requirementDetails;
-		this.requirementType = requirementType;    
+		this.requirementSection = requirementSection;
+		this.creationDate = creationDate;
+		this.lastModifiedDate = lastModifiedDate;
+		this.createdBy = createdBy;
+		this.lastModifiedBy = lastModifiedBy;
 	}
 
-	// Get companyID
-	public long getTestPlanID() {
-		return this.companyID;
-	} 
-	public void setTestPlanID(long companyID) {
+	/**
+	 * @return the companyID
+	 */
+	public Long getCompanyID() {
+		return companyID;
+	}
+
+	/**
+	 * @param companyID the companyID to set
+	 */
+	public void setCompanyID(Long companyID) {
 		this.companyID = companyID;
-	}
-
-	// requirement ID 
-	public long getRequirementID() {
-		return requirementID;
 	}
 
 	/**
@@ -132,19 +137,68 @@ public class Requirement {
 	}
 
 	/**
-	 * @return the requirementType
+	 * @return the creationDate
 	 */
-	public String getRequirementType() {
-		return requirementType;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 
 	/**
-	 * @param requirementType the requirementType to set
+	 * @param creationDate the creationDate to set
 	 */
-	public void setRequirementType(String requirementType) {
-		this.requirementType = requirementType;
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
+	/**
+	 * @return the lastModifiedDate
+	 */
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
 
+	/**
+	 * @param lastModifiedDate the lastModifiedDate to set
+	 */
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
 
+	/**
+	 * @return the createdBy
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	/**
+	 * @return the lastModifiedBy
+	 */
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	/**
+	 * @param lastModifiedBy the lastModifiedBy to set
+	 */
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	/**
+	 * @return the requirementID
+	 */
+	public Long getRequirementID() {
+		return requirementID;
+	}
+	
+	
+	
 }

@@ -14,6 +14,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
@@ -290,7 +291,7 @@ public class CompanyController {
     	{
     		// No Company of this name Exist    		
     		try{        			
-    			companyService.addNewCompany(new Company(companyName,GetDateNow(),getCurrentUser()));   		
+    			companyService.addNewCompany(new Company(companyName,new Date(),getCurrentUser()));   		
     			model.addAttribute("successmessage", companyName+" Created");      	    	
     			return "redirect:viewcompanies.html";   	    		 
     		}
@@ -302,31 +303,37 @@ public class CompanyController {
     	}    
     }       
     
-    @RequestMapping(value = {"viewcompanies"}, method = GET)
-    public String viewAllCompanies(@RequestParam(required = false) String errormessage,String successmessage,Model model) {
-    	
-    	Collection<Company> allCompanies = companyService.getAllCompanies();    	
-    	if (allCompanies.isEmpty())
-    	{
-    		// No Company Exist  
-    		model.addAttribute("errormessage", "No Companies exist");     	
-    		return "redirect:newcompany.html";        	
-    	}
-    	else
-    	{    		
-    		model.addAttribute("errormessage", errormessage);
-    		model.addAttribute("successmessage", successmessage);
-	    	model.addAttribute("companies", allCompanies);    	
-	    	return "viewcompanies";
-    	}
-    }      
-    
+//    @RequestMapping(value = {"viewcompanies"}, method = GET)
+//    public String viewAllCompanies(@RequestParam(required = false) String errormessage,String successmessage,Model model) {
+//    	
+//    	Collection<Company> allCompanies = companyService.getAllCompanies();    	
+//    	if (allCompanies.isEmpty())
+//    	{
+//    		// No Company Exist  
+//    		model.addAttribute("errormessage", "No Companies exist");     	
+//    		return "redirect:newcompany.html";        	
+//    	}
+//    	else
+//    	{    		
+//    		model.addAttribute("errormessage", errormessage);
+//    		model.addAttribute("successmessage", successmessage);
+//	    	model.addAttribute("companies", allCompanies);    	
+//	    	return "viewcompanies";
+//    	}
+//    }      
+//    
+    public Calendar GetCurentDate()
+    { 	     	
+    	Calendar currentDate = Calendar.getInstance();    	
+    	System.out.println("*********** Now the currentDate is :=>  " + currentDate);
+    	return currentDate;
+    }
     public String GetDateNow()
     { 	 
     	Calendar currentDate = Calendar.getInstance();
     	SimpleDateFormat formatter= new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss");
     	String dateNow = formatter.format(currentDate.getTime()); 
-    	//System.out.println("*********** Now the currentDate is :=>  " + currentDate);
+    	System.out.println("*********** Now the currentDate is :=>  " + currentDate);
     	System.out.println("*********** Now the dateNow is :=>  " + dateNow);
     	return dateNow;
     }

@@ -51,6 +51,11 @@ public class ProjectServiceImpl implements ProjectService {
     public Collection<Project> getAllProjects() {
 	return projectRepo.findAll();
     }
+    
+    @Transactional(rollbackFor=NoResultException.class,readOnly=true)
+    public Collection<Project> getAllChildProjects(Long projectID) {
+	return projectRepo.findAllChildProjects(projectID);
+    }
    
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Project getProject(long projectID) {

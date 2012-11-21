@@ -10,6 +10,8 @@ package ie.cit.cloud.testcenter.controller.ajax;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
@@ -49,7 +51,7 @@ public class CompanyAjaxController {
     @RequestMapping(value = "/newCompany/{companyID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void createNewCompnay(@PathVariable("companyID") long companyID) {
-    	companyService.addNewCompany(new Company( "New Company_"+companyID,GetDateNow(),"KEN"));   	  
+    	companyService.addNewCompany(new Company( "New Company_"+companyID,new Date(),"KEN"));   	  
     } 
    
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)

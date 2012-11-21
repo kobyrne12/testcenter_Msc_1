@@ -107,7 +107,7 @@ public class CycleServiceImpl implements CycleService {
 		return cycles;
 	}
 
-	public Collection<Cycle> getChildCycles(long cycleID) {
+	public Collection<Cycle> getAllChildCycles(long cycleID) {
 		return cycleRepo.findAllCyclesByParentID(cycleID);
 	}
 
@@ -118,7 +118,7 @@ public class CycleServiceImpl implements CycleService {
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public CycleSummary getCycleSummary(long cycleID) {
-		Collection<Cycle> childCycles = getChildCycles(cycleID);
+		Collection<Cycle> childCycles = getAllChildCycles(cycleID);
 		return getAllCycleDetails(cycleID,childCycles);		
 	}
 	
@@ -206,7 +206,7 @@ public class CycleServiceImpl implements CycleService {
 			cycleSummary.setParentCycleName("");
 		}
 
-		cycleSummary.setTotalChildCycles((getChildCycles(cycleID)) != null ? getChildCycles(cycleID).size() : 0);
+		cycleSummary.setTotalChildCycles((getAllChildCycles(cycleID)) != null ? getAllChildCycles(cycleID).size() : 0);
 
 		//int totalDefects = sort out the many to many tables then: 
 		//Collection<Defect> defects = defectService.getDefectsByTestruns(requiredTestruns)

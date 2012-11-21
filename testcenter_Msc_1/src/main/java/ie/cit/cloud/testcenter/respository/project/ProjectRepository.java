@@ -77,6 +77,10 @@ public interface ProjectRepository {
 	Collection<Project> findAllProjectsByCompanyID(long companyID);
 
 	Collection<Project> findAllProjectsByCycleID(long cycleID);
+	
+	//////////////////////////////////////////////////
+
+	Collection<Project> findAllChildProjects(Long projectID);
     
 
 }

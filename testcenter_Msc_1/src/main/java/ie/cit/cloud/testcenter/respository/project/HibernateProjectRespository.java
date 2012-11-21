@@ -54,7 +54,13 @@ public class HibernateProjectRespository implements ProjectRepository {
  //   query.setParameter("testerName", "john");
 	return (List<Project>) query.getResultList();
     }
-
+    @SuppressWarnings("unchecked")
+    public Collection<Project> findAllChildProjects(Long projectID)
+    {
+    	Query query = em.createQuery("from Project where parentID=:projectID");
+    	query.setParameter("projectID", projectID);
+    	return (List<Project>) query.getResultList();
+    }
     public Project findById(long projectID) {
 	return get(projectID);
     }

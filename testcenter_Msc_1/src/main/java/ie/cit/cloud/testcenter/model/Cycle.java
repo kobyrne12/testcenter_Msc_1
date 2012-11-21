@@ -7,10 +7,10 @@ package ie.cit.cloud.testcenter.model;
  * @author byrnek1
  *
  */
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
 
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,23 +19,21 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import javax.persistence.Transient;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 @Table(name = "Cycle")
 public class Cycle {
-
 	
+	@Autowired @Transient
+	private CycleService cycleService;
 
 	@Id        
 	@GeneratedValue
@@ -45,15 +43,7 @@ public class Cycle {
 	@Length(min = 2, max = 32, message = "Cycle name must be between 2 to 32 characters.")
 	@NotEmpty(message = "Cycle Name is required.")
 	private String cycleName;  	
-	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "projectID", nullable = false)
-//	private Project project;
-	
-//	@ManyToOne(fetch = FetchType.EAGER)
-//	@JoinColumn(name = "projectID", nullable = false)
-//	private Company project;
-	
+
 	@Basic
 	@Column(name="projectID")
 	private long projectID;
@@ -61,9 +51,13 @@ public class Cycle {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testrun> Testruns;   
+	private Collection<Testrun> testruns;   
 	@Basic    
     private long parentID; 
+	@Basic    
+	private boolean parent;  
+	@Basic    
+	private boolean child; 
 	@Basic    
 	private int requiredPriority;
 	@Basic    
@@ -93,31 +87,146 @@ public class Cycle {
 	@Basic    
 	private String lastModifiedBy;
     
-	public int getAllTestRunCount()
-	{
-		if(Testruns == null || Testruns.isEmpty())
-		{
-			return 0;
-		}
-		return Testruns.size();
-	}
-	public int getRequiredTestRunCount()
+	/**
+	 * Returns total Number of All Test Runs for a cycle incl child cycles
+	 * int
+	 * @return total Number of All Test Runs for a cycle incl child cycles
+	 */
+	public int getCascadedAllTestRunsCount()
 	{
 		int count = 0;
-		if(Testruns == null || Testruns.isEmpty())
-		{
-			return 0;
-		}
-		for(final Testrun testrun : Testruns)
-		{
-			if(testrun.getPriority() >= this.requiredPriority)
+		if(this.isParent())
+		{    		
+			if(testruns != null && !testruns.isEmpty())
 			{
-				count++;
+				count += testruns.size();				
+			}        	
+			Collection<Cycle> childCycles = cycleService.getAllChildCycles(cycleID);
+			if(childCycles != null && !childCycles.isEmpty())
+			{
+				for(final Cycle childCycle : childCycles)
+				{
+					if(childCycle.isChild())
+					{
+						count += childCycle.testruns.size();	
+					}
+				}
 			}
-		}
-		return count;
+		}    	
+		return count;		
+	}
+	/**
+	 * Returns a collection of All Testruns in a project incl all child project cycles 
+	 * Collection<Testrun>
+	 * @return collection of All Testruns in a project incl all child project cycles,
+	 */
+	public Collection<Testrun> getCascadedAllTestRuns()
+	{
+		Collection<Testrun> allTestruns = new ArrayList<Testrun>();
+		if(this.isParent())
+		{    		
+			if(testruns != null && !testruns.isEmpty())
+			{
+				allTestruns.addAll(testruns);							
+			}        	
+			Collection<Cycle> childCycles = cycleService.getAllChildCycles(cycleID);
+			if(childCycles != null && !childCycles.isEmpty())
+			{
+				for(final Cycle childCycle : childCycles)
+				{
+					if(childCycle.isChild())
+					{
+						allTestruns.addAll(childCycle.testruns);								
+					}
+				}
+			}
+		}    	
+		return allTestruns;		
 	}
 	
+	
+	/////////////////////
+	/**
+	 * Returns total Number of required Test Runs for a cycle incl child cycles
+	 * int
+	 * @return total Number of required Test Runs for a cycle incl child cycles
+	 */
+	public int getCascadedRequiredTestRunsCount()
+	{
+		int count = 0;
+		if(this.isParent())
+		{    		
+			if(testruns != null && !testruns.isEmpty())
+			{
+				for(final Testrun testrun : testruns)
+				{
+					if(testrun.getPriority() <= this.requiredPriority)
+					{
+						count++;
+					}
+				}							
+			}        	
+			Collection<Cycle> childCycles = cycleService.getAllChildCycles(cycleID);
+			if(childCycles != null && !childCycles.isEmpty())
+			{
+				for(final Cycle childCycle : childCycles)
+				{
+					if(childCycle.isChild())
+					{
+						for(final Testrun childCycletestrun : childCycle.testruns)
+						{
+							if(childCycletestrun.getPriority() <= this.requiredPriority)
+							{
+								count++;
+							}
+						}							
+					}
+				}
+			}
+		}    	
+		return count;		
+	}
+	/**
+	 * Returns a collection of required Testruns in a project incl all child project cycles 
+	 * Collection<Testrun>
+	 * @return collection of required Testruns in a project incl all child project cycles,
+	 */
+	public Collection<Testrun> getCascadedRequiredTestRuns()
+	{
+		Collection<Testrun> requiredTestruns = new ArrayList<Testrun>();
+		if(this.isParent())
+		{    		
+			if(testruns != null && !testruns.isEmpty())
+			{
+				for(final Testrun testrun : testruns)
+				{
+					if(testrun.getPriority() <= this.requiredPriority)
+					{
+						requiredTestruns.add(testrun);						
+					}
+				}							
+			}        	
+			Collection<Cycle> childCycles = cycleService.getAllChildCycles(cycleID);
+			if(childCycles != null && !childCycles.isEmpty())
+			{
+				for(final Cycle childCycle : childCycles)
+				{
+					if(childCycle.isChild())
+					{
+						for(final Testrun childCycletestrun : childCycle.testruns)
+						{
+							if(childCycletestrun.getPriority() <= this.requiredPriority)
+							{
+								requiredTestruns.add(childCycletestrun);
+							}
+						}							
+					}
+				}
+			}
+		}    	
+		return requiredTestruns;		
+	}
+
     public Cycle() {	
     }
     /**
@@ -147,7 +256,7 @@ public class Cycle {
 		this.cycleName = cycleName;
 		this.projectID = projectID;
 		this.parentID = parentID;
-		this.Testruns = testruns;
+		this.testruns = testruns;
 		this.requiredPriority = requiredPriority;
 		this.projectPosition = projectPosition;
 		this.totalCycleEstTime = totalCycleEstTime;
@@ -386,17 +495,17 @@ public class Cycle {
 	}	
 	
 	/**
-	 * @return the Testruns
+	 * @return the testruns
 	 */
 	public Collection<Testrun> getTestruns() {
-		return Testruns;
+		return testruns;
 	}
 
 	/**
-	 * @param Testruns the Testruns to set
+	 * @param Testruns the testruns to set
 	 */
-	public void setTestruns(Collection<Testrun> Testruns) {
-		this.Testruns = Testruns;
+	public void setTestruns(Collection<Testrun> testruns) {
+		this.testruns = testruns;
 	}
 	/**
 	 * @return the parentID
@@ -409,6 +518,30 @@ public class Cycle {
 	 */
 	public void setParentID(long parentID) {
 		this.parentID = parentID;
+	}
+	/**
+	 * @return the parent
+	 */
+	public boolean isParent() {
+		return parent;
+	}
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(boolean parent) {
+		this.parent = parent;
+	}
+	/**
+	 * @return the child
+	 */
+	public boolean isChild() {
+		return child;
+	}
+	/**
+	 * @param child the child to set
+	 */
+	public void setChild(boolean child) {
+		this.child = child;
 	}	
 
 	

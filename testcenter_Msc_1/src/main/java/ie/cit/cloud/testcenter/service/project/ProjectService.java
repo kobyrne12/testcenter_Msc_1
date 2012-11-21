@@ -31,6 +31,8 @@ public interface ProjectService {
     
     Project getProjectByName(String projectName);
     
+    Collection<Project> getAllChildProjects(Long projectID);
+    
     void update(Project project);
     
     void remove(long projectID);

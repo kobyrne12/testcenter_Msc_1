@@ -20,88 +20,94 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity(name = "TestCase")
 public class Testcase {
 
-  	@Id    
-    @GeneratedValue
-    @Column(name="testcaseID")
-    private long testcaseID;  
-    
-    @Basic
-    @Length(min = 2, max = 254, message = "Testcase name must be between 2 to 254 characters.")
+	@Id    
+	@GeneratedValue
+	@Column(name="testcaseID")
+	private long testcaseID;  
+
+	@Basic
+	@Column(name="companyID")
+	private long companyID;    
+
+	@Basic
+	@Length(min = 2, max = 254, message = "Testcase name must be between 2 to 254 characters.")
 	@NotEmpty(message = "TestCase Name is required.")
-    private String testcaseName;
-    
-    @Basic
-    @Column(name="testplanID")
-    private long testplanID;
-    @Basic
-    @Column(name="companyID")
-    private long companyID;    
-    
-    @Basic    
-    private long parentID;  
-    
-    @Basic
-    private String testcaseSection;
-    @Basic
-    private long testplanOrderNum;
-    
-    @Basic
-    private String level; // Regression/New Feature
-    @Basic
-    private String stage; // Draft/Ready For Review / Approved
-    
-    @Basic
-    private String testcaseSummary;
-    @Basic
-    private String testcasePreCondition;
-    @Basic
-    @Column(length=10000)
-    private String testcaseSteps;
-    @Basic
-    private String testcasePassCondition;
-    @Basic
-    private String tester;
-    @Basic
-    private String seniorTester;
-    
-    public Testcase() {	
-    }
-    /**
-  	 * @param testcaseName
-  	 * @param testplanID
-  	 * @param companyID
-  	 * @param parentID
-  	 * @param testcaseSection
-  	 * @param testplanOrderNum
-  	 * @param level
-  	 * @param stage
-  	 * @param testcaseSummary
-  	 * @param testcasePreCondition
-  	 * @param testcaseSteps
-  	 * @param testcasePassCondition
-  	 * @param tester
-  	 * @param seniorTester
-  	 */
-  	public Testcase(String testcaseName, long testplanID, long companyID,
-  			long parentID, String testcaseSection, long testplanOrderNum,
-  			String level, String stage, String testcaseSummary,
-  			String testcasePreCondition, String testcaseSteps,
-  			String testcasePassCondition, String tester, String seniorTester) {
-  		this.testcaseName = testcaseName;
-  		this.testplanID = testplanID;
-  		this.companyID = companyID;
-  		this.parentID = parentID;
-  		this.testcaseSection = testcaseSection;
-  		this.testplanOrderNum = testplanOrderNum;
-  		this.level = level;
-  		this.stage = stage;
-  		this.testcaseSummary = testcaseSummary;
-  		this.testcasePreCondition = testcasePreCondition;
-  		this.testcaseSteps = testcaseSteps;
-  		this.testcasePassCondition = testcasePassCondition;
-  		this.tester = tester;
-  		this.seniorTester = seniorTester;
-  	}
+	private String testcaseName;
+
+	@Basic
+	@Column(name="testplanID")
+	private long testplanID;
+
+	//    
+	//    @Basic
+	//    @Column(name="projectID")
+	//    private long projectID;  
+	//    
+	@Basic    
+	private long parentID;  
+
+	@Basic
+	private String testcaseSection;
+	@Basic
+	private long testplanOrderNum;
+
+	@Basic
+	private String level; // Regression/New Feature
+	@Basic
+	private String stage; // Draft/Ready For Review / Approved
+
+	@Basic
+	private String testcaseSummary;
+	@Basic
+	private String testcasePreCondition;
+	@Basic
+	@Column(length=10000)
+	private String testcaseSteps;
+	@Basic
+	private String testcasePassCondition;
+	@Basic
+	private String tester;
+	@Basic
+	private String seniorTester;
+
+	public Testcase() {	
+	}
+	/**
+	 * @param testcaseName
+	 * @param testplanID
+	 * @param companyID
+	 * @param parentID
+	 * @param testcaseSection
+	 * @param testplanOrderNum
+	 * @param level
+	 * @param stage
+	 * @param testcaseSummary
+	 * @param testcasePreCondition
+	 * @param testcaseSteps
+	 * @param testcasePassCondition
+	 * @param tester
+	 * @param seniorTester
+	 */
+	public Testcase(String testcaseName, long testplanID, long companyID,
+			long parentID, String testcaseSection, long testplanOrderNum,
+			String level, String stage, String testcaseSummary,
+			String testcasePreCondition, String testcaseSteps,
+			String testcasePassCondition, String tester, String seniorTester) {
+		this.testcaseName = testcaseName;
+		this.testplanID = testplanID;
+		this.companyID = companyID;
+		this.parentID = parentID;
+		this.testcaseSection = testcaseSection;
+		this.testplanOrderNum = testplanOrderNum;
+		this.level = level;
+		this.stage = stage;
+		this.testcaseSummary = testcaseSummary;
+		this.testcasePreCondition = testcasePreCondition;
+		this.testcaseSteps = testcaseSteps;
+		this.testcasePassCondition = testcasePassCondition;
+		this.tester = tester;
+		this.seniorTester = seniorTester;
+	}
 	/**
 	 * @return the testcaseName
 	 */

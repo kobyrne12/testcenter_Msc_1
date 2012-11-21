@@ -46,5 +46,6 @@ public interface CycleService {
 
 	ColModelAndNames getColumnModelAndNames(Long companyID);
 	
-	Collection<Cycle> getChildCycles(long cycleID);
+	Collection<Cycle> getAllChildCycles(long cycleID);
+
 }
