@@ -10,15 +10,20 @@ package ie.cit.cloud.testcenter.service.company;
 
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.respository.company.CompanyRepository;
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Transient;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +42,8 @@ public class CompanyServiceImpl implements CompanyService {
 	
 	@Autowired   
     ProjectService projectService;   
+	@Autowired   
+    CycleService cycleService;  
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Collection<Company> getAllCompanies() {
@@ -89,5 +96,401 @@ public class CompanyServiceImpl implements CompanyService {
 		// TODO Auto-generated method stub
 		return false;
 	}	
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Returns total Number of Projects for a company
+	 * int
+	 * @return total Number of Projects for a company,
+	 */
+	
+	public int getAllProjectsCount(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getProjects() == null || company.getProjects().isEmpty())
+		{
+			return 0;
+		}
+		return company.getProjects().size();
+	}
+	/**
+	 * Returns total Number of Cycles for a company
+	 * int
+	 * @return total Number of Cycles for a company,
+	 */
+	
+	public int getAllCyclesCount(long companyID)
+	{
+		Company company = getCompany(companyID);
+		int count = 0;
+		if(company.getProjects() == null || company.getProjects().isEmpty())
+		{
+			return 0;
+		}
+		for(final Project project : company.getProjects())
+		{
+			count += project.getCascadedCyclesCount();
+		}
+		return count;
+	}
+	/**
+	 * Returns a collection of cycles in a company 
+	 * Collection<Cycle>
+	 * @return collection of cycles in a company,
+	 */
+	
+	public Collection<Cycle> getAllCycles(long companyID)
+	{		
+		Company company = getCompany(companyID);
+		if(company.getProjects() == null || company.getProjects().isEmpty())
+		{
+			return null;
+		}
+		Collection<Cycle> cycles = new ArrayList<Cycle>();
+		for(final Project project : company.getProjects())
+		{			
+			cycles.addAll(project.getCycles());			
+		}
+		return cycles;
+	}
+	/**
+	 * Returns total Number of All Testruns for a company
+	 * int
+	 * @return total Number of All Testruns for a company,
+	 */
+	
+	public int getAllTestRunCount(long companyID)
+	{		
+		Collection<Cycle> cycles = getAllCycles(companyID);
+		int count = 0;
+		if(cycles == null || cycles.isEmpty())
+		{
+			return 0;
+		}
+		for(final Cycle cycle : cycles)
+		{
+			count += cycle.getCascadedAllTestRunsCount();
+		}
+		return count;
+	}
+	/**
+	 * Returns a collection of All Testruns in a company 
+	 * Collection<Testrun>
+	 * @return collection of All Testruns in a company,
+	 */
+	
+	public Collection<Testrun> getAllTestRuns(long companyID)
+	{		
+		Collection<Cycle> cycles = getAllCycles(companyID);		
+		if(cycles == null || cycles.isEmpty())
+		{
+			return null;
+		}
+		Collection<Testrun> testruns = new ArrayList<Testrun>();
+		for(final Cycle cycle : cycles)
+		{
+			testruns.addAll(cycle.getTestruns());
+		}
+		return testruns;
+	}
+	/**
+	 * Returns total Number of All Testruns for a company
+	 * int
+	 * @return total Number of All Testruns for a company,
+	 */
+	
+	public int getRequiredTestRunCount(long companyID)
+	{		
+		Collection<Cycle> cycles = getAllCycles(companyID);
+		int count = 0;
+		if(cycles == null || cycles.isEmpty())
+		{
+			return 0;
+		}
+		for(final Cycle cycle : cycles)
+		{
+			count += cycle.getCascadedRequiredTestRunsCount();
+		}
+		return count;
+	}
+	/**
+	 * Returns a collection of All Testruns in a company 
+	 * Collection<Testrun>
+	 * @return collection of All Testruns in a company,
+	 */
+	
+	public Collection<Testrun> getRequiredTestRuns(long companyID)
+	{
+		Collection<Cycle> cycles = getAllCycles(companyID);
+		if(cycles == null || cycles.isEmpty())
+		{
+			return null;
+		}
+		Collection<Testrun> testruns = new ArrayList<Testrun>();
+		for(final Cycle cycle : cycles)
+		{
+			testruns.addAll(cycle.getCascadedRequiredTestRuns());
+		}
+		return testruns;
+	}
+	/**
+	 * Returns total Number of All requirements for a company
+	 * int
+	 * @return total Number of All requirements for a company,
+	 */	
+	
+	public int getAllRequirementsCount(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getRequirements() == null || company.getRequirements().isEmpty())
+		{
+			return 0;
+		}
+		return company.getRequirements().size();
+	}
+	/**
+	 * Returns total Number of All environments for a company
+	 * int
+	 * @return total Number of All environments for a company,
+	 */	
+	
+	public int getAllEnvironmentsCount(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getEnvironments() == null || company.getEnvironments().isEmpty())
+		{
+			return 0;
+		}
+		return company.getEnvironments().size();
+	}
+	/**
+	 * Returns total Number of All defects for a company
+	 * int
+	 * @return total Number of All defects for a company,
+	 */	
+	
+	public int getAllDefectsCount(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return 0;
+		}
+		return company.getDefects().size();
+	}
+	/**
+	 * Returns total Number of All testcases for a company
+	 * int
+	 * @return total Number of All testcases for a company,
+	 */	
+	
+	public int getAllTestCasesCount(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getTestcases() == null || company.getTestcases().isEmpty())
+		{
+			return 0;
+		}
+		return company.getTestcases().size();
+	}
+	/**
+	 * Returns total Number of All testplans for a company
+	 * int
+	 * @return total Number of All testplans for a company,
+	 */	
+	
+	public int getAllTestPlansCount(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getTestplans() == null || company.getTestplans().isEmpty())
+		{
+			return 0;
+		}
+		return company.getTestplans().size();
+	}
+	/**
+	 * Returns a collection of All Sev1 Defects in a company 
+	 * Collection<Defect>
+	 * @return collection of All Sev1 Defects in a company,
+	 */
+	
+	public Collection<Defect> getAllSev1Defects(long companyID)
+	{		
+		Company company = getCompany(companyID);
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return null;
+		}
+		Collection<Defect> sev1Defects = new ArrayList<Defect>();
+		for(final Defect defect : company.getDefects())
+		{
+			if(defect.isSev1())
+			{
+				sev1Defects.add(defect);				
+			}
+		}
+		return sev1Defects;
+	}
+	/**
+	 * Returns total Number of All Sev1 Defects for a company
+	 * int
+	 * @return total Number of All Sev1 Defects for a company,
+	 */	
+	
+	public int getAllSev1DefectsCount(long companyID)
+	{	
+		Company company = getCompany(companyID);	
+		int count = 0;
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return 0;
+		}		
+		for(final Defect defect : company.getDefects())
+		{
+			if(defect.isSev1())
+			{
+				count++;							
+			}
+		}
+		return count;
+	}
+	/**
+	 * Returns a collection of All Sev2 Defects in a company 
+	 * Collection<Defect>
+	 * @return collection of All Sev2 Defects in a company,
+	 */
+	
+	public Collection<Defect> getAllSev2Defects(long companyID)
+	{		
+		Company company = getCompany(companyID);
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return null;
+		}
+		Collection<Defect> sev2Defects = new ArrayList<Defect>();
+		for(final Defect defect : company.getDefects())
+		{
+			if(defect.isSev2())
+			{
+				sev2Defects.add(defect);				
+			}
+		}
+		return sev2Defects;
+	}
+	/**
+	 * Returns total Number of All Sev2 Defects for a company
+	 * int
+	 * @return total Number of All Sev2 Defects for a company,
+	 */	
+	
+	public int getAllSev2DefectsCount(long companyID)
+	{	
+		Company company = getCompany(companyID);
+		int count = 0;
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return 0;
+		}		
+		for(final Defect defect : company.getDefects())
+		{
+			if(defect.isSev2())
+			{
+				count++;							
+			}
+		}
+		return count;
+	}
+	/**
+	 * Returns a collection of All Sev3 Defects in a company 
+	 * Collection<Defect>
+	 * @return collection of All Sev3 Defects in a company,
+	 */
+	
+	public Collection<Defect> getAllSev3Defects(long companyID)
+	{	
+		Company company = getCompany(companyID);
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return null;
+		}
+		Collection<Defect> sev3Defects = new ArrayList<Defect>();
+		for(final Defect defect : company.getDefects() )
+		{
+			if(defect.isSev3())
+			{
+				sev3Defects.add(defect);				
+			}
+		}
+		return sev3Defects;
+	}
+	/**
+	 * Returns total Number of All Sev3 Defects for a company
+	 * int
+	 * @return total Number of All Sev3 Defects for a company,
+	 */	
+	
+	public int getAllSev3DefectsCount(long companyID)
+	{	
+		Company company = getCompany(companyID);
+		int count = 0;
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return 0;
+		}		
+		for(final Defect defect : company.getDefects() )
+		{
+			if(defect.isSev3())
+			{
+				count++;							
+			}
+		}
+		return count;
+	}
+	/**
+	 * Returns a collection of All Sev4 Defects in a company 
+	 * Collection<Defect>
+	 * @return collection of All Sev4 Defects in a company,
+	 */
+	
+	public Collection<Defect> getAllSev4Defects(long companyID)
+	{		
+		Company company = getCompany(companyID);
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return null;
+		}
+		Collection<Defect> sev4Defects = new ArrayList<Defect>();
+		for(final Defect defect : company.getDefects() )
+		{
+			if(defect.isSev4())
+			{
+				sev4Defects.add(defect);				
+			}
+		}
+		return sev4Defects;
+	}
+	/**
+	 * Returns total Number of All Sev4 Defects for a company
+	 * int
+	 * @return total Number of All Sev4 Defects for a company,
+	 */	
+	
+	public int getAllSev4DefectsCount(long companyID)
+	{		
+		Company company = getCompany(companyID);
+		int count = 0;
+		if(company.getDefects() == null || company.getDefects().isEmpty())
+		{
+			return 0;
+		}		
+		for(final Defect defect : company.getDefects() )
+		{
+			if(defect.isSev4())
+			{
+				count++;							
+			}
+		}
+		return count;
+	}
+	
 }

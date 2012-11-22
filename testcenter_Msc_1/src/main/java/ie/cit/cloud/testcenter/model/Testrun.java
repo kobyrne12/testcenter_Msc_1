@@ -8,18 +8,26 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
+
 import javax.persistence.Column;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NoResultException;
+import javax.persistence.Transient;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Entity(name = "Testrun")
 public class Testrun {
 
+	@Autowired @Transient
+	private CycleService cycleService;
    
 	@Id    
     @GeneratedValue
@@ -62,17 +70,12 @@ public class Testrun {
     private int recommendedPriority;
     
     @Basic
-    private long estimatedTime;
+    private Double estimatedTime;
     @Basic
-    private String level; // Regression/New Feature
-    
+    private String level; // Regression/New Feature    
   
     @Basic
-    private String previousRun;
-    @Basic
-    private String previousRunDate;
-    @Basic
-    private String previousRunDateBy;
+    private long previousTestrunID; 
     
     @Basic    
     private String creationDate;
@@ -88,8 +91,54 @@ public class Testrun {
     @Basic
     private String seniorTester;
     
+    /**
+	 * Returns true if this testruns cycle is the latest cycle for a project 
+	 * boolean
+	 * @return true if this testruns cycle is the latest cycle for a project, otherwise false
+	 */
+    @Transient
+    public boolean isLatest()
+    {		
+    	try{
+    		Cycle cycle = cycleService.getCycle(cycleID);		
+    		if(cycle.isLatest())
+    		{
+    			return true;
+    		}
+    	}catch(Exception ex)
+    	{
+    		return false;	
+    	}
+    	return false;
+    } 
+   
     public Testrun() {	
     }    
+   
+    /**
+   	 * @param testrunName
+   	 * @param testcaseID
+   	 * @param cycleID   	
+   	 * @param estimatedTime
+   	 * @param level
+   	 * @param previousTestrunID   
+   	 * @param creationDate
+   	 * @param createdBy
+   	 * @param lastModifiedDate
+   	 * @param lastModifiedBy
+   	 * @param tester
+   	 * @param seniorTester
+   	 */
+   	public Testrun(String testrunName, long testcaseID, long cycleID, 
+   			Double estimatedTime,String level,long previousTestrunID, String tester,String seniorTester)   
+   	{
+   		this(testrunName,testcaseID,cycleID,
+   				false,false,false,false,false,false,1,1,
+   				estimatedTime, level, previousTestrunID,
+   				"CURRENT_DATE", "CURRENT_USER", "CURRENT_DATE","CURRENT_USER",
+   				tester,seniorTester   		
+   				);
+   	}
    
     /**
    	 * @param testrunName
@@ -105,9 +154,7 @@ public class Testrun {
    	 * @param recommendedPriority
    	 * @param estimatedTime
    	 * @param level
-   	 * @param previousRun
-   	 * @param previousRunDate
-   	 * @param previousRunDateBy
+   	 * @param previousTestrunID   
    	 * @param creationDate
    	 * @param createdBy
    	 * @param lastModifiedDate
@@ -118,9 +165,8 @@ public class Testrun {
    	public Testrun(String testrunName, long testcaseID, long cycleID,
    			boolean notrun, boolean passed, boolean failed, boolean inprogress,
    			boolean deferred, boolean blocked, int priority,
-   			int recommendedPriority, long estimatedTime, String level,
-   			String previousRun, String previousRunDate,
-   			String previousRunDateBy, String creationDate, String createdBy,
+   			int recommendedPriority, Double estimatedTime, String level,
+   			long previousTestrunID,String creationDate, String createdBy,
    			String lastModifiedDate, String lastModifiedBy, String tester,
    			String seniorTester) 
    	{
@@ -138,9 +184,7 @@ public class Testrun {
    		this.recommendedPriority = recommendedPriority;
    		this.estimatedTime = estimatedTime;
    		this.level = level;
-   		this.previousRun = previousRun;
-   		this.previousRunDate = previousRunDate;
-   		this.previousRunDateBy = previousRunDateBy;
+   		this.previousTestrunID = previousTestrunID;   		
    		this.creationDate = creationDate;
    		this.createdBy = createdBy;
    		this.lastModifiedDate = lastModifiedDate;
@@ -306,14 +350,14 @@ public class Testrun {
 	/**
 	 * @return the estimatedTime
 	 */
-	public long getEstimatedTime() {
+	public Double getEstimatedTime() {
 		return estimatedTime;
 	}
 
 	/**
 	 * @param estimatedTime the estimatedTime to set
 	 */
-	public void setEstimatedTime(long estimatedTime) {
+	public void setEstimatedTime(Double estimatedTime) {
 		this.estimatedTime = estimatedTime;
 	}
 
@@ -334,45 +378,17 @@ public class Testrun {
 	/**
 	 * @return the previousRun
 	 */
-	public String getPreviousRun() {
-		return previousRun;
+	public long getPreviousTestrunID() {
+		return previousTestrunID;
 	}
 
 	/**
 	 * @param previousRun the previousRun to set
 	 */
-	public void setPreviousRun(String previousRun) {
-		this.previousRun = previousRun;
+	public void setPreviousTestrunID(long previousTestrunID) {
+		this.previousTestrunID = previousTestrunID;
 	}
-
-	/**
-	 * @return the previousRunDate
-	 */
-	public String getPreviousRunDate() {
-		return previousRunDate;
-	}
-
-	/**
-	 * @param previousRunDate the previousRunDate to set
-	 */
-	public void setPreviousRunDate(String previousRunDate) {
-		this.previousRunDate = previousRunDate;
-	}
-
-	/**
-	 * @return the previousRunDateBy
-	 */
-	public String getPreviousRunDateBy() {
-		return previousRunDateBy;
-	}
-
-	/**
-	 * @param previousRunDateBy the previousRunDateBy to set
-	 */
-	public void setPreviousRunDateBy(String previousRunDateBy) {
-		this.previousRunDateBy = previousRunDateBy;
-	}
-
+	
 	/**
 	 * @return the creationDate
 	 */

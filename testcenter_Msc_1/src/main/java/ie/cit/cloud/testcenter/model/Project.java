@@ -19,6 +19,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -50,7 +53,17 @@ public class Project {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Cycle.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "projectID", referencedColumnName="projectID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Cycle> cycles;   
+	private Collection<Cycle> cycles = new ArrayList<Cycle>();   
+
+	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "PROJECT_JOIN_TESTPLANS", joinColumns = { @JoinColumn(name = "projectID") }, inverseJoinColumns = { @JoinColumn(name = "testplanID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Testplan> testplans  = new ArrayList<Testplan>();    	
+
+	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "PROJECT_JOIN_TESTCASES", joinColumns = { @JoinColumn(name = "projectID") }, inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Testcase> testcases  = new ArrayList<Testcase>();    	
 
 	@Basic    
 	private long parentID;   
@@ -85,27 +98,81 @@ public class Project {
 	// @Pattern(regexp = "^\\D*$", message = "Middle initial must not contain numeric characters.")
 
 	/**
+	 * Returns a collection of ChildProject for a project 
+	 * Collection<Project>
+	 * @return collection of ChildProject for a project
+	 */
+	@Transient
+	public Collection<Project> getChildProjects()
+	{		
+		if(!parent)
+		{   			 
+			return null;
+		}
+		try{
+			Collection<Project> childProjects = projectService.getAllChildProjects(projectID);
+			if(childProjects == null || childProjects.isEmpty())
+			{
+				return null;
+			}
+			return childProjects;			
+		}
+		catch(NoResultException nre)			
+		{
+			return null;
+		}
+	} 
+
+	/**
+	 * Returns a Projects Parent Project  
+	 * Project
+	 * @return a Projects Parent Project, otherwise null
+	 */
+	@Transient
+	public Project getParentProject()
+	{		
+		if(!child)
+		{   			 
+			return null;
+		}
+		try{
+			Project parentProject = projectService.getProject(parentID);
+			if(parentProject == null)
+			{
+				return null;
+			}
+			return parentProject;			
+		}
+		catch(NoResultException nre)			
+		{
+			return null;
+		}
+	} 
+
+	/**
 	 * Returns total Number of All Cycles for a project incl child project cycles
 	 * int
 	 * @return total Number of All Cycles for a project incl child project cycles
 	 */
+	@Transient
 	public int getCascadedCyclesCount()
 	{
 		int count = 0;    	
-		if(this.isParent())
-		{    		
-			if(cycles != null && !cycles.isEmpty())
-			{
-				count += cycles.size();
-			}        	
-			Collection<Project> childProjects = projectService.getAllChildProjects(projectID);
+
+		if(cycles != null && !cycles.isEmpty())
+		{
+			count += cycles.size();
+		}     
+		if(parent)
+		{  
+			Collection<Project> childProjects = getChildProjects();
 			if(childProjects != null && !childProjects.isEmpty())
 			{
 				for(final Project childProject : childProjects)
 				{
 					if(childProject.isChild())
 					{
-						count += childProject.cycles.size();	
+						count += childProject.getCycles().size();	
 					}
 				}
 			}
@@ -117,16 +184,18 @@ public class Project {
 	 * Collection<Cycle>
 	 * @return collection of All  Cycles in a project incl all child project cycles,
 	 */
+	@Transient
 	public Collection<Cycle> getCascadedCycles()
 	{
 		Collection<Cycle> allCycles = new ArrayList<Cycle>();   	
-		if(this.isParent())
-		{    		
-			if(cycles != null && !cycles.isEmpty())
-			{
-				allCycles.addAll(cycles);				
-			}        	
-			Collection<Project> childProjects = projectService.getAllChildProjects(projectID);
+
+		if(cycles != null && !cycles.isEmpty())
+		{
+			allCycles.addAll(cycles);				
+		}  
+		if(parent)
+		{  
+			Collection<Project> childProjects = getChildProjects();
 			if(childProjects != null && !childProjects.isEmpty())
 			{
 				for(final Project childProject : childProjects)
@@ -145,19 +214,20 @@ public class Project {
 	 * int
 	 * @return total Number of All Test Runs for a project
 	 */
+	@Transient
 	public int getCascadedTestRunsCount()
 	{
 		int count = 0;    	
-		if(this.isParent())
-		{    		
-			if(cycles != null && !cycles.isEmpty())
-			{
-				for(final Cycle cycle : cycles)
-				{    
-					count += cycle.getCascadedAllTestRunsCount();
-				}  				
-			}        	
-			Collection<Project> childProjects = projectService.getAllChildProjects(projectID);
+		if(cycles != null && !cycles.isEmpty())
+		{
+			for(final Cycle cycle : cycles)
+			{    
+				count += cycle.getCascadedAllTestRunsCount();
+			}  				
+		}   
+		if(parent)
+		{  
+			Collection<Project> childProjects = getChildProjects();
 			if(childProjects != null && !childProjects.isEmpty())
 			{
 				for(final Project childProject : childProjects)
@@ -169,7 +239,6 @@ public class Project {
 						{
 							for(final Cycle childProjectCycle : childProjectCycles)
 							{    
-
 								count += childProjectCycle.getCascadedAllTestRunsCount();
 							}  
 						}
@@ -179,25 +248,27 @@ public class Project {
 		}    	
 		return count;		
 	}
-	
+
 	/**
 	 * Returns a collection of All Testruns in a project incl all child project cycles 
 	 * Collection<Testrun>
 	 * @return collection of All Testruns in a project incl all child project cycles,
 	 */
+	@Transient
 	public Collection<Testrun> getCascadedAllTestRuns()
 	{
 		Collection<Testrun> allTestruns = new ArrayList<Testrun>();  	
-		if(this.isParent())
-		{    		
-			if(cycles != null && !cycles.isEmpty())
-			{
-				for(final Cycle cycle : cycles)
-				{    
-					allTestruns = cycle.getCascadedAllTestRuns();					
-				}				
-			}        	
-			Collection<Project> childProjects = projectService.getAllChildProjects(projectID);
+
+		if(cycles != null && !cycles.isEmpty())
+		{
+			for(final Cycle cycle : cycles)
+			{    
+				allTestruns = cycle.getCascadedAllTestRuns();					
+			}				
+		} 
+		if(parent)
+		{        	
+			Collection<Project> childProjects = getChildProjects();
 			if(childProjects != null && !childProjects.isEmpty())
 			{
 				for(final Project childProject : childProjects)
@@ -222,19 +293,21 @@ public class Project {
 	 * int
 	 * @return total Number of All Required Testruns for a project
 	 */	
+	@Transient
 	public int getCascadedRequiredTestsRunCount()	
 	{
 		int count = 0;    	
-		if(this.isParent())
-		{    		
-			if(cycles != null && !cycles.isEmpty())
+
+		if(cycles != null && !cycles.isEmpty())
+		{
+			for(final Cycle cycle : cycles)
 			{
-				for(final Cycle cycle : cycles)
-				{
-					count += cycle.getCascadedRequiredTestRunsCount();
-				}      			
-			}        	
-			Collection<Project> childProjects = projectService.getAllChildProjects(projectID);
+				count += cycle.getCascadedRequiredTestRunsCount();
+			}      			
+		}  
+		if(parent)
+		{  
+			Collection<Project> childProjects = getChildProjects();
 			if(childProjects != null && !childProjects.isEmpty())
 			{
 				for(final Project childProject : childProjects)
@@ -252,19 +325,119 @@ public class Project {
 		}    	
 		return count;		
 	}
-	
+	/**
+	 * Returns a collection of Required Testruns in a project incl all child project cycles 
+	 * Collection<Testrun>
+	 * @return collection of Required Testruns in a project incl all child project cycles,
+	 */
+	@Transient
+	public Collection<Testrun> getCascadedRequiredTestRuns()
+	{
+		Collection<Testrun> allTestruns = new ArrayList<Testrun>();  	
+		if(cycles != null && !cycles.isEmpty())
+		{
+			for(final Cycle cycle : cycles)
+			{    
+				allTestruns = cycle.getCascadedRequiredTestRuns();					
+			}				
+		}  
+		if(parent)
+		{  
+			Collection<Project> childProjects = getChildProjects();
+			if(childProjects != null && !childProjects.isEmpty())
+			{
+				for(final Project childProject : childProjects)
+				{
+					Collection<Cycle> childProjectCycles = childProject.getCycles();
+					if(childProjectCycles != null && !childProjectCycles.isEmpty())
+					{       
+						if(childProject.isChild())
+						{
+							for(final Cycle childProjectCycle : childProjectCycles)
+							{    
+								allTestruns = childProjectCycle.getCascadedRequiredTestRuns();		
+							}  
+						}
+					}
+				}
+			}
+		}    	
+		return allTestruns;		
+	}
+	/**
+	 * Returns a collection of Testplans in a project incl all child project cycles 
+	 * Collection<Tesplan>
+	 * @return collection of Testplans in a project incl all child project cycles,
+	 */
+	@Transient
+	public Collection<Testplan> getCascadedTestPlans()
+	{
+		Collection<Testplan> allTestplans = new ArrayList<Testplan>();  	
+		if(testplans != null && !testplans.isEmpty())
+		{
+			allTestplans.addAll(testplans);										
+		}   
+		if(parent)
+		{  
+			Collection<Project> childProjects = getChildProjects();
+			if(childProjects != null && !childProjects.isEmpty())
+			{
+				for(final Project childProject : childProjects)
+				{
+					allTestplans.addAll(childProject.getTestplans());
+				}
+			}
+		}    	
+		return allTestplans;		
+	}
+	/**
+	 * Returns a collection of Testcases in a project incl all child project cycles 
+	 * Collection<Testcase>
+	 * @return collection of Testcases in a project incl all child project cycles,
+	 */
+	@Transient
+	public Collection<Testcase> getCascadedTestCases()
+	{
+		Collection<Testcase> allTestcases = new ArrayList<Testcase>();  	
+		if(testcases != null && !testcases.isEmpty())
+		{
+			allTestcases.addAll(testcases);										
+		}
+		if(parent)
+		{  
+			Collection<Project> childProjects = getChildProjects();
+			if(childProjects != null && !childProjects.isEmpty())
+			{
+				for(final Project childProject : childProjects)
+				{
+					allTestcases.addAll(childProject.getTestcases());
+				}
+			}
+		}    	
+		return allTestcases;		
+	}
 
 	public Project() {	
 	}
 
 	public Project(long companyID, String projectName,long parentID,int regressionRequiredPercent,int newFeatureRequiredPercent, int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,String lastModifiedDate,String lastModifiedBy ) {
-		this(companyID,projectName,null,parentID,regressionRequiredPercent,newFeatureRequiredPercent,allowedSev1,allowedSev2,allowedSev3,allowedSev4, lastModifiedDate, lastModifiedBy);
+		this(companyID,projectName,
+				null,null,null,parentID,
+				regressionRequiredPercent,newFeatureRequiredPercent,
+				allowedSev1,allowedSev2,allowedSev3,allowedSev4, 
+				lastModifiedDate, lastModifiedBy);
 	}
 
-	public Project(long companyID, String projectName,Collection<Cycle> cycles, long parentID ,int regressionRequiredPercent,int newFeatureRequiredPercent, int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,String lastModifiedDate,String lastModifiedBy) {
+	public Project(long companyID, String projectName,
+			Collection<Cycle> cycles,Collection<Testplan> tesplans,	Collection<Testcase> testcases, long parentID,
+			int regressionRequiredPercent,int newFeatureRequiredPercent,
+			int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,
+			String lastModifiedDate,String lastModifiedBy) {
 		this.companyID = companyID;    	
 		this.projectName = projectName;    	
 		this.cycles = cycles;
+		this.testplans = tesplans;
+		this.testcases = testcases;
 		this.parentID = parentID;		
 		this.regressionRequiredPercent = regressionRequiredPercent;
 		this.newFeatureRequiredPercent = newFeatureRequiredPercent;
@@ -275,18 +448,6 @@ public class Project {
 		this.lastModifiedDate = lastModifiedDate;
 		this.lastModifiedBy = lastModifiedBy;
 
-	}
-	/**
-	 * @return the projectService
-	 */
-	public ProjectService getProjectService() {
-		return projectService;
-	}
-	/**
-	 * @param projectService the projectService to set
-	 */
-	public void setProjectService(ProjectService projectService) {
-		this.projectService = projectService;
 	}
 	/**
 	 * @return the companyID
@@ -485,6 +646,30 @@ public class Project {
 	 */
 	public long getProjectID() {
 		return projectID;
+	}
+	/**
+	 * @return the testplans
+	 */
+	public Collection<Testplan> getTestplans() {
+		return testplans;
+	}
+	/**
+	 * @param testplans the testplans to set
+	 */
+	public void setTestplans(Collection<Testplan> testplans) {
+		this.testplans = testplans;
+	}
+	/**
+	 * @return the testcases
+	 */
+	public Collection<Testcase> getTestcases() {
+		return testcases;
+	}
+	/**
+	 * @param testcases the testcases to set
+	 */
+	public void setTestcases(Collection<Testcase> testcases) {
+		this.testcases = testcases;
 	}
 
 

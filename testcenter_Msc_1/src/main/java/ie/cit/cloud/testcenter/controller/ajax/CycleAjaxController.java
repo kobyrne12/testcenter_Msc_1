@@ -67,9 +67,8 @@ public class CycleAjaxController {
 		if(alreadyExists == false)
 		{
 			try{    
-				int projectPosition = cycleService.getMaxProjectPosNum(projectID);				
-				cycleService.addNewCycle(new Cycle(cycleName,projectID,0,null,3,projectPosition,0,
-						GetDateNow(),GetDateNow(),1,2,3,4,GetDateNow(),"KENNETH",GetDateNow(),"KENNETH"));
+				int projectPosition = cycleService.getMaxProjectPosNum(projectID) + 1;					
+				cycleService.addNewCycle(new Cycle(cycleName,projectID,1,projectPosition,"START_DATE","END_DATE"));
 				return "ok";   
 			}
 			catch(ConstraintViolationException CVE)

@@ -259,49 +259,49 @@ public class CompanyController {
 		//}		
 	}  
 
-  
-    
-    @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
-    public String jsonprojectTEST(@RequestParam(required = false)long companyID, Model model) {
-    	model.addAttribute("company", companyService.getCompany(companyID));
-    	return "jsonprojectTEST";  
-  }  
-    
-    @RequestMapping(value = {"projectsListView"}, method = GET)
-    public String projectListView(@RequestParam(required = false)long companyID, Model model) {
-    	model.addAttribute("company", companyService.getCompany(companyID));
-    	return "projectsListView";  
-  }  
-    
-    @RequestMapping(value = {"newcompany"}, method = GET)
-    public String newCompany(@RequestParam(required = false) String errormessage,String successmessage,Model model) {	
-    	model.addAttribute("errormessage", errormessage);
-    	return "newcompany";
-    }   
-
-    @RequestMapping(value = {"newcompany"}, method = POST)   
-    public String createNewCompany(@RequestParam String companyName, Model model) {      	
-    	try{
-    		// Company already exists    	
-    		Company company = companyService.getCompanyByName(companyName); 
-    		model.addAttribute("errormessage", companyName+" already exists");      	
-    		return "redirect:newcompany.html";	 
-    	}
-    	catch(NoResultException nre)
-    	{
-    		// No Company of this name Exist    		
-    		try{        			
-    			companyService.addNewCompany(new Company(companyName,new Date(),getCurrentUser()));   		
-    			model.addAttribute("successmessage", companyName+" Created");      	    	
-    			return "redirect:viewcompanies.html";   	    		 
-    		}
-    		catch(ConstraintViolationException CVE)
-    		{   			
-    			model.addAttribute("errormessage", CVE.getMessage());   	    
-    			return "redirect:newcompany.html";	
-    		}
-    	}    
-    }       
+//  
+//    
+//    @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
+//    public String jsonprojectTEST(@RequestParam(required = false)long companyID, Model model) {
+//    	model.addAttribute("company", companyService.getCompany(companyID));
+//    	return "jsonprojectTEST";  
+//  }  
+//    
+//    @RequestMapping(value = {"projectsListView"}, method = GET)
+//    public String projectListView(@RequestParam(required = false)long companyID, Model model) {
+//    	model.addAttribute("company", companyService.getCompany(companyID));
+//    	return "projectsListView";  
+//  }  
+//    
+//    @RequestMapping(value = {"newcompany"}, method = GET)
+//    public String newCompany(@RequestParam(required = false) String errormessage,String successmessage,Model model) {	
+//    	model.addAttribute("errormessage", errormessage);
+//    	return "newcompany";
+//    }   
+//
+//    @RequestMapping(value = {"newcompany"}, method = POST)   
+//    public String createNewCompany(@RequestParam String companyName, Model model) {      	
+//    	try{
+//    		// Company already exists    	
+//    		Company company = companyService.getCompanyByName(companyName); 
+//    		model.addAttribute("errormessage", companyName+" already exists");      	
+//    		return "redirect:newcompany.html";	 
+//    	}
+//    	catch(NoResultException nre)
+//    	{
+//    		// No Company of this name Exist    		
+//    		try{        			
+//    			companyService.addNewCompany(new Company(companyName,new Date(),getCurrentUser()));   		
+//    			model.addAttribute("successmessage", companyName+" Created");      	    	
+//    			return "redirect:viewcompanies.html";   	    		 
+//    		}
+//    		catch(ConstraintViolationException CVE)
+//    		{   			
+//    			model.addAttribute("errormessage", CVE.getMessage());   	    
+//    			return "redirect:newcompany.html";	
+//    		}
+//    	}    
+//    }       
     
 //    @RequestMapping(value = {"viewcompanies"}, method = GET)
 //    public String viewAllCompanies(@RequestParam(required = false) String errormessage,String successmessage,Model model) {

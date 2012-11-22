@@ -113,7 +113,7 @@ public class CycleServiceImpl implements CycleService {
 
 
 	public int getMaxProjectPosNum(long projectID) {		
-		return cycleRepo.getMaxProjectPosNum(projectID) + 1;
+		return cycleRepo.getMaxProjectPosNum(projectID);
 	}	   
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
@@ -240,10 +240,10 @@ public class CycleServiceImpl implements CycleService {
 		cycleSummary.setCompanyID(project.getCompanyID());	
 		cycleSummary.setProjectID(project.getProjectID());
 		cycleSummary.setProjectName(project.getProjectName());
-		cycleSummary.setTotalDefectRules(cycle.getDefectRule());
-		cycleSummary.setTotalTestHistoryRules(cycle.getTestHistoryRule());
-		cycleSummary.setTotalCodeImpactRules(cycle.getCodeImpactRule());
-		cycleSummary.setTotalReqRules(cycle.getRequirementRule());
+		cycleSummary.setTotalDefectRules(555);
+		cycleSummary.setTotalTestHistoryRules(555);
+		cycleSummary.setTotalCodeImpactRules(555);
+		cycleSummary.setTotalReqRules(555);
 
 		
 		//Collection<Testcase> testcases = testplanService.getTestcasesByTestruns(requiredTestruns)

@@ -13,6 +13,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -41,7 +43,8 @@ public class Defect {
 	private String  defectSection; 
 	@Basic    
 	private String defectType;
-		
+	
+	@Transient	
 	public boolean isSev1()
 	{
 		if(this.severity == 1)
@@ -53,6 +56,7 @@ public class Defect {
 			return false;
 		}		
 	}
+	@Transient
 	public boolean isSev2()
 	{
 		if(this.severity == 2)
@@ -64,6 +68,7 @@ public class Defect {
 			return false;
 		}		
 	}
+	@Transient
 	public boolean isSev3()
 	{
 		if(this.severity == 3)
@@ -75,6 +80,7 @@ public class Defect {
 			return false;
 		}		
 	}
+	@Transient
 	public boolean isSev4()
 	{
 		if(this.severity == 4)
@@ -86,6 +92,7 @@ public class Defect {
 			return false;
 		}		
 	}
+	
 	public Defect() {		
 	}
 	

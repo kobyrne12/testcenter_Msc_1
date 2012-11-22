@@ -47,13 +47,7 @@ public class CompanyAjaxController {
 	@Autowired
 	private CompanyService companyService;  
 	
-	  // Projects
-    @RequestMapping(value = "/newCompany/{companyID}", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createNewCompnay(@PathVariable("companyID") long companyID) {
-    	companyService.addNewCompany(new Company( "New Company_"+companyID,new Date(),"KEN"));   	  
-    } 
-   
+	
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public void emptyResult() {

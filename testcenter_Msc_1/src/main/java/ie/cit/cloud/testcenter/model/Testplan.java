@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 
-@Entity(name = "TestPlan")
+@Entity(name = "Testplan")
 public class Testplan {
 
 	@Id        
@@ -44,8 +44,16 @@ public class Testplan {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testcase.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testcase> testcases;      
+	private Collection<Testcase> testcases;    
+	
+	@OneToMany(fetch=FetchType.EAGER, targetEntity=TestplanSection.class, cascade=CascadeType.ALL)
+	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<TestplanSection> testplanSections;    
 
+	//@Basic    
+	//private String testplanSection;
+	
 	//    @NotEmpty(message = "Tester Name is required.")
 	//    private String testername;    
 	//    @Basic    
@@ -66,13 +74,15 @@ public class Testplan {
 	// 	  private String user;     
 	// 	  @Pattern(regexp = "^\\D*$", message = "Middle initial must not contain numeric characters.")
 
+	public Testplan() {		
+	}
 	/**
 	 * @param companyID
 	 * @param testplanName
 	 */
 	public Testplan(Long companyID,String testplanName) {
 		this.companyID = companyID;
-		this.testplanName = testplanName;
+		this.testplanName = testplanName;	
 	}
 
 	/**
@@ -123,6 +133,17 @@ public class Testplan {
 	public Long getTestplanID() {
 		return testplanID;
 	}
-
+	/**
+	 * @return the testplanSections
+	 */
+	public Collection<TestplanSection> getTestplanSections() {
+		return testplanSections;
+	}
+	/**
+	 * @param testplanSections the testplanSections to set
+	 */
+	public void setTestplanSections(Collection<TestplanSection> testplanSections) {
+		this.testplanSections = testplanSections;
+	}
 	
 }
