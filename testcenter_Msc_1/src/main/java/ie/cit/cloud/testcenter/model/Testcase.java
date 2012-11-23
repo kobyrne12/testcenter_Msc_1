@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -48,6 +49,10 @@ public class Testcase {
 	@Basic
 	@Column(name="testplanID")
 	private long testplanID;
+	
+	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Project> projects = new ArrayList<Project>();
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testcaseID", referencedColumnName="testcaseID")
@@ -80,28 +85,7 @@ public class Testcase {
 	@Basic
 	private String seniorTester;
 
-	/**
-	 * Returns the ID of the latest testrun in the latest cycle for a project
-	 * long
-	 * @return the ID of the latest testrun in the latest cycle for a project
-	 */
-	@Transient
-	public long getLastTestRunID()
-	{		
-		if(testruns == null || testruns.isEmpty())
-		{
-			return 0;
-		}
-		for(final Testrun testrun : testruns)
-		{
-			if(testrun.isLatest())
-			{
-				return testrun.getTestrunID();	
-			}			
-		}
-		return 0;		
-	}
-
+	
 	public Testcase() {	
 	}
 
@@ -408,6 +392,20 @@ public class Testcase {
 	 */
 	public void setEstimatedTime(Double estimatedTime) {
 		this.estimatedTime = estimatedTime;
+	}
+
+	/**
+	 * @return the projects
+	 */
+	public Collection<Project> getProjects() {
+		return projects;
+	}
+
+	/**
+	 * @param projects the projects to set
+	 */
+	public void setProjects(Collection<Project> projects) {
+		this.projects = projects;
 	}
 
 	

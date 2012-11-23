@@ -12,13 +12,20 @@ import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.environment.EnvironmentService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testplan.TestplanService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
@@ -52,7 +59,20 @@ public class CompanyJSONController {
     private TestplanService testplanService;  
     @Autowired
     private TestrunService testrunService; 
+    @Autowired
+    private DefectService defectService; 
+    @Autowired
+    private RequirementService requirementService; 
+    @Autowired
+    private EnvironmentService environmentService; 
    
+    // GET All Company
+    @RequestMapping(value = " ", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Collection<Company> getAllCompanies() {
+    	return companyService.getAllCompanies();    	
+    }     
+    
     // GET Company
     @RequestMapping(value = "{companyID}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -154,18 +174,18 @@ public class CompanyJSONController {
     		@PathVariable("testcaseID") long testcaseID)
     {
     	String testcaseName = "TestCase_"+companyID+"_"+testcaseID;    	
-    	try
-    	{  
-    		Testcase testcase = testcaseService.getTestcaseByName(testcaseName);		
-    		if(testcase.getCompanyID() == companyID )
-    		{		
-    			throw new DuplicateKeyException(testcaseName);
-    		}
-    	}
-    	catch(NoResultException e)
-    	{   					
-    		//do nothing;
-    	}
+//    	try
+//    	{  
+//    		Testcase testcase = testcaseService.getTestcaseByName(testcaseName);		
+//    		if(testcase.getCompanyID() == companyID )
+//    		{		
+//    			throw new DuplicateKeyException(testcaseName);
+//    		}
+//    	}
+//    	catch(NoResultException e)
+//    	{   					
+//    		//do nothing;
+//    	}
     	//int testPlanPosition = testcaseService.getMaxTestPlanPosNum(projectID);					
     	testcaseService.addNewTestcase(new Testcase(testcaseName,companyID,"REGRESSION","APPROVED",
     			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER"));	
@@ -193,7 +213,8 @@ public class CompanyJSONController {
     	Testcase testcase = testcaseService.getTestcase(testcaseID);
     	
     	testrunService.addNewTestrun(new Testrun(testcase.getTestcaseName(),testcaseID,cycleID,
-    			testcase.getEstimatedTime(),testcase.getLevel(),testcase.getLastTestRunID(),     			   			
+    			testcase.getEstimatedTime(),testcase.getLevel(),
+    			testcaseService.getLastTestRunID(testcase.getTestcaseID()),     			   			
     			testcase.getTester(),testcase.getSeniorTester()));    	
     } 
     // DELETE Testrun 
@@ -202,17 +223,100 @@ public class CompanyJSONController {
     public void deleteTestrunAt(@PathVariable("testrunID") Long testrunID) {
     	testrunService.remove(testrunID);    	
     }  
-  
+    
+    // GET Testrun
+    @RequestMapping(value = "/testplan/{testplanID}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Testplan getTestplanAt(@PathVariable("testplanID") Long testplanID) {
+    	return testplanService.getTestplan(testplanID);    	
+    }   
+    // POST Test Run
+    @RequestMapping(value = "{companyID}/testplan/{testplanID}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createNewTestplan(@PathVariable("companyID") long companyID,
+    		@PathVariable("testplanID") long testplanID)
+    {    	    	
+    	String testcaseName = "Testplan_"+companyID+"_"+testplanID;     	
+    	testplanService.addNewTestplan(new Testplan(companyID,testcaseName));    	
+    } 
+    // DELETE Testrun 
+    @RequestMapping(value = "/testplan/{testplanID}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTestplanAt(@PathVariable("testplanID") Long testplanID) {
+    	testplanService.remove(testplanID);    	
+    }   
+    
+    // GET Defect
+    @RequestMapping(value = "/defect/{defectID}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Defect getDefectAt(@PathVariable("defectID") Long defectID) {
+    	return defectService.getDefect(defectID);    	
+    }   
+    // POST Defect
+    @RequestMapping(value = "{companyID}/defect/{defectID}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createDefect(@PathVariable("companyID") long companyID,
+    		@PathVariable("defectID") long defectID)
+    {    	    	    	    	
+    	defectService.addNewDefect(new Defect(companyID,"SUMMARY",1,"DETAILS",(long) 0,"TYPE"));    	
+    } 	
+    // DELETE Defect
+    @RequestMapping(value = "/defect/{defectID}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDefectAt(@PathVariable("defectID") Long defectID) {
+    	defectService.remove(defectID);    	
+    }    
+    
+    // GET Requirement
+    @RequestMapping(value = "/requirement/{requirementID}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Requirement getRequirementAt(@PathVariable("requirementID") Long requirementID) {
+    	return requirementService.getRequirement(requirementID);    	
+    }   
+    // POST Requirement
+    @RequestMapping(value = "{companyID}/requirement/{requirementID}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createRequirement(@PathVariable("companyID") long companyID,
+    		@PathVariable("requirementID") long requirementID)
+    {    	    	    	    	
+    	requirementService.addNewRequirement(new Requirement(companyID,"SUMMARY","DETAILS",(long) 0));    	
+    } 	   
+    // DELETE Requirement
+    @RequestMapping(value = "/requirement/{requirementID}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRequirementAt(@PathVariable("requirementID") Long requirementID) {
+    	requirementService.remove(requirementID);    	
+    }    
+    
+ // GET Environment
+    @RequestMapping(value = "/environment/{environmentID}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody Environment getEnvironmentAt(@PathVariable("environmentID") Long environmentID) {
+    	return environmentService.getEnvironment(environmentID);    	
+    }   
+    // POST Environment
+    @RequestMapping(value = "{companyID}/environment/{environmentID}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createEnvironment(@PathVariable("companyID") long companyID,
+    		@PathVariable("environmentID") long environmentID)
+    {    	    	    	    	
+    	environmentService.addNewEnvironment(new Environment(companyID,"ENV_NAME","ENV_OS","ENV_OS_VERSION"));    	
+    } 	   
+    // DELETE Environment
+    @RequestMapping(value = "/environment/{environmentID}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEnvironmentAt(@PathVariable("environmentID") Long environmentID) {
+    	environmentService.remove(environmentID);    	
+    }    
 
-  
+ //////////////////////////////////////////////////////////////////////////////////////////////////////// 
     // GET Cycle Testruns
     @RequestMapping(value = "/cycleCasRuns/{cycleID}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody int getcycleCasRunsAt(@PathVariable("cycleID") Long cycleID) {
-    	Cycle cycle = cycleService.getCycle(cycleID);
-    	return cycle.getCascadedAllTestRunsCount();    	
+    public @ResponseBody int getcycleCasRunsAt(@PathVariable("cycleID") Long cycleID) {    	
+    	return cycleService.getCascadedAllTestRunsCount(cycleID);    	
     }   
-    
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////    
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public void emptyResult() {
@@ -224,7 +328,12 @@ public class CompanyJSONController {
     public void conflictResult() {
 	// no code needed
     }
-   
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoResultException.class)
+    public void noResults() {
+	// no code needed
+    }
+    
     
     
 	

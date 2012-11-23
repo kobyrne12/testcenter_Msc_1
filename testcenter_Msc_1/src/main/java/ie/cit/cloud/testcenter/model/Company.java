@@ -8,9 +8,8 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import ie.cit.cloud.testcenter.service.company.CompanyService;
+
 import java.util.Collection;
 import java.util.Date;
 
@@ -32,13 +31,14 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 @Table(name = "Company")
 public class Company {
-
+	@Autowired @Transient
+	private CompanyService companyService;
+	
 	@Id        
 	@GeneratedValue
 	@Column(name = "companyID", unique = true, nullable = false)
@@ -154,8 +154,7 @@ public class Company {
 	private String createdBy;	
 	@Basic    
 	private String lastModifiedBy;
-
-	
+		
 	public Company() {	
 	}
 
@@ -901,7 +900,6 @@ public class Company {
 	 */
 	public long getCompanyID() {
 		return companyID;
-	}
-
-
+	}	
+	
 }

@@ -9,13 +9,20 @@ package ie.cit.cloud.testcenter.service.testrun;
  */
 
 
+import java.util.Collection;
+
+import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.respository.testrun.TestrunRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Transient;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +44,15 @@ public class TestrunServiceImpl implements TestrunService {
 	@Autowired
 	ProjectService projectService;	
 	
+	@Autowired
+	CycleService cycleService;	
+	
+	@Autowired
+	TestcaseService testcaseService;	
+	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Testrun getTestrun(long cycleID) {
-		return testrunRepo.findById(cycleID);
+	public Testrun getTestrun(long testrunID) {
+		return testrunRepo.findById(testrunID);
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
@@ -54,13 +67,35 @@ public class TestrunServiceImpl implements TestrunService {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	public void update(Testrun cycle) {
-		testrunRepo.update(cycle);
+	public void update(Testrun testrun) {
+		testrunRepo.update(testrun);
 	}  
 
 	//  @Secured("ROLE_ADMIN")
 	public void remove(long testrunID) {
 		testrunRepo.delete(getTestrun(testrunID));
 	}
+	/**
+	 * Returns true if this testruns cycle is the latest cycle for a project 
+	 * boolean
+	 * @return true if this testruns cycle is the latest cycle for a project, otherwise false
+	 */  
+    public boolean isLatest(long testrunID)
+    {		
+    	Testrun testrun= getTestrun(testrunID);
+    	if(cycleService.isLatest(testrun.getCycleID()))
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		return false;	
+    	}    
+    }
+    public Collection<Testrun> getTestHistory(long testrunID) {
+    	Testrun testrun = getTestrun(testrunID);
+    	Testcase testcase = testcaseService.getTestcase(testrun.getTestcaseID());    	
+		return testcase.getTestruns();
+	} 
 
 }

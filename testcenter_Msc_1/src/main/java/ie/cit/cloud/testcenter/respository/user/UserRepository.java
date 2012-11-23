@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.respository.user;
  *
  */
 
-import ie.cit.cloud.testcenter.model.User;
+import ie.cit.cloud.testcenter.model.TestcenterUser;
 
 import java.util.Collection;
 
@@ -24,14 +24,14 @@ public interface UserRepository {
      * @return User for given id, {@link EmptyResultDataAccessException} if no
      *         User was found
      */
-	User get(long userID);
+	TestcenterUser get(long userID);
 
     /**
      * Adds new User into repository
      * 
-     * @param User
+     * @param TestcenterUser
      */
-    void create(User user);
+    void create(TestcenterUser user);
 
     /**
      * Updates existing User. User with the same ID as give User is updated
@@ -39,14 +39,14 @@ public interface UserRepository {
      * @param testplan
      *            new User values
      */
-    void update(User user);
+    void update(TestcenterUser user);
 
     /**
      * Deletes User item from repository.
      * 
      * @param testplan
      */
-    void delete(User user);
+    void delete(TestcenterUser user);
 
     // ================ various find-er methods ================
     /**
@@ -54,7 +54,7 @@ public interface UserRepository {
      * 
      * @return all Users
      */
-    Collection<User> findAll();
+    Collection<TestcenterUser> findAll();
 
     /**
      * Returns User items given by its ID
@@ -63,15 +63,15 @@ public interface UserRepository {
      *            User ID
      * @return User for given id, null if test was not found
      */
-    User findById(long userID);
+    TestcenterUser findById(long userID);
     /**
      * Returns User items given by its name
      * 
      * @param id
      *            User ID
      * @return User for given name, null if User was not found
-     */
-    User findUserByName(String userName);
+     */   
     
+    TestcenterUser getUserByUserName(String userName);
 
 }

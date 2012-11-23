@@ -8,26 +8,28 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NoResultException;
-import javax.persistence.Transient;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Entity(name = "Testrun")
 public class Testrun {
-
-	@Autowired @Transient
-	private CycleService cycleService;
    
 	@Id    
     @GeneratedValue
@@ -39,10 +41,25 @@ public class Testrun {
 	@NotEmpty(message = " Name is required.")
     private String TestrunName;
     
-   /* @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    @JoinColumn(name="testplanID",nullable = false)  
-    @Transient
-    private TestPlan testplan;  */
+    @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "TESTRUNS_JOIN_DEFECTS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "defectID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Defect> defects  = new ArrayList<Defect>();    	
+
+    @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "TESTRUNS_JOIN_REQUIREMENTS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "requirementID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Requirement> requirements  = new ArrayList<Requirement>();    	
+
+    @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "TESTRUNS_JOIN_ENVIRONMENTS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "environmentID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Environment> environments  = new ArrayList<Environment>();    	
+
+    @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "TESTRUNS_JOIN_USERS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "userID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<TestcenterUser> users  = new ArrayList<TestcenterUser>();   
     
     @Basic
     @Column(name="testcaseID")
@@ -91,26 +108,7 @@ public class Testrun {
     @Basic
     private String seniorTester;
     
-    /**
-	 * Returns true if this testruns cycle is the latest cycle for a project 
-	 * boolean
-	 * @return true if this testruns cycle is the latest cycle for a project, otherwise false
-	 */
-    @Transient
-    public boolean isLatest()
-    {		
-    	try{
-    		Cycle cycle = cycleService.getCycle(cycleID);		
-    		if(cycle.isLatest())
-    		{
-    			return true;
-    		}
-    	}catch(Exception ex)
-    	{
-    		return false;	
-    	}
-    	return false;
-    } 
+    
    
     public Testrun() {	
     }    
@@ -478,6 +476,60 @@ public class Testrun {
 	 */
 	public long getTestrunID() {
 		return testrunID;
+	}
+
+	/**
+	 * @return the requirements
+	 */
+	public Collection<Requirement> getRequirements() {
+		return requirements;
+	}
+
+	/**
+	 * @param requirements the requirements to set
+	 */
+	public void setRequirements(Collection<Requirement> requirements) {
+		this.requirements = requirements;
+	}
+
+	/**
+	 * @return the environments
+	 */
+	public Collection<Environment> getEnvironments() {
+		return environments;
+	}
+
+	/**
+	 * @param environments the environments to set
+	 */
+	public void setEnvironments(Collection<Environment> environments) {
+		this.environments = environments;
+	}
+
+	/**
+	 * @return the users
+	 */
+	public Collection<TestcenterUser> getUsers() {
+		return users;
+	}
+
+	/**
+	 * @param users the users to set
+	 */
+	public void setUsers(Collection<TestcenterUser> users) {
+		this.users = users;
+	}
+	/**
+	 * @return the defects
+	 */
+	public Collection<Defect> getDefects( ) {
+		return defects;
+	}
+	/**
+	 * @param defects the defects to set
+	 */
+	public void setDefects(Collection<Defect> defects) {
+		this.defects = defects;
 	}
 
 }

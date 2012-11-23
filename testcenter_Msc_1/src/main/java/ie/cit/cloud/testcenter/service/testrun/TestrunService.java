@@ -8,6 +8,8 @@ package ie.cit.cloud.testcenter.service.testrun;
  *
  */
 
+import java.util.Collection;
+
 import ie.cit.cloud.testcenter.model.Testrun;
 
 /**
@@ -25,4 +27,7 @@ public interface TestrunService {
     
     void remove(long testrunID);  
 
+    boolean isLatest(long testrunID);
+    
+    Collection<Testrun> getTestHistory(long testrunID);
 }

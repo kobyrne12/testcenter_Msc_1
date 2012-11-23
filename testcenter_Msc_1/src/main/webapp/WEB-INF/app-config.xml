@@ -66,9 +66,10 @@
 	
 	<security:global-method-security secured-annotations="enabled" />	
 	<security:authentication-manager>
-	<!--  <security:authentication-provider user-service-ref="myUserService" />-->
-		<security:authentication-provider>			
+	<!-- <security:authentication-provider user-service-ref="userDetailsService" /> -->
+	 	<security:authentication-provider>			
 			<security:user-service properties="classpath:users.properties" />
 		</security:authentication-provider>
+	
 	</security:authentication-manager>	
 </beans>

@@ -8,16 +8,20 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Transient;
-
+import javax.persistence.ManyToMany;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-
 
 @Entity(name = "Defect")
 public class Defect {
@@ -36,81 +40,70 @@ public class Defect {
 	private String defectSummary;  	   
 
 	@Basic 
-	private int severity;   
+	private int severity;   	
 	@Basic 
-	private String defectDetails;   
+	private String defectDetails;  
+	
 	@Basic 
-	private String  defectSection; 
+	@Column(name = "defectSectionID")
+	private Long defectSectionID;	
+	
 	@Basic    
 	private String defectType;
 	
-	@Transient	
-	public boolean isSev1()
-	{
-		if(this.severity == 1)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}		
-	}
-	@Transient
-	public boolean isSev2()
-	{
-		if(this.severity == 2)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}		
-	}
-	@Transient
-	public boolean isSev3()
-	{
-		if(this.severity == 3)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}		
-	}
-	@Transient
-	public boolean isSev4()
-	{
-		if(this.severity == 4)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}		
-	}
+	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Testrun> testruns = new ArrayList<Testrun>();
 	
+	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Requirement> requirements = new ArrayList<Requirement>();
+	
+	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<TestcenterUser> users = new ArrayList<TestcenterUser>();
+		
 	public Defect() {		
 	}
-	
 	/**
+	 * @param companyID
 	 * @param defectSummary
+	 * @param severity
 	 * @param defectDetails
-	 * @param defectSection
-	 * @param defectType
+	 * @param defectSectionID
+	 * @param defectType	
 	 */
-	public Defect(Long companyID, String defectSummary, String defectDetails,
-			String defectSection, String defectType,int severity) {
-		this.companyID = companyID;		
+	public Defect(Long companyID, String defectSummary, int severity,
+			String defectDetails, Long defectSectionID, String defectType)
+	{
+		this(companyID,defectSummary,severity,defectDetails,defectSectionID,defectType,
+				null,null,null);
+	}
+
+	/**
+	 * @param companyID
+	 * @param defectSummary
+	 * @param severity
+	 * @param defectDetails
+	 * @param defectSectionID
+	 * @param defectType
+	 * @param testruns
+	 * @param requirements
+	 * @param users
+	 */
+	public Defect(Long companyID, String defectSummary, int severity,
+			String defectDetails, Long defectSectionID, String defectType,
+			Collection<Testrun> testruns, Collection<Requirement> requirements,
+			Collection<TestcenterUser> users) {
+		this.companyID = companyID;
 		this.defectSummary = defectSummary;
 		this.severity = severity;
 		this.defectDetails = defectDetails;
-		this.defectSection = defectSection;
+		this.defectSectionID = defectSectionID;
 		this.defectType = defectType;
-		
+		this.testruns = testruns;
+		this.requirements = requirements;
+		this.users = users;
 	}
 	/**
 	 * @return the companyID
@@ -137,6 +130,18 @@ public class Defect {
 		this.defectSummary = defectSummary;
 	}
 	/**
+	 * @return the severity
+	 */
+	public int getSeverity() {
+		return severity;
+	}
+	/**
+	 * @param severity the severity to set
+	 */
+	public void setSeverity(int severity) {
+		this.severity = severity;
+	}
+	/**
 	 * @return the defectDetails
 	 */
 	public String getDefectDetails() {
@@ -149,16 +154,16 @@ public class Defect {
 		this.defectDetails = defectDetails;
 	}
 	/**
-	 * @return the defectSection
+	 * @return the defectSectionID
 	 */
-	public String getDefectSection() {
-		return defectSection;
+	public Long getDefectSectionID() {
+		return defectSectionID;
 	}
 	/**
-	 * @param defectSection the defectSection to set
+	 * @param defectSectionID the defectSectionID to set
 	 */
-	public void setDefectSection(String defectSection) {
-		this.defectSection = defectSection;
+	public void setDefectSectionID(Long defectSectionID) {
+		this.defectSectionID = defectSectionID;
 	}
 	/**
 	 * @return the defectType
@@ -173,25 +178,46 @@ public class Defect {
 		this.defectType = defectType;
 	}
 	/**
+	 * @return the testruns
+	 */
+	public Collection<Testrun> getTestruns() {
+		return testruns;
+	}
+	/**
+	 * @param testruns the testruns to set
+	 */
+	public void setTestruns(Collection<Testrun> testruns) {
+		this.testruns = testruns;
+	}
+	/**
+	 * @return the requirements
+	 */
+	public Collection<Requirement> getRequirements() {
+		return requirements;
+	}
+	/**
+	 * @param requirements the requirements to set
+	 */
+	public void setRequirements(Collection<Requirement> requirements) {
+		this.requirements = requirements;
+	}
+	/**
+	 * @return the users
+	 */
+	public Collection<TestcenterUser> getUsers() {
+		return users;
+	}
+	/**
+	 * @param users the users to set
+	 */
+	public void setUsers(Collection<TestcenterUser> users) {
+		this.users = users;
+	}
+	/**
 	 * @return the defectID
 	 */
 	public Long getDefectID() {
 		return defectID;
-	}
-
-	/**
-	 * @return the severity
-	 */
-	public int getSeverity() {
-		return severity;
-	}
-
-	/**
-	 * @param severity the severity to set
-	 */
-	public void setSeverity(int severity) {
-		this.severity = severity;
 	}	
-	
 	
 }

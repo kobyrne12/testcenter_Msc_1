@@ -24,5 +24,7 @@ public interface TestcaseService {
     void update(Testcase testcase);
     
     void remove(long testcaseID);  
+    
+    long getLastTestRunID(long testcaseID);
 
 }

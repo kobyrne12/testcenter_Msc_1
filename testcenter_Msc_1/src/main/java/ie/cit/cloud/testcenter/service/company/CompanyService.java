@@ -13,6 +13,7 @@ import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public interface CompanyService {
 	 * int
 	 * @return total Number of All Testruns for a company,
 	 */
-	int getAllTestRunCount(long companyID);
+	int getAllTestRunsCount(long companyID);
 	/**
 	 * Returns a collection of All Testruns in a company 
 	 * Collection<Testrun>
@@ -77,7 +78,7 @@ public interface CompanyService {
 	 * int
 	 * @return total Number of All Testruns for a company,
 	 */
-	int getRequiredTestRunCount(long companyID);
+	int getRequiredTestRunsCount(long companyID);
 	/**
 	 * Returns a collection of All Testruns in a company 
 	 * Collection<Testrun>
@@ -161,7 +162,20 @@ public interface CompanyService {
 	 * int
 	 * @return total Number of All Sev4 Defects for a company,
 	 */		
-	int getAllSev4DefectsCount(long companyID);	
+	int getAllSev4DefectsCount(long companyID);
+
+
+	int getallTestersCount(long companyID);
+	Collection<TestcenterUser> getAllTesters(long companyID);
+
+	int getallSeniorTestersCount(long companyID);
+	Collection<TestcenterUser> getAllSeniorTesters(long companyID);
+
+	int getallDevelopersCount(long companyID);
+	Collection<TestcenterUser> getAllDevelopers(long companyID);
+
+	int getallSeniorDevelopersCount(long companyID);	
+	Collection<TestcenterUser> getAllSeniorDevelopers(long companyID);
 	
 	//TODO: add user details i.e getAllTestersCount(), getAllSeniorTestersCount()
 	

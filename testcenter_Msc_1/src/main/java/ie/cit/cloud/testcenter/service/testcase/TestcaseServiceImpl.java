@@ -24,6 +24,7 @@ import ie.cit.cloud.testcenter.respository.cycle.CycleRepository;
 import ie.cit.cloud.testcenter.respository.testcase.TestcaseRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import java.util.Iterator;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.Transient;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +55,12 @@ public class TestcaseServiceImpl implements TestcaseService {
 	@Autowired
 	ProjectService projectService;	
 	
+	@Autowired
+	TestrunService testrunService;	
+	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Testcase getTestcase(long cycleID) {
-		return testcaseRepo.findById(cycleID);
+	public Testcase getTestcase(long testcaseID) {
+		return testcaseRepo.findById(testcaseID);
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
@@ -70,13 +75,35 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	public void update(Testcase cycle) {
-		testcaseRepo.update(cycle);
+	public void update(Testcase testcase) {
+		testcaseRepo.update(testcase);
 	}  
 
 	//  @Secured("ROLE_ADMIN")
 	public void remove(long testcaseID) {
 		testcaseRepo.delete(getTestcase(testcaseID));
+	}
+	
+	/**
+	 * Returns the ID of the latest testrun in the latest cycle for a project
+	 * long
+	 * @return the ID of the latest testrun in the latest cycle for a project
+	 */	
+	public long getLastTestRunID(long testcaseID)
+	{		
+		Testcase testcase = getTestcase(testcaseID);
+		if(testcase.getTestruns() == null || testcase.getTestruns().isEmpty())
+		{
+			return 0;
+		}
+		for(final Testrun testrun : testcase.getTestruns())
+		{
+			if(testrunService.isLatest(testrun.getTestrunID()))
+			{
+				return testrun.getTestrunID();	
+			}			
+		}
+		return 0;		
 	}
 
 }

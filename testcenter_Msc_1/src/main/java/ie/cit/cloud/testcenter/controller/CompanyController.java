@@ -258,6 +258,11 @@ public class CompanyController {
 			}
 		//}		
 	}  
+	
+	@RequestMapping(value = {"login"}, method = GET)
+	public String returnLogin(Model model) {   
+		return "login";  
+	}  
 
 //  
 //    

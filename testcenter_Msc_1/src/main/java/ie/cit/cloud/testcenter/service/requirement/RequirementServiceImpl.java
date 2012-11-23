@@ -1,18 +1,18 @@
 /**
  * 
  */
-package ie.cit.cloud.testcenter.service.testplan;
+package ie.cit.cloud.testcenter.service.requirement;
 
 /**
  * @author byrnek1
  *
  */
 
-import ie.cit.cloud.testcenter.model.Testplan;
-import ie.cit.cloud.testcenter.respository.testplan.TestplanRepository;
+import ie.cit.cloud.testcenter.model.Requirement;
+import ie.cit.cloud.testcenter.respository.requirement.RequirementRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
+import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
-import ie.cit.cloud.testcenter.service.testplan.TestplanService;
 import javax.persistence.NoResultException;
 import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class TestplanServiceImpl implements TestplanService {
+public class RequirementServiceImpl implements RequirementService {
 
 	@Autowired
-	@Qualifier("hibernateTestplanRespository")
-	TestplanRepository testplanRepo;      
+	@Qualifier("hibernateRequirementRespository")
+	RequirementRepository requirementRepo;      
 	
 	@Autowired
 	CompanyService companyService;
@@ -35,29 +35,29 @@ public class TestplanServiceImpl implements TestplanService {
 	ProjectService projectService;	
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Testplan getTestplan(long testplanID) {
-		return testplanRepo.findById(testplanID);
+	public Requirement getRequirement(long requirementID) {
+		return requirementRepo.findById(requirementID);
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Testplan getTestplanByName(String testplanName) {
-		return testplanRepo.findTestplanByName(testplanName);
+	public Requirement getRequirementByName(String requirementName) {
+		return requirementRepo.findByName(requirementName);
 	}
 
 	// @Secured("ROLE_ADMIN")
 	@Transactional(rollbackFor=ConstraintViolationException.class)   
-	public void addNewTestplan(Testplan testplan) {
-		testplanRepo.create(testplan);	
+	public void addNewRequirement(Requirement requirement) {
+		requirementRepo.create(requirement);	
 	}
 
 	// @Secured("ROLE_ADMIN")
-	public void update(Testplan testplan) {
-		testplanRepo.update(testplan);
+	public void update(Requirement requirement) {
+		requirementRepo.update(requirement);
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long testplanID) {
-		testplanRepo.delete(getTestplan(testplanID));
+	public void remove(long requirementID) {
+		requirementRepo.delete(getRequirement(requirementID));
 	}
 
 }

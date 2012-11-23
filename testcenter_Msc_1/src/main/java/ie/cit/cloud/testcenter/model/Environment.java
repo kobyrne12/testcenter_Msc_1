@@ -8,16 +8,23 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -52,16 +59,35 @@ public class Environment {
 	private Date lastModifiedDate;
 	
 	@Basic    
-	private String createdBy;	
+	private long createdByUserID;	
 	@Basic    
-	private String lastModifiedBy;
-	
+	private long lastModifiedByUserID;	
 	@Basic    
-	private String environmentOwner;
+	private long currentOwnerUserID;
 
+	@ManyToMany(mappedBy="environments", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Testrun> testruns = new ArrayList<Testrun>();
+	
+	@ManyToMany(mappedBy="environments", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<TestcenterUser> users = new ArrayList<TestcenterUser>();
+	
 	public Environment() {	
 	}
 
+	/**
+	 * @param companyID
+	 * @param environmentName
+	 * @param environmentOs
+	 * @param environmentOsVersion
+	 */
+	public Environment(Long companyID, String environmentName,
+			String environmentOs, String environmentOsVersion) 
+	{
+		this(companyID, environmentName, environmentOs, environmentOsVersion,
+				new Date(),new Date(),(long) 0,(long) 0,(long) 0,null,null);		
+	}
 	
 	/**
 	 * @param companyID
@@ -69,26 +95,30 @@ public class Environment {
 	 * @param environmentOs
 	 * @param environmentOsVersion
 	 * @param creationDate
-	 * @param createdBy
 	 * @param lastModifiedDate
-	 * @param lastModifiedBy
-	 * @param environmentOwner
+	 * @param createdByUserID
+	 * @param lastModifiedByUserID
+	 * @param currentOwnerUserID
+	 * @param testruns
+	 * @param users
 	 */
 	public Environment(Long companyID, String environmentName,
 			String environmentOs, String environmentOsVersion,
-			Date creationDate, String createdBy, Date lastModifiedDate,
-			String lastModifiedBy, String environmentOwner) {
+			Date creationDate, Date lastModifiedDate, long createdByUserID,
+			long lastModifiedByUserID, long currentOwnerUserID,
+			Collection<Testrun> testruns, Collection<TestcenterUser> users) {
 		this.companyID = companyID;
 		this.environmentName = environmentName;
 		this.environmentOs = environmentOs;
 		this.environmentOsVersion = environmentOsVersion;
 		this.creationDate = creationDate;
-		this.createdBy = createdBy;
 		this.lastModifiedDate = lastModifiedDate;
-		this.lastModifiedBy = lastModifiedBy;
-		this.environmentOwner = environmentOwner;
+		this.createdByUserID = createdByUserID;
+		this.lastModifiedByUserID = lastModifiedByUserID;
+		this.currentOwnerUserID = currentOwnerUserID;
+		this.testruns = testruns;
+		this.users = users;
 	}
-
 
 	/**
 	 * @return the companyID
@@ -161,20 +191,6 @@ public class Environment {
 	}
 
 	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	/**
 	 * @return the lastModifiedDate
 	 */
 	public Date getLastModifiedDate() {
@@ -189,31 +205,73 @@ public class Environment {
 	}
 
 	/**
-	 * @return the lastModifiedBy
+	 * @return the createdByUserID
 	 */
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
+	public long getCreatedByUserID() {
+		return createdByUserID;
 	}
 
 	/**
-	 * @param lastModifiedBy the lastModifiedBy to set
+	 * @param createdByUserID the createdByUserID to set
 	 */
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
+	public void setCreatedByUserID(long createdByUserID) {
+		this.createdByUserID = createdByUserID;
 	}
 
 	/**
-	 * @return the environmentOwner
+	 * @return the lastModifiedByUserID
 	 */
-	public String getEnvironmentOwner() {
-		return environmentOwner;
+	public long getLastModifiedByUserID() {
+		return lastModifiedByUserID;
 	}
 
 	/**
-	 * @param environmentOwner the environmentOwner to set
+	 * @param lastModifiedByUserID the lastModifiedByUserID to set
 	 */
-	public void setEnvironmentOwner(String environmentOwner) {
-		this.environmentOwner = environmentOwner;
+	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+		this.lastModifiedByUserID = lastModifiedByUserID;
+	}
+
+	/**
+	 * @return the currentOwnerUserID
+	 */
+	public long getCurrentOwnerUserID() {
+		return currentOwnerUserID;
+	}
+
+	/**
+	 * @param currentOwnerUserID the currentOwnerUserID to set
+	 */
+	public void setCurrentOwnerUserID(long currentOwnerUserID) {
+		this.currentOwnerUserID = currentOwnerUserID;
+	}
+
+	/**
+	 * @return the testruns
+	 */
+	public Collection<Testrun> getTestruns() {
+		return testruns;
+	}
+
+	/**
+	 * @param testruns the testruns to set
+	 */
+	public void setTestruns(Collection<Testrun> testruns) {
+		this.testruns = testruns;
+	}
+
+	/**
+	 * @return the users
+	 */
+	public Collection<TestcenterUser> getUsers() {
+		return users;
+	}
+
+	/**
+	 * @param users the users to set
+	 */
+	public void setUsers(Collection<TestcenterUser> users) {
+		this.users = users;
 	}
 
 	/**
@@ -221,7 +279,6 @@ public class Environment {
 	 */
 	public Long getEnvironmentID() {
 		return environmentID;
-	}
-	
+	}	
 
 }

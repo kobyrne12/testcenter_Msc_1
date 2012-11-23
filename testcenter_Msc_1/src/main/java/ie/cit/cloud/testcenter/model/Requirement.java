@@ -8,14 +8,23 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -26,7 +35,7 @@ public class Requirement {
 	@GeneratedValue
 	@Column(name = "requirementID")
 	private Long requirementID;
-	
+
 	@Basic
 	@Column(name="companyID")
 	private Long companyID;
@@ -38,20 +47,35 @@ public class Requirement {
 	@NotEmpty(message = "Details are required.")	
 	private String requirementDetails;   		
 
-	@NotEmpty(message = "Section is required.")
-	private String  requirementSection; 
-	
+	@Basic 
+	@Column(name = "requirementSectionID")
+	private Long requirementSectionID;	
+
 	@Temporal(TemporalType.DATE)
 	@Column(name = "creationDate", nullable = false, length = 10) 
 	private Date creationDate;		
 	@Temporal(TemporalType.DATE)
 	@Column(name = "lastModifiedDate", nullable = false, length = 10) 
 	private Date lastModifiedDate;
-	
+
 	@Basic    
-	private String createdBy;
+	private long createdByUserID;
 	@Basic    
-	private String lastModifiedBy;
+	private long lastModifiedByUserID;
+
+	@ManyToMany(mappedBy="requirements", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Testrun> testruns = new ArrayList<Testrun>();
+
+	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "REQUIREMENTS_JOIN_USERS", joinColumns = { @JoinColumn(name = "requirementID") }, inverseJoinColumns = { @JoinColumn(name = "userID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<TestcenterUser> users  = new ArrayList<TestcenterUser>();  
+
+	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "REQUIREMENTS_JOIN_DEFECTS", joinColumns = { @JoinColumn(name = "requirementID") }, inverseJoinColumns = { @JoinColumn(name = "defectID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Defect> defects  = new ArrayList<Defect>();   
 
 	public Requirement() {	
 	}
@@ -60,24 +84,43 @@ public class Requirement {
 	 * @param companyID
 	 * @param requirementSummary
 	 * @param requirementDetails
-	 * @param requirementSection
-	 * @param creationDate
-	 * @param lastModifiedDate
-	 * @param createdBy
-	 * @param lastModifiedBy
+	 * @param requirementSectionID	
 	 */
 	public Requirement(Long companyID, String requirementSummary,
-			String requirementDetails, String requirementSection,
-			Date creationDate, Date lastModifiedDate, String createdBy,
-			String lastModifiedBy) {
+			String requirementDetails, long requirementSectionID) {
+		this(companyID,requirementSummary,requirementDetails,requirementSectionID,
+				new Date(),new Date(),(long) 0,(long) 0,null,null,null);	
+	}
+
+	/**
+	 * @param companyID
+	 * @param requirementSummary
+	 * @param requirementDetails
+	 * @param requirementSectionID
+	 * @param creationDate
+	 * @param lastModifiedDate
+	 * @param createdByUserID
+	 * @param lastModifiedByUserID
+	 * @param testruns
+	 * @param users
+	 * @param defects
+	 */
+	public Requirement(Long companyID, String requirementSummary,
+			String requirementDetails, Long requirementSectionID,
+			Date creationDate, Date lastModifiedDate, long createdByUserID,
+			long lastModifiedByUserID, Collection<Testrun> testruns,
+			Collection<TestcenterUser> users, Collection<Defect> defects) {
 		this.companyID = companyID;
 		this.requirementSummary = requirementSummary;
 		this.requirementDetails = requirementDetails;
-		this.requirementSection = requirementSection;
+		this.requirementSectionID = requirementSectionID;
 		this.creationDate = creationDate;
 		this.lastModifiedDate = lastModifiedDate;
-		this.createdBy = createdBy;
-		this.lastModifiedBy = lastModifiedBy;
+		this.createdByUserID = createdByUserID;
+		this.lastModifiedByUserID = lastModifiedByUserID;
+		this.testruns = testruns;
+		this.users = users;
+		this.defects = defects;
 	}
 
 	/**
@@ -123,17 +166,17 @@ public class Requirement {
 	}
 
 	/**
-	 * @return the requirementSection
+	 * @return the requirementSectionID
 	 */
-	public String getRequirementSection() {
-		return requirementSection;
+	public Long getRequirementSectionID() {
+		return requirementSectionID;
 	}
 
 	/**
-	 * @param requirementSection the requirementSection to set
+	 * @param requirementSectionID the requirementSectionID to set
 	 */
-	public void setRequirementSection(String requirementSection) {
-		this.requirementSection = requirementSection;
+	public void setRequirementSectionID(Long requirementSectionID) {
+		this.requirementSectionID = requirementSectionID;
 	}
 
 	/**
@@ -165,31 +208,73 @@ public class Requirement {
 	}
 
 	/**
-	 * @return the createdBy
+	 * @return the createdByUserID
 	 */
-	public String getCreatedBy() {
-		return createdBy;
+	public long getCreatedByUserID() {
+		return createdByUserID;
 	}
 
 	/**
-	 * @param createdBy the createdBy to set
+	 * @param createdByUserID the createdByUserID to set
 	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+	public void setCreatedByUserID(long createdByUserID) {
+		this.createdByUserID = createdByUserID;
 	}
 
 	/**
-	 * @return the lastModifiedBy
+	 * @return the lastModifiedByUserID
 	 */
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
+	public long getLastModifiedByUserID() {
+		return lastModifiedByUserID;
 	}
 
 	/**
-	 * @param lastModifiedBy the lastModifiedBy to set
+	 * @param lastModifiedByUserID the lastModifiedByUserID to set
 	 */
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
+	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+		this.lastModifiedByUserID = lastModifiedByUserID;
+	}
+
+	/**
+	 * @return the testruns
+	 */
+	public Collection<Testrun> getTestruns() {
+		return testruns;
+	}
+
+	/**
+	 * @param testruns the testruns to set
+	 */
+	public void setTestruns(Collection<Testrun> testruns) {
+		this.testruns = testruns;
+	}
+
+	/**
+	 * @return the users
+	 */
+	public Collection<TestcenterUser> getUsers() {
+		return users;
+	}
+
+	/**
+	 * @param users the users to set
+	 */
+	public void setUsers(Collection<TestcenterUser> users) {
+		this.users = users;
+	}
+
+	/**
+	 * @return the defects
+	 */
+	public Collection<Defect> getDefects() {
+		return defects;
+	}
+
+	/**
+	 * @param defects the defects to set
+	 */
+	public void setDefects(Collection<Defect> defects) {
+		this.defects = defects;
 	}
 
 	/**
@@ -198,7 +283,6 @@ public class Requirement {
 	public Long getRequirementID() {
 		return requirementID;
 	}
-	
 	
 	
 }

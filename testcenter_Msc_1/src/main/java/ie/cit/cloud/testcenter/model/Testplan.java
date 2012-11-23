@@ -8,6 +8,7 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Basic;
@@ -18,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -39,8 +41,12 @@ public class Testplan {
 
 	@Length(min = 2, max = 32, message = "Testplan name must be between 2 to 32 characters.")
 	@NotEmpty(message = "TestPlan Name is required.")
-	private String testplanName;  	
-
+	private String testplanName;  
+	
+	@ManyToMany(mappedBy="testplans", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Project> projects = new ArrayList<Project>();
+	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testcase.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -51,29 +57,6 @@ public class Testplan {
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<TestplanSection> testplanSections;    
 
-	//@Basic    
-	//private String testplanSection;
-	
-	//    @NotEmpty(message = "Tester Name is required.")
-	//    private String testername;    
-	//    @Basic    
-	//    private int totalTests;
-	//    @Basic    
-	//    private int totalNotRun;
-	//    @Basic    
-	//    private int totalPassed;
-	//    @Basic    
-	//    private int totalFailed;
-	//    @Basic    
-	//    private int totalInProgress;
-	//    @Basic    
-	//    private int totalDeferred;
-	//    @Basic    
-	//    private int totalBlocked;    
-	// 	  @Basic
-	// 	  private String user;     
-	// 	  @Pattern(regexp = "^\\D*$", message = "Middle initial must not contain numeric characters.")
-
 	public Testplan() {		
 	}
 	/**
@@ -83,6 +66,29 @@ public class Testplan {
 	public Testplan(Long companyID,String testplanName) {
 		this.companyID = companyID;
 		this.testplanName = testplanName;	
+	}
+	/**
+	 * @param companyID
+	 * @param testplanName
+	 * @param testcases
+	 */
+	public Testplan(Long companyID,String testplanName,Collection<Testcase> testcases) {
+		this.companyID = companyID;
+		this.testplanName = testplanName;	
+		this.testcases = testcases;
+	}
+	/**
+	 * @param companyID
+	 * @param testplanName
+	 * @param testcases
+	 * @param testplanSections
+	 */
+	public Testplan(Long companyID,String testplanName,Collection<Testcase> testcases,
+			Collection<TestplanSection> testplanSections) {
+		this.companyID = companyID;
+		this.testplanName = testplanName;	
+		this.testcases = testcases;
+		this.testplanSections = testplanSections;
 	}
 
 	/**
@@ -144,6 +150,18 @@ public class Testplan {
 	 */
 	public void setTestplanSections(Collection<TestplanSection> testplanSections) {
 		this.testplanSections = testplanSections;
+	}
+	/**
+	 * @return the projects
+	 */
+	public Collection<Project> getProjects() {
+		return projects;
+	}
+	/**
+	 * @param projects the projects to set
+	 */
+	public void setProjects(Collection<Project> projects) {
+		this.projects = projects;
 	}
 	
 }
