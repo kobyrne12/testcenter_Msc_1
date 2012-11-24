@@ -12,6 +12,8 @@ import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
@@ -22,7 +24,7 @@ import java.util.Collection;
 /**
  * Peforms business operation on company
  */
-public interface CompanyService {
+ public interface CompanyService {
 
 	Collection<Company> getAllCompanies();
 
@@ -42,141 +44,96 @@ public interface CompanyService {
 
 	boolean updateCompany(long companyID, Company company); 
 	//////////////
-
-	/**
-	 * Returns total Number of Projects for a company
-	 * int
-	 * @return total Number of Projects for a company,
-	 */	
-	int getAllProjectsCount(long companyID);
-	/**
-	 * Returns total Number of Cycles for a company
-	 * int
-	 * @return total Number of Cycles for a company,
-	 */	
-	int getAllCyclesCount(long companyID);
 	/**
 	 * Returns a collection of cycles in a company 
 	 * Collection<Cycle>
 	 * @return collection of cycles in a company,
-	 */
-	Collection<Cycle> getAllCycles(long companyID);
-	/**
-	 * Returns total Number of All Testruns for a company
-	 * int
-	 * @return total Number of All Testruns for a company,
-	 */
-	int getAllTestRunsCount(long companyID);
+	 */	
+	 Collection<Cycle> getAllCycles(long companyID);
 	/**
 	 * Returns a collection of All Testruns in a company 
 	 * Collection<Testrun>
 	 * @return collection of All Testruns in a company,
 	 */
-	Collection<Testrun> getAllTestRuns(long companyID);
+	
+	 Collection<Testrun> getAllTestRuns(long companyID);
 	/**
-	 * Returns total Number of All Testruns for a company
-	 * int
-	 * @return total Number of All Testruns for a company,
-	 */
-	int getRequiredTestRunsCount(long companyID);
-	/**
-	 * Returns a collection of All Testruns in a company 
+	 * Returns a collection of All Compulsory Testruns in a company 
 	 * Collection<Testrun>
-	 * @return collection of All Testruns in a company,
-	 */
-	Collection<Testrun> getRequiredTestRuns(long companyID);
-	/**
-	 * Returns total Number of All requirements for a company
-	 * int
-	 * @return total Number of All requirements for a company,
+	 * @return collection of All Compulsory Testruns in a company,
 	 */	
-	int getAllRequirementsCount(long companyID);
+	 Collection<Testrun> getCompulsoryTestRuns(long companyID);
 	/**
-	 * Returns total Number of All environments for a company
-	 * int
-	 * @return total Number of All environments for a company,
+	 * Returns a collection of All Optional Testruns in a company 
+	 * Collection<Testrun>
+	 * @return collection of All Optional Testruns in a company,
 	 */	
-	int getAllEnvironmentsCount(long companyID);
+	 Collection<Testrun> getOptionalTestRuns(long companyID);
 	/**
-	 * Returns total Number of All defects for a company
-	 * int
-	 * @return total Number of All defects for a company,
+	 * Returns a collection of Testcases in a company
+	 * Collection<Testcase>
+	 * @return collection of Testcases in a company
 	 */	
-	int getAllDefectsCount(long companyID);
+	 Collection<Testcase> getAllTestCases(long companyID);
 	/**
-	 * Returns total Number of All testcases for a company
-	 * int
-	 * @return total Number of All testcases for a company,
+	 * Returns a collection of Compulsory Testcases in a company
+	 * Collection<Testcase>
+	 * @return collection of Compulsory Testcases in a company,
 	 */	
-	int getAllTestCasesCount(long companyID);
+	 Collection<Testcase> getCompulsoryTestCases(long companyID);
 	/**
-	 * Returns total Number of All testplans for a company
-	 * int
-	 * @return total Number of All testplans for a company,
+	 * Returns a collection of Optional Testcases in a company
+	 * Collection<Testcase>
+	 * @return collection of Optional Testcases in a company,
 	 */	
-	int getAllTestPlansCount(long companyID);
+	 Collection<Testcase> getOptionalTestCases(long companyID);
+	/**
+	 * Returns a collection of Testplans in a company
+	 * Collection<Testplan>
+	 * @return collection of Testplans in a company
+	 */	
+	 Collection<Testplan> getAllTestPlans(long companyID);
+	/**
+	 * Returns a collection of Compulsory Testplans in a company
+	 * Collection<Testplan>
+	 * @return collection of Compulsory Testplans in a company,
+	 */	
+	 Collection<Testplan> getCompulsoryTestPlans(long companyID);
+	/**
+	 * Returns a collection of Optional Testplans in a company
+	 * Collection<Testcase>
+	 * @return collection of Optional Testplans in a company,
+	 */	
+	 Collection<Testplan> getOptionalTestPlans(long companyID);
 	/**
 	 * Returns a collection of All Sev1 Defects in a company 
 	 * Collection<Defect>
 	 * @return collection of All Sev1 Defects in a company,
-	 */
-	Collection<Defect> getAllSev1Defects(long companyID);
-	/**
-	 * Returns total Number of All Sev1 Defects for a company
-	 * int
-	 * @return total Number of All Sev1 Defects for a company,
 	 */	
-	int getAllSev1DefectsCount(long companyID);
+	 Collection<Defect> getAllSev1Defects(long companyID);
 	/**
 	 * Returns a collection of All Sev2 Defects in a company 
 	 * Collection<Defect>
 	 * @return collection of All Sev2 Defects in a company,
-	 */
-	Collection<Defect> getAllSev2Defects(long companyID);
-	/**
-	 * Returns total Number of All Sev2 Defects for a company
-	 * int
-	 * @return total Number of All Sev2 Defects for a company,
 	 */	
-	int getAllSev2DefectsCount(long companyID);
+	 Collection<Defect> getAllSev2Defects(long companyID);
 	/**
 	 * Returns a collection of All Sev3 Defects in a company 
 	 * Collection<Defect>
 	 * @return collection of All Sev3 Defects in a company,
-	 */
-	public Collection<Defect> getAllSev3Defects(long companyID);
-	/**
-	 * Returns total Number of All Sev3 Defects for a company
-	 * int
-	 * @return total Number of All Sev3 Defects for a company,
 	 */	
-	int getAllSev3DefectsCount(long companyID);
+	 Collection<Defect> getAllSev3Defects(long companyID);
 	/**
 	 * Returns a collection of All Sev4 Defects in a company 
 	 * Collection<Defect>
 	 * @return collection of All Sev4 Defects in a company,
-	 */	
-	Collection<Defect> getAllSev4Defects(long companyID);
-	/**
-	 * Returns total Number of All Sev4 Defects for a company
-	 * int
-	 * @return total Number of All Sev4 Defects for a company,
-	 */		
-	int getAllSev4DefectsCount(long companyID);
-
-
-	int getallTestersCount(long companyID);
-	Collection<TestcenterUser> getAllTesters(long companyID);
-
-	int getallSeniorTestersCount(long companyID);
-	Collection<TestcenterUser> getAllSeniorTesters(long companyID);
-
-	int getallDevelopersCount(long companyID);
-	Collection<TestcenterUser> getAllDevelopers(long companyID);
-
-	int getallSeniorDevelopersCount(long companyID);	
-	Collection<TestcenterUser> getAllSeniorDevelopers(long companyID);
+	 */
 	
+	 Collection<Defect> getAllSev4Defects(long companyID);
+	 Collection<TestcenterUser> getAllTesters(long companyID);
+	 Collection<TestcenterUser> getAllSeniorTesters(long companyID);
+	 Collection<TestcenterUser> getAllDevelopers(long companyID);
+	 Collection<TestcenterUser> getAllSeniorDevelopers(long companyID);
 	//TODO: add user details i.e getAllTestersCount(), getAllSeniorTestersCount()
 	
 }

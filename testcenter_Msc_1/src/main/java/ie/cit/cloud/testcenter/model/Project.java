@@ -53,13 +53,15 @@ public class Project {
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<Cycle> cycles = new ArrayList<Cycle>();   
 
-	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "PROJECT_JOIN_TESTPLANS", joinColumns = { @JoinColumn(name = "projectID") }, inverseJoinColumns = { @JoinColumn(name = "testplanID") })
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<Testplan> testplans  = new ArrayList<Testplan>();    	
 
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "PROJECT_JOIN_TESTCASES", joinColumns = { @JoinColumn(name = "projectID") }, inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
+	@JoinTable(name = "PROJECT_JOIN_TESTCASES",
+	joinColumns = { @JoinColumn(name = "projectID") },
+	inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<Testcase> testcases  = new ArrayList<Testcase>();    	
 

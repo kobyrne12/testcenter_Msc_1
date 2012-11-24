@@ -34,29 +34,28 @@ import javax.persistence.NoResultException;
  */
 public interface ProjectService {
 
-    Collection<Project> getAllProjects();
+	Collection<Project> getAllProjects();
 
-    void addNewProject(Project project);
+	void addNewProject(Project project);
 
-    Project getProject(long projectID);   
-    
-    Project getProjectByName(String projectName);
-    
-    Collection<Project> getAllChildProjects(Long projectID);
-    
-    void update(Project project);
-    
-    void remove(long projectID);
+	Project getProject(long projectID);   
 
-    void updateProjectWithId(long projectID, Project project);
-    
-    void updateProjectNameWithId(long projectID, Project project,String projectName);
-    
-    boolean updateProject(long projectID, Project project);
+	Project getProjectByName(String projectName);
+
+	Collection<Project> getAllChildProjects(Long projectID);
+
+	void update(Project project);
+
+	void remove(long projectID);
+
+	void updateProjectWithId(long projectID, Project project);
+
+	void updateProjectNameWithId(long projectID, Project project,String projectName);
+
+	boolean updateProject(long projectID, Project project);
 
 	Collection<Project> getAllProjectsByCompanyID(long companyID);
 	///////////////////////////////////
-
 	/**
 	 * Returns a collection of ChildProject for a project 
 	 * Collection<Project>
@@ -64,29 +63,23 @@ public interface ProjectService {
 	 */
 	Collection<Project> getChildProjects(long projectID);
 	/**
+	 * Returns a collection of All projects including the parent 
+	 * Collection<Project>
+	 * @return collection of All projects including the parent 
+	 */
+	Collection<Project> getParentAndChildProjects(long projectID);
+	/**
 	 * Returns a Projects Parent Project  
 	 * Project
 	 * @return a Projects Parent Project, otherwise null
 	 */	
-	Project getParentProject(long projectID);
-	/**
-	 * Returns total Number of All Cycles for a project incl child project cycles
-	 * int
-	 * @return total Number of All Cycles for a project incl child project cycles
-	 */	
-	int getCascadedCyclesCount(long projectID);
+	Project getParentProject(long projectID);	
 	/**
 	 * Returns a collection of All Cycles in a project incl all child project cycles 
 	 * Collection<Cycle>
 	 * @return collection of All  Cycles in a project incl all child project cycles,
 	 */	
-	Collection<Cycle> getCascadedCycles(long projectID);
-	/**
-	 * Returns total Number of All Test Runs for a project
-	 * int
-	 * @return total Number of All Test Runs for a project
-	 */	
-	int getCascadedTestRunsCount(long projectID);
+	Collection<Cycle> getParentAndChildCycles(long projectID);
 	/**
 	 * Returns a collection of All Testruns in a project incl all child project cycles 
 	 * Collection<Testrun>
@@ -94,99 +87,108 @@ public interface ProjectService {
 	 */	
 	Collection<Testrun> getCascadedAllTestRuns(long projectID);
 	/**
-	 * Returns total Number of All Required Testruns for a project
-	 * int
-	 * @return total Number of All Required Testruns for a project
-	 */		
-	int getCascadedRequiredTestRunsCount(long projectID);
-	/**
-	 * Returns a collection of Required Testruns in a project incl all child project cycles 
+	 * Returns a collection of Compulsory Testruns in a project incl all child project cycles 
 	 * Collection<Testrun>
-	 * @return collection of Required Testruns in a project incl all child project cycles,
+	 * @return collection of Compulsory Testruns in a project incl all child project cycles,
 	 */	
-	Collection<Testrun> getCascadedRequiredTestRuns(long projectID);
+	Collection<Testrun> getCascadedCompulsoryTestRuns(long projectID);
 	/**
-	 * Returns a collection of Testplans in a project incl all child project cycles 
-	 * Collection<Tesplan>
-	 * @return collection of Testplans in a project incl all child project cycles,
+	 * Returns a collection of Optional Testruns in a project incl all child project cycles 
+	 * Collection<Testrun>
+	 * @return collection of Optional Testruns in a project incl all child project cycles,
 	 */	
-	Collection<Testplan> getCascadedTestPlans(long projectID);
+	Collection<Testrun> getCascadedOptionalTestRuns(long projectID);
 	/**
 	 * Returns a collection of Testcases in a project incl all child project cycles 
 	 * Collection<Testcase>
 	 * @return collection of Testcases in a project incl all child project cycles,
 	 */	
-	Collection<Testcase> getCascadedTestCases(long projectID);
+	Collection<Testcase> getCascadedAllTestCases(long projectID);
+	/**
+	 * Returns a collection of Compulsory Testcases in a project incl all child project cycles 
+	 * Collection<Testcase>
+	 * @return collection of Compulsory Testcases in a project incl all child project cycles,
+	 */	
+	Collection<Testcase> getCascadedCompulsoryTestCases(long projectID);
+	/**
+	 * Returns a collection of Optional Testcases in a project incl all child project cycles 
+	 * Collection<Testcase>
+	 * @return collection of Optional Testcases in a project incl all child project cycles,
+	 */	
+	Collection<Testcase> getCascadedOptionalTestCases(long projectID);
+	/**
+	 * Returns a collection of Testplans in a project incl all child project cycles 
+	 * Collection<Testcase>
+	 * @return collection of Testplans in a project incl all child project cycles,
+	 */	
+	Collection<Testplan> getCascadedAllTestPlans(long projectID);
+	/**
+	 * Returns a collection of Compulsory Testplans in a project incl all child project cycles 
+	 * Collection<Testcase>
+	 * @return collection of Compulsory Testplans in a project incl all child project cycles,
+	 */		
+	Collection<Testplan> getCascadedCompulsoryTestPlans(long projectID);
+	/**
+	 * Returns a collection of Optional Testplans in a project incl all child project cycles 
+	 * Collection<Testcase>
+	 * @return collection of Optional Testplans in a project incl all child project cycles,
+	 */	
+	Collection<Testplan> getCascadedOptionalTestPlans(long projectID);
 	/**
 	 * Returns a collection of Defects in a project incl all child project cycles 
-	 * Collection<Defect>
+	 * Collection<Tesplan>
 	 * @return collection of Defects in a project incl all child project cycles,
 	 */	
 	Collection<Defect> getCascadedDefects(long projectID);
 	/**
-	 * Returns a collection of Sev 1 Defects in a project incl all child project cycles 
-	 * Collection<Defect>
-	 * @return collection of  Sev 1 Defects in a project incl all child project cycles,
+	 * Returns a collection of Sev1 Defects in a project incl all child project cycles 
+	 * Collection<Tesplan>
+	 * @return collection of Sev1 Defects in a project incl all child project cycles,
 	 */	
 	Collection<Defect> getCascadedSev1Defects(long projectID);
 	/**
-	 * Returns a collection of Sev 2 Defects in a project incl all child project cycles 
-	 * Collection<Defect>
-	 * @return collection of  Sev 2 Defects in a project incl all child project cycles,
+	 * Returns a collection of Sev2 Defects in a project incl all child project cycles 
+	 * Collection<Tesplan>
+	 * @return collection of Sev2 defects in a project incl all child project cycles,
 	 */	
 	Collection<Defect> getCascadedSev2Defects(long projectID);
 	/**
-	 * Returns a collection of Sev 3 Defects in a project incl all child project cycles 
-	 * Collection<Defect>
-	 * @return collection of  Sev 3 Defects in a project incl all child project cycles,
+	 * Returns a collection of Sev3 Defects in a project incl all child project cycles 
+	 * Collection<Tesplan>
+	 * @return collection of Sev3 Defects in a project incl all child project cycles,
 	 */	
 	Collection<Defect> getCascadedSev3Defects(long projectID);
 	/**
-	 * Returns a collection of Sev 4 Defects in a project incl all child project cycles 
-	 * Collection<Defect>
-	 * @return collection of  Sev 4 Defects in a project incl all child project cycles,
+	 * Returns a collection of Sev4 Defects in a project incl all child project cycles 
+	 * Collection<Tesplan>
+	 * @return collection of Sev4 Defects in a project incl all child project cycles,
 	 */	
 	Collection<Defect> getCascadedSev4Defects(long projectID);
+
 	/**
 	 * Returns a collection of Environments in a project incl all child project cycles 
-	 * Collection<Environment>
+	 * Collection<Tesplan>
 	 * @return collection of Environments in a project incl all child project cycles,
 	 */	
 	Collection<Environment> getCascadedEnvironments(long projectID);
 	/**
 	 * Returns a collection of Requirements in a project incl all child project cycles 
-	 * Collection<Requirement>
+	 * Collection<Tesplan>
 	 * @return collection of Requirements in a project incl all child project cycles,
 	 */	
 	Collection<Requirement> getCascadedRequirements(long projectID);
-	/**
-	 * Returns a collection of Testers in a project incl all child project cycles 
-	 * Collection<User>
-	 * @return collection of Testers in a project incl all child project cycles,
-	 */	
+
 	Collection<TestcenterUser> getCascadedTesters(long projectID);
-	/**
-	 * Returns a collection of Senior Testers in a project incl all child project cycles 
-	 * Collection<User>
-	 * @return collection of Senior Testers in a project incl all child project cycles,
-	 */	
+
 	Collection<TestcenterUser> getCascadedSnrTesters(long projectID);
-	/**
-	 * Returns a collection of Developers in a project incl all child project cycles 
-	 * Collection<User>
-	 * @return collection of Developers in a project incl all child project cycles,
-	 */	
+
 	Collection<TestcenterUser> getCascadedDevelopers(long projectID);
-	/**
-	 * Returns a collection of Senior Developers in a project incl all child project cycles 
-	 * Collection<User>
-	 * @return collection of Senior Developers in a project incl all child project cycles,
-	 */	
+
 	Collection<TestcenterUser> getCascadedSnrDevelopers(long projectID);
 	//////////////////////////////////
-	
+
 	ProjectSummary getProjectSummary(long projectID);	
-	
+
 	ColModelAndNames getColumnModelAndNames(Long companyID);
 
 	ProjectSummaryList getGridProjects(long companyID,String projectID, String cycleID,
@@ -196,5 +198,5 @@ public interface ProjectService {
 	RelatedObjectList getRelatedObjects(long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID);
-	
+
 }

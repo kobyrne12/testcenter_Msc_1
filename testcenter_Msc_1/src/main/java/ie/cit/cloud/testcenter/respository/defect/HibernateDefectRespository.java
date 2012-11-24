@@ -8,6 +8,7 @@ package ie.cit.cloud.testcenter.respository.defect;
  *
  */
 
+import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.respository.defect.DefectRepository;
 import java.util.Collection;
@@ -62,6 +63,14 @@ public class HibernateDefectRespository implements DefectRepository {
 		query.setParameter("defectName", defectName);
 		return (Defect) query.getSingleResult();
 	}
+
+	@SuppressWarnings("unchecked")
+	public  Collection<Defect> findAllDefectsByParentID(long defectID)
+	{
+		Query query = em.createQuery("from Defect where parentID=:parentID"); 		
+		query.setParameter("parentID", defectID);
+		return ( Collection<Defect>) query.getResultList();
+	}	
 
 
 }

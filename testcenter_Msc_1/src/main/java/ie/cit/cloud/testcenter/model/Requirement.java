@@ -63,7 +63,7 @@ public class Requirement {
 	@Basic    
 	private long lastModifiedByUserID;
 
-	@ManyToMany(mappedBy="requirements", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy="requirements", fetch=FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<Testrun> testruns = new ArrayList<Testrun>();
 

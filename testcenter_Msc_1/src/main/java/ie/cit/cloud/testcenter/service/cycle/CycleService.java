@@ -13,6 +13,7 @@ import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
@@ -21,7 +22,10 @@ import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+
+import javax.persistence.NoResultException;
 
 /**
  * Peforms business operation on cycle
@@ -47,148 +51,130 @@ public interface CycleService {
 	CycleSummary getCycleSummary(long cycleID);
 
 	int getMaxProjectPosNum(long projectID);
+
+	boolean isLatest(long cycleID);
 	//////////////////////////////////////////////
 
 	/**
-	 * Returns a collection of ChildCycles for a Cycles 
+	 * Returns a Total collection of child Cycles including the parent
 	 * Collection<Cycle>
-	 * @return collection of ChildCycles for a Cycles
+	 * @return Total collection of child Cycles including the parent
 	 */
-	Collection<Cycle> getChildCycles(long cycleID);  
+	 Collection<Cycle> getParentAndChildCycles(long cycleID);
 	/**
-	 * Returns a Cycles Parent Cycle  
+	 * Returns a collection of Child cycles for a cycle 
+	 * Collection<Cycle>
+	 * @return collection of Child cycles for a cycle
+	 */	
+	 Collection<Cycle> getChildCycles(long cycleID);
+	/**
+	 * Returns a Cycle Parent Cycle  
 	 * Cycle
-	 * @return a Cycles Parent Cycle, otherwise null
+	 * @return a Cycle Parent Cycle, otherwise null
 	 */	
-	Cycle getParentCycle(long cycleID);  	
+	 Cycle getParentCycle(long cycleID);
 	/**
-	 * Returns total Number of All Test Runs for a Cycle
-	 * int
-	 * @return total Number of All Test Runs for a Cycle
-	 */	
-	int getCascadedAllTestRunsCount(long cycleID);  
-	/**
-	 * Returns a collection of All Testruns in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of All Testruns in a cycle incl all child cycles 
 	 * Collection<Testrun>
-	 * @return collection of All Testruns in a Cycle incl all child Cycle cycles,
+	 * @return collection of All Testruns in a cycle incl all child cycles,
 	 */	
-	Collection<Testrun> getCascadedAllTestRuns(long cycleID);  
+	 Collection<Testrun> getCascadedAllTestRuns(long cycleID);
 	/**
-	 * Returns total Number of All Required Testruns for a Cycle
-	 * int
-	 * @return total Number of All Required Testruns for a Cycle
-	 */		
-	int getCascadedRequiredTestRunsCount(long cycleID);  
-	/**
-	 * Returns a collection of Required Testruns in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of All compulsory Testruns in a cycle incl all child cycles 
 	 * Collection<Testrun>
-	 * @return collection of Required Testruns in a Cycle incl all child Cycle cycles,
+	 * @return collection of All compulsory Testruns in a cycle incl all child cycles,
 	 */	
-	Collection<Testrun> getCascadedRequiredTestRuns(long cycleID);  
+	 Collection<Testrun> getCascadedCompulsoryTestRuns(long cycleID);
 	/**
-	 * Returns a collection of Testplans in a Cycle incl all child Cycle cycles 
-	 * Collection<Tesplan>
-	 * @return collection of Testplans in a Cycle incl all child Cycle cycles,
+	 * Returns a collection of All Optional Testruns in a cycle incl all child cycles 
+	 * Collection<Testrun>
+	 * @return collection of All Optional Testruns in a cycle incl all child cycles,
 	 */	
-	Collection<Testplan> getCascadedTestPlans(long cycleID);  
+	 Collection<Testrun> getCascadedOptionalTestRuns(long cycleID);
 	/**
-	 * Returns a collection of Testcases in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of All Testcases in a cycle incl all child cycles 
 	 * Collection<Testcase>
-	 * @return collection of Testcases in a Cycle incl all child Cycle cycles,
+	 * @return collection of All Testcases in a cycle incl all child cycles,
 	 */	
-	Collection<Testcase> getCascadedTestCases(long cycleID);  
+	 Collection<Testcase> getCascadedAllTestCases(long cycleID);
 	/**
-	 * Returns a collection of Defects in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of All Compulsory Testcases in a cycle incl all child cycles 
+	 * Collection<Testcase>
+	 * @return collection of All Compulsory Testcases in a cycle incl all child cycles,
+	 */	
+	 Collection<Testcase> getCascadedCompulsoryTestCases(long cycleID);
+	/**
+	 * Returns a collection of All Optional Testcases in a cycle incl all child cycles 
+	 * Collection<Testcase>
+	 * @return collection of All Optional Testcases in a cycle incl all child cycles,
+	 */	
+	 Collection<Testcase> getCascadedOptionalTestCases(long cycleID);
+	/**
+	 * Returns a collection of All Testplans in a cycle incl all child cycles 
+	 * Collection<Testplan>
+	 * @return collection of All Testplans in a cycle incl all child cycles,
+	 */	
+	 Collection<Testplan> getCascadedAllTestPlans(long cycleID);
+	/**
+	 * Returns a collection of All Compulsory Testplans in a cycle incl all child cycles 
+	 * Collection<Testplan>
+	 * @return collection of All Compulsory Testplans in a cycle incl all child cycles,
+	 */	
+	 Collection<Testplan> getCascadedCompulsoryTestPlans(long cycleID);
+	/**
+	 * Returns a collection of All Optional Testplans in a cycle incl all child cycles 
+	 * Collection<Testplan>
+	 * @return collection of All Optional Testplans in a cycle incl all child cycles,
+	 */	
+	 Collection<Testplan> getCascadedOptionalTestPlans(long cycleID);
+	/**
+	 * Returns a collection of Defects in a cycle incl all child cycles 
 	 * Collection<Defect>
-	 * @return collection of Defects in a Cycle incl all child Cycle cycles,
+	 * @return collection of Defects in a cycle incl all child cycles,
 	 */	
-	Collection<Defect> getCascadedDefects(long cycleID);  
+	 Collection<Defect> getCascadedDefects(long cycleID);
 	/**
-	 * Returns a collection of Sev 1 Defects in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of Sev1 Defects in a cycle incl all child cycles 
 	 * Collection<Defect>
-	 * @return collection of  Sev 1 Defects in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<Defect> getCascadedSev1Defects(long cycleID);  
+	 * @return collection of Sev 1 Defects in a cycle incl all child cycles,
+	 */		
+	 Collection<Defect> getCascadedSev1Defects(long cycleID) ;
 	/**
-	 * Returns a collection of Sev 2 Defects in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of Sev2 Defects in a cycle incl all child cycles 
 	 * Collection<Defect>
-	 * @return collection of  Sev 2 Defects in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<Defect> getCascadedSev2Defects(long cycleID);  
+	 * @return collection of Sev 2 Defects in a cycle incl all child cycles,
+	 */		
+	 Collection<Defect> getCascadedSev2Defects(long cycleID) ;
 	/**
-	 * Returns a collection of Sev 3 Defects in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of Sev 3 Defects in a cycle incl all child cycles 
 	 * Collection<Defect>
-	 * @return collection of  Sev 3 Defects in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<Defect> getCascadedSev3Defects(long cycleID);  
+	 * @return collection of Sev 3 Defects in a cycle incl all child cycles,
+	 */		
+	 Collection<Defect> getCascadedSev3Defects(long cycleID) ;
 	/**
-	 * Returns a collection of Sev 4 Defects in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of Sev 4 Defects in a cycle incl all child cycles 
 	 * Collection<Defect>
-	 * @return collection of  Sev 4 Defects in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<Defect> getCascadedSev4Defects(long cycleID);  
+	 * @return collection of Sev 4 Defects in a cycle incl all child cycles,
+	 */		
+	 Collection<Defect> getCascadedSev4Defects(long cycleID) ;
 	/**
-	 * Returns a collection of Environments in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of Environments in a cycle incl all child cycles 
 	 * Collection<Environment>
-	 * @return collection of Environments in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<Environment> getCascadedEnvironments(long cycleID);  
+	 * @return collection of Environments in a cycle incl all child cycles,
+	 */		
+	 Collection<Environment> getCascadedEnvironments(long cycleID) ;
 	/**
-	 * Returns a collection of Requirements in a Cycle incl all child Cycle cycles 
+	 * Returns a collection of Requirements in a cycle incl all child cycles 
 	 * Collection<Requirement>
-	 * @return collection of Requirements in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<Environment> getCascadedRequirements(long cycleID);  
-	/**
-	 * Returns a collection of Testers in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Testers in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<TestcenterUser> getCascadedTesters(long cycleID);  
-	/**
-	 * Returns a collection of Senior Testers in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Senior Testers in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<TestcenterUser> getCascadedSnrTesters(long cycleID);  
-	/**
-	 * Returns a collection of Developers in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Developers in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<TestcenterUser> getCascadedDevelopers(long cycleID);  
-	/**
-	 * Returns a collection of Senior Developers in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Senior Developers in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<TestcenterUser> getCascadedSnrDevelopers(long cycleID);  
-	/**
-	 * Returns a collection of Code impact Rules in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Code impact Rules in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<TestcenterUser> getCascadedCodeImpactRules(long cycleID);  
-	/**
-	 * Returns a collection of Code Requirement Rules in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Code Requirement Rules in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<TestcenterUser> getCascadedRequirementRules(long cycleID);  
-	/**
-	 * Returns a collection of Test History Rules in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Test History Rules in a Cycle incl all child Cycle cycles,
-	 */	
-	Collection<TestcenterUser> getCascadedTestHistoryRules(long cycleID);  
-	/**
-	 * Returns a collection of Defect Rules in a Cycle incl all child Cycle cycles 
-	 * Collection<User>
-	 * @return collection of Defect Rules in a Cycle incl all child Cycle cycles,
-	 * 
-	 */	
-	Collection<TestcenterUser> getCascadedDefectRules(long cycleID);  
+	 * @return collection of Requirements in a cycle incl all child cycles,
+	 */		
+	 Collection<Requirement> getCascadedRequirements(long cycleID) ;
 	
+	 Collection<TestcenterUser> getCascadedTesters(long cycleID);
+	 Collection<TestcenterUser> getCascadedSnrTesters(long cycleID);
+	 Collection<TestcenterUser> getCascadedDevelopers(long cycleID);
+	 Collection<TestcenterUser> getCascadedSnrDevelopers(long cycleID);
+
 	//////////////////////////////////////////////
 	CycleSummaryList getGridCycles(long companyID,String projectID, String testplanID,
 			String testcaseID, String userID, String environmentID,
@@ -198,6 +184,5 @@ public interface CycleService {
 	
 	Collection<Cycle> getAllChildCycles(long cycleID);
 
-	boolean isLatest(long cycleID);
 
 }

@@ -10,6 +10,8 @@ package ie.cit.cloud.testcenter.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +20,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
@@ -39,6 +44,13 @@ public class Defect {
 	@NotEmpty(message = "Summary is required.")
 	private String defectSummary;  	   
 
+	@Basic    
+	private long parentID; 
+	@Basic    
+	private boolean parent;  
+	@Basic    
+	private boolean child; 
+	
 	@Basic 
 	private int severity;   	
 	@Basic 
@@ -62,7 +74,21 @@ public class Defect {
 	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
     private Collection<TestcenterUser> users = new ArrayList<TestcenterUser>();
-		
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "creationDate", nullable = false, length = 10) 
+	private Date creationDate;	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "lastModifiedDate", nullable = false, length = 10) 
+	private Date lastModifiedDate;
+	
+	@Basic    
+	private long createdByUserID;	
+	@Basic    
+	private long lastModifiedByUserID;	
+	@Basic    
+	private long currentOwnerUserID;
+	
 	public Defect() {		
 	}
 	/**
@@ -76,13 +102,15 @@ public class Defect {
 	public Defect(Long companyID, String defectSummary, int severity,
 			String defectDetails, Long defectSectionID, String defectType)
 	{
-		this(companyID,defectSummary,severity,defectDetails,defectSectionID,defectType,
-				null,null,null);
-	}
-
+		this(companyID,defectSummary,0,false,false,severity,defectDetails,defectSectionID,defectType,
+				null,null,null,new Date(),new Date(),0,0,0);
+	}	
 	/**
 	 * @param companyID
 	 * @param defectSummary
+	 * @param parentID
+	 * @param parent
+	 * @param child
 	 * @param severity
 	 * @param defectDetails
 	 * @param defectSectionID
@@ -90,13 +118,24 @@ public class Defect {
 	 * @param testruns
 	 * @param requirements
 	 * @param users
+	 * @param creationDate
+	 * @param lastModifiedDate
+	 * @param createdByUserID
+	 * @param lastModifiedByUserID
+	 * @param currentOwnerUserID
 	 */
-	public Defect(Long companyID, String defectSummary, int severity,
-			String defectDetails, Long defectSectionID, String defectType,
+	public Defect(Long companyID, String defectSummary, long parentID,
+			boolean parent, boolean child, int severity, String defectDetails,
+			Long defectSectionID, String defectType,
 			Collection<Testrun> testruns, Collection<Requirement> requirements,
-			Collection<TestcenterUser> users) {
+			Collection<TestcenterUser> users, Date creationDate,
+			Date lastModifiedDate, long createdByUserID,
+			long lastModifiedByUserID, long currentOwnerUserID) {
 		this.companyID = companyID;
 		this.defectSummary = defectSummary;
+		this.parentID = parentID;
+		this.parent = parent;
+		this.child = child;
 		this.severity = severity;
 		this.defectDetails = defectDetails;
 		this.defectSectionID = defectSectionID;
@@ -104,6 +143,11 @@ public class Defect {
 		this.testruns = testruns;
 		this.requirements = requirements;
 		this.users = users;
+		this.creationDate = creationDate;
+		this.lastModifiedDate = lastModifiedDate;
+		this.createdByUserID = createdByUserID;
+		this.lastModifiedByUserID = lastModifiedByUserID;
+		this.currentOwnerUserID = currentOwnerUserID;
 	}
 	/**
 	 * @return the companyID
@@ -218,6 +262,102 @@ public class Defect {
 	 */
 	public Long getDefectID() {
 		return defectID;
+	}
+	/**
+	 * @return the parentID
+	 */
+	public long getParentID() {
+		return parentID;
+	}
+	/**
+	 * @param parentID the parentID to set
+	 */
+	public void setParentID(long parentID) {
+		this.parentID = parentID;
+	}
+	/**
+	 * @return the parent
+	 */
+	public boolean isParent() {
+		return parent;
+	}
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(boolean parent) {
+		this.parent = parent;
+	}
+	/**
+	 * @return the child
+	 */
+	public boolean isChild() {
+		return child;
+	}
+	/**
+	 * @param child the child to set
+	 */
+	public void setChild(boolean child) {
+		this.child = child;
+	}
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+	/**
+	 * @return the lastModifiedDate
+	 */
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+	/**
+	 * @param lastModifiedDate the lastModifiedDate to set
+	 */
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+	/**
+	 * @return the createdByUserID
+	 */
+	public long getCreatedByUserID() {
+		return createdByUserID;
+	}
+	/**
+	 * @param createdByUserID the createdByUserID to set
+	 */
+	public void setCreatedByUserID(long createdByUserID) {
+		this.createdByUserID = createdByUserID;
+	}
+	/**
+	 * @return the lastModifiedByUserID
+	 */
+	public long getLastModifiedByUserID() {
+		return lastModifiedByUserID;
+	}
+	/**
+	 * @param lastModifiedByUserID the lastModifiedByUserID to set
+	 */
+	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+		this.lastModifiedByUserID = lastModifiedByUserID;
+	}
+	/**
+	 * @return the currentOwnerUserID
+	 */
+	public long getCurrentOwnerUserID() {
+		return currentOwnerUserID;
+	}
+	/**
+	 * @param currentOwnerUserID the currentOwnerUserID to set
+	 */
+	public void setCurrentOwnerUserID(long currentOwnerUserID) {
+		this.currentOwnerUserID = currentOwnerUserID;
 	}	
 	
 }

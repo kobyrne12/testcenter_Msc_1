@@ -96,7 +96,5 @@ public interface CycleRepository {
 	int getMaxProjectPosNum(long projectID);
 
 	Collection<Cycle> findAllCyclesByParentID(long cycleID);
-
-	Collection<Cycle> findAllChildCycles(Cycle cycle);
 	
 }

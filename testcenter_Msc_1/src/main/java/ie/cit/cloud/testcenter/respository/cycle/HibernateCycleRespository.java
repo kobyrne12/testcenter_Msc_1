@@ -91,9 +91,4 @@ public class HibernateCycleRespository implements CycleRepository {
     	return (query.getSingleResult()) != null ? (Integer)query.getSingleResult() : 0 ;    	
     }
 
-	public Collection<Cycle> findAllChildCycles(Cycle cycle) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

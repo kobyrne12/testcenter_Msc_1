@@ -10,6 +10,15 @@ package ie.cit.cloud.testcenter.service.testrun;
 
 import java.util.Collection;
 
+import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Environment;
+import ie.cit.cloud.testcenter.model.Requirement;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.TestcenterUser;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 
 /**
@@ -30,4 +39,42 @@ public interface TestrunService {
     boolean isLatest(long testrunID);
     
     Collection<Testrun> getTestHistory(long testrunID);
+    
+    /**
+   	 * Returns true if a testruns' priority is less than or equal to cycle priority 
+   	 * boolean
+   	 * @return true if a testruns' priority is less than or equal to cycle priority,otherwise false
+   	 */	
+   	boolean isRequired(long testrunID);	
+	//////////////////////////////////////////////
+    /**
+	  * Returns a testruns Cycle
+	  * Cycle
+	  * @return a testruns Cycle
+	  */		
+	 Cycle getCycle(long testrunID);
+	 /**
+	  * Returns a testruns Testcase
+	  * Testcase
+	  * @return a testruns Testcase
+	  */	
+	 Testcase getTestcase(long testrunID);
+	 /**
+	  * Returns a testruns Project
+	  * Project
+	  * @return a testruns Project
+	  */	
+	 Project getProject(long testrunID);
+   	/**
+	 * Returns a collection of All Testplans in a testrun incl all child testruns 
+	 * Collection<Testplan>
+	 * @return collection of All Testplans in a testrun incl all child testruns,
+	 */	
+	 Testplan getTestPlan(long testrunID);	
+	
+	 Collection<TestcenterUser> getCascadedTesters(long defectID);
+	 Collection<TestcenterUser> getCascadedSnrTesters(long defectID);
+	 Collection<TestcenterUser> getCascadedDevelopers(long defectID);
+	 Collection<TestcenterUser> getCascadedSnrDevelopers(long defectID);
+   	///////////////////////
 }

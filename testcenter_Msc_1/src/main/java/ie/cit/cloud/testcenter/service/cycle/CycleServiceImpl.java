@@ -123,15 +123,16 @@ public class CycleServiceImpl implements CycleService {
 		}		 
 		return cycles;
 	}
-
+	
+	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Collection<Cycle> getAllChildCycles(long cycleID) {
 		return cycleRepo.findAllCyclesByParentID(cycleID);
 	}
-
+	
+	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public int getMaxProjectPosNum(long projectID) {		
 		return cycleRepo.getMaxProjectPosNum(projectID);
-	}	   
-		
+	}			
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public CycleSummary getCycleSummary(long cycleID) {
@@ -553,9 +554,6 @@ public class CycleServiceImpl implements CycleService {
 //		cycleSummary = tempCycleSummary;
 //	}
 	
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////              Related Objects             ////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Returns true if this cycle is the latest cycle for a project 
 	 * boolean
@@ -577,11 +575,40 @@ public class CycleServiceImpl implements CycleService {
 			return true;
 		}
 	} 
-
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////              Related Objects             ////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 	/**
-	 * Returns a collection of ChildProject for a project 
+	 * Returns a Total collection of child Cycles including the parent
 	 * Collection<Cycle>
-	 * @return collection of ChildProject for a project
+	 * @return Total collection of child Cycles including the parent
+	 */
+	public Collection<Cycle> getParentAndChildCycles(long cycleID)
+	{ 
+		Cycle cycle = getCycle(cycleID);
+		Collection<Cycle> cycles = new ArrayList<Cycle>(); 
+		cycles.add(cycle);
+		if(cycle.isParent())
+		{   	
+			try{
+				Collection<Cycle> childcyles = getAllChildCycles(cycleID);
+				if(childcyles != null && !childcyles.isEmpty())
+				{
+					cycles.addAll(childcyles);				
+				}						
+			}
+			catch(NoResultException nre)			
+			{			
+			}			
+		}
+		return cycles;	
+	}
+	/**
+	 * Returns a collection of Child cycles for a cycle 
+	 * Collection<Cycle>
+	 * @return collection of Child cycles for a cycle
 	 */	
 	public Collection<Cycle> getChildCycles(long cycleID)
 	{		
@@ -628,303 +655,368 @@ public class CycleServiceImpl implements CycleService {
 		{
 			return null;
 		}
-	} 
+	} 	
 	/**
-	 * Returns total Number of All Test Runs for a cycle incl child cycles
-	 * int
-	 * @return total Number of All Test Runs for a cycle incl child cycles
-	 */	
-	public int getCascadedAllTestRunsCount(long cycleID)
-	{
-		if(getCascadedAllTestRuns(cycleID) != null)
-		{
-			return getCascadedAllTestRuns(cycleID).size();
-		}
-		else
-		{
-			return 0;
-		}		
-	}	
-	/**
-	 * Returns a collection of All Testruns in a project incl all child project cycles 
+	 * Returns a collection of All Testruns in a cycle incl all child cycles 
 	 * Collection<Testrun>
-	 * @return collection of All Testruns in a project incl all child project cycles,
+	 * @return collection of All Testruns in a cycle incl all child cycles,
 	 */	
 	public Collection<Testrun> getCascadedAllTestRuns(long cycleID)
 	{
-		Cycle cycle = getCycle(cycleID);
-		Collection<Testrun> allTestruns = new ArrayList<Testrun>();
-		if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
+		Collection<Cycle> cycles = getParentAndChildCycles(cycleID);
+		if(cycles == null || cycles.isEmpty())
 		{
-			allTestruns.addAll(cycle.getTestruns());							
-		}   
-		if(cycle.isParent())
-		{  
-			Collection<Cycle> childCycles = getChildCycles(cycleID);
-			if(childCycles != null && !childCycles.isEmpty())
+			return null;
+		}
+		Collection<Testrun> allTestruns = new ArrayList<Testrun>();
+		for(final Cycle cycle : cycles)
+		{		
+			if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
 			{
-				for(final Cycle childCycle : childCycles)
-				{
-					if(childCycle.isChild())
-					{
-						allTestruns.addAll(childCycle.getTestruns());								
-					}
-				}
-			}
-		}    	
+				allTestruns.addAll(cycle.getTestruns());	
+			}  			
+		}
 		return allTestruns;		
 	}
-
-
-	/////////////////////
 	/**
-	 * Returns total Number of required Test Runs for a cycle incl child cycles
-	 * int
-	 * @return total Number of required Test Runs for a cycle incl child cycles
-	 */	
-	public int getCascadedRequiredTestRunsCount(long cycleID)
-	{
-		if(getCascadedRequiredTestRuns(cycleID) != null)
-		{
-			return getCascadedRequiredTestRuns(cycleID).size();
-		}
-		else
-		{
-			return 0;
-		}		
-	}	
-	
-	/**
-	 * Returns a collection of required Testruns in a project incl all child project cycles 
+	 * Returns a collection of All compulsory Testruns in a cycle incl all child cycles 
 	 * Collection<Testrun>
-	 * @return collection of required Testruns in a project incl all child project cycles,
+	 * @return collection of All compulsory Testruns in a cycle incl all child cycles,
 	 */	
-	public Collection<Testrun> getCascadedRequiredTestRuns(long cycleID)
+	public Collection<Testrun> getCascadedCompulsoryTestRuns(long cycleID)
 	{
-		Cycle cycle = getCycle(cycleID);
-		Collection<Testrun> requiredTestruns = new ArrayList<Testrun>();
-		if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
+		Collection<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
 		{
-			for(final Testrun testrun : cycle.getTestruns())
+			return null;
+		}			
+		Collection<Testrun> compulsoryTestruns = new ArrayList<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrunService.isRequired(testrun.getTestrunID()))
 			{
-				if(testrun.getPriority() <= cycle.getRequiredPriority())
-				{
-					requiredTestruns.add(testrun);						
-				}
-			}							
-		}  
-		if(cycle.isParent())
-		{  
-			Collection<Cycle> childCycles = getChildCycles(cycleID);
-			if(childCycles != null && !childCycles.isEmpty())
-			{
-				for(final Cycle childCycle : childCycles)
-				{
-					if(childCycle.isChild())
-					{
-						for(final Testrun childCycleTestrun : childCycle.getTestruns())
-						{
-							if(childCycleTestrun.getPriority() <= cycle.getRequiredPriority())
-							{
-								requiredTestruns.add(childCycleTestrun);
-							}
-						}							
-					}
-				}
+				compulsoryTestruns.add(testrun);
 			}
-		}    	
-		return requiredTestruns;		
-	}	
-
-	public Collection<Testplan> getCascadedTestPlans(long cycleID)
-	{
-		Cycle cycle = getCycle(cycleID);
-		Collection<Testplan> testplans = new ArrayList<Testplan>();
-		if(getCascadedRequiredTestRuns(cycle.getCycleID()) != null && !getCascadedRequiredTestRuns(cycle.getCycleID()).isEmpty())
-		{
-			for(final Testrun testrun : getCascadedRequiredTestRuns(cycle.getCycleID()))
-			{
-				Testcase testcase = testcaseService.getTestcase(testrun.getTestcaseID());
-				testplans.add(testplanService.getTestplan(testcase.getTestplanID()));			
-			}							
-		}  
-		if(cycle.isParent())
-		{  
-			Collection<Cycle> childCycles = getChildCycles(cycleID);
-			if(childCycles != null && !childCycles.isEmpty())
-			{
-				for(final Cycle childCycle : childCycles)
-				{
-					if(childCycle.isChild())
-					{
-						for(final Testrun childCycleTestrun : getCascadedRequiredTestRuns(childCycle.getCycleID()))
-						{
-							Testcase childTestcase = testcaseService.getTestcase(childCycleTestrun.getTestcaseID());
-							testplans.add(testplanService.getTestplan(childTestcase.getTestplanID()));								
-						}							
-					}
-				}
-			}
-		}    	
-		return testplans;	
+		}		
+		return compulsoryTestruns;		
 	}
-	public Collection<Testcase> getCascadedTestCases(long cycleID)
+	/**
+	 * Returns a collection of All Optional Testruns in a cycle incl all child cycles 
+	 * Collection<Testrun>
+	 * @return collection of All Optional Testruns in a cycle incl all child cycles,
+	 */	
+	public Collection<Testrun> getCascadedOptionalTestRuns(long cycleID)
 	{
-		Cycle cycle = getCycle(cycleID);
-		Collection<Testcase> testcases = new ArrayList<Testcase>();
-		if(getCascadedRequiredTestRuns(cycle.getCycleID()) != null && !getCascadedRequiredTestRuns(cycle.getCycleID()).isEmpty())
+		Collection<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
 		{
-			for(final Testrun testrun : getCascadedRequiredTestRuns(cycle.getCycleID()))
+			return null;
+		}			
+		Collection<Testrun> optionalTestruns = new ArrayList<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(!testrunService.isRequired(testrun.getTestrunID()))
 			{
-				testcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));					
-			}							
-		}  
-		if(cycle.isParent())
-		{  
-			Collection<Cycle> childCycles = getChildCycles(cycleID);
-			if(childCycles != null && !childCycles.isEmpty())
-			{
-				for(final Cycle childCycle : childCycles)
-				{
-					if(childCycle.isChild())
-					{
-						for(final Testrun childCycleTestrun : getCascadedRequiredTestRuns(childCycle.getCycleID()))
-						{
-							testcases.add(testcaseService.getTestcase(childCycleTestrun.getTestcaseID()));															
-						}							
-					}
-				}
+				optionalTestruns.add(testrun);
 			}
-		}    	
-		return testcases;	
+		}		
+		return optionalTestruns;		
+	}
+	/**
+	 * Returns a collection of All Testcases in a cycle incl all child cycles 
+	 * Collection<Testcase>
+	 * @return collection of All Testcases in a cycle incl all child cycles,
+	 */	
+	public Collection<Testcase> getCascadedAllTestCases(long cycleID)
+	{
+		Collection<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
+			{
+				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
+			}
+		}		
+		return allTestcases;
+	}
+	/**
+	 * Returns a collection of All Compulsory Testcases in a cycle incl all child cycles 
+	 * Collection<Testcase>
+	 * @return collection of All Compulsory Testcases in a cycle incl all child cycles,
+	 */	
+	public Collection<Testcase> getCascadedCompulsoryTestCases(long cycleID)
+	{
+		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
+			{
+				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
+			}
+		}		
+		return allTestcases;
+	}
+	/**
+	 * Returns a collection of All Optional Testcases in a cycle incl all child cycles 
+	 * Collection<Testcase>
+	 * @return collection of All Optional Testcases in a cycle incl all child cycles,
+	 */	
+	public Collection<Testcase> getCascadedOptionalTestCases(long cycleID)
+	{
+		Collection<Testrun> allTestruns = getCascadedOptionalTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
+			{
+				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
+			}
+		}		
+		return allTestcases;
+	}
+	/**
+	 * Returns a collection of All Testplans in a cycle incl all child cycles 
+	 * Collection<Testplan>
+	 * @return collection of All Testplans in a cycle incl all child cycles,
+	 */	
+	public Collection<Testplan> getCascadedAllTestPlans(long cycleID)
+	{		
+		Collection<Testcase> allTestcases = getCascadedAllTestCases(cycleID);
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		for(final Testcase testcase : allTestcases)
+		{				
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			{
+				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
+			}
+		}		
+		return allTestplans;
+	}
+	/**
+	 * Returns a collection of All Compulsory Testplans in a cycle incl all child cycles 
+	 * Collection<Testplan>
+	 * @return collection of All Compulsory Testplans in a cycle incl all child cycles,
+	 */	
+	public Collection<Testplan> getCascadedCompulsoryTestPlans(long cycleID)
+	{		
+		Collection<Testcase> allTestcases = getCascadedCompulsoryTestCases(cycleID);
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		for(final Testcase testcase : allTestcases)
+		{				
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			{
+				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
+			}
+		}		
+		return allTestplans;
+	}
+	/**
+	 * Returns a collection of All Optional Testplans in a cycle incl all child cycles 
+	 * Collection<Testplan>
+	 * @return collection of All Optional Testplans in a cycle incl all child cycles,
+	 */	
+	public Collection<Testplan> getCascadedOptionalTestPlans(long cycleID)
+	{		
+		Collection<Testcase> allTestcases = getCascadedOptionalTestCases(cycleID);
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		for(final Testcase testcase : allTestcases)
+		{				
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			{
+				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
+			}
+		}		
+		return allTestplans;
 	}	
+	/**
+	 * Returns a collection of Defects in a cycle incl all child cycles 
+	 * Collection<Defect>
+	 * @return collection of Defects in a cycle incl all child cycles,
+	 */	
 	public Collection<Defect> getCascadedDefects(long cycleID)
+	{				
+		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Defect> defects = new ArrayList<Defect>();  
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
+			{
+				defects.addAll(testrun.getDefects());
+			}
+			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
+			{
+				for(final Requirement requirement : testrun.getRequirements())
+				{
+					if(requirement.getDefects() != null && !requirement.getDefects().isEmpty())
+					{
+						defects.addAll(requirement.getDefects());
+					}
+				}
+			}			
+		}		
+		return defects;					
+	}
+	/**
+	 * Returns a collection of Sev1 Defects in a cycle incl all child cycles 
+	 * Collection<Defect>
+	 * @return collection of Sev 1 Defects in a cycle incl all child cycles,
+	 */		
+	public Collection<Defect> getCascadedSev1Defects(long cycleID) 
+	{		
+		Collection<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Defect> sev1defects = new ArrayList<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev1(defect.getDefectID()))
+			{
+				sev1defects.add(defect);						
+			}
+		}	
+		return sev1defects;
+	}
+	/**
+	 * Returns a collection of Sev2 Defects in a cycle incl all child cycles 
+	 * Collection<Defect>
+	 * @return collection of Sev 2 Defects in a cycle incl all child cycles,
+	 */		
+	public Collection<Defect> getCascadedSev2Defects(long cycleID) 
+	{		
+		Collection<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Defect> sev2defects = new ArrayList<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev2(defect.getDefectID()))
+			{
+				sev2defects.add(defect);						
+			}
+		}	
+		return sev2defects;
+	}
+	/**
+	 * Returns a collection of Sev 3 Defects in a cycle incl all child cycles 
+	 * Collection<Defect>
+	 * @return collection of Sev 3 Defects in a cycle incl all child cycles,
+	 */		
+	public Collection<Defect> getCascadedSev3Defects(long cycleID) 
+	{		
+		Collection<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Defect> sev3defects = new ArrayList<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev3(defect.getDefectID()))
+			{
+				sev3defects.add(defect);						
+			}
+		}	
+		return sev3defects;
+	}
+	/**
+	 * Returns a collection of Sev 4 Defects in a cycle incl all child cycles 
+	 * Collection<Defect>
+	 * @return collection of Sev 4 Defects in a cycle incl all child cycles,
+	 */		
+	public Collection<Defect> getCascadedSev4Defects(long cycleID) 
+	{		
+		Collection<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Collection<Defect> sev4defects = new ArrayList<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev4(defect.getDefectID()))
+			{
+				sev4defects.add(defect);						
+			}
+		}	
+		return sev4defects;
+	}
+	/**
+	 * Returns a collection of Environments in a cycle incl all child cycles 
+	 * Collection<Environment>
+	 * @return collection of Environments in a cycle incl all child cycles,
+	 */		
+	public Collection<Environment> getCascadedEnvironments(long cycleID) 
 	{
-		Cycle cycle = getCycle(cycleID);
-		Collection<Defect> defects = new ArrayList<Defect>();
-		if(getCascadedRequiredTestRuns(cycle.getCycleID()) != null && !getCascadedRequiredTestRuns(cycle.getCycleID()).isEmpty())
+		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
 		{
-			for(final Testrun testrun : getCascadedRequiredTestRuns(cycle.getCycleID()))
+			return null;
+		}	
+		Collection<Environment> environements = new ArrayList<Environment>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty())
 			{
-				defects.addAll(testrun.getDefects());	
-								
-				for(final Requirement requirement : testrun.getRequirements())
-				{
-					defects.addAll(requirement.getDefects());	
-				}								
-			}							
-		}  
-		if(cycle.isParent())
-		{  
-			Collection<Cycle> childCycles = getChildCycles(cycleID);
-			if(childCycles != null && !childCycles.isEmpty())
-			{
-				for(final Cycle childCycle : childCycles)
-				{
-					if(childCycle.isChild())
-					{
-						for(final Testrun childCycleTestrun : getCascadedRequiredTestRuns(childCycle.getCycleID()))
-						{
-							defects.addAll(childCycleTestrun.getDefects());	
-							
-							for(final Requirement childRequirement : childCycleTestrun.getRequirements())
-							{
-								defects.addAll(childRequirement.getDefects());	
-							}															
-						}							
-					}
-				}
+				environements.addAll(testrun.getEnvironments());
 			}
-		}    	
-		return defects;	
-	}	
-
-
-	public Collection<Defect> getCascadedSev1Defects(long cycleID) {
-		Cycle cycle = getCycle(cycleID);
-		Collection<Defect> defects = new ArrayList<Defect>();
-		if(getCascadedRequiredTestRuns(cycle.getCycleID()) != null && !getCascadedRequiredTestRuns(cycle.getCycleID()).isEmpty())
+		}
+		return environements;		
+	}
+	/**
+	 * Returns a collection of Requirements in a cycle incl all child cycles 
+	 * Collection<Requirement>
+	 * @return collection of Requirements in a cycle incl all child cycles,
+	 */		
+	public Collection<Requirement> getCascadedRequirements(long cycleID) 
+	{
+		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
 		{
-			for(final Testrun testrun : getCascadedRequiredTestRuns(cycle.getCycleID()))
+			return null;
+		}	
+		Collection<Requirement> requirements = new ArrayList<Requirement>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
 			{
-				for(final Defect testRunDefect : testrun.getDefects())
-				{
-					if(defectService.isSev1(testRunDefect.getDefectID()))
-					{
-						defects.addAll(testrun.getDefects());
-					}
-				}					
-				for(final Requirement requirement : testrun.getRequirements())
-				{
-					for(final Defect requirementDefect : requirement.getDefects())
-					{
-						if(defectService.isSev1(requirementDefect.getDefectID()))
-						{
-							defects.addAll(requirement.getDefects());
-						}
-					}							
-				}											
-			}							
-		}  
-		if(cycle.isParent())
-		{  
-			Collection<Cycle> childCycles = getChildCycles(cycleID);
-			if(childCycles != null && !childCycles.isEmpty())
-			{
-				for(final Cycle childCycle : childCycles)
-				{
-					if(childCycle.isChild())
-					{ 
-						for(final Testrun childCycleTestrun : getCascadedRequiredTestRuns(childCycle.getCycleID()))
-						{
-							for(final Defect testRunDefect : childCycleTestrun.getDefects())
-							{
-								if(defectService.isSev1(testRunDefect.getDefectID()))
-								{
-									defects.add(testRunDefect);
-								}
-							}					
-							for(final Requirement requirement : childCycleTestrun.getRequirements())
-							{
-								for(final Defect requirementDefect : requirement.getDefects())
-								{
-									if(defectService.isSev1(requirementDefect.getDefectID()))
-									{
-										defects.add(requirementDefect);
-									}
-								}							
-							}																	
-						}							
-					}
-				}
+				requirements.addAll(testrun.getRequirements());
 			}
-		}    	
-		return defects;	
-	}
-
-	public Collection<Defect> getCascadedSev2Defects(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<Defect> getCascadedSev3Defects(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<Defect> getCascadedSev4Defects(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<Environment> getCascadedEnvironments(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<Environment> getCascadedRequirements(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
+		}
+		return requirements;		
 	}
 
 	public Collection<TestcenterUser> getCascadedTesters(long cycleID) {
@@ -945,26 +1037,5 @@ public class CycleServiceImpl implements CycleService {
 	public Collection<TestcenterUser> getCascadedSnrDevelopers(long cycleID) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public Collection<TestcenterUser> getCascadedCodeImpactRules(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<TestcenterUser> getCascadedRequirementRules(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<TestcenterUser> getCascadedTestHistoryRules(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<TestcenterUser> getCascadedDefectRules(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+	}	
 }

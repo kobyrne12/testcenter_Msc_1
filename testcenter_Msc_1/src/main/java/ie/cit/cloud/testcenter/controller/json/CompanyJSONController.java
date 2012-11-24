@@ -1,5 +1,6 @@
 package ie.cit.cloud.testcenter.controller.json;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -168,28 +169,34 @@ public class CompanyJSONController {
     	return testcaseService.getTestcase(testcaseID);    	
     }    
     // POST Test Case
-    @RequestMapping(value = "/{companyID}/testcase/{testcaseID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{companyID}/testcase/{testcaseID}/project/{projectID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void createNewTestcase(@PathVariable("companyID") long companyID,
-    		@PathVariable("testcaseID") long testcaseID)
+    		@PathVariable("testcaseID") long testcaseID,
+    		@PathVariable("projectID") long projectID)
     {
-    	String testcaseName = "TestCase_"+companyID+"_"+testcaseID;    	
-//    	try
-//    	{  
-//    		Testcase testcase = testcaseService.getTestcaseByName(testcaseName);		
-//    		if(testcase.getCompanyID() == companyID )
-//    		{		
-//    			throw new DuplicateKeyException(testcaseName);
-//    		}
-//    	}
-//    	catch(NoResultException e)
-//    	{   					
-//    		//do nothing;
-//    	}
-    	//int testPlanPosition = testcaseService.getMaxTestPlanPosNum(projectID);					
-    	testcaseService.addNewTestcase(new Testcase(testcaseName,companyID,"REGRESSION","APPROVED",
-    			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER"));	
+    	String testcaseName = "TestCase_"+companyID+"_"+testcaseID;
+    	Project project = projectService.getProject(projectID);
+    	
+//    	Set<Course> courses = new HashSet<Course>();    	
+//    	courses.add(new Course("Maths"));    	
+//    	courses.add(new Course("Computer Science"));    	
+//    	Student student1 = new Student("Eswar", courses);    	
+//    	Student student2 = new Student("Joe", courses);    	
+//    	session.save(student1);    	
+//    	session.save(student2);
+    	Testcase testcase = new Testcase(companyID,testcaseName,"REGRESSION","APPROVED",
+    			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER");	
+    	testcaseService.addNewTestcase(testcase);	
+    	project.getTestcases().add(testcase);     
+    	projectService.update(project); 
+    	
+    //	testcaseService.addNewTestcase(new Testcase(companyID,testcaseName,"REGRESSION","APPROVED",
+    //			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER"));	
+    	
+    	
      } 
+   
     // DELETE TestCase 
     @RequestMapping(value = "/testcase/{testcaseID}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -314,7 +321,7 @@ public class CompanyJSONController {
     @RequestMapping(value = "/cycleCasRuns/{cycleID}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody int getcycleCasRunsAt(@PathVariable("cycleID") Long cycleID) {    	
-    	return cycleService.getCascadedAllTestRunsCount(cycleID);    	
+    	return cycleService.getCascadedAllTestRuns(cycleID).size();    	
     }   
  ////////////////////////////////////////////////////////////////////////////////////////////////////////    
     @ResponseStatus(value = HttpStatus.NOT_FOUND)

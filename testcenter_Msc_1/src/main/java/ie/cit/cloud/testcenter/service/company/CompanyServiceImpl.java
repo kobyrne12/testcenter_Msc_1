@@ -12,6 +12,8 @@ import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
@@ -103,44 +105,12 @@ public class CompanyServiceImpl implements CompanyService {
 		return false;
 	}	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Returns total Number of Projects for a company
-	 * int
-	 * @return total Number of Projects for a company,
-	 */
-	
-	public int getAllProjectsCount(long companyID)
-	{
-		Company company = getCompany(companyID);
-		if(company.getProjects() == null || company.getProjects().isEmpty())
-		{
-			return 0;
-		}
-		return company.getProjects().size();
-	}
-	/**
-	 * Returns total Number of Cycles for a company
-	 * int
-	 * @return total Number of Cycles for a company,
-	 */	
-	public int getAllCyclesCount(long companyID)
-	{
-		if(getAllCycles(companyID) != null)
-		{
-			return getAllCycles(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}		
-	}
+		
 	/**
 	 * Returns a collection of cycles in a company 
 	 * Collection<Cycle>
 	 * @return collection of cycles in a company,
-	 */
-	
+	 */	
 	public Collection<Cycle> getAllCycles(long companyID)
 	{		
 		Company company = getCompany(companyID);
@@ -151,32 +121,19 @@ public class CompanyServiceImpl implements CompanyService {
 		Collection<Cycle> cycles = new ArrayList<Cycle>();
 		for(final Project project : company.getProjects())
 		{			
-			cycles.addAll(project.getCycles());			
+			if(project.getCycles() != null && !project.getCycles().isEmpty())
+			{
+				cycles.addAll(project.getCycles());
+			}
 		}
 		return cycles;
-	}
-	/**
-	 * Returns total Number of All Testruns for a company
-	 * int
-	 * @return total Number of All Testruns for a company,
-	 */	
-	public int getAllTestRunsCount(long companyID)
-	{		
-		if(getAllTestRuns(companyID) != null)
-		{
-			return getAllTestRuns(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}		
-	}
+	}	
 	/**
 	 * Returns a collection of All Testruns in a company 
 	 * Collection<Testrun>
 	 * @return collection of All Testruns in a company,
 	 */
-	
+
 	public Collection<Testrun> getAllTestRuns(long companyID)
 	{		
 		Collection<Cycle> cycles = getAllCycles(companyID);		
@@ -187,33 +144,19 @@ public class CompanyServiceImpl implements CompanyService {
 		Collection<Testrun> testruns = new ArrayList<Testrun>();
 		for(final Cycle cycle : cycles)
 		{
-			testruns.addAll(cycle.getTestruns());
+			if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
+			{
+				testruns.addAll(cycle.getTestruns());
+			}
 		}
 		return testruns;
-	}	
-	
+	}		
 	/**
-	 * Returns total Number of All Testruns for a company
-	 * int
-	 * @return total Number of All Testruns for a company,
-	 */	
-	public int getRequiredTestRunsCount(long companyID)
-	{	
-		if(getRequiredTestRuns(companyID) != null)
-		{
-			return getRequiredTestRuns(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}			
-	}
-	/**
-	 * Returns a collection of All Testruns in a company 
+	 * Returns a collection of All Compulsory Testruns in a company 
 	 * Collection<Testrun>
-	 * @return collection of All Testruns in a company,
+	 * @return collection of All Compulsory Testruns in a company,
 	 */	
-	public Collection<Testrun> getRequiredTestRuns(long companyID)
+	public Collection<Testrun> getCompulsoryTestRuns(long companyID)
 	{
 		Collection<Cycle> cycles = getAllCycles(companyID);
 		if(cycles == null || cycles.isEmpty())
@@ -222,99 +165,160 @@ public class CompanyServiceImpl implements CompanyService {
 		}
 		Collection<Testrun> testruns = new ArrayList<Testrun>();
 		for(final Cycle cycle : cycles)
-		{			
-			testruns.addAll(cycleService.getCascadedRequiredTestRuns(cycle.getCycleID()));
+		{		
+			if(cycleService.getCascadedCompulsoryTestRuns(cycle.getCycleID()) != null && 
+					!cycleService.getCascadedCompulsoryTestRuns(cycle.getCycleID()).isEmpty())
+			{
+				testruns.addAll(cycleService.getCascadedCompulsoryTestRuns(cycle.getCycleID()));
+			}
 		}
 		return testruns;
 	}
-	
 	/**
-	 * Returns total Number of All requirements for a company
-	 * int
-	 * @return total Number of All requirements for a company,
-	 */		
-	public int getAllRequirementsCount(long companyID)
+	 * Returns a collection of All Optional Testruns in a company 
+	 * Collection<Testrun>
+	 * @return collection of All Optional Testruns in a company,
+	 */	
+	public Collection<Testrun> getOptionalTestRuns(long companyID)
 	{
-		Company company = getCompany(companyID);
-		if(company.getRequirements() == null || company.getRequirements().isEmpty())
+		Collection<Cycle> cycles = getAllCycles(companyID);
+		if(cycles == null || cycles.isEmpty())
 		{
-			return 0;
+			return null;
 		}
-		return company.getRequirements().size();
-	}
-	
-	/**
-	 * Returns total Number of All environments for a company
-	 * int
-	 * @return total Number of All environments for a company,
-	 */		
-	public int getAllEnvironmentsCount(long companyID)
-	{
-		Company company = getCompany(companyID);
-		if(company.getEnvironments() == null || company.getEnvironments().isEmpty())
-		{
-			return 0;
+		Collection<Testrun> testruns = new ArrayList<Testrun>();
+		for(final Cycle cycle : cycles)
+		{		
+			if(cycleService.getCascadedOptionalTestRuns(cycle.getCycleID()) != null && 
+					!cycleService.getCascadedOptionalTestRuns(cycle.getCycleID()).isEmpty())
+			{
+				testruns.addAll(cycleService.getCascadedOptionalTestRuns(cycle.getCycleID()));
+			}
 		}
-		return company.getEnvironments().size();
+		return testruns;
 	}
+	////////////////
+
 	/**
-	 * Returns total Number of All defects for a company
-	 * int
-	 * @return total Number of All defects for a company,
-	 */		
-	public int getAllDefectsCount(long companyID)
-	{
-		Company company = getCompany(companyID);
-		if(company.getDefects() == null || company.getDefects().isEmpty())
-		{
-			return 0;
-		}
-		return company.getDefects().size();
-	}
-	/**
-	 * Returns total Number of All testcases for a company
-	 * int
-	 * @return total Number of All testcases for a company,
-	 */		
-	public int getAllTestCasesCount(long companyID)
-	{
+	 * Returns a collection of Testcases in a company
+	 * Collection<Testcase>
+	 * @return collection of Testcases in a company
+	 */	
+	public Collection<Testcase> getAllTestCases(long companyID)
+	{	
 		Company company = getCompany(companyID);
 		if(company.getTestcases() == null || company.getTestcases().isEmpty())
 		{
-			return 0;
+			return null;
 		}
-		return company.getTestcases().size();
+		return company.getTestcases();				
 	}
 	/**
-	 * Returns total Number of All testplans for a company
-	 * int
-	 * @return total Number of All testplans for a company,
-	 */		
-	public int getAllTestPlansCount(long companyID)
+	 * Returns a collection of Compulsory Testcases in a company
+	 * Collection<Testcase>
+	 * @return collection of Compulsory Testcases in a company,
+	 */	
+	public Collection<Testcase> getCompulsoryTestCases(long companyID)
 	{
+		Company company = getCompany(companyID);
+		if(company.getProjects() == null || company.getProjects().isEmpty())
+		{
+			return null;
+		}		
+		Collection<Testcase> compulsoryTestcases = new ArrayList<Testcase>();  
+		for(final Project project : company.getProjects())
+		{			
+			if(projectService.getCascadedCompulsoryTestCases(project.getProjectID()) != null && 
+					!projectService.getCascadedCompulsoryTestCases(project.getProjectID()).isEmpty())
+			{
+				compulsoryTestcases.addAll(projectService.getCascadedCompulsoryTestCases(project.getProjectID()));
+			}						
+		}			
+		return compulsoryTestcases;			
+	}
+	/**
+	 * Returns a collection of Optional Testcases in a company
+	 * Collection<Testcase>
+	 * @return collection of Optional Testcases in a company,
+	 */	
+	public Collection<Testcase> getOptionalTestCases(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getProjects() == null || company.getProjects().isEmpty())
+		{
+			return null;
+		}		
+		Collection<Testcase> optionalTestcases = new ArrayList<Testcase>();  
+		for(final Project project : company.getProjects())
+		{			
+			if(projectService.getCascadedOptionalTestCases(project.getProjectID()) != null && 
+					!projectService.getCascadedOptionalTestCases(project.getProjectID()).isEmpty())
+			{
+				optionalTestcases.addAll(projectService.getCascadedOptionalTestCases(project.getProjectID()));
+			}						
+		}			
+		return optionalTestcases;			
+	}
+	/**
+	 * Returns a collection of Testplans in a company
+	 * Collection<Testplan>
+	 * @return collection of Testplans in a company
+	 */	
+	public Collection<Testplan> getAllTestPlans(long companyID)
+	{	
 		Company company = getCompany(companyID);
 		if(company.getTestplans() == null || company.getTestplans().isEmpty())
 		{
-			return 0;
+			return null;
 		}
-		return company.getTestplans().size();
+		return company.getTestplans();				
 	}
 	/**
-	 * Returns total Number of Sev 1 Defects for a company
-	 * int
-	 * @return total Number of Sev 1 Defects for a company,
+	 * Returns a collection of Compulsory Testplans in a company
+	 * Collection<Testplan>
+	 * @return collection of Compulsory Testplans in a company,
 	 */	
-	public int getAllSev1DefectsCount(long companyID)
+	public Collection<Testplan> getCompulsoryTestPlans(long companyID)
 	{
-		if(getAllSev1Defects(companyID) != null)
+		Company company = getCompany(companyID);
+		if(company.getProjects() == null || company.getProjects().isEmpty())
 		{
-			return getAllSev1Defects(companyID).size();
-		}
-		else
-		{
-			return 0;
+			return null;
 		}		
+		Collection<Testplan> compulsoryTestplans = new ArrayList<Testplan>();  
+		for(final Project project : company.getProjects())
+		{			
+			if(projectService.getCascadedCompulsoryTestPlans(project.getProjectID()) != null && 
+					!projectService.getCascadedCompulsoryTestPlans(project.getProjectID()).isEmpty())
+			{
+				compulsoryTestplans.addAll(projectService.getCascadedCompulsoryTestPlans(project.getProjectID()));
+			}						
+		}			
+		return compulsoryTestplans;			
 	}
+	/**
+	 * Returns a collection of Optional Testplans in a company
+	 * Collection<Testcase>
+	 * @return collection of Optional Testplans in a company,
+	 */	
+	public Collection<Testplan> getOptionalTestPlans(long companyID)
+	{
+		Company company = getCompany(companyID);
+		if(company.getProjects() == null || company.getProjects().isEmpty())
+		{
+			return null;
+		}		
+		Collection<Testplan> optionalTestplans = new ArrayList<Testplan>();  
+		for(final Project project : company.getProjects())
+		{			
+			if(projectService.getCascadedOptionalTestPlans(project.getProjectID()) != null && 
+					!projectService.getCascadedOptionalTestPlans(project.getProjectID()).isEmpty())
+			{
+				optionalTestplans.addAll(projectService.getCascadedOptionalTestPlans(project.getProjectID()));
+			}						
+		}			
+		return optionalTestplans;			
+	}	
 	/**
 	 * Returns a collection of All Sev1 Defects in a company 
 	 * Collection<Defect>
@@ -336,23 +340,7 @@ public class CompanyServiceImpl implements CompanyService {
 			}
 		}
 		return sev1Defects;
-	}
-	/**
-	 * Returns total Number of Sev 2 Defects for a company
-	 * int
-	 * @return total Number of Sev 2 Defects for a company,
-	 */	
-	public int getAllSev2DefectsCount(long companyID)
-	{
-		if(getAllSev2Defects(companyID) != null)
-		{
-			return getAllSev2Defects(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}		
-	}
+	}	
 	/**
 	 * Returns a collection of All Sev2 Defects in a company 
 	 * Collection<Defect>
@@ -374,30 +362,12 @@ public class CompanyServiceImpl implements CompanyService {
 			}
 		}
 		return sev2Defects;
-	}
-	
-	/**
-	 * Returns total Number of Sev 3 Defects for a company
-	 * int
-	 * @return total Number of Sev 3 Defects for a company,
-	 */	
-	public int getAllSev3DefectsCount(long companyID)
-	{
-		if(getAllSev3Defects(companyID) != null)
-		{
-			return getAllSev3Defects(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}		
-	}
+	}	
 	/**
 	 * Returns a collection of All Sev3 Defects in a company 
 	 * Collection<Defect>
 	 * @return collection of All Sev3 Defects in a company,
-	 */
-	
+	 */	
 	public Collection<Defect> getAllSev3Defects(long companyID)
 	{	
 		Company company = getCompany(companyID);
@@ -414,29 +384,13 @@ public class CompanyServiceImpl implements CompanyService {
 			}
 		}
 		return sev3Defects;
-	}
-	/**
-	 * Returns total Number of Sev 4 Defects for a company
-	 * int
-	 * @return total Number of Sev 4 Defects for a company,
-	 */	
-	public int getAllSev4DefectsCount(long companyID)
-	{
-		if(getAllSev4Defects(companyID) != null)
-		{
-			return getAllSev4Defects(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}		
-	}
+	}	
 	/**
 	 * Returns a collection of All Sev4 Defects in a company 
 	 * Collection<Defect>
 	 * @return collection of All Sev4 Defects in a company,
 	 */
-	
+
 	public Collection<Defect> getAllSev4Defects(long companyID)
 	{		
 		Company company = getCompany(companyID);
@@ -453,117 +407,73 @@ public class CompanyServiceImpl implements CompanyService {
 			}
 		}
 		return sev4Defects;
-	}
-	
-	public Collection<TestcenterUser> getAllTesters(long companyID) {
-//		Company company = getCompany(companyID);
-//		if(company.getUsers() == null || company.getUsers().isEmpty())
-//		{
-//			return null;
-//		}
-//		Collection<User> testers = new ArrayList<User>();
-//		for(final User user : company.getUsers() )
-//		{
-//			if(userService.isTester((user.getUserID())))
-//			{
-//				testers.add(user);				
-//			}
-//		}
-//		return testers;
-		return null;
-	}
-	public int getallTestersCount(long companyID) {
-		if(getAllTesters(companyID) != null)
-		{
-			return getAllTesters(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}				
-	}
-	
-	public Collection<TestcenterUser> getAllSeniorTesters(long companyID) {
-//		Company company = getCompany(companyID);
-//		if(company.getUsers() == null || company.getUsers().isEmpty())
-//		{
-//			return null;
-//		}
-//		Collection<User> seniorTesters = new ArrayList<User>();
-//		for(final User user : company.getUsers() )
-//		{
-//			if(userService.isSeniorTester((user.getUserID())))
-//			{
-//				testers.add(user);				
-//			}
-//		}
-//		return testers;
-		return null;
-	}
-	public int getallSeniorTestersCount(long companyID) {
-		if(getAllSeniorTesters(companyID) != null)
-		{
-			return getAllSeniorTesters(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}		
 	}	
+	public Collection<TestcenterUser> getAllTesters(long companyID) {
+		//		Company company = getCompany(companyID);
+		//		if(company.getUsers() == null || company.getUsers().isEmpty())
+		//		{
+		//			return null;
+		//		}
+		//		Collection<User> testers = new ArrayList<User>();
+		//		for(final User user : company.getUsers() )
+		//		{
+		//			if(userService.isTester((user.getUserID())))
+		//			{
+		//				testers.add(user);				
+		//			}
+		//		}
+		//		return testers;
+		return null;
+	}
+	public Collection<TestcenterUser> getAllSeniorTesters(long companyID) {
+		//		Company company = getCompany(companyID);
+		//		if(company.getUsers() == null || company.getUsers().isEmpty())
+		//		{
+		//			return null;
+		//		}
+		//		Collection<User> seniorTesters = new ArrayList<User>();
+		//		for(final User user : company.getUsers() )
+		//		{
+		//			if(userService.isSeniorTester((user.getUserID())))
+		//			{
+		//				testers.add(user);				
+		//			}
+		//		}
+		//		return testers;
+		return null;
+	}
 	public Collection<TestcenterUser> getAllDevelopers(long companyID) {
-//		Company company = getCompany(companyID);
-//		if(company.getUsers() == null || company.getUsers().isEmpty())
-//		{
-//			return null;
-//		}
-//		Collection<User> seniorTesters = new ArrayList<User>();
-//		for(final User user : company.getUsers() )
-//		{
-//			if(userService.isDeveloper((user.getUserID())))
-//			{
-//				testers.add(user);				
-//			}
-//		}
-//		return testers;	
+		//		Company company = getCompany(companyID);
+		//		if(company.getUsers() == null || company.getUsers().isEmpty())
+		//		{
+		//			return null;
+		//		}
+		//		Collection<User> seniorTesters = new ArrayList<User>();
+		//		for(final User user : company.getUsers() )
+		//		{
+		//			if(userService.isDeveloper((user.getUserID())))
+		//			{
+		//				testers.add(user);				
+		//			}
+		//		}
+		//		return testers;	
 		return null;
 	}
-	public int getallDevelopersCount(long companyID) {
-		if(getAllDevelopers(companyID) != null)
-		{
-			return getAllDevelopers(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}	
-	}
-	
 	public Collection<TestcenterUser> getAllSeniorDevelopers(long companyID) {
-//		Company company = getCompany(companyID);
-//		if(company.getUsers() == null || company.getUsers().isEmpty())
-//		{
-//			return null;
-//		}
-//		Collection<User> seniorTesters = new ArrayList<User>();
-//		for(final User user : company.getUsers() )
-//		{
-//			if(userService.isSeniorDeveloper((user.getUserID())))
-//			{
-//				testers.add(user);				
-//			}
-//		}
-//		return testers;
+		//		Company company = getCompany(companyID);
+		//		if(company.getUsers() == null || company.getUsers().isEmpty())
+		//		{
+		//			return null;
+		//		}
+		//		Collection<User> seniorTesters = new ArrayList<User>();
+		//		for(final User user : company.getUsers() )
+		//		{
+		//			if(userService.isSeniorDeveloper((user.getUserID())))
+		//			{
+		//				testers.add(user);				
+		//			}
+		//		}
+		//		return testers;
 		return null;
-	}
-	public int getallSeniorDevelopersCount(long companyID) {
-		if(getAllSeniorDevelopers(companyID) != null)
-		{
-			return getAllSeniorDevelopers(companyID).size();
-		}
-		else
-		{
-			return 0;
-		}			
-	}
-	
+	}	
 }

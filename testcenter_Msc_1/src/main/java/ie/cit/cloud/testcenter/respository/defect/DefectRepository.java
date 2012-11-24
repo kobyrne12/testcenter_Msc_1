@@ -8,6 +8,8 @@ package ie.cit.cloud.testcenter.respository.defect;
  *
  */
 
+import java.util.Collection;
+
 import ie.cit.cloud.testcenter.model.Defect;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -67,5 +69,7 @@ public interface DefectRepository {
      * @param id
      *            Defect ID
      * @return Defect for given name, null if Defect was not found
-     */	
+     */
+
+	Collection<Defect> findAllDefectsByParentID(long defectID);	
 }
