@@ -414,7 +414,7 @@ public class DefectServiceImpl implements DefectService {
 		Collection<Environment> environments = new ArrayList<Environment>();
 		for(final Testrun testrun : allTestruns)
 		{	
-			if(testrun.getEnvironments() != null || !testrun.getEnvironments().isEmpty())			
+			if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty())			
 			{
 				environments.addAll(testrun.getEnvironments());
 			}			
@@ -432,7 +432,7 @@ public class DefectServiceImpl implements DefectService {
 		Collection<Requirement> requirements = new ArrayList<Requirement>();
 		for(final Testrun testrun : allTestruns)
 		{	
-			if(testrun.getRequirements() != null || !testrun.getRequirements().isEmpty())			
+			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())			
 			{
 				requirements.addAll(testrun.getRequirements());
 			}			

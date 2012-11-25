@@ -12,20 +12,15 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import ie.cit.cloud.testcenter.model.Company;
-import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
-import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Queue;
 
 import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 
@@ -44,23 +39,53 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @Controller
-public class CycleController {
+public class ProjectControllerNOTUSED {
+	@Autowired
+	private ProjectService projectService;
+	@Autowired
+	private CompanyService companyService;
 	
-	
+//	@RequestMapping(value = { "projects"}, method = GET)
+//	public String showProjects(@CookieValue("companyID") String companyID_String,			
+//			@RequestParam(required = false) String gridUrl,Model model) 
+//	{	
+//		if(companyID_String == null)
+//		{
+//			model.addAttribute("displaymessage", "Session Timed out");	
+//			return "companies";
+//		}
+//		try{
+//			Long companyID = Long.valueOf(companyID_String);
+//			Company company = companyService.getCompany(companyID);
+//			model.addAttribute("companyID", companyID);	
+//			model.addAttribute("companyName", company.getCompanyName());	
+//			model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
+//			model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
+//			model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
+//			model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
+//			model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
+//			model.addAttribute("usersDisplayName", company.getUsersDisplayName());
+//			model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
+//			model.addAttribute("testLibraryDisplayName", company.getTestLibraryDisplayName());			
+//			model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
+//			model.addAttribute("columnModel", projectService.getColumnModelAndNames(companyID));				
+//			if(gridUrl != null)				
+//			{				
+//				model.addAttribute("breadCrumb", "FORMAT URL");
+//				model.addAttribute("gridUrl", gridUrl);			
+//			}
+//			else
+//			{		
+//				model.addAttribute("breadCrumb", "<a href='index.html'>Home</a> > Projects");				
+//				model.addAttribute("gridUrl", "project/summaryList/"+companyID);	
+//			}
+//			return "projects";
+//		}catch(NoResultException nre)
+//		{
+//			return "projects";
+//		}		
+//	}  	
 
-	private long getModelID(String url, String tcModel)
-	{		
-		int beginIndex = url.indexOf(tcModel);
-		//System.out.println("*****(((((((( beginIndex : " + beginIndex);
-		int endIndex = url.indexOf("&", beginIndex);
-		//System.out.println("*****(((((((( endIndex : " + endIndex);	
-		String fullRequestParam = url.substring(beginIndex, endIndex); //projectID=45689
-		//System.out.println("*****(((((((( substring : " + fullRequestParam );	
-		String[] tempStringArray = fullRequestParam.split("=");		
-		//System.out.println("*****(((((((( id : " + tempStringArray[1] );	
-		Long ID = Long.valueOf(tempStringArray[1]) ;		
-		return ID;
-	}
 	public String GetDateNow()
 	{ 	 
 		Calendar currentDate = Calendar.getInstance();

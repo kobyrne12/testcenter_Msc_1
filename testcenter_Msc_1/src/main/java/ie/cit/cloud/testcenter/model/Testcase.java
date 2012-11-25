@@ -51,10 +51,10 @@ public class Testcase {
 	private long testplanID;
 	
 //	@Transient
-//	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER)
-//	//@Fetch(value = FetchMode.SUBSELECT)
-//    private Collection<Project> projects = new ArrayList<Project>();
-//	
+	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER)
+	//@Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Project> projects = new ArrayList<Project>();
+	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testcaseID", referencedColumnName="testcaseID")
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -106,7 +106,7 @@ public class Testcase {
 			String testcaseSummary,	String testcasePreCondition, String testcaseSteps,
 			String testcasePassCondition,String tester, String seniorTester)
 	{
-		this(companyID, testcaseName,0,null,0,0,level,stage,0.15,
+		this(companyID, testcaseName,level,stage,0.15,
 				testcaseSummary,testcasePreCondition,testcaseSteps,testcasePassCondition,
 				tester,seniorTester);
 	}
@@ -114,12 +114,8 @@ public class Testcase {
 	
 	/**
 	 * @param companyID
-	 * @param testcaseName
-	 * @param testplanID
-	// * @param projects
+	 * @param testcaseName	
 	 * @param testruns
-	 * @param testplanSectionID
-	 * @param testplanOrderNum
 	 * @param level
 	 * @param stage
 	 * @param estimatedTime
@@ -130,20 +126,12 @@ public class Testcase {
 	 * @param tester
 	 * @param seniorTester
 	 */
-	public Testcase(long companyID, String testcaseName, long testplanID,
-			//Collection<Project> projects, 
-			Collection<Testrun> testruns,
-			long testplanSectionID, int testplanOrderNum, String level,
+	public Testcase(long companyID, String testcaseName, String level,
 			String stage, Double estimatedTime, String testcaseSummary,
 			String testcasePreCondition, String testcaseSteps,
 			String testcasePassCondition, String tester, String seniorTester) {
 		this.companyID = companyID;
-		this.testcaseName = testcaseName;
-		this.testplanID = testplanID;
-	//	this.projects = projects;
-		this.testruns = testruns;
-		this.testplanSectionID = testplanSectionID;
-		this.testplanOrderNum = testplanOrderNum;
+		this.testcaseName = testcaseName;		
 		this.level = level;
 		this.stage = stage;
 		this.estimatedTime = estimatedTime;
@@ -154,8 +142,6 @@ public class Testcase {
 		this.tester = tester;
 		this.seniorTester = seniorTester;
 	}
-
-
 
 	/**
 	 * @return the testcaseName
@@ -372,20 +358,20 @@ public class Testcase {
 		this.estimatedTime = estimatedTime;
 	}
 
-//	/**
-//	 * @return the projects
-//	 */
-//	public Collection<Project> getProjects() {
-//		return projects;
-//	}
-//
-//	/**
-//	 * @param projects the projects to set
-//	 */
-//	public void setProjects(Collection<Project> projects) {
-//		this.projects = projects;
-//	}
-//
-//	
+	/**
+	 * @return the projects
+	 */
+	public Collection<Project> getProjects() {
+		return projects;
+	}
+
+	/**
+	 * @param projects the projects to set
+	 */
+	public void setProjects(Collection<Project> projects) {
+		this.projects = projects;
+	}
+
+
 
 }

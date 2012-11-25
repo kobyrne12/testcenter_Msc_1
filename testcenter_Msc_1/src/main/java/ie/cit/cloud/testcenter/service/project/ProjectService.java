@@ -164,7 +164,6 @@ public interface ProjectService {
 	 * @return collection of Sev4 Defects in a project incl all child project cycles,
 	 */	
 	Collection<Defect> getCascadedSev4Defects(long projectID);
-
 	/**
 	 * Returns a collection of Environments in a project incl all child project cycles 
 	 * Collection<Tesplan>
@@ -179,21 +178,20 @@ public interface ProjectService {
 	Collection<Requirement> getCascadedRequirements(long projectID);
 
 	Collection<TestcenterUser> getCascadedTesters(long projectID);
-
 	Collection<TestcenterUser> getCascadedSnrTesters(long projectID);
-
 	Collection<TestcenterUser> getCascadedDevelopers(long projectID);
-
 	Collection<TestcenterUser> getCascadedSnrDevelopers(long projectID);
 	//////////////////////////////////
-
-	ProjectSummary getProjectSummary(long projectID);	
+	
+	ProjectSummary getProjectSummary(long companyID, long projectID, String cycleID,
+			String testplanID,String testcaseID, String testrunID, String defectID, 
+			String requirementID, String environmentID, String userID );
 
 	ColModelAndNames getColumnModelAndNames(Long companyID);
 
-	ProjectSummaryList getGridProjects(long companyID,String projectID, String cycleID,
-			String testplanID, String userID, String environmentID,
-			String requirementID, String defectID, String testrunID);
+	ProjectSummaryList getGridProjects(long companyID, String projectID, String cycleID,
+			String testplanID,String testcaseID, String testrunID, String defectID, 
+			String requirementID, String environmentID, String userID);
 
 	RelatedObjectList getRelatedObjects(long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,

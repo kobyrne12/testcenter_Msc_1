@@ -869,20 +869,11 @@ public class CycleServiceImpl implements CycleService {
 		Collection<Defect> defects = new ArrayList<Defect>();  
 		for(final Testrun testrun : allTestruns)
 		{	
-			if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
+			if(testrunService.getCascadedAllDefects(testrun.getTestrunID()) != null &&
+					!testrunService.getCascadedAllDefects(testrun.getTestrunID()).isEmpty())
 			{
-				defects.addAll(testrun.getDefects());
-			}
-			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
-			{
-				for(final Requirement requirement : testrun.getRequirements())
-				{
-					if(requirement.getDefects() != null && !requirement.getDefects().isEmpty())
-					{
-						defects.addAll(requirement.getDefects());
-					}
-				}
-			}			
+				defects.addAll(testrunService.getCascadedAllDefects(testrun.getTestrunID()));
+			}					
 		}		
 		return defects;					
 	}

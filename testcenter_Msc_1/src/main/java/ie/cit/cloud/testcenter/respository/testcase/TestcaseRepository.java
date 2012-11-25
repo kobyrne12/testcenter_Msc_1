@@ -8,6 +8,9 @@ package ie.cit.cloud.testcenter.respository.testcase;
  *
  */
 
+import java.util.Collection;
+
+import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testcase;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -67,5 +70,7 @@ public interface TestcaseRepository {
      * @param id
      *            Testcase ID
      * @return Testcase for given name, null if Testcase was not found
-     */	
+     */
+
+	Collection<Testcase> findAll();	
 }

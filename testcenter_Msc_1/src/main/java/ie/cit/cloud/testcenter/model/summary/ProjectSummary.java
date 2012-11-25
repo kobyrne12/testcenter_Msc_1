@@ -33,10 +33,15 @@ public class ProjectSummary {
     private int totalCycles;
     private int totalEnvironments;
     private int totalRequirements;
-    private int totalRequiredTestruns;
     private int totalAllTestruns;
-    private int totalTestcases;
-    private int totalTestplans;
+    private int totalRequiredTestruns;
+    private int totalOptionalTestruns;
+    private int totalAllTestcases;
+    private int totalRequiredTestcases;
+    private int totalOptionalTestcases;
+    private int totalAllTestplans;
+    private int totalRequiredTestplans;
+    private int totalOptionalTestplans;    
     private int totalTesters;
     private int totalSeniorTesters;
     private int totalDevelopers;
@@ -44,8 +49,7 @@ public class ProjectSummary {
     private String lastModifiedBy;
     private String lastModifiedDate;    
     private String createdBy;
-    private String creationDate;
- 
+    private String creationDate; 
     
     private String customObject1;
     private String customObject2;
@@ -407,34 +411,7 @@ public class ProjectSummary {
 	public void setTotalAllTestruns(int totalAllTestruns) {
 		this.totalAllTestruns = totalAllTestruns;
 	}
-
-	/**
-	 * @return the totalTestcases
-	 */
-	public int getTotalTestcases() {
-		return totalTestcases;
-	}
-
-	/**
-	 * @param totalTestcases the totalTestcases to set
-	 */
-	public void setTotalTestcases(int totalTestcases) {
-		this.totalTestcases = totalTestcases;
-	}
-
-	/**
-	 * @return the totalTestplans
-	 */
-	public int getTotalTestplans() {
-		return totalTestplans;
-	}
-
-	/**
-	 * @param totalTestplans the totalTestplans to set
-	 */
-	public void setTotalTestplans(int totalTestplans) {
-		this.totalTestplans = totalTestplans;
-	}
+	
 
 	/**
 	 * @return the totalTesters
@@ -616,6 +593,104 @@ public class ProjectSummary {
 	 */
 	public void setCustomObject5(String customObject5) {
 		this.customObject5 = customObject5;
+	}
+
+	/**
+	 * @return the totalOptionalTestruns
+	 */
+	public int getTotalOptionalTestruns() {
+		return totalOptionalTestruns;
+	}
+
+	/**
+	 * @param totalOptionalTestruns the totalOptionalTestruns to set
+	 */
+	public void setTotalOptionalTestruns(int totalOptionalTestruns) {
+		this.totalOptionalTestruns = totalOptionalTestruns;
+	}
+
+	/**
+	 * @return the totalAllTestcases
+	 */
+	public int getTotalAllTestcases() {
+		return totalAllTestcases;
+	}
+
+	/**
+	 * @param totalAllTestcases the totalAllTestcases to set
+	 */
+	public void setTotalAllTestcases(int totalAllTestcases) {
+		this.totalAllTestcases = totalAllTestcases;
+	}
+
+	/**
+	 * @return the totalRequiredTestcases
+	 */
+	public int getTotalRequiredTestcases() {
+		return totalRequiredTestcases;
+	}
+
+	/**
+	 * @param totalRequiredTestcases the totalRequiredTestcases to set
+	 */
+	public void setTotalRequiredTestcases(int totalRequiredTestcases) {
+		this.totalRequiredTestcases = totalRequiredTestcases;
+	}
+
+	/**
+	 * @return the totalOptionalTestcases
+	 */
+	public int getTotalOptionalTestcases() {
+		return totalOptionalTestcases;
+	}
+
+	/**
+	 * @param totalOptionalTestcases the totalOptionalTestcases to set
+	 */
+	public void setTotalOptionalTestcases(int totalOptionalTestcases) {
+		this.totalOptionalTestcases = totalOptionalTestcases;
+	}
+
+	/**
+	 * @return the totalAllTestplans
+	 */
+	public int getTotalAllTestplans() {
+		return totalAllTestplans;
+	}
+
+	/**
+	 * @param totalAllTestplans the totalAllTestplans to set
+	 */
+	public void setTotalAllTestplans(int totalAllTestplans) {
+		this.totalAllTestplans = totalAllTestplans;
+	}
+
+	/**
+	 * @return the totalRequiredTestplans
+	 */
+	public int getTotalRequiredTestplans() {
+		return totalRequiredTestplans;
+	}
+
+	/**
+	 * @param totalRequiredTestplans the totalRequiredTestplans to set
+	 */
+	public void setTotalRequiredTestplans(int totalRequiredTestplans) {
+		this.totalRequiredTestplans = totalRequiredTestplans;
+	}
+
+	/**
+	 * @return the totalOptionalTestplans
+	 */
+	public int getTotalOptionalTestplans() {
+		return totalOptionalTestplans;
+	}
+
+	/**
+	 * @param totalOptionalTestplans the totalOptionalTestplans to set
+	 */
+	public void setTotalOptionalTestplans(int totalOptionalTestplans) {
+		this.totalOptionalTestplans = totalOptionalTestplans;
 	}    
    
    

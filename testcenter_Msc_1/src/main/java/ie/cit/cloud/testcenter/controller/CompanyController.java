@@ -43,29 +43,74 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 public class CompanyController {
-    @Autowired
-    private CompanyService companyService;
-   	@Autowired
+	@Autowired
+	private CompanyService companyService;
+	@Autowired
 	private ProjectService projectService;
 	@Autowired
 	private CycleService cycleService;
 	private Company company;
-	
+
+	@RequestMapping(value = {"companies"}, method = GET)
+	public String openCompanySelection(	@RequestParam(required = false) String displaymessage, Model model)	
+	{	
+		System.out.println(" $$%% HERE : ");
+		try{			
+			model.addAttribute("companyList", companyService.getAllCompanies());
+			for(final Company company : companyService.getAllCompanies())
+			{
+				System.out.println(" $$%% Compnay Name : " + company.getCompanyName());
+			}
+			model.addAttribute("displaymessage", displaymessage);
+			return "companies";
+			
+		}catch(NoResultException nre)
+		{
+			System.out.println(" $$%% Compnay Name :  NO COMPANIES FOUND");
+			model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
+			return "newcompany";
+		}		
+	}
+
+	@RequestMapping(value = {"selectcompany"}, method = GET)
+	public String setCompany(HttpServletResponse response,
+			@RequestParam long companyID, Model model)	
+	{	
+		Cookie cookie = new Cookie("companyID",Long.toString(companyID));
+		cookie.setMaxAge(60*60); //1 hour
+		response.addCookie(cookie);
+		return "redirect:index.html"; 			
+	}
+
+
 	//HttpServletResponse response
 	@RequestMapping(value = {"index",""}, method = GET)
-	public String openView(	@RequestParam(value="userpath",defaultValue="") String userpath, Model model)	
+	public String openView( @CookieValue(value="companyID",defaultValue="") String companyID_String,			
+			@RequestParam(value="userpath",defaultValue="") String userpath,
+			@RequestParam(required = false) String displaymessage, Model model)	
 	{		
-//		if(companyID_String.isEmpty())
-//		{
-//			Cookie cookie = new Cookie("companyID",Long.toString(1));
-//			cookie.setMaxAge(60*60); //1 hour
-//			response.addCookie(cookie);
-//			return "index"; 	
-//			//return "login?message=session Timed out"; 
-//		}
-//		else
-//		{						
-			Long companyID = Long.valueOf(1);
+		
+		if(companyID_String.isEmpty())
+		{		
+			try{			
+				model.addAttribute("companyList", companyService.getAllCompanies());
+				for(final Company company : companyService.getAllCompanies())
+				{
+					System.out.println(" $$%% Compnay Name : " + company.getCompanyName());
+				}
+				model.addAttribute("displaymessage", displaymessage);
+				return "companies";
+				
+			}catch(NoResultException nre)
+			{
+				System.out.println(" $$%% Compnay Name :  NO COMPANIES FOUND");
+				model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
+				return "newcompany";
+			}						
+		}
+		else
+		{						
+			Long companyID = Long.valueOf(companyID_String);
 			company = companyService.getCompany(companyID);
 			model.addAttribute("companyID", companyID);	
 			model.addAttribute("companyName", company.getCompanyName());	
@@ -78,8 +123,6 @@ public class CompanyController {
 			model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
 			model.addAttribute("testLibraryDisplayName", company.getTestLibraryDisplayName());			
 			model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
-			model.addAttribute("columnModel", cycleService.getColumnModelAndNames(companyID));	
-
 			if(userpath.isEmpty())			
 			{
 				System.out.println("HERE 1 :" + userpath);								
@@ -90,20 +133,20 @@ public class CompanyController {
 				System.out.println("HERE 2 :" + userpath);
 				Long projectID = null;
 				boolean allCompanyProjects = true;	
-				
-								
+
+
 				String relatedObjects = "";
 				String gridUrl = "/summaryList/"+companyID;
 				String breadCrumb = "";			
 				String newuserpath = "Home";
-						
+
 				if (!userpath.toLowerCase().contains("home"))
 				{
 					userpath = "Home>"+userpath;				
 				}
 				//Home>Projects>5>Cycles
 				String[] userPathArray = userpath.split(">");				
-				
+
 				for(int x=0; x <userPathArray.length;x++)
 				{
 					if(userPathArray[x].equalsIgnoreCase("Home"))
@@ -117,7 +160,8 @@ public class CompanyController {
 							breadCrumb = "Home";						
 						}
 					}
-				    //   *********************************        Projects          ************************************
+					//   *********************************        Projects          ************************************
+					// id userpath contains project or projects 
 					if(userPathArray[x].equalsIgnoreCase(company.getProjectsDisplayName()) || userPathArray[x].equalsIgnoreCase(company.getProjectDisplayName()))
 					{										
 						if(x < (userPathArray.length - 1))
@@ -129,7 +173,7 @@ public class CompanyController {
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getProjectsDisplayName()+"</a> >";
 								newuserpath = newuserpath + ">"+project.getProjectID();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> >";
-								
+
 								if(gridUrl.contains("?"))
 								{
 									gridUrl = gridUrl +  "&";
@@ -139,7 +183,7 @@ public class CompanyController {
 									gridUrl = gridUrl +  "?";
 								}
 								gridUrl = gridUrl +  "projectID="+projectID;
-								
+
 								if(relatedObjects.contains("?"))
 								{
 									relatedObjects = relatedObjects +  "&";
@@ -149,7 +193,7 @@ public class CompanyController {
 									relatedObjects = relatedObjects +  "?";
 								}
 								relatedObjects = relatedObjects +  "projectID="+projectID;								
-								
+
 								allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
@@ -170,11 +214,13 @@ public class CompanyController {
 						{// Last item i.e //Home>Projects>5>Cycles>33>Projects
 							newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
 							breadCrumb = breadCrumb + " "+company.getProjectsDisplayName();
+							
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "project"+gridUrl);	
 							model.addAttribute("relatedObjects", relatedObjects);	
-							return "projects";						
+							
+							return "projects";	// straight to projects.html				
 						}
 					}
 					//   *********************************    END of projects     ************************************
@@ -237,6 +283,7 @@ public class CompanyController {
 							model.addAttribute("gridUrl", "cycle"+gridUrl);
 							model.addAttribute("relatedObjects", relatedObjects);	
 							model.addAttribute("allCompanyProjects", allCompanyProjects);
+							//model.addAttribute("columnModel", cycleService.getColumnModelAndNames(companyID));							
 							if(allCompanyProjects == true)
 							{
 								model.addAttribute("projects", company.getProjects());
@@ -256,103 +303,104 @@ public class CompanyController {
 				}
 				return "index"; 
 			}
-		//}		
-	}  
-	
+
+		}  
+	}
+
 	@RequestMapping(value = {"login"}, method = GET)
 	public String returnLogin(Model model) {   
 		return "login";  
 	}  
 
-//  
-//    
-//    @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
-//    public String jsonprojectTEST(@RequestParam(required = false)long companyID, Model model) {
-//    	model.addAttribute("company", companyService.getCompany(companyID));
-//    	return "jsonprojectTEST";  
-//  }  
-//    
-//    @RequestMapping(value = {"projectsListView"}, method = GET)
-//    public String projectListView(@RequestParam(required = false)long companyID, Model model) {
-//    	model.addAttribute("company", companyService.getCompany(companyID));
-//    	return "projectsListView";  
-//  }  
-//    
-//    @RequestMapping(value = {"newcompany"}, method = GET)
-//    public String newCompany(@RequestParam(required = false) String errormessage,String successmessage,Model model) {	
-//    	model.addAttribute("errormessage", errormessage);
-//    	return "newcompany";
-//    }   
-//
-//    @RequestMapping(value = {"newcompany"}, method = POST)   
-//    public String createNewCompany(@RequestParam String companyName, Model model) {      	
-//    	try{
-//    		// Company already exists    	
-//    		Company company = companyService.getCompanyByName(companyName); 
-//    		model.addAttribute("errormessage", companyName+" already exists");      	
-//    		return "redirect:newcompany.html";	 
-//    	}
-//    	catch(NoResultException nre)
-//    	{
-//    		// No Company of this name Exist    		
-//    		try{        			
-//    			companyService.addNewCompany(new Company(companyName,new Date(),getCurrentUser()));   		
-//    			model.addAttribute("successmessage", companyName+" Created");      	    	
-//    			return "redirect:viewcompanies.html";   	    		 
-//    		}
-//    		catch(ConstraintViolationException CVE)
-//    		{   			
-//    			model.addAttribute("errormessage", CVE.getMessage());   	    
-//    			return "redirect:newcompany.html";	
-//    		}
-//    	}    
-//    }       
-    
-//    @RequestMapping(value = {"viewcompanies"}, method = GET)
-//    public String viewAllCompanies(@RequestParam(required = false) String errormessage,String successmessage,Model model) {
-//    	
-//    	Collection<Company> allCompanies = companyService.getAllCompanies();    	
-//    	if (allCompanies.isEmpty())
-//    	{
-//    		// No Company Exist  
-//    		model.addAttribute("errormessage", "No Companies exist");     	
-//    		return "redirect:newcompany.html";        	
-//    	}
-//    	else
-//    	{    		
-//    		model.addAttribute("errormessage", errormessage);
-//    		model.addAttribute("successmessage", successmessage);
-//	    	model.addAttribute("companies", allCompanies);    	
-//	    	return "viewcompanies";
-//    	}
-//    }      
-//    
-    public Calendar GetCurentDate()
-    { 	     	
-    	Calendar currentDate = Calendar.getInstance();    	
-    	System.out.println("*********** Now the currentDate is :=>  " + currentDate);
-    	return currentDate;
-    }
-    public String GetDateNow()
-    { 	 
-    	Calendar currentDate = Calendar.getInstance();
-    	SimpleDateFormat formatter= new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss");
-    	String dateNow = formatter.format(currentDate.getTime()); 
-    	System.out.println("*********** Now the currentDate is :=>  " + currentDate);
-    	System.out.println("*********** Now the dateNow is :=>  " + dateNow);
-    	return dateNow;
-    }
-    
-    private String getCurrentUser() 
-    {
-    	System.out.println("*********** Current User is :=>  " + SecurityContextHolder.getContext().getAuthentication().getName());
-    	return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-    
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public void emptyResult() {
-	// no code needed
-    }
+	//  
+	//    
+	//    @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
+	//    public String jsonprojectTEST(@RequestParam(required = false)long companyID, Model model) {
+	//    	model.addAttribute("company", companyService.getCompany(companyID));
+	//    	return "jsonprojectTEST";  
+	//  }  
+	//    
+	//    @RequestMapping(value = {"projectsListView"}, method = GET)
+	//    public String projectListView(@RequestParam(required = false)long companyID, Model model) {
+	//    	model.addAttribute("company", companyService.getCompany(companyID));
+	//    	return "projectsListView";  
+	//  }  
+	//    
+	//    @RequestMapping(value = {"newcompany"}, method = GET)
+	//    public String newCompany(@RequestParam(required = false) String errormessage,String successmessage,Model model) {	
+	//    	model.addAttribute("errormessage", errormessage);
+	//    	return "newcompany";
+	//    }   
+	//
+	//    @RequestMapping(value = {"newcompany"}, method = POST)   
+	//    public String createNewCompany(@RequestParam String companyName, Model model) {      	
+	//    	try{
+	//    		// Company already exists    	
+	//    		Company company = companyService.getCompanyByName(companyName); 
+	//    		model.addAttribute("errormessage", companyName+" already exists");      	
+	//    		return "redirect:newcompany.html";	 
+	//    	}
+	//    	catch(NoResultException nre)
+	//    	{
+	//    		// No Company of this name Exist    		
+	//    		try{        			
+	//    			companyService.addNewCompany(new Company(companyName,new Date(),getCurrentUser()));   		
+	//    			model.addAttribute("successmessage", companyName+" Created");      	    	
+	//    			return "redirect:viewcompanies.html";   	    		 
+	//    		}
+	//    		catch(ConstraintViolationException CVE)
+	//    		{   			
+	//    			model.addAttribute("errormessage", CVE.getMessage());   	    
+	//    			return "redirect:newcompany.html";	
+	//    		}
+	//    	}    
+	//    }       
+
+	//    @RequestMapping(value = {"viewcompanies"}, method = GET)
+	//    public String viewAllCompanies(@RequestParam(required = false) String errormessage,String successmessage,Model model) {
+	//    	
+	//    	Collection<Company> allCompanies = companyService.getAllCompanies();    	
+	//    	if (allCompanies.isEmpty())
+	//    	{
+	//    		// No Company Exist  
+	//    		model.addAttribute("errormessage", "No Companies exist");     	
+	//    		return "redirect:newcompany.html";        	
+	//    	}
+	//    	else
+	//    	{    		
+	//    		model.addAttribute("errormessage", errormessage);
+	//    		model.addAttribute("successmessage", successmessage);
+	//	    	model.addAttribute("companies", allCompanies);    	
+	//	    	return "viewcompanies";
+	//    	}
+	//    }      
+	//    
+	public Calendar GetCurentDate()
+	{ 	     	
+		Calendar currentDate = Calendar.getInstance();    	
+		System.out.println("*********** Now the currentDate is :=>  " + currentDate);
+		return currentDate;
+	}
+	public String GetDateNow()
+	{ 	 
+		Calendar currentDate = Calendar.getInstance();
+		SimpleDateFormat formatter= new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss");
+		String dateNow = formatter.format(currentDate.getTime()); 
+		System.out.println("*********** Now the currentDate is :=>  " + currentDate);
+		System.out.println("*********** Now the dateNow is :=>  " + dateNow);
+		return dateNow;
+	}
+
+	private String getCurrentUser() 
+	{
+		System.out.println("*********** Current User is :=>  " + SecurityContextHolder.getContext().getAuthentication().getName());
+		return SecurityContextHolder.getContext().getAuthentication().getName();
+	}
+
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public void emptyResult() {
+		// no code needed
+	}
 
 }
