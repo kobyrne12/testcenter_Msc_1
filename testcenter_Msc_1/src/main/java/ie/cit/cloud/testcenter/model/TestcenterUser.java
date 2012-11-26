@@ -10,7 +10,8 @@ package ie.cit.cloud.testcenter.model;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ public class TestcenterUser implements UserDetails {
 	// Getters & Setters for original props
 	// Please include getters and setters for the variables defined above.
 	// Spring Security props for internal checks of UserDetails
-	private transient Collection<GrantedAuthority> authorities;
+	private transient Set<GrantedAuthority> authorities;
 	////////////////////
 
 	//  @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
@@ -82,27 +83,27 @@ public class TestcenterUser implements UserDetails {
 
 	@ManyToMany(mappedBy="users", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testrun> testruns = new ArrayList<Testrun>();		
+	private Set<Testrun> testruns = new HashSet<Testrun>();		
 
 	@ManyToMany(mappedBy="users", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Requirement> requirements = new ArrayList<Requirement>();
+	private Set<Requirement> requirements = new HashSet<Requirement>();
 
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "USERS_JOIN_DEFECTS", joinColumns = { @JoinColumn(name = "userID") }, inverseJoinColumns = { @JoinColumn(name = "defectID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Defect> defects  = new ArrayList<Defect>();
+	private Set<Defect> defects  = new HashSet<Defect>();
 
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "USERS_JOIN_Environments", joinColumns = { @JoinColumn(name = "userID") }, inverseJoinColumns = { @JoinColumn(name = "environmentID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Environment> environments  = new ArrayList<Environment>();
+	private Set<Environment> environments  = new HashSet<Environment>();
 
 	public TestcenterUser() {	
 	}
 
 	@Transient
-	public Collection<GrantedAuthority> getAuthorities() {
+	public Set<GrantedAuthority> getAuthorities() {
 		return authorities;
 	}
 
@@ -132,7 +133,7 @@ public class TestcenterUser implements UserDetails {
 		for (String role : authorities) {
 			listOfAuthorities.add(new GrantedAuthorityImpl(role));
 		}
-		this.authorities = (Collection<GrantedAuthority>) listOfAuthorities;
+		this.authorities = (Set<GrantedAuthority>) listOfAuthorities;
 	}
 	/**
 	 * @param userName
@@ -155,9 +156,9 @@ public class TestcenterUser implements UserDetails {
 	 * @param environments
 	 */
 	public TestcenterUser(String username, String password, Boolean enabled,
-			Long companyID, Collection<Testrun> testruns,
-			Collection<Requirement> requirements, Collection<Defect> defects,
-			Collection<Environment> environments) {
+			Long companyID, Set<Testrun> testruns,
+			Set<Requirement> requirements, Set<Defect> defects,
+			Set<Environment> environments) {
 		this.username = username;
 		this.password = password;
 		this.enabled = enabled;
@@ -241,56 +242,56 @@ public class TestcenterUser implements UserDetails {
 	/**
 	 * @return the testruns
 	 */
-	public Collection<Testrun> getTestruns() {
+	public Set<Testrun> getTestruns() {
 		return testruns;
 	}
 
 	/**
 	 * @param testruns the testruns to set
 	 */
-	public void setTestruns(Collection<Testrun> testruns) {
+	public void setTestruns(Set<Testrun> testruns) {
 		this.testruns = testruns;
 	}
 
 	/**
 	 * @return the requirements
 	 */
-	public Collection<Requirement> getRequirements() {
+	public Set<Requirement> getRequirements() {
 		return requirements;
 	}
 
 	/**
 	 * @param requirements the requirements to set
 	 */
-	public void setRequirements(Collection<Requirement> requirements) {
+	public void setRequirements(Set<Requirement> requirements) {
 		this.requirements = requirements;
 	}
 
 	/**
 	 * @return the defects
 	 */
-	public Collection<Defect> getDefects() {
+	public Set<Defect> getDefects() {
 		return defects;
 	}
 
 	/**
 	 * @param defects the defects to set
 	 */
-	public void setDefects(Collection<Defect> defects) {
+	public void setDefects(Set<Defect> defects) {
 		this.defects = defects;
 	}
 
 	/**
 	 * @return the environments
 	 */
-	public Collection<Environment> getEnvironments() {
+	public Set<Environment> getEnvironments() {
 		return environments;
 	}
 
 	/**
 	 * @param environments the environments to set
 	 */
-	public void setEnvironments(Collection<Environment> environments) {
+	public void setEnvironments(Set<Environment> environments) {
 		this.environments = environments;
 	}
 

@@ -10,7 +10,8 @@ package ie.cit.cloud.testcenter.respository.company;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,12 +46,14 @@ public class HibernateCompanyRespository implements CompanyRepository {
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Company> findAll() {
+    public Set<Company> findAll() {
     Query query = em.createQuery("from Company");	
 //	Query query = em.createQuery("from TestPlan where user=:user");
 //	query.setParameter("user", getCurrentUser());
  //   query.setParameter("testerName", "john");
-	return (List<Company>) query.getResultList();
+    List<Company> companylist = query.getResultList();
+    Set<Company> companySet = new HashSet<Company>(companylist);  
+	return companySet;
     }
 
     public Company findById(long companyID) {

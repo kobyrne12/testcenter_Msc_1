@@ -1,26 +1,27 @@
 package ie.cit.cloud.testcenter.display;
 
 
-import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class RelatedObjectList {
 
-	private Collection<RelatedObject> relatedObjects;
+	private Set<RelatedObject> relatedObjects;
 	public RelatedObjectList()
 	{
 
 	}
-	public RelatedObjectList(Collection<RelatedObject> relatedObjectList)
+	public RelatedObjectList(Set<RelatedObject> relatedObjectList)
 	{
 
 	}
 	
-	public Collection<RelatedObject> getRelatedObjects() {
+	public Set<RelatedObject> getRelatedObjects() {
 		return relatedObjects;
 	}
 
-	public void setRelatedObjects(Collection<RelatedObject> relatedObjects) {
-		this.relatedObjects = relatedObjects;
+	public void setRelatedObjects(Set<RelatedObject> relatedObjectSet) {
+		this.relatedObjects = relatedObjectSet;
 	}
 
 }

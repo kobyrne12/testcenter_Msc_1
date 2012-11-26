@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -67,11 +67,11 @@ public class Environment {
 
 	@ManyToMany(mappedBy="environments", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-    private Collection<Testrun> testruns = new ArrayList<Testrun>();
+    private Set<Testrun> testruns = new HashSet<Testrun>();
 	
 	@ManyToMany(mappedBy="environments", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-    private Collection<TestcenterUser> users = new ArrayList<TestcenterUser>();
+    private Set<TestcenterUser> users = new HashSet<TestcenterUser>();
 	
 	public Environment() {	
 	}
@@ -106,7 +106,7 @@ public class Environment {
 			String environmentOs, String environmentOsVersion,
 			Date creationDate, Date lastModifiedDate, long createdByUserID,
 			long lastModifiedByUserID, long currentOwnerUserID,
-			Collection<Testrun> testruns, Collection<TestcenterUser> users) {
+			Set<Testrun> testruns, Set<TestcenterUser> users) {
 		this.companyID = companyID;
 		this.environmentName = environmentName;
 		this.environmentOs = environmentOs;
@@ -249,28 +249,28 @@ public class Environment {
 	/**
 	 * @return the testruns
 	 */
-	public Collection<Testrun> getTestruns() {
+	public Set<Testrun> getTestruns() {
 		return testruns;
 	}
 
 	/**
 	 * @param testruns the testruns to set
 	 */
-	public void setTestruns(Collection<Testrun> testruns) {
+	public void setTestruns(Set<Testrun> testruns) {
 		this.testruns = testruns;
 	}
 
 	/**
 	 * @return the users
 	 */
-	public Collection<TestcenterUser> getUsers() {
+	public Set<TestcenterUser> getUsers() {
 		return users;
 	}
 
 	/**
 	 * @param users the users to set
 	 */
-	public void setUsers(Collection<TestcenterUser> users) {
+	public void setUsers(Set<TestcenterUser> users) {
 		this.users = users;
 	}
 

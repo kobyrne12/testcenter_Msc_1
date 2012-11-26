@@ -13,7 +13,9 @@ import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.respository.cycle.CycleRepository;
-import java.util.Collection;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -48,12 +50,12 @@ public class HibernateCycleRespository implements CycleRepository {
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Cycle> findAll() {
+    public Set<Cycle> findAll() {
     Query query = em.createQuery("from Cycle");	
 //	Query query = em.createQuery("from TestPlan where user=:user");
 //	query.setParameter("user", getCurrentUser());
  //   query.setParameter("testerName", "john");
-	return (List<Cycle>) query.getResultList();
+	return (Set<Cycle>) query.getResultList();
     }
 
     public Cycle findById(long cycleID) {
@@ -70,18 +72,22 @@ public class HibernateCycleRespository implements CycleRepository {
 //   }	
     
     @SuppressWarnings("unchecked")
-	public  Collection<Cycle> findAllCyclesByProjectID(long projectID)
+	public Set<Cycle> findAllCyclesByProjectID(long projectID)
 	{
 		Query query = em.createQuery("from Cycle where projectID=:projectID"); 		
 		query.setParameter("projectID", projectID);
-		return ( Collection<Cycle>) query.getResultList();
+		List<Cycle> cycleslist = query.getResultList();
+	    Set<Cycle> cyclesSet = new HashSet<Cycle>(cycleslist);  
+		return cyclesSet;	
 	}
     @SuppressWarnings("unchecked")
-	public  Collection<Cycle> findAllCyclesByParentID(long cycleID)
+	public  Set<Cycle> findAllCyclesByParentID(long cycleID)
 	{
 		Query query = em.createQuery("from Cycle where parentID=:parentID"); 		
 		query.setParameter("parentID", cycleID);
-		return ( Collection<Cycle>) query.getResultList();
+		List<Cycle> childCycleslist = query.getResultList();
+	    Set<Cycle> childCyclesSet = new HashSet<Cycle>(childCycleslist);  
+		return childCyclesSet;
 	}	
 
     public int getMaxProjectPosNum(long projectID)

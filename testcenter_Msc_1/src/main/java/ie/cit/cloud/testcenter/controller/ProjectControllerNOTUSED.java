@@ -18,7 +18,7 @@ import ie.cit.cloud.testcenter.service.project.ProjectService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.validation.ConstraintViolationException;

@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.service.environment;
  *
  */
 
-import java.util.Collection;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -39,110 +39,110 @@ public interface EnvironmentService {
 	
 	/**
 	 * Returns a collection of All Testruns in a environment incl all child environments 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Testruns in a environment incl all child environments,
 	 */	
-	Collection<Testrun> getAllTestRuns(long environmentID);
+	Set<Testrun> getAllTestRuns(long environmentID);
 	/**
 	 * Returns a collection of All compulsory Testruns in a environment incl all child environments 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a environment incl all child environments,
 	 */	
-	Collection<Testrun> getCompulsoryTestRuns(long environmentID);
+	Set<Testrun> getCompulsoryTestRuns(long environmentID);
 	/**
 	 * Returns a collection of All Optional Testruns in a environment incl all child environments 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a environment incl all child environments,
 	 */	
-	Collection<Testrun> getOptionalTestRuns(long environmentID);
+	Set<Testrun> getOptionalTestRuns(long environmentID);
 	/**
 	 * Returns a collection of All Testcases in a environment incl all child environments 
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of All Testcases in a environment incl all child environments,
 	 */	
-	Collection<Testcase> getAllTestCases(long environmentID);
+	Set<Testcase> getAllTestCases(long environmentID);
 	/**
 	 * Returns a collection of All Compulsory Testcases in a environment incl all child environments 
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of All Compulsory Testcases in a environment incl all child environments,
 	 */	
-	Collection<Testcase> getCompulsoryTestCases(long environmentID);
+	Set<Testcase> getCompulsoryTestCases(long environmentID);
 	/**
 	 * Returns a collection of All Optional Testcases in a environment incl all child environments 
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of All Optional Testcases in a environment incl all child environments,
 	 */	
-	Collection<Testcase> getOptionalTestCases(long environmentID);
+	Set<Testcase> getOptionalTestCases(long environmentID);
 	/**
 	 * Returns a collection of All Testplans in a environment incl all child environments 
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of All Testplans in a environment incl all child environments,
 	 */	
-	Collection<Testplan> getAllTestPlans(long environmentID);
+	Set<Testplan> getAllTestPlans(long environmentID);
 	/**
 	 * Returns a collection of All Compulsory Testplans in a environment incl all child environments 
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of All Compulsory Testplans in a environment incl all child environments,
 	 */	
-	Collection<Testplan> getCompulsoryTestPlans(long environmentID);
+	Set<Testplan> getCompulsoryTestPlans(long environmentID);
 	/**
 	 * Returns a collection of All Optional Testplans in a environment incl all child environments 
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of All Optional Testplans in a environment incl all child environments,
 	 */	
-	Collection<Testplan> getOptionalTestPlans(long environmentID);
+	Set<Testplan> getOptionalTestPlans(long environmentID);
 	/**
 	 * Returns a collection of Projects in a environment incl all child environments 
-	 * Collection<Project>
+	 * Set<Project>
 	 * @return collection of Projects in a environment incl all child environments,
 	 */		
-	Collection<Project> getProjects(long environmentID) ;
+	Set<Project> getProjects(long environmentID) ;
 	/**
 	 * Returns a collection of Cycles in a environment incl all child environments 
-	 * Collection<Cycle>
+	 * Set<Cycle>
 	 * @return collection of Cycles in a environment incl all child environments,
 	 */		
-	Collection<Cycle> getCycles(long environmentID);	
+	Set<Cycle> getCycles(long environmentID);	
 	/**
 	 * Returns a collection of Requirements in a environment incl all child environments 
-	 * Collection<Requirement>
+	 * Set<Requirement>
 	 * @return collection of Requirements in a environment incl all child environments,
 	 */		
-	Collection<Requirement> getRequirements(long environmentID) ;
+	Set<Requirement> getRequirements(long environmentID) ;
 	/**
 	 * Returns a collection of All Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedAllDefects(long environmentID);
+	Set<Defect> getCascadedAllDefects(long environmentID);
 	/**
 	 * Returns a collection of Sev1 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 1 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev1Defects(long environmentID);
+	Set<Defect> getCascadedSev1Defects(long environmentID);
 	/**
 	 * Returns a collection of Sev2 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 2 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev2Defects(long environmentID);
+	Set<Defect> getCascadedSev2Defects(long environmentID);
 	/**
 	 * Returns a collection of Sev 3 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 3 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev3Defects(long environmentID);
+	Set<Defect> getCascadedSev3Defects(long environmentID);
 	/**
 	 * Returns a collection of Sev 4 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 4 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev4Defects(long environmentID);
+	Set<Defect> getCascadedSev4Defects(long environmentID);
 
-	Collection<TestcenterUser> getCascadedTesters(long environmentID);
-	Collection<TestcenterUser> getCascadedSnrTesters(long environmentID);
-	Collection<TestcenterUser> getCascadedDevelopers(long environmentID);
-	Collection<TestcenterUser> getCascadedSnrDevelopers(long environmentID);
+	Set<TestcenterUser> getCascadedTesters(long environmentID);
+	Set<TestcenterUser> getCascadedSnrTesters(long environmentID);
+	Set<TestcenterUser> getCascadedDevelopers(long environmentID);
+	Set<TestcenterUser> getCascadedSnrDevelopers(long environmentID);
 
 }

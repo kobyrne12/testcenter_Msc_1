@@ -24,8 +24,6 @@ import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
-import ie.cit.cloud.testcenter.model.summary.ProjectMinSummary;
-import ie.cit.cloud.testcenter.model.summary.ProjectMinSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.respository.project.ProjectRepository;
@@ -41,7 +39,6 @@ import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Iterator;
 import javax.persistence.NoResultException;
@@ -54,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class ProjectServiceImpl implements ProjectService {
+public class CopyOfProjectServiceImpl implements ProjectService {
 
 	@Autowired
 	@Qualifier("hibernateProjectRespository")
@@ -187,27 +184,120 @@ public class ProjectServiceImpl implements ProjectService {
 		colNames.add("Current " + company.getSanityDisplayName());
 		columnModelSet.add(new GridAttributes("sanityCurrentPercent","percentFmatter","unformatPercent",15));
 
+//		colNames.add("Total "+ company.getDefectsDisplayName());
+//		columnModelSet.add(new GridAttributes("totalDefects"));
+//		colNames.add("Max Sev 1s");
+//		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
+//		colNames.add("Current Sev 1s");
+//		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));
+//		colNames.add("Max Sev 2s");
+//		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
+//		colNames.add("Current Sev 2s");
+//		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));
+//		colNames.add("Max Sev 3s");
+//		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
+//		colNames.add("Current Sev 3s");
+//		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));	
+//		colNames.add("Max Sev 4s");
+//		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
+//		colNames.add("Current Sev 4s");
+//		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));
+//
+//		colNames.add("Company ID");
+//		columnModelSet.add(new GridAttributes("companyID",true));
+//
+//		colNames.add(company.getCyclesDisplayName());
+//		columnModelSet.add(new GridAttributes("totalCycles",true));
+//		
+//		colNames.add("All "+company.getTestrunsDisplayName());
+//		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
+//		colNames.add("Compulsory "+company.getTestrunsDisplayName());
+//		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
+//		colNames.add("Optional "+company.getTestrunsDisplayName());
+//		columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));	
+//		
+//		colNames.add("All "+company.getTestplansDisplayName());
+//		columnModelSet.add(new GridAttributes("totalAllTestplans",10,true));		
+//		colNames.add("Compulsory "+company.getTestplansDisplayName());
+//		columnModelSet.add(new GridAttributes("totalRequiredTestplans",10,true));	
+//		colNames.add("Optional "+company.getTestplansDisplayName());
+//		columnModelSet.add(new GridAttributes("totalOptionalTestplans",10,true));	
+//		
+//		colNames.add("All "+company.getTestcasesDisplayName());
+//		columnModelSet.add(new GridAttributes("totalAllTestcases",10,true));		
+//		colNames.add("Compulsory "+company.getTestcasesDisplayName());
+//		columnModelSet.add(new GridAttributes("totalRequiredTestcases",10,true));	
+//		colNames.add("Optional "+company.getTestcasesDisplayName());
+//		columnModelSet.add(new GridAttributes("totalOptionalTestcases",10,true));	
+//
+//		colNames.add(company.getTestplansDisplayName());
+//		columnModelSet.add(new GridAttributes("totalTestplans",true));
+//		colNames.add(company.getTestcasesDisplayName());
+//		columnModelSet.add(new GridAttributes("totalTestcases",true));	 
+//
+//		colNames.add(company.getEnvironmentsDisplayName());
+//		columnModelSet.add(new GridAttributes("totalEnvironments",true));
+//		colNames.add(company.getRequirementsDisplayName());
+//		columnModelSet.add(new GridAttributes("totalRequirements",true));
+//
+//		colNames.add(company.getTestersDisplayName());
+//		columnModelSet.add(new GridAttributes("totalTesters",true));
+//		colNames.add(company.getSeniorTestersDisplayName());
+//		columnModelSet.add(new GridAttributes("totalSeniorTesters",true));
+//		colNames.add(company.getDevelopersDisplayName());
+//		columnModelSet.add(new GridAttributes("totalDevelopers",true));
+//		colNames.add(company.getSeniordevelopersDisplayName());
+//		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
+//
+//		colNames.add("LastModifiedDate");
+//		columnModelSet.add(new GridAttributes("lastModifiedDate",true));
+//		colNames.add("LastModifiedBy");
+//		columnModelSet.add(new GridAttributes("lastModifiedBy",true));	 
+//		colNames.add("CreatedBy");
+//		columnModelSet.add(new GridAttributes("createdBy",true));
+//		colNames.add("CreationDate");
+//		columnModelSet.add(new GridAttributes("creationDate",true));
+//		colNames.add("Position");
+//		columnModelSet.add(new GridAttributes("companyPosition",true));	
+		
+		
+		// if customValue1 set then 	
+		//colNames.add("customValue1");
+		//columnModelSet.add(new GridAttributes("customColumn1",true));	 
+		// if customValue2 set then 
+		//colNames.add("customValue1");
+		//columnModelSet.add(new GridAttributes("customColumn2",true));		
+		// if customValue3 set then 
+		//colNames.add("customValue3");
+		//columnModelSet.add(new GridAttributes("customColumn3",true));		
+		// if customValue4 set then 
+		//colNames.add("customValue4");	
+		//columnModelSet.add(new GridAttributes("customColumn4",true));		
+		// if customValue5 set then 
+		//colNames.add("customValue5");	
+		//columnModelSet.add(new GridAttributes("customColumn5",true));	
+
 		colModelAndName.setColName(colNames);    	
 		colModelAndName.setColModel(columnModelSet);
 		return colModelAndName;
 	}
 
-	public ProjectMinSummaryList getGridProjects(long companyID, String projectID, String cycleID,
+	public ProjectSummaryList getGridProjects(long companyID, String projectID, String cycleID,
 			String testplanID,String testcaseID, String testrunID, String defectID, 
 			String requirementID, String environmentID, String userID )
 	{		
 		// Check which projects wil be displayed 
 		Company company = companyService.getCompany(companyID);
-		Set<Project> projects = new LinkedHashSet<Project>();
+		Set<Project> projects = new HashSet<Project>();
 
 		if (cycleID != null && !cycleID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
 		{			
 			if(cycleID.contains(","))
 			{
 				String[] cycleIDArray = cycleID.split(",");
-				for(String eachCycleID : cycleIDArray)
+				for(String eachCycle : cycleIDArray)
 				{
-					Cycle cycle = cycleService.getCycle(Long.valueOf(eachCycleID).longValue());
+					Cycle cycle = cycleService.getCycle(Long.valueOf(eachCycle).longValue());
 					projects.add(getProject(cycle.getProjectID()));
 				}
 			}
@@ -225,151 +315,63 @@ public class ProjectServiceImpl implements ProjectService {
 
 		// Retain Testplan projects
 		if (testplanID != null && !testplanID.isEmpty()) 
-		{		
-			if(testplanID.contains(","))
+		{			
+			if(testplanService.getProjects(Long.valueOf(testplanID).longValue()) != null)
 			{
-				String[] testplanIDArray = testplanID.split(",");
-				for(String eachtestplanID : testplanIDArray)
-				{
-					if(testplanService.getProjects(Long.valueOf(eachtestplanID).longValue()) != null)
-					{
-						projects.retainAll(testplanService.getProjects(Long.valueOf(eachtestplanID).longValue()));
-					}
-				}
-			}
-			else
-			{
-				if(testplanService.getProjects(Long.valueOf(testplanID).longValue()) != null)
-				{
-					projects.retainAll(testplanService.getProjects(Long.valueOf(testplanID).longValue()));
-				}
-			}						
+				projects.retainAll(testplanService.getProjects(Long.valueOf(testplanID).longValue()));
+			}			
 		}		
 		if(projects == null || projects.isEmpty()){return null;}
 
 		// Retain Testcase projects
 		if (testcaseID != null && !testcaseID.isEmpty()) 
-		{		
-			if(testcaseID.contains(","))
+		{			
+			if(testcaseService.getProjects(Long.valueOf(testcaseID).longValue()) != null)
 			{
-				String[] testcaseIDArray = testcaseID.split(",");
-				for(String eachtestcaseID : testcaseIDArray)
-				{
-					if(testcaseService.getProjects(Long.valueOf(eachtestcaseID).longValue()) != null)
-					{
-						projects.retainAll(testcaseService.getProjects(Long.valueOf(eachtestcaseID).longValue()));
-					}
-				}
-			}
-			else
-			{
-				if(testcaseService.getProjects(Long.valueOf(testcaseID).longValue()) != null)
-				{
-					projects.retainAll(testcaseService.getProjects(Long.valueOf(testcaseID).longValue()));
-				}
-			}							
+				projects.retainAll(testcaseService.getProjects(Long.valueOf(testcaseID).longValue()));
+			}			
 		}		
 		if(projects == null || projects.isEmpty()){return null;}
 
 		// Retain Testrun projects
 		if (testrunID != null && !testrunID.isEmpty()) 
-		{		
-			if(testrunID.contains(","))
+		{			
+			if(testrunService.getProject(Long.valueOf(testrunID).longValue()) != null)
 			{
-				String[] testrunIDArray = testrunID.split(",");
-				for(String eachtestrunID : testrunIDArray)
-				{
-					if(testrunService.getProject(Long.valueOf(eachtestrunID).longValue()) != null)
-					{
-						Set<Project> testrunProjects = new HashSet<Project>();
-						testrunProjects.add(testrunService.getProject(Long.valueOf(eachtestrunID).longValue()));
-						projects.retainAll(testrunProjects);				
-					}					
-				}
-			}
-			else
-			{
-				if(testrunService.getProject(Long.valueOf(testrunID).longValue()) != null)
-				{
-					Set<Project> testrunProjects = new HashSet<Project>();
-					testrunProjects.add(testrunService.getProject(Long.valueOf(testrunID).longValue()));
-					projects.retainAll(testrunProjects);				
-				}					
-			}	
-					
+				Set<Project> testrunProjects = new HashSet<Project>();
+				testrunProjects.add(testrunService.getProject(Long.valueOf(testrunID).longValue()));
+				projects.retainAll(testrunProjects);				
+			}			
 		}
 		if(projects == null || projects.isEmpty()){return null;}
 
 		// Retain Defect projects
 		if (defectID != null && !defectID.isEmpty()) // limit to projects that have this test plan id in it
-		{	
-			if(defectID.contains(","))
+		{			
+			if(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
 			{
-				String[] defectIDArray = defectID.split(",");
-				for(String eachdefectID : defectIDArray)
-				{
-					if(defectService.getCascadedProjects(Long.valueOf(eachdefectID).longValue()) != null)
-					{
-						projects.retainAll(defectService.getCascadedProjects(Long.valueOf(eachdefectID).longValue()));				
-					}					
-				}
-			}
-			else
-			{
-				if(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
-				{
-					projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
-				}					
-			}	
-					
+				projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
+			}			
 		}
 		if(projects == null || projects.isEmpty()){return null;}
 
 		// Retain Requirement projects
 		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(requirementID.contains(","))
+			if(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
 			{
-				String[] requirementIDArray = requirementID.split(",");
-				for(String eachrequirementID : requirementIDArray)
-				{
-					if(requirementService.getProjects(Long.valueOf(eachrequirementID).longValue()) != null)
-					{
-						projects.retainAll(requirementService.getProjects(Long.valueOf(eachrequirementID).longValue()));				
-					}					
-				}
-			}
-			else
-			{
-				if(requirementService.getProjects(Long.valueOf(requirementID).longValue()) != null)
-				{
-					projects.retainAll(requirementService.getProjects(Long.valueOf(requirementID).longValue()));				
-				}					
-			}							
+				projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
+			}				
 		}
 		if(projects == null || projects.isEmpty()){return null;}
 
 		// Retain Environment projects
 		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
-		{		
-			if(requirementID.contains(","))
+		{			
+			if(environmentService.getProjects(Long.valueOf(defectID).longValue()) != null)
 			{
-				String[] environmentIDArray = environmentID.split(",");
-				for(String eachenvironmentID : environmentIDArray)
-				{
-					if(requirementService.getProjects(Long.valueOf(eachenvironmentID).longValue()) != null)
-					{
-						projects.retainAll(requirementService.getProjects(Long.valueOf(eachenvironmentID).longValue()));				
-					}					
-				}
-			}
-			else
-			{
-				if(environmentService.getProjects(Long.valueOf(environmentID).longValue()) != null)
-				{
-					projects.retainAll(environmentService.getProjects(Long.valueOf(environmentID).longValue()));				
-				}				
-			}							
+				projects.retainAll(environmentService.getProjects(Long.valueOf(defectID).longValue()));				
+			}			
 		}
 		if(projects == null || projects.isEmpty()){return null;}
 
@@ -383,202 +385,21 @@ public class ProjectServiceImpl implements ProjectService {
 		//		}
 		//		if(projects == null || projects.isEmpty()){return null;}
 
-		Set<ProjectMinSummary> projectMinSummarySet = new LinkedHashSet<ProjectMinSummary>();
-		ProjectMinSummaryList projectMinSummaryList = new ProjectMinSummaryList();
-	
+		Set<ProjectSummary> projectSummarySet = new HashSet<ProjectSummary>();
+		ProjectSummaryList projectSummaryList = new ProjectSummaryList();
 
 		for(final Project project : projects)
 		{				
-			ProjectMinSummary projectMinSummary = getProjectMinSummary(companyID, project.getProjectID(),
-					cycleID, testplanID, testcaseID, testrunID, defectID, requirementID, environmentID,
-					userID);	
-			projectMinSummarySet.add(projectMinSummary);
+			ProjectSummary projectSummary = getProjectSummary(companyID, project.getProjectID(), cycleID,
+					testplanID, testcaseID, testrunID, defectID, requirementID, environmentID, userID );	
+			projectSummarySet.add(projectSummary);
+
 		}
 		
-		projectMinSummaryList.setProjects(projectMinSummarySet);
-		return projectMinSummaryList;
+		projectSummaryList.setProjects(projectSummarySet);
+		return projectSummaryList;
 	}
-	public ProjectMinSummary getProjectMinSummary(long companyID, long projectID, String cycleID,
-			String testplanID,String testcaseID, String testrunID, String defectID, 
-			String requirementID, String environmentID, String userID )
-	{
-
-		Project project = getProject(projectID);
-		ProjectSummary projectSummary = new ProjectSummary();
-
-		projectSummary.setProjectID(project.getProjectID());
-		projectSummary.setCompanyID(companyID);
-		projectSummary.setProjectName(project.getProjectName());	
-
-		if(getParentProjectName(projectID) !=null)
-		{
-			projectSummary.setParentProjectName(getParentProjectName(projectID));
-		}
-		else		
-		{
-			projectSummary.setParentProjectName("NONE");
-		}
-		projectSummary.setChildProjects(getAllChildProjects(projectID).size());
-		Cycle latestcycle = new Cycle();
-		if(project.getCycles() != null && !project.getCycles().isEmpty())
-		{  
-			for(Cycle cycle : project.getCycles())
-			{
-				if(cycleService.isLatest(cycle.getCycleID()))
-				{
-					latestcycle = cycleService.getCycle(cycle.getCycleID());
-				}
-			}
-		}
-		if(latestcycle != null)	
-		{			
-			Set<Testrun> allTestruns = new HashSet<Testrun>();
-			Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
-			Set<Testrun> optionalTestruns = new HashSet<Testrun>();
-			Set<Defect> allDefects = new HashSet<Defect>();
-			Set<Defect> sev1Defects = new HashSet<Defect>();
-			Set<Defect> sev2Defects = new HashSet<Defect>();
-			Set<Defect> sev3Defects = new HashSet<Defect>();
-			Set<Defect> sev4Defects = new HashSet<Defect>();	
-			if(getCascadedAllTestRuns(projectID) != null)
-			{
-				allTestruns.addAll(getCascadedAllTestRuns(projectID));
-			}
-			if(getCascadedCompulsoryTestRuns(projectID) != null)
-			{
-				compulsoryTestruns.addAll(getCascadedCompulsoryTestRuns(projectID));
-			}
-			if(getCascadedOptionalTestRuns(projectID) != null)
-			{
-				optionalTestruns.addAll(getCascadedOptionalTestRuns(projectID));
-			}
-			
-			if(getCascadedDefects(projectID) != null)
-			{
-				allDefects.addAll(getCascadedDefects(projectID));
-			}
-			if(getCascadedSev1Defects(projectID) != null)
-			{
-				sev1Defects.addAll(getCascadedSev1Defects(projectID));
-			}
-			if(getCascadedSev2Defects(projectID) != null)
-			{
-				sev2Defects.addAll(getCascadedSev2Defects(projectID));
-			}
-			if(getCascadedSev3Defects(projectID) != null)
-			{
-				sev3Defects.addAll(getCascadedSev3Defects(projectID));
-			}
-			if(getCascadedSev4Defects(projectID) != null)
-			{
-				sev4Defects.addAll(getCascadedSev4Defects(projectID));
-			}
-			
-			if (cycleID != null && !cycleID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
-			{
-			if(allTestruns != null && !allTestruns.isEmpty())
-			{
-				if(cycleService.getCascadedAllTestRuns(cycleID_long) == null)
-				{
-					allTestruns.clear();
-				}
-				else
-				{
-					allTestruns.retainAll(cycleService.getCascadedAllTestRuns(cycleID_long));
-				}
-			}
-			if(compulsoryTestruns != null && !compulsoryTestruns.isEmpty())
-			{
-				if(cycleService.getCascadedCompulsoryTestRuns(cycleID_long) == null)
-				{
-					compulsoryTestruns.clear();
-				}
-				else
-				{
-					compulsoryTestruns.retainAll(cycleService.getCascadedCompulsoryTestRuns(cycleID_long));
-				}
-			}
-			if(optionalTestruns != null && !optionalTestruns.isEmpty())
-			{
-				if(cycleService.getCascadedOptionalTestRuns(cycleID_long) == null)
-				{
-					optionalTestruns.clear();
-				}
-				else
-				{
-					optionalTestruns.retainAll(cycleService.getCascadedOptionalTestRuns(cycleID_long));
-				}
-			}
-			//////////////// Defects 	
-			if(allDefects != null && !allDefects.isEmpty())
-			{
-				if(cycleService.getCascadedDefects(cycleID_long) == null)
-				{
-					allDefects.clear();
-				}
-				else
-				{
-					allDefects.retainAll(cycleService.getCascadedDefects(cycleID_long));
-				}
-			}
-			if(sev1Defects != null && !sev1Defects.isEmpty())
-			{
-				if(cycleService.getCascadedSev1Defects(cycleID_long) == null)
-				{
-					sev1Defects.clear();
-				}
-				else
-				{
-					sev1Defects.retainAll(cycleService.getCascadedSev1Defects(cycleID_long));
-				}
-			}
-			if(sev2Defects != null && !sev2Defects.isEmpty())
-			{
-				if(cycleService.getCascadedSev2Defects(cycleID_long) == null)
-				{
-					sev2Defects.clear();
-				}
-				else
-				{
-					sev2Defects.retainAll(cycleService.getCascadedSev2Defects(cycleID_long));
-				}
-			}
-			if(sev3Defects != null && !sev1Defects.isEmpty())
-			{
-				if(cycleService.getCascadedSev3Defects(cycleID_long) == null)
-				{
-					sev3Defects.clear();
-				}
-				else
-				{
-					sev3Defects.retainAll(cycleService.getCascadedSev3Defects(cycleID_long));
-				}
-			}
-			if(sev4Defects != null && !sev4Defects.isEmpty())
-			{
-				if(cycleService.getCascadedSev4Defects(cycleID_long) == null)
-				{
-					sev4Defects.clear();
-				}
-				else
-				{
-					sev4Defects.retainAll(cycleService.getCascadedSev4Defects(cycleID_long));
-				}
-			}
-			}
-		}
-
-		/////////////////////////////////////////////////////////////////////////////////////
-		
-		
 	
-		
-	
-		return null;
-		
-	
-		/////////////////////////////////////////////////////////////////////////////////////	
-	}
 	public ProjectSummary getProjectSummary(long companyID, long projectID, String cycleID,
 			String testplanID,String testcaseID, String testrunID, String defectID, 
 			String requirementID, String environmentID, String userID )

@@ -9,8 +9,8 @@ package ie.cit.cloud.testcenter.model;
  */
 
 import ie.cit.cloud.testcenter.service.project.ProjectService;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,19 +51,19 @@ public class Project {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Cycle.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "projectID", referencedColumnName="projectID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Cycle> cycles = new ArrayList<Cycle>();   
+	private Set<Cycle> cycles = new HashSet<Cycle>();   
 
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "PROJECT_JOIN_TESTPLANS", joinColumns = { @JoinColumn(name = "projectID") }, inverseJoinColumns = { @JoinColumn(name = "testplanID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testplan> testplans  = new ArrayList<Testplan>();    	
+	private Set<Testplan> testplans  = new HashSet<Testplan>();    	
 
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "PROJECT_JOIN_TESTCASES",
 	joinColumns = { @JoinColumn(name = "projectID") },
 	inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testcase> testcases  = new ArrayList<Testcase>();    	
+	private Set<Testcase> testcases  = new HashSet<Testcase>();    	
 
 	@Basic    
 	private long parentID;   
@@ -106,7 +106,7 @@ public class Project {
 	}
 
 	public Project(long companyID, String projectName,
-			Collection<Cycle> cycles,Collection<Testplan> tesplans,	Collection<Testcase> testcases, long parentID,
+			Set<Cycle> cycles,Set<Testplan> tesplans,	Set<Testcase> testcases, long parentID,
 			int regressionRequiredPercent,int newFeatureRequiredPercent,
 			int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,
 			String lastModifiedDate,String lastModifiedBy) {
@@ -153,13 +153,13 @@ public class Project {
 	/**
 	 * @return the cycles
 	 */
-	public Collection<Cycle> getCycles() {
+	public Set<Cycle> getCycles() {
 		return cycles;
 	}
 	/**
 	 * @param cycles the cycles to set
 	 */
-	public void setCycles(Collection<Cycle> cycles) {
+	public void setCycles(Set<Cycle> cycles) {
 		this.cycles = cycles;
 	}
 	/**
@@ -327,25 +327,25 @@ public class Project {
 	/**
 	 * @return the testplans
 	 */
-	public Collection<Testplan> getTestplans() {
+	public Set<Testplan> getTestplans() {
 		return testplans;
 	}
 	/**
 	 * @param testplans the testplans to set
 	 */
-	public void setTestplans(Collection<Testplan> testplans) {
+	public void setTestplans(Set<Testplan> testplans) {
 		this.testplans = testplans;
 	}
 	/**
 	 * @return the testcases
 	 */
-	public Collection<Testcase> getTestcases() {
+	public Set<Testcase> getTestcases() {
 		return testcases;
 	}
 	/**
 	 * @param testcases the testcases to set
 	 */
-	public void setTestcases(Collection<Testcase> testcases) {
+	public void setTestcases(Set<Testcase> testcases) {
 		this.testcases = testcases;
 	}
 

@@ -13,7 +13,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
+import java.util.Set;
 import java.util.Date;
 
 import javax.persistence.NoResultException;
@@ -133,13 +133,10 @@ public class CompanyController {
 				System.out.println("HERE 2 :" + userpath);
 				Long projectID = null;
 				boolean allCompanyProjects = true;	
-
-
 				String relatedObjects = "";
 				String gridUrl = "/summaryList/"+companyID;
 				String breadCrumb = "";			
 				String newuserpath = "Home";
-
 				if (!userpath.toLowerCase().contains("home"))
 				{
 					userpath = "Home>"+userpath;				
@@ -359,7 +356,7 @@ public class CompanyController {
 	//    @RequestMapping(value = {"viewcompanies"}, method = GET)
 	//    public String viewAllCompanies(@RequestParam(required = false) String errormessage,String successmessage,Model model) {
 	//    	
-	//    	Collection<Company> allCompanies = companyService.getAllCompanies();    	
+	//    	Set<Company> allCompanies = companyService.getAllCompanies();    	
 	//    	if (allCompanies.isEmpty())
 	//    	{
 	//    		// No Company Exist  

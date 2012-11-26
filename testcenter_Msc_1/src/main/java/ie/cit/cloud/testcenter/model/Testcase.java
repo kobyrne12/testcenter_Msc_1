@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,12 +53,12 @@ public class Testcase {
 //	@Transient
 	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER)
 	//@Fetch(value = FetchMode.SUBSELECT)
-    private Collection<Project> projects = new ArrayList<Project>();
+    private Set<Project> projects = new HashSet<Project>();
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testcaseID", referencedColumnName="testcaseID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testrun> testruns = new ArrayList<Testrun>();   
+	private Set<Testrun> testruns = new HashSet<Testrun>();   
   
 	@Basic
 	private long testplanSectionID;
@@ -320,13 +320,13 @@ public class Testcase {
 	/**
 	 * @return the testruns
 	 */
-	public Collection<Testrun> getTestruns() {
+	public Set<Testrun> getTestruns() {
 		return testruns;
 	}
 	/**
 	 * @param testruns the testruns to set
 	 */
-	public void setTestruns(Collection<Testrun> testruns) {
+	public void setTestruns(Set<Testrun> testruns) {
 		this.testruns = testruns;
 	}
 
@@ -361,14 +361,14 @@ public class Testcase {
 	/**
 	 * @return the projects
 	 */
-	public Collection<Project> getProjects() {
+	public Set<Project> getProjects() {
 		return projects;
 	}
 
 	/**
 	 * @param projects the projects to set
 	 */
-	public void setProjects(Collection<Project> projects) {
+	public void setProjects(Set<Project> projects) {
 		this.projects = projects;
 	}
 

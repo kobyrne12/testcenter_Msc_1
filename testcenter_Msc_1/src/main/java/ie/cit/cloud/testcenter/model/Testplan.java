@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -45,17 +45,17 @@ public class Testplan {
 	
 	@ManyToMany(mappedBy="testplans", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-    private Collection<Project> projects = new ArrayList<Project>();
+    private Set<Project> projects = new HashSet<Project>();
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testcase.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testcase> testcases;    
+	private Set<Testcase> testcases;    
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=TestplanSection.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<TestplanSection> testplanSections;    
+	private Set<TestplanSection> testplanSections;    
 
 	public Testplan() {		
 	}
@@ -72,7 +72,7 @@ public class Testplan {
 	 * @param testplanName
 	 * @param testcases
 	 */
-	public Testplan(Long companyID,String testplanName,Collection<Testcase> testcases) {
+	public Testplan(Long companyID,String testplanName,Set<Testcase> testcases) {
 		this.companyID = companyID;
 		this.testplanName = testplanName;	
 		this.testcases = testcases;
@@ -83,8 +83,8 @@ public class Testplan {
 	 * @param testcases
 	 * @param testplanSections
 	 */
-	public Testplan(Long companyID,String testplanName,Collection<Testcase> testcases,
-			Collection<TestplanSection> testplanSections) {
+	public Testplan(Long companyID,String testplanName,Set<Testcase> testcases,
+			Set<TestplanSection> testplanSections) {
 		this.companyID = companyID;
 		this.testplanName = testplanName;	
 		this.testcases = testcases;
@@ -122,14 +122,14 @@ public class Testplan {
 	/**
 	 * @return the testcases
 	 */
-	public Collection<Testcase> getTestcases() {
+	public Set<Testcase> getTestcases() {
 		return testcases;
 	}
 
 	/**
 	 * @param testcases the testcases to set
 	 */
-	public void setTestcases(Collection<Testcase> testcases) {
+	public void setTestcases(Set<Testcase> testcases) {
 		this.testcases = testcases;
 	}
 
@@ -142,25 +142,25 @@ public class Testplan {
 	/**
 	 * @return the testplanSections
 	 */
-	public Collection<TestplanSection> getTestplanSections() {
+	public Set<TestplanSection> getTestplanSections() {
 		return testplanSections;
 	}
 	/**
 	 * @param testplanSections the testplanSections to set
 	 */
-	public void setTestplanSections(Collection<TestplanSection> testplanSections) {
+	public void setTestplanSections(Set<TestplanSection> testplanSections) {
 		this.testplanSections = testplanSections;
 	}
 	/**
 	 * @return the projects
 	 */
-	public Collection<Project> getProjects() {
+	public Set<Project> getProjects() {
 		return projects;
 	}
 	/**
 	 * @param projects the projects to set
 	 */
-	public void setProjects(Collection<Project> projects) {
+	public void setProjects(Set<Project> projects) {
 		this.projects = projects;
 	}
 	

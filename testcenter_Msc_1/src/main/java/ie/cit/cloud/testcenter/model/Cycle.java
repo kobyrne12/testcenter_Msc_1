@@ -9,8 +9,8 @@ package ie.cit.cloud.testcenter.model;
  */
 
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,7 +49,7 @@ public class Cycle {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testrun> testruns = new ArrayList<Testrun>();   
+	private Set<Testrun> testruns = new HashSet<Testrun>();   
 
 	@Basic    
 	private long parentID; 
@@ -69,27 +69,27 @@ public class Cycle {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=ChangeImpactRule.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<ChangeImpactRule> changeImpactRules = new ArrayList<ChangeImpactRule>();  
+	private Set<ChangeImpactRule> changeImpactRules = new HashSet<ChangeImpactRule>();  
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=DefectRule.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<DefectRule> defectRules = new ArrayList<DefectRule>();   
+	private Set<DefectRule> defectRules = new HashSet<DefectRule>();   
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=RequirementRule.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<RequirementRule> requirementRules = new ArrayList<RequirementRule>();   
+	private Set<RequirementRule> requirementRules = new HashSet<RequirementRule>();   
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=TestHistoryRule.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<TestHistoryRule> testhistoryRules = new ArrayList<TestHistoryRule>();   
+	private Set<TestHistoryRule> testhistoryRules = new HashSet<TestHistoryRule>();   
 
 	@Basic    
 	private String creationDate;
 
-	public void setTesthistoryRules(Collection<TestHistoryRule> testhistoryRules) {
+	public void setTesthistoryRules(Set<TestHistoryRule> testhistoryRules) {
 		this.testhistoryRules = testhistoryRules;
 	}
 	@Basic    
@@ -140,13 +140,13 @@ public class Cycle {
 	 * @param lastModifiedBy
 	 */
 	public Cycle(String cycleName, long projectID,
-			Collection<Testrun> testruns, long parentID, boolean parent,
+			Set<Testrun> testruns, long parentID, boolean parent,
 			boolean child, int requiredPriority, int projectPosition,
 			String cycleStartDate, String cycleEndDate,
-			Collection<ChangeImpactRule> changeImpactRules,
-			Collection<DefectRule> defectRules,
-			Collection<RequirementRule> requirementRules,
-			Collection<TestHistoryRule> testhistoryRules, String creationDate,
+			Set<ChangeImpactRule> changeImpactRules,
+			Set<DefectRule> defectRules,
+			Set<RequirementRule> requirementRules,
+			Set<TestHistoryRule> testhistoryRules, String creationDate,
 			String createdBy, String lastModifiedDate, String lastModifiedBy) {
 		this.cycleName = cycleName;
 		this.projectID = projectID;
@@ -322,14 +322,14 @@ public class Cycle {
 	/**
 	 * @return the testruns
 	 */
-	public Collection<Testrun> getTestruns() {
+	public Set<Testrun> getTestruns() {
 		return testruns;
 	}
 
 	/**
 	 * @param Testruns the testruns to set
 	 */
-	public void setTestruns(Collection<Testrun> testruns) {
+	public void setTestruns(Set<Testrun> testruns) {
 		this.testruns = testruns;
 	}
 	/**
@@ -371,56 +371,56 @@ public class Cycle {
 	/**
 	 * @return the changeImpactRules
 	 */
-	public Collection<ChangeImpactRule> getChangeImpactRules() {
+	public Set<ChangeImpactRule> getChangeImpactRules() {
 		return changeImpactRules;
 	}
 
 	/**
 	 * @param changeImpactRules the changeImpactRules to set
 	 */
-	public void setChangeImpactRules(Collection<ChangeImpactRule> changeImpactRules) {
+	public void setChangeImpactRules(Set<ChangeImpactRule> changeImpactRules) {
 		this.changeImpactRules = changeImpactRules;
 	}
 
 	/**
 	 * @return the defectRules
 	 */
-	public Collection<DefectRule> getDefectRules() {
+	public Set<DefectRule> getDefectRules() {
 		return defectRules;
 	}
 
 	/**
 	 * @param defectRules the defectRules to set
 	 */
-	public void setDefectRules(Collection<DefectRule> defectRules) {
+	public void setDefectRules(Set<DefectRule> defectRules) {
 		this.defectRules = defectRules;
 	}
 
 	/**
 	 * @return the requirementRules
 	 */
-	public Collection<RequirementRule> getRequirementRules() {
+	public Set<RequirementRule> getRequirementRules() {
 		return requirementRules;
 	}
 
 	/**
 	 * @param requirementRules the requirementRules to set
 	 */
-	public void setRequirementRules(Collection<RequirementRule> requirementRules) {
+	public void setRequirementRules(Set<RequirementRule> requirementRules) {
 		this.requirementRules = requirementRules;
 	}
 
 	/**
 	 * @return the testhistoryRules
 	 */
-	public Collection<TestHistoryRule> getTesthistoryRules() {
+	public Set<TestHistoryRule> getTesthistoryRules() {
 		return testhistoryRules;
 	}
 
 	/**
 	 * @param testhistoryRules the testhistoryRules to set
 	 */	
-	public void setTestHistoryRules(Collection<TestHistoryRule> testhistoryRules) {
+	public void setTestHistoryRules(Set<TestHistoryRule> testhistoryRules) {
 		this.testhistoryRules = testhistoryRules;
 	}
 	//	/**
@@ -438,7 +438,7 @@ public class Cycle {
 	//			}
 	//			if(parent)
 	//			{  
-	//				Collection<Cycle> childCycles = getChildCycles();
+	//				Set<Cycle> childCycles = getChildCycles();
 	//				if(childCycles != null && !childCycles.isEmpty())
 	//				{		
 	//					for(final Cycle childCycle : childCycles)

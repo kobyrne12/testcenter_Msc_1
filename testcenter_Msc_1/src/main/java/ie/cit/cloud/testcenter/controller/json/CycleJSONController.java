@@ -1,8 +1,9 @@
 package ie.cit.cloud.testcenter.controller.json;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.persistence.NoResultException;
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.RelatedObject;
@@ -90,47 +91,47 @@ public class CycleJSONController {
 //	@ResponseStatus(HttpStatus.OK)
 //	public @ResponseBody RelatedObjectList getProjectRelatedObjects(@PathVariable("cycleID") long cycleID) {
 		//Cycle cycle = cycleService.getCycle(cycleID);
-		Collection<RelatedObject> relatedObjectCollection =  new ArrayList<RelatedObject>();
+		Set<RelatedObject> relatedObjectSet =  new LinkedHashSet<RelatedObject>();
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
 			CycleSummary cycleSummary = cycleService.getCycleSummary(cycleID); 
 			Company company = companyService.getCompany(cycleSummary.getCompanyID());
 
-			relatedObjectCollection.add(new RelatedObject(1,"Parent "+ company.getCycleDisplayName(),cycleSummary.getParentCycleName(), cycleID, "parentCycle"));
-			relatedObjectCollection.add(new RelatedObject(2,"Child "+ company.getCyclesDisplayName(),String.valueOf(cycleSummary.getTotalChildCycles()), cycleID, "childCycles"));   	
-			relatedObjectCollection.add(new RelatedObject(3,company.getProjectDisplayName(),cycleSummary.getProjectName(), cycleID, company.getProjectDisplayName()));   	
+			relatedObjectSet.add(new RelatedObject(1,"Parent "+ company.getCycleDisplayName(),cycleSummary.getParentCycleName(), cycleID, "parentCycle"));
+			relatedObjectSet.add(new RelatedObject(2,"Child "+ company.getCyclesDisplayName(),String.valueOf(cycleSummary.getTotalChildCycles()), cycleID, "childCycles"));   	
+			relatedObjectSet.add(new RelatedObject(3,company.getProjectDisplayName(),cycleSummary.getProjectName(), cycleID, company.getProjectDisplayName()));   	
 
-			relatedObjectCollection.add(new RelatedObject(4,"All "+ company.getTestrunsDisplayName(),String.valueOf(cycleSummary.getTotalAllTestruns()), cycleID, "all"+company.getTestrunsDisplayName()));   	
-			relatedObjectCollection.add(new RelatedObject(5,"Required "+ company.getTestrunsDisplayName(),String.valueOf(cycleSummary.getTotalAllTestruns()), cycleID, "required"+company.getTestrunsDisplayName()));   	
-			relatedObjectCollection.add(new RelatedObject(6,company.getTestcasesDisplayName(),String.valueOf(cycleSummary.getTotalTestcases()), cycleID, company.getTestcasesDisplayName()));   
-			relatedObjectCollection.add(new RelatedObject(7,company.getTestplansDisplayName(),String.valueOf(cycleSummary.getTotalTestplans()), cycleID, company.getTestplansDisplayName())); 
+			relatedObjectSet.add(new RelatedObject(4,"All "+ company.getTestrunsDisplayName(),String.valueOf(cycleSummary.getTotalAllTestruns()), cycleID, "all"+company.getTestrunsDisplayName()));   	
+			relatedObjectSet.add(new RelatedObject(5,"Required "+ company.getTestrunsDisplayName(),String.valueOf(cycleSummary.getTotalAllTestruns()), cycleID, "required"+company.getTestrunsDisplayName()));   	
+			relatedObjectSet.add(new RelatedObject(6,company.getTestcasesDisplayName(),String.valueOf(cycleSummary.getTotalTestcases()), cycleID, company.getTestcasesDisplayName()));   
+			relatedObjectSet.add(new RelatedObject(7,company.getTestplansDisplayName(),String.valueOf(cycleSummary.getTotalTestplans()), cycleID, company.getTestplansDisplayName())); 
 
-			relatedObjectCollection.add(new RelatedObject(8,company.getTestersDisplayName(),String.valueOf(cycleSummary.getTotalTesters()), cycleID, company.getTestersDisplayName()));   
-			relatedObjectCollection.add(new RelatedObject(9,company.getSeniorTestersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorTesters()), cycleID,company.getSeniorTestersDisplayName())); 
-			relatedObjectCollection.add(new RelatedObject(10,company.getDevelopersDisplayName(),String.valueOf(cycleSummary.getTotalDevelopers()), cycleID,company.getDevelopersDisplayName()));	
-			relatedObjectCollection.add(new RelatedObject(11,company.getSeniordevelopersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorDevelopers()), cycleID, company.getSeniordevelopersDisplayName()));
+			relatedObjectSet.add(new RelatedObject(8,company.getTestersDisplayName(),String.valueOf(cycleSummary.getTotalTesters()), cycleID, company.getTestersDisplayName()));   
+			relatedObjectSet.add(new RelatedObject(9,company.getSeniorTestersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorTesters()), cycleID,company.getSeniorTestersDisplayName())); 
+			relatedObjectSet.add(new RelatedObject(10,company.getDevelopersDisplayName(),String.valueOf(cycleSummary.getTotalDevelopers()), cycleID,company.getDevelopersDisplayName()));	
+			relatedObjectSet.add(new RelatedObject(11,company.getSeniordevelopersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorDevelopers()), cycleID, company.getSeniordevelopersDisplayName()));
 
-			relatedObjectCollection.add(new RelatedObject(12,company.getEnvironmentsDisplayName(),String.valueOf(cycleSummary.getTotalEnvironments()), cycleID, company.getEnvironmentsDisplayName()));   
-			relatedObjectCollection.add(new RelatedObject(13,company.getRequirementsDisplayName(),String.valueOf(cycleSummary.getTotalRequirements()), cycleID,company.getRequirementsDisplayName()));  
-			relatedObjectCollection.add(new RelatedObject(14,company.getDefectsDisplayName()+"-Total",Long.toString(cycleSummary.getTotalDefects()), cycleID, company.getDefectsDisplayName()));
+			relatedObjectSet.add(new RelatedObject(12,company.getEnvironmentsDisplayName(),String.valueOf(cycleSummary.getTotalEnvironments()), cycleID, company.getEnvironmentsDisplayName()));   
+			relatedObjectSet.add(new RelatedObject(13,company.getRequirementsDisplayName(),String.valueOf(cycleSummary.getTotalRequirements()), cycleID,company.getRequirementsDisplayName()));  
+			relatedObjectSet.add(new RelatedObject(14,company.getDefectsDisplayName()+"-Total",Long.toString(cycleSummary.getTotalDefects()), cycleID, company.getDefectsDisplayName()));
 
-			relatedObjectCollection.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Sev 1",Long.toString(cycleSummary.getTotalCurrentSev1s()), cycleID, "sev1"));
-			relatedObjectCollection.add(new RelatedObject(16,company.getDefectsDisplayName()+"-Sev 2",Long.toString(cycleSummary.getTotalCurrentSev2s()), cycleID, "sev2"));
-			relatedObjectCollection.add(new RelatedObject(17,company.getDefectsDisplayName()+"-Sev 3",Long.toString(cycleSummary.getTotalCurrentSev3s()), cycleID, "sev3"));
-			relatedObjectCollection.add(new RelatedObject(18,company.getDefectsDisplayName()+"-Sev 4",Long.toString(cycleSummary.getTotalCurrentSev4s()), cycleID, "sev4"));
+			relatedObjectSet.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Sev 1",Long.toString(cycleSummary.getTotalCurrentSev1s()), cycleID, "sev1"));
+			relatedObjectSet.add(new RelatedObject(16,company.getDefectsDisplayName()+"-Sev 2",Long.toString(cycleSummary.getTotalCurrentSev2s()), cycleID, "sev2"));
+			relatedObjectSet.add(new RelatedObject(17,company.getDefectsDisplayName()+"-Sev 3",Long.toString(cycleSummary.getTotalCurrentSev3s()), cycleID, "sev3"));
+			relatedObjectSet.add(new RelatedObject(18,company.getDefectsDisplayName()+"-Sev 4",Long.toString(cycleSummary.getTotalCurrentSev4s()), cycleID, "sev4"));
 
-			relatedObjectCollection.add(new RelatedObject(19,company.getDefectDisplayName()+" Rules",String.valueOf(cycleSummary.getTotalDefectRules()), cycleID, company.getDefectsDisplayName()+"Rules"));  
-			relatedObjectCollection.add(new RelatedObject(20,"Test History Rules",String.valueOf(cycleSummary.getTotalTestHistoryRules()), cycleID, "testHistoryRules"));  
-			relatedObjectCollection.add(new RelatedObject(21,"Code impact Rules",String.valueOf(cycleSummary.getTotalCodeImpactRules()), cycleID, "codeImpactRules"));  
-			relatedObjectCollection.add(new RelatedObject(22,company.getRequirementDisplayName()+" Rules",String.valueOf(cycleSummary.getTotalReqRules()), cycleID,company.getRequirementDisplayName()+"Rules"));  
+			relatedObjectSet.add(new RelatedObject(19,company.getDefectDisplayName()+" Rules",String.valueOf(cycleSummary.getTotalDefectRules()), cycleID, company.getDefectsDisplayName()+"Rules"));  
+			relatedObjectSet.add(new RelatedObject(20,"Test History Rules",String.valueOf(cycleSummary.getTotalTestHistoryRules()), cycleID, "testHistoryRules"));  
+			relatedObjectSet.add(new RelatedObject(21,"Code impact Rules",String.valueOf(cycleSummary.getTotalCodeImpactRules()), cycleID, "codeImpactRules"));  
+			relatedObjectSet.add(new RelatedObject(22,company.getRequirementDisplayName()+" Rules",String.valueOf(cycleSummary.getTotalReqRules()), cycleID,company.getRequirementDisplayName()+"Rules"));  
 
-			relatedObjectList.setRelatedObjects(relatedObjectCollection);
+			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 			
 		}catch(NoResultException e)
 		{
-			relatedObjectCollection.add(new RelatedObject(1,"Select a Row to View Details","", cycleID, null));  
-			relatedObjectList.setRelatedObjects(relatedObjectCollection);
+			relatedObjectSet.add(new RelatedObject(1,"Select a Row to View Details","", cycleID, null));  
+			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 		}
 

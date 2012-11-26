@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,7 +39,7 @@ public class RequirementSection {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Requirement.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "requirementSectionID", referencedColumnName="requirementSectionID")		
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Requirement> requirements;    
+	private Set<Requirement> requirements;    
 	
 	public RequirementSection() {		
 	}
@@ -48,7 +48,7 @@ public class RequirementSection {
 	 * @param requirementSectionName
 	 * @param requirements
 	 */
-	public RequirementSection(String requirementSectionName, Collection<Requirement> requirements) {
+	public RequirementSection(String requirementSectionName, Set<Requirement> requirements) {
 		this.requirementSectionName = requirementSectionName;
 		this.requirements = requirements;
 	}
@@ -70,14 +70,14 @@ public class RequirementSection {
 	/**
 	 * @return the requirements
 	 */
-	public Collection<Requirement> getRequirements() {
+	public Set<Requirement> getRequirements() {
 		return requirements;
 	}
 
 	/**
 	 * @param requirements the requirements to set
 	 */
-	public void setRequirements(Collection<Requirement> requirements) {
+	public void setRequirements(Set<Requirement> requirements) {
 		this.requirements = requirements;
 	}
 

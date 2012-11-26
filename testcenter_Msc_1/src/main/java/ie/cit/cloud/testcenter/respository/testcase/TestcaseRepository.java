@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.respository.testcase;
  *
  */
 
-import java.util.Collection;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testcase;
@@ -72,5 +72,5 @@ public interface TestcaseRepository {
      * @return Testcase for given name, null if Testcase was not found
      */
 
-	Collection<Testcase> findAll();	
+	Set<Testcase> findAll();	
 }

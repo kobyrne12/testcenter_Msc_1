@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.service.testrun;
  *
  */
 
-import java.util.Collection;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
@@ -38,7 +38,7 @@ public interface TestrunService {
 
 	boolean isLatest(long testrunID);
 
-	Collection<Testrun> getTestHistory(long testrunID);
+	Set<Testrun> getTestHistory(long testrunID);
 
 	/**
 	 * Returns true if a testruns' priority is less than or equal to cycle priority 
@@ -67,44 +67,44 @@ public interface TestrunService {
 	Project getProject(long testrunID);
 	/**
 	 * Returns a collection of All Testplans in a testrun incl all child testruns 
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of All Testplans in a testrun incl all child testruns,
 	 */		 
 	Testplan getTestPlan(long testrunID);	
 	/**
 	 * Returns a collection of All Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedAllDefects(long testrunID);
+	Set<Defect> getCascadedAllDefects(long testrunID);
 	/**
 	 * Returns a collection of Sev1 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 1 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev1Defects(long testrunID);
+	Set<Defect> getCascadedSev1Defects(long testrunID);
 	/**
 	 * Returns a collection of Sev2 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 2 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev2Defects(long testrunID);
+	Set<Defect> getCascadedSev2Defects(long testrunID);
 	/**
 	 * Returns a collection of Sev 3 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 3 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev3Defects(long testrunID);
+	Set<Defect> getCascadedSev3Defects(long testrunID);
 	/**
 	 * Returns a collection of Sev 4 Defects in a cycle incl all child cycles 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 4 Defects in a cycle incl all child cycles,
 	 */		
-	Collection<Defect> getCascadedSev4Defects(long testrunID);
+	Set<Defect> getCascadedSev4Defects(long testrunID);
 
-	Collection<TestcenterUser> getCascadedTesters(long defectID);
-	Collection<TestcenterUser> getCascadedSnrTesters(long defectID);
-	Collection<TestcenterUser> getCascadedDevelopers(long defectID);
-	Collection<TestcenterUser> getCascadedSnrDevelopers(long defectID);
+	Set<TestcenterUser> getCascadedTesters(long defectID);
+	Set<TestcenterUser> getCascadedSnrTesters(long defectID);
+	Set<TestcenterUser> getCascadedDevelopers(long defectID);
+	Set<TestcenterUser> getCascadedSnrDevelopers(long defectID);
 	///////////////////////
 }

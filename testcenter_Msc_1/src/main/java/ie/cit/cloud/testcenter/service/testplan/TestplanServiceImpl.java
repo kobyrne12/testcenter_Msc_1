@@ -9,7 +9,8 @@ package ie.cit.cloud.testcenter.service.testplan;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -85,7 +86,7 @@ public class TestplanServiceImpl implements TestplanService {
 	}
 	////////////////
 
-	public Collection<Testcase> getAllTestCases(long testplanID) 
+	public Set<Testcase> getAllTestCases(long testplanID) 
 	{		 
 		Testplan testplan = getTestplan(testplanID)	;
 		if(testplan == null)
@@ -99,14 +100,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return testplan.getTestcases();			
 	}
 
-	public Collection<Testcase> getCompulsoryTestCases(long testplanID) 
+	public Set<Testcase> getCompulsoryTestCases(long testplanID) 
 	{
-		Collection<Testcase> allTestcases = getAllTestCases(testplanID);
+		Set<Testcase> allTestcases = getAllTestCases(testplanID);
 		if(allTestcases == null)
 		{
 			return null;
 		}	
-		Collection<Testcase> compulsoryTestcases= new ArrayList<Testcase>();
+		Set<Testcase> compulsoryTestcases= new HashSet<Testcase>();
 		for(final Testcase testcase : allTestcases)
 		{
 			if(isRequired(testcase.getTestcaseID()))
@@ -117,14 +118,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return compulsoryTestcases;
 	}
 
-	public Collection<Testcase> getOptionalTestCases(long testplanID)
+	public Set<Testcase> getOptionalTestCases(long testplanID)
 	{
-		Collection<Testcase> allTestcases = getAllTestCases(testplanID);
+		Set<Testcase> allTestcases = getAllTestCases(testplanID);
 		if(allTestcases == null)
 		{
 			return null;
 		}	
-		Collection<Testcase> optionalTestcases= new ArrayList<Testcase>();
+		Set<Testcase> optionalTestcases= new HashSet<Testcase>();
 		for(final Testcase testcase : allTestcases)
 		{
 			if(!isRequired(testcase.getTestcaseID()))
@@ -135,14 +136,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return optionalTestcases;
 	}
 	
-	public Collection<Testrun> getAllTestRuns(long testplanID) 
+	public Set<Testrun> getAllTestRuns(long testplanID) 
 	{
-		Collection<Testcase> allTestcases = getAllTestCases(testplanID);
+		Set<Testcase> allTestcases = getAllTestCases(testplanID);
 		if(allTestcases == null)
 		{
 			return null;
 		}	
-		Collection<Testrun> allTestruns = new ArrayList<Testrun>();
+		Set<Testrun> allTestruns = new HashSet<Testrun>();
 		for(final Testcase testcase : allTestcases)
 		{
 			if(testcase.getTestruns() != null && !testcase.getTestruns().isEmpty())
@@ -153,14 +154,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return allTestruns;
 	}
 
-	public Collection<Testrun> getCompulsoryTestRuns(long testplanID)
+	public Set<Testrun> getCompulsoryTestRuns(long testplanID)
 	{
-		Collection<Testcase> compulsoryTestcases = getCompulsoryTestCases(testplanID);
+		Set<Testcase> compulsoryTestcases = getCompulsoryTestCases(testplanID);
 		if(compulsoryTestcases == null)
 		{
 			return null;
 		}	
-		Collection<Testrun> compulsoryTestruns = new ArrayList<Testrun>();
+		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
 		for(final Testcase compulsoryTestcase : compulsoryTestcases)
 		{
 			if(compulsoryTestcase.getTestruns() != null && !compulsoryTestcase.getTestruns().isEmpty())
@@ -171,14 +172,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return compulsoryTestruns;
 	}
 
-	public Collection<Testrun> getOptionalTestRuns(long testplanID)
+	public Set<Testrun> getOptionalTestRuns(long testplanID)
 	{
-		Collection<Testcase> optionalTestcases = getOptionalTestCases(testplanID);
+		Set<Testcase> optionalTestcases = getOptionalTestCases(testplanID);
 		if(optionalTestcases == null)
 		{
 			return null;
 		}	
-		Collection<Testrun> optionalTestruns = new ArrayList<Testrun>();
+		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
 		for(final Testcase optionalTestcase : optionalTestcases)
 		{
 			if(optionalTestcase.getTestruns() != null && !optionalTestcase.getTestruns().isEmpty())
@@ -190,21 +191,21 @@ public class TestplanServiceImpl implements TestplanService {
 	}
 	public boolean isRequired(long testcaseID) 
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testcaseID);
 		if(compulsoryTestruns != null && !compulsoryTestruns.isEmpty())
 		{
 			return true;
 		}
 		return false;		
 	}   
-	public Collection<Cycle> getCycles(long testplanID) 
+	public Set<Cycle> getCycles(long testplanID) 
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Cycle> cycles = new ArrayList<Cycle>();
+		Set<Cycle> cycles = new HashSet<Cycle>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrunService.getCycle(testrun.getTestrunID()) != null )
@@ -215,14 +216,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return cycles;
 	}
 
-	public Collection<Project> getProjects(long testplanID)
+	public Set<Project> getProjects(long testplanID)
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Project> projects = new ArrayList<Project>();
+		Set<Project> projects = new HashSet<Project>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrunService.getProject(testrun.getTestrunID()) != null )
@@ -233,14 +234,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return projects;
 	}
 
-	public Collection<Requirement> getRequirements(long testplanID)
+	public Set<Requirement> getRequirements(long testplanID)
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Requirement> requirements = new ArrayList<Requirement>();
+		Set<Requirement> requirements = new HashSet<Requirement>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty() )
@@ -251,14 +252,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return requirements;
 	}
 
-	public Collection<Environment> getEnvironments(long testplanID)
+	public Set<Environment> getEnvironments(long testplanID)
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Environment> environments = new ArrayList<Environment>();
+		Set<Environment> environments = new HashSet<Environment>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty() )
@@ -269,14 +270,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return environments;
 	}
 
-	public Collection<Defect> getCascadedAllDefects(long testplanID) 
+	public Set<Defect> getCascadedAllDefects(long testplanID) 
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Defect> defects = new ArrayList<Defect>();
+		Set<Defect> defects = new HashSet<Defect>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrunService.getCascadedAllDefects(testrun.getTestrunID()) != null && 
@@ -288,14 +289,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return defects;
 	}
 
-	public Collection<Defect> getCascadedSev1Defects(long testplanID) 
+	public Set<Defect> getCascadedSev1Defects(long testplanID) 
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Defect> defects = new ArrayList<Defect>();
+		Set<Defect> defects = new HashSet<Defect>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrunService.getCascadedSev1Defects(testrun.getTestrunID()) != null && 
@@ -307,14 +308,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return defects;
 	}
 
-	public Collection<Defect> getCascadedSev2Defects(long testplanID)
+	public Set<Defect> getCascadedSev2Defects(long testplanID)
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Defect> defects = new ArrayList<Defect>();
+		Set<Defect> defects = new HashSet<Defect>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrunService.getCascadedSev2Defects(testrun.getTestrunID()) != null && 
@@ -326,14 +327,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return defects;
 	}
 
-	public Collection<Defect> getCascadedSev3Defects(long testplanID)
+	public Set<Defect> getCascadedSev3Defects(long testplanID)
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Defect> defects = new ArrayList<Defect>();
+		Set<Defect> defects = new HashSet<Defect>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrunService.getCascadedSev3Defects(testrun.getTestrunID()) != null && 
@@ -345,14 +346,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return defects;
 	}
 
-	public Collection<Defect> getCascadedSev4Defects(long testplanID) 
+	public Set<Defect> getCascadedSev4Defects(long testplanID) 
 	{
-		Collection<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
+		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
 		if(compulsoryTestruns == null)
 		{
 			return null;
 		}	
-		Collection<Defect> defects = new ArrayList<Defect>();
+		Set<Defect> defects = new HashSet<Defect>();
 		for(final Testrun testrun : compulsoryTestruns)
 		{
 			if(testrunService.getCascadedSev4Defects(testrun.getTestrunID()) != null && 
@@ -364,22 +365,22 @@ public class TestplanServiceImpl implements TestplanService {
 		return defects;
 	}
 
-	public Collection<TestcenterUser> getCascadedTesters(long testplanID) {
+	public Set<TestcenterUser> getCascadedTesters(long testplanID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrTesters(long testplanID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(long testplanID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedDevelopers(long testplanID) {
+	public Set<TestcenterUser> getCascadedDevelopers(long testplanID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrDevelopers(long testplanID) {
+	public Set<TestcenterUser> getCascadedSnrDevelopers(long testplanID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

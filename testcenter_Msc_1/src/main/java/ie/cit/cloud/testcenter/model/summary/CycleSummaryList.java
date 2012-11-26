@@ -4,7 +4,7 @@
 package ie.cit.cloud.testcenter.model.summary;
 
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author byrnek1
@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class CycleSummaryList {		
    
-    private Collection<CycleSummary> cycles;     
+    private Set<CycleSummary> cycles;     
    
     /**
 	 * @return List of Cycles for a Company
@@ -26,7 +26,7 @@ public class CycleSummaryList {
 	/**
 	 * @return the cycles
 	 */
-	public Collection<CycleSummary> getCycles() {
+	public Set<CycleSummary> getCycles() {
 		return cycles;
 	}
 
@@ -34,7 +34,7 @@ public class CycleSummaryList {
 	/**
 	 * @param cycles the cycles to set
 	 */
-	public void setCycles(Collection<CycleSummary> cycles) {
+	public void setCycles(Set<CycleSummary> cycles) {
 		this.cycles = cycles;
 	}
     

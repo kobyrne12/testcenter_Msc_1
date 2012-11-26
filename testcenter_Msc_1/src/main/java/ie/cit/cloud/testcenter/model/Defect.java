@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -65,15 +65,15 @@ public class Defect {
 	
 	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-    private Collection<Testrun> testruns = new ArrayList<Testrun>();
+    private Set<Testrun> testruns = new HashSet<Testrun>();
 	
 	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-    private Collection<Requirement> requirements = new ArrayList<Requirement>();
+    private Set<Requirement> requirements = new HashSet<Requirement>();
 	
 	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-    private Collection<TestcenterUser> users = new ArrayList<TestcenterUser>();
+    private Set<TestcenterUser> users = new HashSet<TestcenterUser>();
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "creationDate", nullable = false, length = 10) 
@@ -127,8 +127,8 @@ public class Defect {
 	public Defect(Long companyID, String defectSummary, long parentID,
 			boolean parent, boolean child, int severity, String defectDetails,
 			Long defectSectionID, String defectType,
-			Collection<Testrun> testruns, Collection<Requirement> requirements,
-			Collection<TestcenterUser> users, Date creationDate,
+			Set<Testrun> testruns, Set<Requirement> requirements,
+			Set<TestcenterUser> users, Date creationDate,
 			Date lastModifiedDate, long createdByUserID,
 			long lastModifiedByUserID, long currentOwnerUserID) {
 		this.companyID = companyID;
@@ -224,37 +224,37 @@ public class Defect {
 	/**
 	 * @return the testruns
 	 */
-	public Collection<Testrun> getTestruns() {
+	public Set<Testrun> getTestruns() {
 		return testruns;
 	}
 	/**
 	 * @param testruns the testruns to set
 	 */
-	public void setTestruns(Collection<Testrun> testruns) {
+	public void setTestruns(Set<Testrun> testruns) {
 		this.testruns = testruns;
 	}
 	/**
 	 * @return the requirements
 	 */
-	public Collection<Requirement> getRequirements() {
+	public Set<Requirement> getRequirements() {
 		return requirements;
 	}
 	/**
 	 * @param requirements the requirements to set
 	 */
-	public void setRequirements(Collection<Requirement> requirements) {
+	public void setRequirements(Set<Requirement> requirements) {
 		this.requirements = requirements;
 	}
 	/**
 	 * @return the users
 	 */
-	public Collection<TestcenterUser> getUsers() {
+	public Set<TestcenterUser> getUsers() {
 		return users;
 	}
 	/**
 	 * @param users the users to set
 	 */
-	public void setUsers(Collection<TestcenterUser> users) {
+	public void setUsers(Set<TestcenterUser> users) {
 		this.users = users;
 	}
 	/**

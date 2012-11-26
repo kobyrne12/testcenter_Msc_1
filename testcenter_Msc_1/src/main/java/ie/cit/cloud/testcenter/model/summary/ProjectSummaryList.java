@@ -4,7 +4,7 @@
 package ie.cit.cloud.testcenter.model.summary;
 
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author byrnek1
@@ -14,7 +14,7 @@ import java.util.Collection;
 public class ProjectSummaryList {	
 	
     //private long companyID;   
-    private Collection<ProjectSummary> projects; 
+    private Set<ProjectSummary> projects; 
     
    
     /**
@@ -29,14 +29,14 @@ public class ProjectSummaryList {
 	/**
 	 * @return the projectSummaries
 	 */
-	public Collection<ProjectSummary> getProjects() {
+	public Set<ProjectSummary> getProjects() {
 		return projects;
 	}
 
 	/**
 	 * @param projectSummaries the projectSummaries to set
 	 */
-	public void setProjects(Collection<ProjectSummary> projects) {
+	public void setProjects(Set<ProjectSummary> projects) {
 		this.projects = projects;
 	}	
   

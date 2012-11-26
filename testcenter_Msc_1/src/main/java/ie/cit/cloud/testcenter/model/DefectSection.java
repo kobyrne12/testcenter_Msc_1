@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,7 +39,7 @@ public class DefectSection {
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Defect.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "defectSectionID", referencedColumnName="defectSectionID")		
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Defect> defects;    
+	private Set<Defect> defects;    
 	
 	public DefectSection() {		
 	}
@@ -48,7 +48,7 @@ public class DefectSection {
 	 * @param defectSectionName
 	 * @param defects
 	 */
-	public DefectSection(String defectSectionName, Collection<Defect> defects) {
+	public DefectSection(String defectSectionName, Set<Defect> defects) {
 		this.defectSectionName = defectSectionName;
 		this.defects = defects;
 	}
@@ -70,14 +70,14 @@ public class DefectSection {
 	/**
 	 * @return the defects
 	 */
-	public Collection<Defect> getDefects() {
+	public Set<Defect> getDefects() {
 		return defects;
 	}
 
 	/**
 	 * @param defects the defects to set
 	 */
-	public void setDefects(Collection<Defect> defects) {
+	public void setDefects(Set<Defect> defects) {
 		this.defects = defects;
 	}
 

@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.service.environment;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -89,7 +89,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		environmentRepo.delete(getEnvironment(environmentID));
 	}
 	////////////////////////
-	public Collection<Testrun> getAllTestRuns(long environmentID) 
+	public Set<Testrun> getAllTestRuns(long environmentID) 
 	{
 		Environment environment = getEnvironment(environmentID);
 		if(environment == null)
@@ -103,14 +103,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return environment.getTestruns();			
 	} 
 	
-	public Collection<Testrun> getCompulsoryTestRuns(long environmentID)
+	public Set<Testrun> getCompulsoryTestRuns(long environmentID)
 	{
-		Collection<Testrun> allTestruns = getAllTestRuns(environmentID);
+		Set<Testrun> allTestruns = getAllTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}			
-		Collection<Testrun> compulsoryTestruns = new ArrayList<Testrun>();
+		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testrunService.isRequired(testrun.getTestrunID()))
@@ -121,14 +121,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return compulsoryTestruns;		
 	}	
 	
-	public Collection<Testrun> getOptionalTestRuns(long environmentID)
+	public Set<Testrun> getOptionalTestRuns(long environmentID)
 	{
-		Collection<Testrun> allTestruns = getAllTestRuns(environmentID);
+		Set<Testrun> allTestruns = getAllTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}			
-		Collection<Testrun> optionalTestruns = new ArrayList<Testrun>();
+		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(!testrunService.isRequired(testrun.getTestrunID()))
@@ -139,14 +139,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return optionalTestruns;		
 	}
 	
-	public Collection<Testcase> getAllTestCases(long environmentID)
+	public Set<Testcase> getAllTestCases(long environmentID)
 	{
-		Collection<Testrun> allTestruns = getAllTestRuns(environmentID);
+		Set<Testrun> allTestruns = getAllTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
@@ -157,14 +157,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestcases;
 	}
 	
-	public Collection<Testcase> getCompulsoryTestCases(long environmentID)
+	public Set<Testcase> getCompulsoryTestCases(long environmentID)
 	{
-		Collection<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
+		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
@@ -175,14 +175,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestcases;
 	}
 	
-	public Collection<Testcase> getOptionalTestCases(long environmentID)
+	public Set<Testcase> getOptionalTestCases(long environmentID)
 	{
-		Collection<Testrun> allTestruns = getOptionalTestRuns(environmentID);
+		Set<Testrun> allTestruns = getOptionalTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
@@ -193,14 +193,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestcases;
 	}
 	
-	public Collection<Testplan> getAllTestPlans(long environmentID)
+	public Set<Testplan> getAllTestPlans(long environmentID)
 	{		
-		Collection<Testcase> allTestcases = getAllTestCases(environmentID);
+		Set<Testcase> allTestcases = getAllTestCases(environmentID);
 		if(allTestcases == null || allTestcases.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
 		for(final Testcase testcase : allTestcases)
 		{				
 			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
@@ -211,14 +211,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestplans;
 	}
 	
-	public Collection<Testplan> getCompulsoryTestPlans(long environmentID)
+	public Set<Testplan> getCompulsoryTestPlans(long environmentID)
 	{		
-		Collection<Testcase> allTestcases = getCompulsoryTestCases(environmentID);
+		Set<Testcase> allTestcases = getCompulsoryTestCases(environmentID);
 		if(allTestcases == null || allTestcases.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
 		for(final Testcase testcase : allTestcases)
 		{				
 			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
@@ -229,14 +229,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestplans;
 	}
 	
-	public Collection<Testplan> getOptionalTestPlans(long environmentID)
+	public Set<Testplan> getOptionalTestPlans(long environmentID)
 	{		
-		Collection<Testcase> allTestcases = getOptionalTestCases(environmentID);
+		Set<Testcase> allTestcases = getOptionalTestCases(environmentID);
 		if(allTestcases == null || allTestcases.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
 		for(final Testcase testcase : allTestcases)
 		{				
 			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
@@ -247,13 +247,13 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestplans;
 	}
 	
-	public Collection<Cycle> getCycles(long environmentID) {
-		Collection<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
+	public Set<Cycle> getCycles(long environmentID) {
+		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Cycle> cycles = new ArrayList<Cycle>();
+		Set<Cycle> cycles = new HashSet<Cycle>();
 		for(final Testrun testrun : allTestruns)
 		{				
 			if(testrunService.getCycle(testrun.getTestrunID()) != null)
@@ -264,14 +264,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return cycles;
 	}
 
-	public Collection<Project> getProjects(long environmentID)
+	public Set<Project> getProjects(long environmentID)
 	{
-		Collection<Cycle> cycles =  getCycles(environmentID);
+		Set<Cycle> cycles =  getCycles(environmentID);
 		if(cycles == null || cycles.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Project> projects = new ArrayList<Project>();
+		Set<Project> projects = new HashSet<Project>();
 		for(final Cycle cycle : cycles)
 		{	
 			try{
@@ -282,14 +282,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return projects;
 	}
 
-	public Collection<Requirement> getRequirements(long environmentID) 
+	public Set<Requirement> getRequirements(long environmentID) 
 	{
-		Collection<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
+		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Requirement> requirements = new ArrayList<Requirement>();
+		Set<Requirement> requirements = new HashSet<Requirement>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())			
@@ -305,14 +305,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return requirements;		
 	}	
 	
-	public Collection<Defect> getCascadedAllDefects(long environmentID) {
-		Collection<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
+	public Set<Defect> getCascadedAllDefects(long environmentID) {
+		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			
 			return null;
 		}	
-		Collection<Defect> defects = new ArrayList<Defect>();
+		Set<Defect> defects = new HashSet<Defect>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testrunService.getCascadedAllDefects(testrun.getTestrunID()) != null &&
@@ -323,14 +323,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return defects;				
 	}
-	public Collection<Defect> getCascadedSev1Defects(long testrunID) 
+	public Set<Defect> getCascadedSev1Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev1defects = new ArrayList<Defect>();  
+		Set<Defect> sev1defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev1(defect.getDefectID()))
@@ -340,14 +340,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return sev1defects;
 	}
-	public Collection<Defect> getCascadedSev2Defects(long testrunID) 
+	public Set<Defect> getCascadedSev2Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev2defects = new ArrayList<Defect>();  
+		Set<Defect> sev2defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev2(defect.getDefectID()))
@@ -358,14 +358,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return sev2defects;
 	}
 		
-	public Collection<Defect> getCascadedSev3Defects(long testrunID) 
+	public Set<Defect> getCascadedSev3Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev3defects = new ArrayList<Defect>();  
+		Set<Defect> sev3defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev3(defect.getDefectID()))
@@ -375,14 +375,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return sev3defects;
 	}	
-	public Collection<Defect> getCascadedSev4Defects(long testrunID) 
+	public Set<Defect> getCascadedSev4Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev4defects = new ArrayList<Defect>();  
+		Set<Defect> sev4defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev4(defect.getDefectID()))
@@ -392,22 +392,22 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return sev4defects;
 	}
-	public Collection<TestcenterUser> getCascadedTesters(long environmentID) {
+	public Set<TestcenterUser> getCascadedTesters(long environmentID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrTesters(long environmentID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(long environmentID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedDevelopers(long environmentID) {
+	public Set<TestcenterUser> getCascadedDevelopers(long environmentID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrDevelopers(
+	public Set<TestcenterUser> getCascadedSnrDevelopers(
 			long environmentID) {
 		// TODO Auto-generated method stub
 		return null;

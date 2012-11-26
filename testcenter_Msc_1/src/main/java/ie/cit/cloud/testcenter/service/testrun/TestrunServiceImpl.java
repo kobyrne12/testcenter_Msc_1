@@ -10,7 +10,8 @@ package ie.cit.cloud.testcenter.service.testrun;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -113,7 +114,7 @@ public class TestrunServiceImpl implements TestrunService {
 			return false;
 		}			
 	}
-	public Collection<Testrun> getTestHistory(long testrunID) 
+	public Set<Testrun> getTestHistory(long testrunID) 
 	{
 		Testrun testrun = getTestrun(testrunID);
 		try{
@@ -191,14 +192,14 @@ public class TestrunServiceImpl implements TestrunService {
 			return null;
 		}	
 	}		
-	public Collection<Defect> getCascadedAllDefects(long testrunID) 
+	public Set<Defect> getCascadedAllDefects(long testrunID) 
 	{		
 		Testrun testrun = getTestrun(testrunID);
 		if(testrun == null)
 		{
 			return null;
 		}
-		Collection<Defect> allDefects = new ArrayList<Defect>(); 
+		Set<Defect> allDefects = new HashSet<Defect>(); 
 		if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
 		{
 			allDefects.addAll(testrun.getDefects());			
@@ -218,14 +219,14 @@ public class TestrunServiceImpl implements TestrunService {
 		return allDefects;
 	}
 		
-	public Collection<Defect> getCascadedSev1Defects(long testrunID) 
+	public Set<Defect> getCascadedSev1Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev1defects = new ArrayList<Defect>();  
+		Set<Defect> sev1defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev1(defect.getDefectID()))
@@ -235,14 +236,14 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 		return sev1defects;
 	}
-	public Collection<Defect> getCascadedSev2Defects(long testrunID) 
+	public Set<Defect> getCascadedSev2Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev2defects = new ArrayList<Defect>();  
+		Set<Defect> sev2defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev2(defect.getDefectID()))
@@ -253,14 +254,14 @@ public class TestrunServiceImpl implements TestrunService {
 		return sev2defects;
 	}
 		
-	public Collection<Defect> getCascadedSev3Defects(long testrunID) 
+	public Set<Defect> getCascadedSev3Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev3defects = new ArrayList<Defect>();  
+		Set<Defect> sev3defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev3(defect.getDefectID()))
@@ -270,14 +271,14 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 		return sev3defects;
 	}	
-	public Collection<Defect> getCascadedSev4Defects(long testrunID) 
+	public Set<Defect> getCascadedSev4Defects(long testrunID) 
 	{		
-		Collection<Defect> allDefects = getCascadedAllDefects(testrunID);		
+		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Defect> sev4defects = new ArrayList<Defect>();  
+		Set<Defect> sev4defects = new HashSet<Defect>();  
 		for(final Defect defect : allDefects)
 		{
 			if(defectService.isSev4(defect.getDefectID()))
@@ -287,22 +288,22 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 		return sev4defects;
 	}
-	public Collection<TestcenterUser> getCascadedTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedTesters(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedDevelopers(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrDevelopers(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -2,8 +2,13 @@ package ie.cit.cloud.testcenter.controller.json;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 
@@ -12,6 +17,8 @@ import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.JqgridFilter;
+import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
@@ -20,6 +27,10 @@ import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -57,10 +68,80 @@ public class ProjectJSONController {
     		@RequestParam(required = false) String defectID,       		
     		@RequestParam(required = false) String requirementID,
     		@RequestParam(required = false) String environmentID,    		
-    		@RequestParam(required = false) String userID) 
+    		@RequestParam(required = false) String userID,
+    		@RequestParam("_search") boolean search,
+    		@RequestParam(value="filters", required=false) String filters,
+    		@RequestParam(value="page", required=false) Integer page,
+    		@RequestParam(value="rows", required=false) Integer rows,
+    		@RequestParam(value="sidx", required=false) String sidx,
+    		@RequestParam(value="sord", required=false) String sord) throws JsonParseException, JsonMappingException, IOException    		
     {    	
-    	return projectService.getGridProjects(companyID, projectID, cycleID, testplanID,
-    			testcaseID, testrunID, defectID, requirementID, environmentID, userID);
+    	
+    	
+    	System.out.println(" ^^^^^^ 1 : " + filters);
+    	
+    	if (search == true) 
+    	{   	
+    		System.out.println(" ^^^^^^ 2 : " + filters);
+    		ObjectMapper mapper = new ObjectMapper();    	
+    		JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class);  
+    		
+        	ProjectSummaryList projectSummaryList = projectService.getGridProjects(companyID, projectID,
+        			cycleID, testplanID, testcaseID, testrunID, defectID, requirementID, environmentID, userID);
+    		
+        	Set<ProjectSummary> oldProjectSummarySet = projectSummaryList.getProjects();
+    		Set<ProjectSummary> newProjectSummarySet = new LinkedHashSet<ProjectSummary>();
+    		
+    		for(ProjectSummary oldProjectSummary : oldProjectSummarySet)
+			{
+    			boolean projectNameFound = false; 
+    			boolean projectIDFound = false; 
+    			//System.out.println(" ^^^^^^ 3 : " + oldProjectSummary.getProjectName());
+    			for(Rule rule : jqgridFilter.getRules())
+        		{        			
+    				//System.out.println(" ^^^^^^ 4 : " + rule.getField());
+        			if(rule.getField().equalsIgnoreCase("projectName"))
+        			{
+        				//System.out.println(" ^^^^^^ 5 a : " +oldProjectSummary.getProjectName());
+        				if(oldProjectSummary.getProjectName().toLowerCase().contains(rule.getData().toLowerCase()))
+    					{
+        					projectNameFound = true;      					
+    					}
+        			}
+        			else
+        			{
+        				projectNameFound = true;   
+        			}
+        			if(rule.getField().equalsIgnoreCase("projectID"))
+        			{
+        				System.out.println(" ^^^^^^ 5 a : " +oldProjectSummary.getProjectID());
+        				if(String.valueOf(oldProjectSummary.getProjectID()).toLowerCase().contains(rule.getData().toLowerCase()))
+    					{        		
+        					System.out.println(" ^^^^^^ 5 b : " +oldProjectSummary.getProjectID());
+        					projectIDFound = true; 
+    					}
+        			}
+        			else
+        			{
+        				System.out.println(" ^^^^^^ 5 c : " +oldProjectSummary.getProjectID());
+        				projectIDFound = true; 
+        			}
+        		}
+    			if(projectNameFound == true && projectIDFound == true)
+    			{
+    				newProjectSummarySet.add(oldProjectSummary);
+    			}
+			}
+
+    		projectSummaryList.setProjects(newProjectSummarySet);    		
+    		return projectSummaryList;
+    	}
+    	else
+    	{
+    		return projectService.getGridProjects(companyID, projectID, cycleID, testplanID,
+        			testcaseID, testrunID, defectID, requirementID, environmentID, userID);
+    	}
+    	
     }     
   
     // Columns for project CHANGE companyID TO UserID
@@ -85,7 +166,7 @@ public class ProjectJSONController {
     		@RequestParam(required = false) String testrunID
     		) 
     {   	
-    	Collection<RelatedObject> relatedObjectCollection =  new ArrayList<RelatedObject>();
+    	Set<RelatedObject> relatedObjectSet =  new LinkedHashSet<RelatedObject>();
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
 			Project project = projectService.getProject(projectID); 
@@ -94,43 +175,43 @@ public class ProjectJSONController {
 			
 	    	Company company = companyService.getCompany(projectSummary.getCompanyID());
 	    	
-	    	relatedObjectCollection.add(new RelatedObject(1,"Parent "+ company.getProjectDisplayName(),projectSummary.getParentProjectName(), projectID, "Parent"+ company.getProjectDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(2,"Child "+ company.getProjectsDisplayName(),Integer.toString(projectSummary.getChildProjects()), projectID, "Child"+ company.getProjectsDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(1,"Parent "+ company.getProjectDisplayName(),projectSummary.getParentProjectName(), projectID, "Parent"+ company.getProjectDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(2,"Child "+ company.getProjectsDisplayName(),Integer.toString(projectSummary.getChildProjects()), projectID, "Child"+ company.getProjectsDisplayName()));
 	    	
-	    	relatedObjectCollection.add(new RelatedObject(3,company.getCyclesDisplayName(),Integer.toString(projectSummary.getTotalCycles()), projectID, company.getCyclesDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(4,company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalAllTestruns()), projectID, "All "+company.getTestrunsDisplayName()));  
-	    	relatedObjectCollection.add(new RelatedObject(5,company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestruns()), projectID, "Required "+company.getTestrunsDisplayName()));  
-	    	relatedObjectCollection.add(new RelatedObject(6,company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestruns()), projectID, "Optional "+company.getTestrunsDisplayName()));  
+	    	relatedObjectSet.add(new RelatedObject(3,company.getCyclesDisplayName(),Integer.toString(projectSummary.getTotalCycles()), projectID, company.getCyclesDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(4,company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalAllTestruns()), projectID, "All "+company.getTestrunsDisplayName()));  
+	    	relatedObjectSet.add(new RelatedObject(5,company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestruns()), projectID, "Required "+company.getTestrunsDisplayName()));  
+	    	relatedObjectSet.add(new RelatedObject(6,company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestruns()), projectID, "Optional "+company.getTestrunsDisplayName()));  
 	    	
-	    	relatedObjectCollection.add(new RelatedObject(7,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalAllTestcases()), projectID,  "All "+company.getTestcasesDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(8,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestcases()), projectID, "Required "+company.getTestcasesDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(9,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestcases()), projectID, company.getTestcasesDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(7,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalAllTestcases()), projectID,  "All "+company.getTestcasesDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(8,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestcases()), projectID, "Required "+company.getTestcasesDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(9,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestcases()), projectID, company.getTestcasesDisplayName()));
 	    	
-	    	relatedObjectCollection.add(new RelatedObject(10,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalAllTestplans()), projectID,  "All "+company.getTestplansDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(11,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestplans()), projectID, "Required "+company.getTestplansDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(12,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestplans()), projectID, "Optional "+company.getTestplansDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(10,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalAllTestplans()), projectID,  "All "+company.getTestplansDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(11,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestplans()), projectID, "Required "+company.getTestplansDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(12,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestplans()), projectID, "Optional "+company.getTestplansDisplayName()));
 	    		    	
-	    	relatedObjectCollection.add(new RelatedObject(13,company.getTestersDisplayName(),Integer.toString(projectSummary.getTotalTesters()), projectID, company.getTestersDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(14,company.getSeniorTestersDisplayName(),Integer.toString(projectSummary.getTotalSeniorTesters()), projectID, company.getSeniorTestersDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(15,company.getDevelopersDisplayName(),Integer.toString(projectSummary.getTotalDevelopers()), projectID, company.getDevelopersDisplayName()));    	
-	    	relatedObjectCollection.add(new RelatedObject(16,company.getSeniordevelopersDisplayName(),Integer.toString(projectSummary.getTotalSeniorDevelopers()), projectID, company.getSeniordevelopersDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(13,company.getTestersDisplayName(),Integer.toString(projectSummary.getTotalTesters()), projectID, company.getTestersDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(14,company.getSeniorTestersDisplayName(),Integer.toString(projectSummary.getTotalSeniorTesters()), projectID, company.getSeniorTestersDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(15,company.getDevelopersDisplayName(),Integer.toString(projectSummary.getTotalDevelopers()), projectID, company.getDevelopersDisplayName()));    	
+	    	relatedObjectSet.add(new RelatedObject(16,company.getSeniordevelopersDisplayName(),Integer.toString(projectSummary.getTotalSeniorDevelopers()), projectID, company.getSeniordevelopersDisplayName()));
 	    	
-	    	relatedObjectCollection.add(new RelatedObject(17,company.getEnvironmentsDisplayName(),Integer.toString(projectSummary.getTotalEnvironments()), projectID, company.getEnvironmentsDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(18,company.getRequirementsDisplayName(),Integer.toString(projectSummary.getTotalRequirements()), projectID, company.getRequirementsDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(17,company.getEnvironmentsDisplayName(),Integer.toString(projectSummary.getTotalEnvironments()), projectID, company.getEnvironmentsDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(18,company.getRequirementsDisplayName(),Integer.toString(projectSummary.getTotalRequirements()), projectID, company.getRequirementsDisplayName()));
 	    	
-	    	relatedObjectCollection.add(new RelatedObject(19,company.getDefectsDisplayName()+"-Total",Integer.toString(projectSummary.getTotalDefects()), projectID, company.getDefectsDisplayName()));
-	    	relatedObjectCollection.add(new RelatedObject(20,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(projectSummary.getTotalCurrentSev1s()), projectID,"sev1"));
-	    	relatedObjectCollection.add(new RelatedObject(21,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(projectSummary.getTotalCurrentSev2s()), projectID,"sev2"));
-	    	relatedObjectCollection.add(new RelatedObject(22,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(projectSummary.getTotalCurrentSev3s()), projectID,"sev3"));
-	    	relatedObjectCollection.add(new RelatedObject(23,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(projectSummary.getTotalCurrentSev4s()), projectID,"sev4"));
+	    	relatedObjectSet.add(new RelatedObject(19,company.getDefectsDisplayName()+"-Total",Integer.toString(projectSummary.getTotalDefects()), projectID, company.getDefectsDisplayName()));
+	    	relatedObjectSet.add(new RelatedObject(20,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(projectSummary.getTotalCurrentSev1s()), projectID,"sev1"));
+	    	relatedObjectSet.add(new RelatedObject(21,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(projectSummary.getTotalCurrentSev2s()), projectID,"sev2"));
+	    	relatedObjectSet.add(new RelatedObject(22,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(projectSummary.getTotalCurrentSev3s()), projectID,"sev3"));
+	    	relatedObjectSet.add(new RelatedObject(23,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(projectSummary.getTotalCurrentSev4s()), projectID,"sev4"));
 	        			
-			relatedObjectList.setRelatedObjects(relatedObjectCollection);
+			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 			
 		}catch(NoResultException e)
 		{
-			relatedObjectCollection.add(new RelatedObject(1,"Select a Row to View Details","", projectID, null));  
-			relatedObjectList.setRelatedObjects(relatedObjectCollection);
+			relatedObjectSet.add(new RelatedObject(1,"Select a Row to View Details","", projectID, null));  
+			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 		}    	
     } 

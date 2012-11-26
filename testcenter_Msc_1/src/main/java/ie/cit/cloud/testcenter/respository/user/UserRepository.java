@@ -10,7 +10,7 @@ package ie.cit.cloud.testcenter.respository.user;
 
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -54,7 +54,7 @@ public interface UserRepository {
      * 
      * @return all Users
      */
-    Collection<TestcenterUser> findAll();
+    Set<TestcenterUser> findAll();
 
     /**
      * Returns User items given by its ID

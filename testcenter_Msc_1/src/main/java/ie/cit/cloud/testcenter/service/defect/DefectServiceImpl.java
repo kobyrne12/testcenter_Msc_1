@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.service.defect;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -75,7 +75,7 @@ public class DefectServiceImpl implements DefectService {
 	}
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Collection<Defect> getAllChildDefects(long defectID) {
+	public Set<Defect> getAllChildDefects(long defectID) {
 		return defectRepo.findAllDefectsByParentID(defectID);
 	}
 	
@@ -136,15 +136,15 @@ public class DefectServiceImpl implements DefectService {
 	}
 	/////////////////////////
 		
-	public Collection<Defect> getParentAndChildDefects(long defectID)
+	public Set<Defect> getParentAndChildDefects(long defectID)
 	{		
 		Defect defect = getDefect(defectID);
-		Collection<Defect> defects = new ArrayList<Defect>(); 
+		Set<Defect> defects = new HashSet<Defect>(); 
 		defects.add(defect);
 		if(defect.isParent())
 		{   	
 			try{
-				Collection<Defect> childDefects = getAllChildDefects(defectID);
+				Set<Defect> childDefects = getAllChildDefects(defectID);
 				if(childDefects != null && !childDefects.isEmpty())
 				{
 					defects.addAll(childDefects);				
@@ -157,14 +157,14 @@ public class DefectServiceImpl implements DefectService {
 		return defects;	
 	}
 	
-	public Collection<Defect> getChildDefects(long defectID) {
+	public Set<Defect> getChildDefects(long defectID) {
 		Defect defect = getDefect(defectID);
 		if(!defect.isParent())
 		{   			 
 			return null;
 		}
 		try{
-			Collection<Defect> childDefects = getAllChildDefects(defectID);
+			Set<Defect> childDefects = getAllChildDefects(defectID);
 			if(childDefects == null || childDefects.isEmpty())
 			{
 				return null;
@@ -197,14 +197,14 @@ public class DefectServiceImpl implements DefectService {
 		}
 	}
 
-	public Collection<Testrun> getCascadedAllTestRuns(long defectID) 
+	public Set<Testrun> getCascadedAllTestRuns(long defectID) 
 	{
-		Collection<Defect> allDefects = getParentAndChildDefects(defectID);
+		Set<Defect> allDefects = getParentAndChildDefects(defectID);
 		if(allDefects == null || allDefects.isEmpty())
 		{
 			return null;
 		}			
-		Collection<Testrun> allTestruns = new ArrayList<Testrun>();
+		Set<Testrun> allTestruns = new HashSet<Testrun>();
 		for(final Defect defect : allDefects)
 		{		
 			if(defect.getTestruns() != null && !defect.getTestruns().isEmpty())
@@ -225,14 +225,14 @@ public class DefectServiceImpl implements DefectService {
 		return allTestruns;		
 	} 
 	
-	public Collection<Testrun> getCascadedCompulsoryTestRuns(long defectID)
+	public Set<Testrun> getCascadedCompulsoryTestRuns(long defectID)
 	{
-		Collection<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}			
-		Collection<Testrun> compulsoryTestruns = new ArrayList<Testrun>();
+		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testrunService.isRequired(testrun.getTestrunID()))
@@ -243,14 +243,14 @@ public class DefectServiceImpl implements DefectService {
 		return compulsoryTestruns;		
 	}	
 	
-	public Collection<Testrun> getCascadedOptionalTestRuns(long defectID)
+	public Set<Testrun> getCascadedOptionalTestRuns(long defectID)
 	{
-		Collection<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}			
-		Collection<Testrun> optionalTestruns = new ArrayList<Testrun>();
+		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(!testrunService.isRequired(testrun.getTestrunID()))
@@ -261,14 +261,14 @@ public class DefectServiceImpl implements DefectService {
 		return optionalTestruns;		
 	}
 	
-	public Collection<Testcase> getCascadedAllTestCases(long defectID)
+	public Set<Testcase> getCascadedAllTestCases(long defectID)
 	{
-		Collection<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
@@ -279,14 +279,14 @@ public class DefectServiceImpl implements DefectService {
 		return allTestcases;
 	}
 	
-	public Collection<Testcase> getCascadedCompulsoryTestCases(long defectID)
+	public Set<Testcase> getCascadedCompulsoryTestCases(long defectID)
 	{
-		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
@@ -297,14 +297,14 @@ public class DefectServiceImpl implements DefectService {
 		return allTestcases;
 	}
 	
-	public Collection<Testcase> getCascadedOptionalTestCases(long defectID)
+	public Set<Testcase> getCascadedOptionalTestCases(long defectID)
 	{
-		Collection<Testrun> allTestruns = getCascadedOptionalTestRuns(defectID);
+		Set<Testrun> allTestruns = getCascadedOptionalTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testcase> allTestcases = new ArrayList<Testcase>();
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
@@ -315,14 +315,14 @@ public class DefectServiceImpl implements DefectService {
 		return allTestcases;
 	}
 	
-	public Collection<Testplan> getCascadedAllTestPlans(long defectID)
+	public Set<Testplan> getCascadedAllTestPlans(long defectID)
 	{		
-		Collection<Testcase> allTestcases = getCascadedAllTestCases(defectID);
+		Set<Testcase> allTestcases = getCascadedAllTestCases(defectID);
 		if(allTestcases == null || allTestcases.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
 		for(final Testcase testcase : allTestcases)
 		{				
 			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
@@ -333,14 +333,14 @@ public class DefectServiceImpl implements DefectService {
 		return allTestplans;
 	}
 	
-	public Collection<Testplan> getCascadedCompulsoryTestPlans(long defectID)
+	public Set<Testplan> getCascadedCompulsoryTestPlans(long defectID)
 	{		
-		Collection<Testcase> allTestcases = getCascadedCompulsoryTestCases(defectID);
+		Set<Testcase> allTestcases = getCascadedCompulsoryTestCases(defectID);
 		if(allTestcases == null || allTestcases.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
 		for(final Testcase testcase : allTestcases)
 		{				
 			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
@@ -351,14 +351,14 @@ public class DefectServiceImpl implements DefectService {
 		return allTestplans;
 	}
 	
-	public Collection<Testplan> getCascadedOptionalTestPlans(long defectID)
+	public Set<Testplan> getCascadedOptionalTestPlans(long defectID)
 	{		
-		Collection<Testcase> allTestcases = getCascadedOptionalTestCases(defectID);
+		Set<Testcase> allTestcases = getCascadedOptionalTestCases(defectID);
 		if(allTestcases == null || allTestcases.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Testplan> allTestplans = new ArrayList<Testplan>();
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
 		for(final Testcase testcase : allTestcases)
 		{				
 			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
@@ -369,13 +369,13 @@ public class DefectServiceImpl implements DefectService {
 		return allTestplans;
 	}
 	
-	public Collection<Cycle> getCascadedCycles(long defectID) {
-		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
+	public Set<Cycle> getCascadedCycles(long defectID) {
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Cycle> cycles = new ArrayList<Cycle>();
+		Set<Cycle> cycles = new HashSet<Cycle>();
 		for(final Testrun testrun : allTestruns)
 		{				
 			if(testrunService.getCycle(testrun.getTestrunID()) != null)
@@ -386,14 +386,14 @@ public class DefectServiceImpl implements DefectService {
 		return cycles;
 	}
 
-	public Collection<Project> getCascadedProjects(long defectID)
+	public Set<Project> getCascadedProjects(long defectID)
 	{
-		Collection<Cycle> cycles =  getCascadedCycles(defectID);
+		Set<Cycle> cycles =  getCascadedCycles(defectID);
 		if(cycles == null || cycles.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Project> projects = new ArrayList<Project>();
+		Set<Project> projects = new HashSet<Project>();
 		for(final Cycle cycle : cycles)
 		{	
 			try{
@@ -405,13 +405,13 @@ public class DefectServiceImpl implements DefectService {
 	}
 
 	
-	public Collection<Environment> getCascadedEnvironments(long defectID) {
-		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
+	public Set<Environment> getCascadedEnvironments(long defectID) {
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Environment> environments = new ArrayList<Environment>();
+		Set<Environment> environments = new HashSet<Environment>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty())			
@@ -422,14 +422,14 @@ public class DefectServiceImpl implements DefectService {
 		return environments;
 	}
 
-	public Collection<Requirement> getCascadedRequirements(long defectID) 
+	public Set<Requirement> getCascadedRequirements(long defectID) 
 	{
-		Collection<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}	
-		Collection<Requirement> requirements = new ArrayList<Requirement>();
+		Set<Requirement> requirements = new HashSet<Requirement>();
 		for(final Testrun testrun : allTestruns)
 		{	
 			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())			
@@ -445,22 +445,22 @@ public class DefectServiceImpl implements DefectService {
 		return requirements;		
 	}
 
-	public Collection<TestcenterUser> getCascadedTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedTesters(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedDevelopers(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Collection<TestcenterUser> getCascadedSnrDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrDevelopers(long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

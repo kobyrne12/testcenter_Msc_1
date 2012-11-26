@@ -1,7 +1,7 @@
 package ie.cit.cloud.testcenter.controller.json;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Set;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -72,7 +72,7 @@ public class CompanyJSONController {
     // GET All Company
     @RequestMapping(value = " ", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Collection<Company> getAllCompanies() {
+    public @ResponseBody Set<Company> getAllCompanies() {
     	return companyService.getAllCompanies();    	
     }  
     // GET All projects IDs

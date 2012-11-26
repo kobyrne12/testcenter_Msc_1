@@ -10,7 +10,7 @@ package ie.cit.cloud.testcenter.respository.company;
 
 import ie.cit.cloud.testcenter.model.Company;
 
-import java.util.Collection;
+import java.util.Set;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 public interface CompanyRepository {
@@ -53,7 +53,7 @@ public interface CompanyRepository {
      * 
      * @return all Companys
      */
-    Collection<Company> findAll();
+    Set<Company> findAll();
 
     /**
      * Returns Company items given by its ID

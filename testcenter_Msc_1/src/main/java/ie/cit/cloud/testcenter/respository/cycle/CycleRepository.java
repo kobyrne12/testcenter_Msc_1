@@ -13,7 +13,7 @@ import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Testrun;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -57,7 +57,7 @@ public interface CycleRepository {
      * 
      * @return all Cycles
      */
-    Collection<Cycle> findAll();
+    Set<Cycle> findAll();
 
     /**
      * Returns Cycle items given by its ID
@@ -83,7 +83,7 @@ public interface CycleRepository {
      * @return Cycle for given name, null if Cycle was not found
      */
 
-	Collection<Cycle> findAllCyclesByProjectID(long projectID);
+	Set<Cycle> findAllCyclesByProjectID(long projectID);
 	
 	 /**
      * Returns the highest project position number for a project 
@@ -95,6 +95,6 @@ public interface CycleRepository {
 
 	int getMaxProjectPosNum(long projectID);
 
-	Collection<Cycle> findAllCyclesByParentID(long cycleID);
+	Set<Cycle> findAllCyclesByParentID(long cycleID);
 	
 }

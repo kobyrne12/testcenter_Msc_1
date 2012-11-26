@@ -10,7 +10,7 @@ package ie.cit.cloud.testcenter.model;
 
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 
-import java.util.Collection;
+import java.util.Set;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -35,7 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 @Table(name = "Company")
-public class Company {
+public class Company
+{
+	
 	@Autowired @Transient
 	private CompanyService companyService;
 	
@@ -51,32 +53,32 @@ public class Company {
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Project.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
-	private Collection<Project> projects; 
+	private Set<Project> projects; 
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testplan.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testplan> testplans;   
+	private Set<Testplan> testplans;   
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testcase.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Testcase> testcases; 
+	private Set<Testcase> testcases; 
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Defect.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Defect> defects;   
+	private Set<Defect> defects;   
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Environment.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Environment> environments;  
+	private Set<Environment> environments;  
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Requirement.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Requirement> requirements;  
+	private Set<Requirement> requirements;  
 
 	@Basic    
 	private String projectDisplayName;
@@ -227,10 +229,10 @@ public class Company {
 	 * @param createdBy
 	 * @param lastModifiedBy
 	 */
-	public Company(String companyName, Collection<Project> projects,
-			Collection<Testplan> testplans, Collection<Testcase> testcases,
-			Collection<Defect> defects, Collection<Environment> environments,
-			Collection<Requirement> requirements, String projectDisplayName,
+	public Company(String companyName, Set<Project> projects,
+			Set<Testplan> testplans, Set<Testcase> testcases,
+			Set<Defect> defects, Set<Environment> environments,
+			Set<Requirement> requirements, String projectDisplayName,
 			String projectsDisplayName, String reportDisplayName,
 			String reportsDisplayName, String defectDisplayName,
 			String defectsDisplayName, String requirementDisplayName,
@@ -310,84 +312,84 @@ public class Company {
 	/**
 	 * @return the projects
 	 */
-	public Collection<Project> getProjects() {
+	public Set<Project> getProjects() {
 		return projects;
 	}
 
 	/**
 	 * @param projects the projects to set
 	 */
-	public void setProjects(Collection<Project> projects) {
+	public void setProjects(Set<Project> projects) {
 		this.projects = projects;
 	}
 
 	/**
 	 * @return the testplans
 	 */
-	public Collection<Testplan> getTestplans() {
+	public Set<Testplan> getTestplans() {
 		return testplans;
 	}
 
 	/**
 	 * @param testplans the testplans to set
 	 */
-	public void setTestplans(Collection<Testplan> testplans) {
+	public void setTestplans(Set<Testplan> testplans) {
 		this.testplans = testplans;
 	}
 
 	/**
 	 * @return the testcases
 	 */
-	public Collection<Testcase> getTestcases() {
+	public Set<Testcase> getTestcases() {
 		return testcases;
 	}
 
 	/**
 	 * @param testcases the testcases to set
 	 */
-	public void setTestcases(Collection<Testcase> testcases) {
+	public void setTestcases(Set<Testcase> testcases) {
 		this.testcases = testcases;
 	}
 
 	/**
 	 * @return the defects
 	 */
-	public Collection<Defect> getDefects() {
+	public Set<Defect> getDefects() {
 		return defects;
 	}
 
 	/**
 	 * @param defects the defects to set
 	 */
-	public void setDefects(Collection<Defect> defects) {
+	public void setDefects(Set<Defect> defects) {
 		this.defects = defects;
 	}
 
 	/**
 	 * @return the environments
 	 */
-	public Collection<Environment> getEnvironments() {
+	public Set<Environment> getEnvironments() {
 		return environments;
 	}
 
 	/**
 	 * @param environments the environments to set
 	 */
-	public void setEnvironments(Collection<Environment> environments) {
+	public void setEnvironments(Set<Environment> environments) {
 		this.environments = environments;
 	}
 
 	/**
 	 * @return the requirements
 	 */
-	public Collection<Requirement> getRequirements() {
+	public Set<Requirement> getRequirements() {
 		return requirements;
 	}
 
 	/**
 	 * @param requirements the requirements to set
 	 */
-	public void setRequirements(Collection<Requirement> requirements) {
+	public void setRequirements(Set<Requirement> requirements) {
 		this.requirements = requirements;
 	}
 

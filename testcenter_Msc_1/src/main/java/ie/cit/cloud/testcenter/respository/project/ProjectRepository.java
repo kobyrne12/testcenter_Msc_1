@@ -11,7 +11,7 @@ package ie.cit.cloud.testcenter.respository.project;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Project;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -55,7 +55,7 @@ public interface ProjectRepository {
      * 
      * @return all Projects
      */
-    Collection<Project> findAll();
+    Set<Project> findAll();
 
     /**
      * Returns Project items given by its ID
@@ -74,13 +74,13 @@ public interface ProjectRepository {
      */
     Project findProjectByName(String projectName);
 
-	Collection<Project> findAllProjectsByCompanyID(long companyID);
+	Set<Project> findAllProjectsByCompanyID(long companyID);
 
-	Collection<Project> findAllProjectsByCycleID(long cycleID);
+	Set<Project> findAllProjectsByCycleID(long cycleID);
 	
 	//////////////////////////////////////////////////
 
-	Collection<Project> findAllChildProjects(Long projectID);
+	Set<Project> findAllChildProjects(Long projectID);
     
 
 }

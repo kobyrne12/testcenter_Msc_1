@@ -22,8 +22,8 @@ import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Iterator;
 
 import javax.persistence.NoResultException;
@@ -54,7 +54,7 @@ public class CompanyServiceImpl implements CompanyService {
 	
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
-    public Collection<Company> getAllCompanies() {
+    public Set<Company> getAllCompanies() {
 	return repo.findAll();
     }
     
@@ -108,17 +108,17 @@ public class CompanyServiceImpl implements CompanyService {
 		
 	/**
 	 * Returns a collection of cycles in a company 
-	 * Collection<Cycle>
+	 * Set<Cycle>
 	 * @return collection of cycles in a company,
 	 */	
-	public Collection<Cycle> getAllCycles(long companyID)
+	public Set<Cycle> getAllCycles(long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
 		{
 			return null;
 		}
-		Collection<Cycle> cycles = new ArrayList<Cycle>();
+		Set<Cycle> cycles = new HashSet<Cycle>();
 		for(final Project project : company.getProjects())
 		{			
 			if(project.getCycles() != null && !project.getCycles().isEmpty())
@@ -130,18 +130,18 @@ public class CompanyServiceImpl implements CompanyService {
 	}	
 	/**
 	 * Returns a collection of All Testruns in a company 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Testruns in a company,
 	 */
 
-	public Collection<Testrun> getAllTestRuns(long companyID)
+	public Set<Testrun> getAllTestRuns(long companyID)
 	{		
-		Collection<Cycle> cycles = getAllCycles(companyID);		
+		Set<Cycle> cycles = getAllCycles(companyID);		
 		if(cycles == null || cycles.isEmpty())
 		{
 			return null;
 		}
-		Collection<Testrun> testruns = new ArrayList<Testrun>();
+		Set<Testrun> testruns = new HashSet<Testrun>();
 		for(final Cycle cycle : cycles)
 		{
 			if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
@@ -153,17 +153,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}		
 	/**
 	 * Returns a collection of All Compulsory Testruns in a company 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Compulsory Testruns in a company,
 	 */	
-	public Collection<Testrun> getCompulsoryTestRuns(long companyID)
+	public Set<Testrun> getCompulsoryTestRuns(long companyID)
 	{
-		Collection<Cycle> cycles = getAllCycles(companyID);
+		Set<Cycle> cycles = getAllCycles(companyID);
 		if(cycles == null || cycles.isEmpty())
 		{
 			return null;
 		}
-		Collection<Testrun> testruns = new ArrayList<Testrun>();
+		Set<Testrun> testruns = new HashSet<Testrun>();
 		for(final Cycle cycle : cycles)
 		{		
 			if(cycleService.getCascadedCompulsoryTestRuns(cycle.getCycleID()) != null && 
@@ -176,17 +176,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 	/**
 	 * Returns a collection of All Optional Testruns in a company 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a company,
 	 */	
-	public Collection<Testrun> getOptionalTestRuns(long companyID)
+	public Set<Testrun> getOptionalTestRuns(long companyID)
 	{
-		Collection<Cycle> cycles = getAllCycles(companyID);
+		Set<Cycle> cycles = getAllCycles(companyID);
 		if(cycles == null || cycles.isEmpty())
 		{
 			return null;
 		}
-		Collection<Testrun> testruns = new ArrayList<Testrun>();
+		Set<Testrun> testruns = new HashSet<Testrun>();
 		for(final Cycle cycle : cycles)
 		{		
 			if(cycleService.getCascadedOptionalTestRuns(cycle.getCycleID()) != null && 
@@ -201,10 +201,10 @@ public class CompanyServiceImpl implements CompanyService {
 
 	/**
 	 * Returns a collection of Testcases in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Testcases in a company
 	 */	
-	public Collection<Testcase> getAllTestCases(long companyID)
+	public Set<Testcase> getAllTestCases(long companyID)
 	{	
 		Company company = getCompany(companyID);
 		if(company.getTestcases() == null || company.getTestcases().isEmpty())
@@ -215,17 +215,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 	/**
 	 * Returns a collection of Compulsory Testcases in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Compulsory Testcases in a company,
 	 */	
-	public Collection<Testcase> getCompulsoryTestCases(long companyID)
+	public Set<Testcase> getCompulsoryTestCases(long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
 		{
 			return null;
 		}		
-		Collection<Testcase> compulsoryTestcases = new ArrayList<Testcase>();  
+		Set<Testcase> compulsoryTestcases = new HashSet<Testcase>();  
 		for(final Project project : company.getProjects())
 		{			
 			if(projectService.getCascadedCompulsoryTestCases(project.getProjectID()) != null && 
@@ -238,17 +238,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 	/**
 	 * Returns a collection of Optional Testcases in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Optional Testcases in a company,
 	 */	
-	public Collection<Testcase> getOptionalTestCases(long companyID)
+	public Set<Testcase> getOptionalTestCases(long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
 		{
 			return null;
 		}		
-		Collection<Testcase> optionalTestcases = new ArrayList<Testcase>();  
+		Set<Testcase> optionalTestcases = new HashSet<Testcase>();  
 		for(final Project project : company.getProjects())
 		{			
 			if(projectService.getCascadedOptionalTestCases(project.getProjectID()) != null && 
@@ -261,10 +261,10 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 	/**
 	 * Returns a collection of Testplans in a company
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of Testplans in a company
 	 */	
-	public Collection<Testplan> getAllTestPlans(long companyID)
+	public Set<Testplan> getAllTestPlans(long companyID)
 	{	
 		Company company = getCompany(companyID);
 		if(company.getTestplans() == null || company.getTestplans().isEmpty())
@@ -275,17 +275,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 	/**
 	 * Returns a collection of Compulsory Testplans in a company
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of Compulsory Testplans in a company,
 	 */	
-	public Collection<Testplan> getCompulsoryTestPlans(long companyID)
+	public Set<Testplan> getCompulsoryTestPlans(long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
 		{
 			return null;
 		}		
-		Collection<Testplan> compulsoryTestplans = new ArrayList<Testplan>();  
+		Set<Testplan> compulsoryTestplans = new HashSet<Testplan>();  
 		for(final Project project : company.getProjects())
 		{			
 			if(projectService.getCascadedCompulsoryTestPlans(project.getProjectID()) != null && 
@@ -298,17 +298,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 	/**
 	 * Returns a collection of Optional Testplans in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Optional Testplans in a company,
 	 */	
-	public Collection<Testplan> getOptionalTestPlans(long companyID)
+	public Set<Testplan> getOptionalTestPlans(long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
 		{
 			return null;
 		}		
-		Collection<Testplan> optionalTestplans = new ArrayList<Testplan>();  
+		Set<Testplan> optionalTestplans = new HashSet<Testplan>();  
 		for(final Project project : company.getProjects())
 		{			
 			if(projectService.getCascadedOptionalTestPlans(project.getProjectID()) != null && 
@@ -321,17 +321,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}	
 	/**
 	 * Returns a collection of All Sev1 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev1 Defects in a company,
 	 */	
-	public Collection<Defect> getAllSev1Defects(long companyID)
+	public Set<Defect> getAllSev1Defects(long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
 		{
 			return null;
 		}
-		Collection<Defect> sev1Defects = new ArrayList<Defect>();
+		Set<Defect> sev1Defects = new HashSet<Defect>();
 		for(final Defect defect : company.getDefects())
 		{
 			if(defectService.isSev1(defect.getDefectID()));
@@ -343,17 +343,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}	
 	/**
 	 * Returns a collection of All Sev2 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev2 Defects in a company,
 	 */	
-	public Collection<Defect> getAllSev2Defects(long companyID)
+	public Set<Defect> getAllSev2Defects(long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
 		{
 			return null;
 		}
-		Collection<Defect> sev2Defects = new ArrayList<Defect>();
+		Set<Defect> sev2Defects = new HashSet<Defect>();
 		for(final Defect defect : company.getDefects())
 		{
 			if(defectService.isSev2(defect.getDefectID()));
@@ -365,17 +365,17 @@ public class CompanyServiceImpl implements CompanyService {
 	}	
 	/**
 	 * Returns a collection of All Sev3 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev3 Defects in a company,
 	 */	
-	public Collection<Defect> getAllSev3Defects(long companyID)
+	public Set<Defect> getAllSev3Defects(long companyID)
 	{	
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
 		{
 			return null;
 		}
-		Collection<Defect> sev3Defects = new ArrayList<Defect>();
+		Set<Defect> sev3Defects = new HashSet<Defect>();
 		for(final Defect defect : company.getDefects() )
 		{
 			if(defectService.isSev3(defect.getDefectID()));
@@ -387,18 +387,18 @@ public class CompanyServiceImpl implements CompanyService {
 	}	
 	/**
 	 * Returns a collection of All Sev4 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev4 Defects in a company,
 	 */
 
-	public Collection<Defect> getAllSev4Defects(long companyID)
+	public Set<Defect> getAllSev4Defects(long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
 		{
 			return null;
 		}
-		Collection<Defect> sev4Defects = new ArrayList<Defect>();
+		Set<Defect> sev4Defects = new HashSet<Defect>();
 		for(final Defect defect : company.getDefects() )
 		{
 			if(defectService.isSev4(defect.getDefectID()));
@@ -408,13 +408,13 @@ public class CompanyServiceImpl implements CompanyService {
 		}
 		return sev4Defects;
 	}	
-	public Collection<TestcenterUser> getAllTesters(long companyID) {
+	public Set<TestcenterUser> getAllTesters(long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{
 		//			return null;
 		//		}
-		//		Collection<User> testers = new ArrayList<User>();
+		//		Set<User> testers = new HashSet<User>();
 		//		for(final User user : company.getUsers() )
 		//		{
 		//			if(userService.isTester((user.getUserID())))
@@ -425,13 +425,13 @@ public class CompanyServiceImpl implements CompanyService {
 		//		return testers;
 		return null;
 	}
-	public Collection<TestcenterUser> getAllSeniorTesters(long companyID) {
+	public Set<TestcenterUser> getAllSeniorTesters(long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{
 		//			return null;
 		//		}
-		//		Collection<User> seniorTesters = new ArrayList<User>();
+		//		Set<User> seniorTesters = new HashSet<User>();
 		//		for(final User user : company.getUsers() )
 		//		{
 		//			if(userService.isSeniorTester((user.getUserID())))
@@ -442,13 +442,13 @@ public class CompanyServiceImpl implements CompanyService {
 		//		return testers;
 		return null;
 	}
-	public Collection<TestcenterUser> getAllDevelopers(long companyID) {
+	public Set<TestcenterUser> getAllDevelopers(long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{
 		//			return null;
 		//		}
-		//		Collection<User> seniorTesters = new ArrayList<User>();
+		//		Set<User> seniorTesters = new HashSet<User>();
 		//		for(final User user : company.getUsers() )
 		//		{
 		//			if(userService.isDeveloper((user.getUserID())))
@@ -459,13 +459,13 @@ public class CompanyServiceImpl implements CompanyService {
 		//		return testers;	
 		return null;
 	}
-	public Collection<TestcenterUser> getAllSeniorDevelopers(long companyID) {
+	public Set<TestcenterUser> getAllSeniorDevelopers(long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{
 		//			return null;
 		//		}
-		//		Collection<User> seniorTesters = new ArrayList<User>();
+		//		Set<User> seniorTesters = new HashSet<User>();
 		//		for(final User user : company.getUsers() )
 		//		{
 		//			if(userService.isSeniorDeveloper((user.getUserID())))

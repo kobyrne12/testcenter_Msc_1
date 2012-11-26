@@ -8,9 +8,12 @@ package ie.cit.cloud.testcenter.respository.environment;
  *
  */
 
+import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.respository.environment.EnvironmentRepository;
-import java.util.Collection;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,12 +48,14 @@ public class HibernateEnvironmentRespository implements EnvironmentRepository {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Environment> findAll() {
+	public Set<Environment> findAll() {
 		Query query = em.createQuery("from Environment");	
 		//	Query query = em.createQuery("from TestPlan where user=:user");
 		//	query.setParameter("user", getCurrentUser());
 		//   query.setParameter("testerName", "john");
-		return (List<Environment>) query.getResultList();
+		List<Environment> environmentlist = query.getResultList();
+	    Set<Environment> environmentSet = new HashSet<Environment>(environmentlist);  
+		return environmentSet;		
 	}
 
 	public Environment findById(long environmentID) {

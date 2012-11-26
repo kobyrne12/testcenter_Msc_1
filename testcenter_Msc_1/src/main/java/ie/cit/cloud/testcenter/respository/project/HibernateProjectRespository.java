@@ -8,11 +8,14 @@ package ie.cit.cloud.testcenter.respository.project;
  *
  */
 import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.respository.project.ProjectRepository;
-import java.util.Collection;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -47,19 +50,21 @@ public class HibernateProjectRespository implements ProjectRepository {
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Project> findAll() {
+    public Set<Project> findAll() {
     Query query = em.createQuery("from Project");	
 //	Query query = em.createQuery("from TestPlan where user=:user");
 //	query.setParameter("user", getCurrentUser());
  //   query.setParameter("testerName", "john");
-	return (List<Project>) query.getResultList();
+	return (Set<Project>) query.getResultList();
     }
     @SuppressWarnings("unchecked")
-    public Collection<Project> findAllChildProjects(Long projectID)
+    public Set<Project> findAllChildProjects(Long projectID)
     {
     	Query query = em.createQuery("from Project where parentID=:projectID");
     	query.setParameter("projectID", projectID);
-    	return (List<Project>) query.getResultList();
+    	List<Project> projectlist = query.getResultList();
+	    Set<Project> projectSet = new HashSet<Project>(projectlist);  
+		return projectSet;		    	
     }
     public Project findById(long projectID) {
 	return get(projectID);
@@ -75,19 +80,23 @@ public class HibernateProjectRespository implements ProjectRepository {
 //   }
     
 	@SuppressWarnings("unchecked")
-	public  Collection<Project> findAllProjectsByCompanyID(long companyID)
+	public  Set<Project> findAllProjectsByCompanyID(long companyID)
 	{
 		Query query = em.createQuery("from Project where companyID=:companyID"); 		
 		query.setParameter("companyID", companyID);
-		return ( Collection<Project>) query.getResultList();
+		List<Project> projectlist = query.getResultList();
+	    Set<Project> projectSet = new HashSet<Project>(projectlist);  
+		return projectSet;	
 	}
     
     @SuppressWarnings("unchecked")
-	public  Collection<Project> findAllProjectsByCycleID(long cycleID)
+	public  Set<Project> findAllProjectsByCycleID(long cycleID)
 	{
 		Query query = em.createQuery("from Project where cycleID=:cycleID"); 		
 		query.setParameter("cycleID", cycleID);
-		return ( Collection<Project>) query.getResultList();
+		List<Project> projectlist = query.getResultList();
+	    Set<Project> projectSet = new HashSet<Project>(projectlist);  
+		return projectSet;	
 	}
 
 	

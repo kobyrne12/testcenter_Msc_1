@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.service.testplan;
  *
  */
 
-import java.util.Collection;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -37,40 +37,40 @@ public interface TestplanService {
     ///////////////////////////
     /**
 	 * Returns a collection of All Testcases for a test plan
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of All Testcases for a test plan
 	 */	
-	 Collection<Testcase> getAllTestCases(long testplanID);
+	 Set<Testcase> getAllTestCases(long testplanID);
 	/**
 	 * Returns a collection of All Compulsory Testcases for a test plan
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of All Compulsory Testcases for a test plan
 	 */	
-	 Collection<Testcase> getCompulsoryTestCases(long testplanID);
+	 Set<Testcase> getCompulsoryTestCases(long testplanID);
 	/**
 	 * Returns a collection of All Optional Testcases for a test plan
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of All OptionalTestcases for a test plan
 	 */	
-	 Collection<Testcase> getOptionalTestCases(long testplanID);
+	 Set<Testcase> getOptionalTestCases(long testplanID);
     /**
 	 * Returns a collection of All Testruns in a Testplan 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Testruns in a Testplan,
 	 */	
-	Collection<Testrun> getAllTestRuns(long testplanID);
+	Set<Testrun> getAllTestRuns(long testplanID);
 	/**
 	 * Returns a collection of All compulsory Testruns in a Testplan
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a Testplan,
 	 */	
-	Collection<Testrun> getCompulsoryTestRuns(long testplanID);
+	Set<Testrun> getCompulsoryTestRuns(long testplanID);
 	/**
 	 * Returns a collection of All Optional Testruns in a Testplan
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a Testplan,
 	 */	
-	Collection<Testrun> getOptionalTestRuns(long testplanID);
+	Set<Testrun> getOptionalTestRuns(long testplanID);
 	/**
 	 * Returns true if any of a testcase testruns' in a tesplan priority is less than or equal to cycle priority 
 	 * boolean
@@ -82,59 +82,59 @@ public interface TestplanService {
 	 * Cycle
 	 * @return a testplans Cycles
 	 */		
-	Collection<Cycle> getCycles(long testplanID);	
+	Set<Cycle> getCycles(long testplanID);	
 	/**
 	 * Returns a testplans Projects
 	 * Project
 	 * @return a testplans Projects
 	 */	
-	Collection<Project> getProjects(long testplanID);	
+	Set<Project> getProjects(long testplanID);	
 	/**
 	 * Returns a collection of Requirements in a Testplan
-	 * Collection<Requirement>
+	 * Set<Requirement>
 	 * @return collection of Requirements in a Testplan,
 	 */		
-	Collection<Requirement> getRequirements(long testplanID) ;		
+	Set<Requirement> getRequirements(long testplanID) ;		
 	/**
 	 * Returns a collection of Environments in a Testplan
-	 * Collection<Environment>
+	 * Set<Environment>
 	 * @return collection of Environments in a Testplan,
 	 */		
-	Collection<Environment> getEnvironments(long testplanID) ;
+	Set<Environment> getEnvironments(long testplanID) ;
 	/**
 	 * Returns a collection of All Defects in a Testplan 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Defects in a Testplan,
 	 */		
-	Collection<Defect> getCascadedAllDefects(long testplanID);
+	Set<Defect> getCascadedAllDefects(long testplanID);
 	/**
 	 * Returns a collection of Sev1 Defects in a cycle
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 1 Defects in a Testplan,
 	 */		
-	Collection<Defect> getCascadedSev1Defects(long testplanID);
+	Set<Defect> getCascadedSev1Defects(long testplanID);
 	/**
 	 * Returns a collection of Sev2 Defects in a Testplan 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 2 Defects in a Testplan,
 	 */		
-	Collection<Defect> getCascadedSev2Defects(long testplanID);
+	Set<Defect> getCascadedSev2Defects(long testplanID);
 	/**
 	 * Returns a collection of Sev 3 Defects in a Testplan 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 3 Defects in a Testplan,
 	 */		
-	Collection<Defect> getCascadedSev3Defects(long testplanID);
+	Set<Defect> getCascadedSev3Defects(long testplanID);
 	/**
 	 * Returns a collection of Sev 4 Defects in a Testplan 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 4 Defects in a Testplan,
 	 */		
-	Collection<Defect> getCascadedSev4Defects(long testplanID);
+	Set<Defect> getCascadedSev4Defects(long testplanID);
 	
-	Collection<TestcenterUser> getCascadedTesters(long testplanID);
-	Collection<TestcenterUser> getCascadedSnrTesters(long testplanID);
-	Collection<TestcenterUser> getCascadedDevelopers(long testplanID);
-	Collection<TestcenterUser> getCascadedSnrDevelopers(long testplanID);
+	Set<TestcenterUser> getCascadedTesters(long testplanID);
+	Set<TestcenterUser> getCascadedSnrTesters(long testplanID);
+	Set<TestcenterUser> getCascadedDevelopers(long testplanID);
+	Set<TestcenterUser> getCascadedSnrDevelopers(long testplanID);
 
 }

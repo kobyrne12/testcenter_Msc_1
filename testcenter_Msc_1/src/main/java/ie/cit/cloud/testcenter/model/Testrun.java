@@ -8,8 +8,8 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -44,22 +44,22 @@ public class Testrun {
     @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "TESTRUNS_JOIN_DEFECTS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "defectID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Defect> defects  = new ArrayList<Defect>();    	
+	private Set<Defect> defects  = new HashSet<Defect>();    	
 
     @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "TESTRUNS_JOIN_REQUIREMENTS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "requirementID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Requirement> requirements  = new ArrayList<Requirement>();    	
+	private Set<Requirement> requirements  = new HashSet<Requirement>();    	
 
     @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "TESTRUNS_JOIN_ENVIRONMENTS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "environmentID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<Environment> environments  = new ArrayList<Environment>();    	
+	private Set<Environment> environments  = new HashSet<Environment>();    	
 
     @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "TESTRUNS_JOIN_USERS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "userID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Collection<TestcenterUser> users  = new ArrayList<TestcenterUser>();   
+	private Set<TestcenterUser> users  = new HashSet<TestcenterUser>();   
     
     @Basic
     @Column(name="testcaseID")
@@ -481,54 +481,54 @@ public class Testrun {
 	/**
 	 * @return the requirements
 	 */
-	public Collection<Requirement> getRequirements() {
+	public Set<Requirement> getRequirements() {
 		return requirements;
 	}
 
 	/**
 	 * @param requirements the requirements to set
 	 */
-	public void setRequirements(Collection<Requirement> requirements) {
+	public void setRequirements(Set<Requirement> requirements) {
 		this.requirements = requirements;
 	}
 
 	/**
 	 * @return the environments
 	 */
-	public Collection<Environment> getEnvironments() {
+	public Set<Environment> getEnvironments() {
 		return environments;
 	}
 
 	/**
 	 * @param environments the environments to set
 	 */
-	public void setEnvironments(Collection<Environment> environments) {
+	public void setEnvironments(Set<Environment> environments) {
 		this.environments = environments;
 	}
 
 	/**
 	 * @return the users
 	 */
-	public Collection<TestcenterUser> getUsers() {
+	public Set<TestcenterUser> getUsers() {
 		return users;
 	}
 
 	/**
 	 * @param users the users to set
 	 */
-	public void setUsers(Collection<TestcenterUser> users) {
+	public void setUsers(Set<TestcenterUser> users) {
 		this.users = users;
 	}
 	/**
 	 * @return the defects
 	 */
-	public Collection<Defect> getDefects( ) {
+	public Set<Defect> getDefects( ) {
 		return defects;
 	}
 	/**
 	 * @param defects the defects to set
 	 */
-	public void setDefects(Collection<Defect> defects) {
+	public void setDefects(Set<Defect> defects) {
 		this.defects = defects;
 	}
 

@@ -8,7 +8,7 @@ package ie.cit.cloud.testcenter.service.testcase;
  *
  */
 
-import java.util.Collection;
+import java.util.Set;
 
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -36,7 +36,7 @@ public interface TestcaseService {
     
     long getLastTestRunID(long testcaseID);
 
-	Collection<Testcase> getAllTestcases();
+	Set<Testcase> getAllTestcases();
 	
 	/**
 	 * Returns true if any of a testcase testruns' priority is less than or equal to cycle priority 
@@ -48,80 +48,80 @@ public interface TestcaseService {
 	
 	/**
 	 * Returns a collection of All Testruns in a Testcase 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Testruns in a Testcase,
 	 */	
-	Collection<Testrun> getAllTestRuns(long testcaseID);
+	Set<Testrun> getAllTestRuns(long testcaseID);
 	/**
 	 * Returns a collection of All compulsory Testruns in a Testcase
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a Testcase,
 	 */	
-	Collection<Testrun> getCompulsoryTestRuns(long testcaseID);
+	Set<Testrun> getCompulsoryTestRuns(long testcaseID);
 	/**
 	 * Returns a collection of All Optional Testruns in a Testcase
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a Testcase,
 	 */	
-	Collection<Testrun> getOptionalTestRuns(long testcaseID);
+	Set<Testrun> getOptionalTestRuns(long testcaseID);
 	/**
 	 * Returns a testcases Cycles
 	 * Cycle
 	 * @return a testcases Cycles
 	 */		
-	Collection<Cycle> getCycles(long testcaseID);	
+	Set<Cycle> getCycles(long testcaseID);	
 	/**
 	 * Returns a testcases Projects
 	 * Project
 	 * @return a testcases Projects
 	 */	
-	Collection<Project> getProjects(long testcaseID);	
+	Set<Project> getProjects(long testcaseID);	
 	/**
 	 * Returns a collection of Requirements in a Testcase
-	 * Collection<Requirement>
+	 * Set<Requirement>
 	 * @return collection of Requirements in a Testcase,
 	 */		
-	Collection<Requirement> getRequirements(long testcaseID) ;		
+	Set<Requirement> getRequirements(long testcaseID) ;		
 	/**
 	 * Returns a collection of Environments in a Testcase
-	 * Collection<Environment>
+	 * Set<Environment>
 	 * @return collection of Environments in a Testcase,
 	 */		
-	Collection<Environment> getEnvironments(long testcaseID) ;
+	Set<Environment> getEnvironments(long testcaseID) ;
 	/**
 	 * Returns a collection of All Defects in a Testcase 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Defects in a Testcase,
 	 */		
-	Collection<Defect> getCascadedAllDefects(long testcaseID);
+	Set<Defect> getCascadedAllDefects(long testcaseID);
 	/**
 	 * Returns a collection of Sev1 Defects in a cycle
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 1 Defects in a Testcase,
 	 */		
-	Collection<Defect> getCascadedSev1Defects(long testcaseID);
+	Set<Defect> getCascadedSev1Defects(long testcaseID);
 	/**
 	 * Returns a collection of Sev2 Defects in a Testcase 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 2 Defects in a Testcase,
 	 */		
-	Collection<Defect> getCascadedSev2Defects(long testcaseID);
+	Set<Defect> getCascadedSev2Defects(long testcaseID);
 	/**
 	 * Returns a collection of Sev 3 Defects in a Testcase 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 3 Defects in a Testcase,
 	 */		
-	Collection<Defect> getCascadedSev3Defects(long testcaseID);
+	Set<Defect> getCascadedSev3Defects(long testcaseID);
 	/**
 	 * Returns a collection of Sev 4 Defects in a Testcase 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of Sev 4 Defects in a Testcase,
 	 */		
-	Collection<Defect> getCascadedSev4Defects(long testcaseID);
+	Set<Defect> getCascadedSev4Defects(long testcaseID);
 	
-	Collection<TestcenterUser> getCascadedTesters(long testcaseID);
-	Collection<TestcenterUser> getCascadedSnrTesters(long testcaseID);
-	Collection<TestcenterUser> getCascadedDevelopers(long testcaseID);
-	Collection<TestcenterUser> getCascadedSnrDevelopers(long testcaseID);
+	Set<TestcenterUser> getCascadedTesters(long testcaseID);
+	Set<TestcenterUser> getCascadedSnrTesters(long testcaseID);
+	Set<TestcenterUser> getCascadedDevelopers(long testcaseID);
+	Set<TestcenterUser> getCascadedSnrDevelopers(long testcaseID);
 
 }

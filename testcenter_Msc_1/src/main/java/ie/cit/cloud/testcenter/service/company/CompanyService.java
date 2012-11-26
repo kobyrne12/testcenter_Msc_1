@@ -19,14 +19,14 @@ import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Peforms business operation on company
  */
  public interface CompanyService {
 
-	Collection<Company> getAllCompanies();
+	Set<Company> getAllCompanies();
 
 	void addNewCompany(Company company);
 
@@ -46,94 +46,94 @@ import java.util.Collection;
 	//////////////
 	/**
 	 * Returns a collection of cycles in a company 
-	 * Collection<Cycle>
+	 * Set<Cycle>
 	 * @return collection of cycles in a company,
 	 */	
-	 Collection<Cycle> getAllCycles(long companyID);
+	 Set<Cycle> getAllCycles(long companyID);
 	/**
 	 * Returns a collection of All Testruns in a company 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Testruns in a company,
 	 */
 	
-	 Collection<Testrun> getAllTestRuns(long companyID);
+	 Set<Testrun> getAllTestRuns(long companyID);
 	/**
 	 * Returns a collection of All Compulsory Testruns in a company 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Compulsory Testruns in a company,
 	 */	
-	 Collection<Testrun> getCompulsoryTestRuns(long companyID);
+	 Set<Testrun> getCompulsoryTestRuns(long companyID);
 	/**
 	 * Returns a collection of All Optional Testruns in a company 
-	 * Collection<Testrun>
+	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a company,
 	 */	
-	 Collection<Testrun> getOptionalTestRuns(long companyID);
+	 Set<Testrun> getOptionalTestRuns(long companyID);
 	/**
 	 * Returns a collection of Testcases in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Testcases in a company
 	 */	
-	 Collection<Testcase> getAllTestCases(long companyID);
+	 Set<Testcase> getAllTestCases(long companyID);
 	/**
 	 * Returns a collection of Compulsory Testcases in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Compulsory Testcases in a company,
 	 */	
-	 Collection<Testcase> getCompulsoryTestCases(long companyID);
+	 Set<Testcase> getCompulsoryTestCases(long companyID);
 	/**
 	 * Returns a collection of Optional Testcases in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Optional Testcases in a company,
 	 */	
-	 Collection<Testcase> getOptionalTestCases(long companyID);
+	 Set<Testcase> getOptionalTestCases(long companyID);
 	/**
 	 * Returns a collection of Testplans in a company
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of Testplans in a company
 	 */	
-	 Collection<Testplan> getAllTestPlans(long companyID);
+	 Set<Testplan> getAllTestPlans(long companyID);
 	/**
 	 * Returns a collection of Compulsory Testplans in a company
-	 * Collection<Testplan>
+	 * Set<Testplan>
 	 * @return collection of Compulsory Testplans in a company,
 	 */	
-	 Collection<Testplan> getCompulsoryTestPlans(long companyID);
+	 Set<Testplan> getCompulsoryTestPlans(long companyID);
 	/**
 	 * Returns a collection of Optional Testplans in a company
-	 * Collection<Testcase>
+	 * Set<Testcase>
 	 * @return collection of Optional Testplans in a company,
 	 */	
-	 Collection<Testplan> getOptionalTestPlans(long companyID);
+	 Set<Testplan> getOptionalTestPlans(long companyID);
 	/**
 	 * Returns a collection of All Sev1 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev1 Defects in a company,
 	 */	
-	 Collection<Defect> getAllSev1Defects(long companyID);
+	 Set<Defect> getAllSev1Defects(long companyID);
 	/**
 	 * Returns a collection of All Sev2 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev2 Defects in a company,
 	 */	
-	 Collection<Defect> getAllSev2Defects(long companyID);
+	 Set<Defect> getAllSev2Defects(long companyID);
 	/**
 	 * Returns a collection of All Sev3 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev3 Defects in a company,
 	 */	
-	 Collection<Defect> getAllSev3Defects(long companyID);
+	 Set<Defect> getAllSev3Defects(long companyID);
 	/**
 	 * Returns a collection of All Sev4 Defects in a company 
-	 * Collection<Defect>
+	 * Set<Defect>
 	 * @return collection of All Sev4 Defects in a company,
 	 */
 	
-	 Collection<Defect> getAllSev4Defects(long companyID);
-	 Collection<TestcenterUser> getAllTesters(long companyID);
-	 Collection<TestcenterUser> getAllSeniorTesters(long companyID);
-	 Collection<TestcenterUser> getAllDevelopers(long companyID);
-	 Collection<TestcenterUser> getAllSeniorDevelopers(long companyID);
+	 Set<Defect> getAllSev4Defects(long companyID);
+	 Set<TestcenterUser> getAllTesters(long companyID);
+	 Set<TestcenterUser> getAllSeniorTesters(long companyID);
+	 Set<TestcenterUser> getAllDevelopers(long companyID);
+	 Set<TestcenterUser> getAllSeniorDevelopers(long companyID);
 	//TODO: add user details i.e getAllTestersCount(), getAllSeniorTestersCount()
 	
 }

@@ -11,7 +11,9 @@ package ie.cit.cloud.testcenter.respository.defect;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.respository.defect.DefectRepository;
-import java.util.Collection;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -46,12 +48,14 @@ public class HibernateDefectRespository implements DefectRepository {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Defect> findAll() {
+	public Set<Defect> findAll() {
 		Query query = em.createQuery("from Defect");	
 		//	Query query = em.createQuery("from TestPlan where user=:user");
 		//	query.setParameter("user", getCurrentUser());
 		//   query.setParameter("testerName", "john");
-		return (List<Defect>) query.getResultList();
+		List<Defect> defectlist = query.getResultList();
+	    Set<Defect> defectSet = new HashSet<Defect>(defectlist);  
+		return defectSet;
 	}
 
 	public Defect findById(long defectID) {
@@ -65,11 +69,13 @@ public class HibernateDefectRespository implements DefectRepository {
 	}
 
 	@SuppressWarnings("unchecked")
-	public  Collection<Defect> findAllDefectsByParentID(long defectID)
+	public  Set<Defect> findAllDefectsByParentID(long defectID)
 	{
 		Query query = em.createQuery("from Defect where parentID=:parentID"); 		
 		query.setParameter("parentID", defectID);
-		return ( Collection<Defect>) query.getResultList();
+		List<Defect> defectlist = query.getResultList();
+	    Set<Defect> defectSet = new HashSet<Defect>(defectlist);  
+		return defectSet;		
 	}	
 
 
