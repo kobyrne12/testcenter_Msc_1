@@ -183,15 +183,13 @@ public interface ProjectService {
 	Set<TestcenterUser> getCascadedSnrDevelopers(long projectID);
 	//////////////////////////////////
 	
-	ProjectSummary getProjectSummary(long companyID, long projectID, String cycleID,
-			String testplanID,String testcaseID, String testrunID, String defectID, 
-			String requirementID, String environmentID, String userID );
+	ProjectSummary getProjectSummary(long companyID, long projectID, String level  );
 
 	ColModelAndNames getColumnModelAndNames(Long companyID);
 
 	ProjectSummaryList getGridProjects(long companyID, String projectID, String cycleID,
 			String testplanID,String testcaseID, String testrunID, String defectID, 
-			String requirementID, String environmentID, String userID);
+			String requirementID, String environmentID, String userID, String level );
 
 	RelatedObjectList getRelatedObjects(long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,

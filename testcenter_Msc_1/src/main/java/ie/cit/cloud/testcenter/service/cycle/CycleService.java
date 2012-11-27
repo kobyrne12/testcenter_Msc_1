@@ -9,6 +9,7 @@ package ie.cit.cloud.testcenter.service.cycle;
  */
 
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
@@ -20,6 +21,8 @@ import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
+import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
+import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 
 
 import java.util.ArrayList;
@@ -47,8 +50,6 @@ public interface CycleService {
     boolean updateCycle(Cycle cycle);
 
 	Set<Cycle> getAllCyclesByProjectID(long projectID);
-	
-	CycleSummary getCycleSummary(long cycleID);
 
 	int getMaxProjectPosNum(long projectID);
 
@@ -79,18 +80,36 @@ public interface CycleService {
 	 * @return collection of All Testruns in a cycle incl all child cycles,
 	 */	
 	 Set<Testrun> getCascadedAllTestRuns(long cycleID);
+	 /**
+	  * Returns a collection of All Testruns in a cycle incl all child cycles 
+	  * Set<Testrun>
+	  * @return collection of All Testruns in a cycle incl all child cycles,
+	  */	
+	 Set<Testrun> getCascadedAllTestRuns(long cycleID, String level);
 	/**
 	 * Returns a collection of All compulsory Testruns in a cycle incl all child cycles 
 	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a cycle incl all child cycles,
 	 */	
 	 Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID);
+	 /**
+	  * Returns a collection of All compulsory Testruns in a cycle incl all child cycles 
+	  * Set<Testrun>
+	  * @return collection of All compulsory Testruns in a cycle incl all child cycles,
+	  */	
+	 Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID, String level);
 	/**
 	 * Returns a collection of All Optional Testruns in a cycle incl all child cycles 
 	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a cycle incl all child cycles,
 	 */	
 	 Set<Testrun> getCascadedOptionalTestRuns(long cycleID);
+	 /**
+	  * Returns a collection of All Optional Testruns in a cycle incl all child cycles 
+	  * Set<Testrun>
+	  * @return collection of All Optional Testruns in a cycle incl all child cycles,
+	  */	
+	 Set<Testrun> getCascadedOptionalTestRuns(long cycleID, String level);
 	/**
 	 * Returns a collection of All Testcases in a cycle incl all child cycles 
 	 * Set<Testcase>
@@ -176,13 +195,20 @@ public interface CycleService {
 	 Set<TestcenterUser> getCascadedSnrDevelopers(long cycleID);
 
 	//////////////////////////////////////////////
-	CycleSummaryList getGridCycles(long companyID,String projectID, String testplanID,
-			String testcaseID, String userID, String environmentID,
-			String requirementID, String defectID, String testrunID);
-
-	ColModelAndNames getColumnModelAndNames(Long companyID);
-	
+	 
 	Set<Cycle> getAllChildCycles(long cycleID);
+	 
+	CycleSummary getCycleSummary(long companyID, long cycleID, String level);
+	 
+	CycleSummaryList getGridCycles(long companyID, String projectID, String cycleID,
+			String testplanID,String testcaseID, String testrunID, String defectID, 
+			String requirementID, String environmentID, String userID, String level );
+	
+	ColModelAndNames getColumnModelAndNames(Long companyID);	
+	
+	RelatedObjectList getRelatedObjects(long projectID, String cycleID,
+			String testplanID, String userID, String environmentID,
+			String requirementID, String defectID, String testrunID);
 
 
 }

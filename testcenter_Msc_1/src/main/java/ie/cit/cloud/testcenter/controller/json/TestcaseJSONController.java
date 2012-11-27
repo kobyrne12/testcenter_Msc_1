@@ -45,8 +45,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-@RequestMapping("project")
-public class ProjectJSONController {    
+@RequestMapping("testcase")
+public class TestcaseJSONController {    
     @Autowired
     private CompanyService companyService; 
     @Autowired
@@ -97,7 +97,7 @@ public class ProjectJSONController {
     			for(Rule rule : jqgridFilter.getRules())
         		{        			
     				//System.out.println(" ^^^^^^ 4 : " + rule.getField());
-        			if(rule.getField().equalsIgnoreCase("projectName"))
+        			if(rule.getField().equalsIgnoreCase("testcaseName"))
         			{
         				//System.out.println(" ^^^^^^ 5 a : " +oldProjectSummary.getProjectName());
         				if(oldProjectSummary.getProjectName().toLowerCase().contains(rule.getData().toLowerCase()))
@@ -109,7 +109,7 @@ public class ProjectJSONController {
         			{
         				projectNameFound = true;   
         			}
-        			if(rule.getField().equalsIgnoreCase("projectID"))
+        			if(rule.getField().equalsIgnoreCase("testcaseID"))
         			{
         				System.out.println(" ^^^^^^ 5 a : " +oldProjectSummary.getProjectID());
         				if(String.valueOf(oldProjectSummary.getProjectID()).toLowerCase().contains(rule.getData().toLowerCase()))

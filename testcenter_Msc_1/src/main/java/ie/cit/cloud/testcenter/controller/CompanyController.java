@@ -54,19 +54,13 @@ public class CompanyController {
 	@RequestMapping(value = {"companies"}, method = GET)
 	public String openCompanySelection(	@RequestParam(required = false) String displaymessage, Model model)	
 	{	
-		System.out.println(" $$%% HERE : ");
 		try{			
-			model.addAttribute("companyList", companyService.getAllCompanies());
-			for(final Company company : companyService.getAllCompanies())
-			{
-				System.out.println(" $$%% Compnay Name : " + company.getCompanyName());
-			}
+			model.addAttribute("companyList", companyService.getAllCompanies());			
 			model.addAttribute("displaymessage", displaymessage);
 			return "companies";
 			
 		}catch(NoResultException nre)
-		{
-			System.out.println(" $$%% Compnay Name :  NO COMPANIES FOUND");
+		{			
 			model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
 			return "newcompany";
 		}		
@@ -94,16 +88,11 @@ public class CompanyController {
 		{		
 			try{			
 				model.addAttribute("companyList", companyService.getAllCompanies());
-				for(final Company company : companyService.getAllCompanies())
-				{
-					System.out.println(" $$%% Compnay Name : " + company.getCompanyName());
-				}
 				model.addAttribute("displaymessage", displaymessage);
 				return "companies";
 				
 			}catch(NoResultException nre)
-			{
-				System.out.println(" $$%% Compnay Name :  NO COMPANIES FOUND");
+			{	
 				model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
 				return "newcompany";
 			}						
@@ -133,8 +122,10 @@ public class CompanyController {
 				System.out.println("HERE 2 :" + userpath);
 				Long projectID = null;
 				boolean allCompanyProjects = true;	
+				//String relatedObjects = "";
+				//String gridUrl = "/summaryList/"+companyID;
+				String gridUrl = "";
 				String relatedObjects = "";
-				String gridUrl = "/summaryList/"+companyID;
 				String breadCrumb = "";			
 				String newuserpath = "Home";
 				if (!userpath.toLowerCase().contains("home"))
@@ -171,33 +162,34 @@ public class CompanyController {
 								newuserpath = newuserpath + ">"+project.getProjectID();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> >";
 
-								if(gridUrl.contains("?"))
-								{
-									gridUrl = gridUrl +  "&";
-								}
-								else
-								{
-									gridUrl = gridUrl +  "?";
-								}
-								gridUrl = gridUrl +  "projectID="+projectID;
-
-								if(relatedObjects.contains("?"))
-								{
-									relatedObjects = relatedObjects +  "&";
-								}
-								else
-								{
-									relatedObjects = relatedObjects +  "?";
-								}
-								relatedObjects = relatedObjects +  "projectID="+projectID;								
-
+//								if(gridUrl.contains("?"))
+//								{
+//									gridUrl = gridUrl +  "&";
+//								}
+//								else
+//								{
+//									gridUrl = gridUrl +  "?";
+//								}
+//								gridUrl = gridUrl +  "projectID="+projectID;
+								
+//								if(relatedObjects.contains("?"))
+//								{
+//									relatedObjects = relatedObjects +  "&";
+//								}
+//								else
+//								{
+//									relatedObjects = relatedObjects +  "?";
+//								}
+//								relatedObjects = relatedObjects +  "projectID="+projectID;								
+								gridUrl = "/summaryList/"+companyID+"?projectID="+projectID;
+								relatedObjects = "?projectID="+projectID;
 								allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "project"+gridUrl);	
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									return "projectDetails";
 								}
@@ -209,12 +201,16 @@ public class CompanyController {
 						}	
 						else
 						{// Last item i.e //Home>Projects>5>Cycles>33>Projects
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}
 							newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
 							breadCrumb = breadCrumb + " "+company.getProjectsDisplayName();
 							
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
-							model.addAttribute("gridUrl", "project"+gridUrl);	
+							model.addAttribute("gridUrl", "project"+gridUrl);
 							model.addAttribute("relatedObjects", relatedObjects);	
 							
 							return "projects";	// straight to projects.html				
@@ -228,43 +224,31 @@ public class CompanyController {
 						if(x < (userPathArray.length - 1))
 						{// there is a details view in the userpath i.e //Home>Cycles>"CD 1">Projects
 							Long cycleID = Long.valueOf(userPathArray[x+1]);
-							try{
-								Cycle cycle = cycleService.getCycle(cycleID);
-
+							
+							Cycle cycle = cycleService.getCycle(cycleID);
+							if(cycle != null)
+							{
 								newuserpath = newuserpath + ">"+company.getCyclesDisplayName();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getCyclesDisplayName()+"</a> >";
 
 								newuserpath = newuserpath + ">"+cycle.getCycleID();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+cycle.getCycleName()+"</a> >";
-								if(gridUrl.contains("?"))
-								{
-									gridUrl = gridUrl +  "&";
-								}
-								else
-								{
-									gridUrl = gridUrl +  "?";
-								}
-								gridUrl = gridUrl +  "cycleID="+cycleID;
-								if(relatedObjects.contains("?"))
-								{
-									relatedObjects = relatedObjects +  "&";
-								}
-								else
-								{
-									relatedObjects = relatedObjects +  "?";
-								}
-								relatedObjects = relatedObjects + "cycleID="+cycleID;			
+	
+								gridUrl = "/summaryList/"+companyID+"?cycleID="+cycleID;
+								relatedObjects = "?cycleID="+cycleID;							
+										
 								allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "cycle"+gridUrl);	
+									model.addAttribute("gridUrl", "cycle"+gridUrl);
 									model.addAttribute("relatedObjects", relatedObjects);	
 									return "cycleDetails";
 								}
-							}catch(NoResultException nre)
+							}
+							else
 							{
 								model.addAttribute("userpath", userpath);
 								return "index";
@@ -272,7 +256,10 @@ public class CompanyController {
 						}	
 						else
 						{// Last item i.e //Home>Projects>5>Cycles>33>Projects
-
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}							
 							newuserpath = newuserpath + ">"+company.getCyclesDisplayName();
 							breadCrumb = breadCrumb + " "+company.getCyclesDisplayName();
 							model.addAttribute("userpath", newuserpath);
@@ -280,7 +267,6 @@ public class CompanyController {
 							model.addAttribute("gridUrl", "cycle"+gridUrl);
 							model.addAttribute("relatedObjects", relatedObjects);	
 							model.addAttribute("allCompanyProjects", allCompanyProjects);
-							//model.addAttribute("columnModel", cycleService.getColumnModelAndNames(companyID));							
 							if(allCompanyProjects == true)
 							{
 								model.addAttribute("projects", company.getProjects());
