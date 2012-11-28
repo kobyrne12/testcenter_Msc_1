@@ -9,6 +9,8 @@ package ie.cit.cloud.testcenter.respository.testplan;
  */
 
 import ie.cit.cloud.testcenter.model.Testplan;
+import ie.cit.cloud.testcenter.model.TestplanSection;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 
 public interface TestplanRepository {
@@ -67,5 +69,13 @@ public interface TestplanRepository {
      * @param id
      *            Testplan ID
      * @return Testplan for given name, null if Testplan was not found
-     */	
+     */
+
+	TestplanSection findTestplanSectionById(long testplanSectionID);
+
+	void createTestplanSection(TestplanSection testplanSection);
+
+	void updateTestplanSection(TestplanSection testplanSection);
+
+	void deleteTestplanSection(TestplanSection testplanSection);	
 }

@@ -24,9 +24,17 @@ import javax.validation.ConstraintViolationException;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.environment.EnvironmentService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.requirement.RequirementService;
+import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
+import ie.cit.cloud.testcenter.service.testplan.TestplanService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -49,7 +57,21 @@ public class CompanyController {
 	private ProjectService projectService;
 	@Autowired
 	private CycleService cycleService;
+	@Autowired
+	private TestcaseService testcaseService;
+	@Autowired
+	private TestplanService testplanService;
+	@Autowired
+	private TestrunService testrunService;
+	@Autowired
+	private DefectService defectService;
+	@Autowired
+	private RequirementService requirementService;
+	@Autowired
+	private EnvironmentService environmentService;
+	
 	private Company company;
+
 
 	@RequestMapping(value = {"companies"}, method = GET)
 	public String openCompanySelection(	@RequestParam(required = false) String displaymessage, Model model)	
@@ -58,7 +80,7 @@ public class CompanyController {
 			model.addAttribute("companyList", companyService.getAllCompanies());			
 			model.addAttribute("displaymessage", displaymessage);
 			return "companies";
-			
+
 		}catch(NoResultException nre)
 		{			
 			model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
@@ -83,14 +105,14 @@ public class CompanyController {
 			@RequestParam(value="userpath",defaultValue="") String userpath,
 			@RequestParam(required = false) String displaymessage, Model model)	
 	{		
-		
+
 		if(companyID_String.isEmpty())
 		{		
 			try{			
 				model.addAttribute("companyList", companyService.getAllCompanies());
 				model.addAttribute("displaymessage", displaymessage);
 				return "companies";
-				
+
 			}catch(NoResultException nre)
 			{	
 				model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
@@ -120,8 +142,9 @@ public class CompanyController {
 			else
 			{
 				System.out.println("HERE 2 :" + userpath);
-				Long projectID = null;
+
 				boolean allCompanyProjects = true;	
+				Long projectID = null;
 				//String relatedObjects = "";
 				//String gridUrl = "/summaryList/"+companyID;
 				String gridUrl = "";
@@ -150,7 +173,8 @@ public class CompanyController {
 					}
 					//   *********************************        Projects          ************************************
 					// id userpath contains project or projects 
-					if(userPathArray[x].equalsIgnoreCase(company.getProjectsDisplayName()) || userPathArray[x].equalsIgnoreCase(company.getProjectDisplayName()))
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getProjectsDisplayName().replace(" ","")) || 
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getProjectDisplayName().replace(" ","")))
 					{										
 						if(x < (userPathArray.length - 1))
 						{// there is a details view in the userpath i.e //Home>Projects>"5">Cycles
@@ -162,25 +186,25 @@ public class CompanyController {
 								newuserpath = newuserpath + ">"+project.getProjectID();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> >";
 
-//								if(gridUrl.contains("?"))
-//								{
-//									gridUrl = gridUrl +  "&";
-//								}
-//								else
-//								{
-//									gridUrl = gridUrl +  "?";
-//								}
-//								gridUrl = gridUrl +  "projectID="+projectID;
-								
-//								if(relatedObjects.contains("?"))
-//								{
-//									relatedObjects = relatedObjects +  "&";
-//								}
-//								else
-//								{
-//									relatedObjects = relatedObjects +  "?";
-//								}
-//								relatedObjects = relatedObjects +  "projectID="+projectID;								
+								//								if(gridUrl.contains("?"))
+								//								{
+								//									gridUrl = gridUrl +  "&";
+								//								}
+								//								else
+								//								{
+								//									gridUrl = gridUrl +  "?";
+								//								}
+								//								gridUrl = gridUrl +  "projectID="+projectID;
+
+								//								if(relatedObjects.contains("?"))
+								//								{
+								//									relatedObjects = relatedObjects +  "&";
+								//								}
+								//								else
+								//								{
+								//									relatedObjects = relatedObjects +  "?";
+								//								}
+								//								relatedObjects = relatedObjects +  "projectID="+projectID;								
 								gridUrl = "/summaryList/"+companyID+"?projectID="+projectID;
 								relatedObjects = "?projectID="+projectID;
 								allCompanyProjects = false;
@@ -207,24 +231,25 @@ public class CompanyController {
 							}
 							newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
 							breadCrumb = breadCrumb + " "+company.getProjectsDisplayName();
-							
+
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "project"+gridUrl);
 							model.addAttribute("relatedObjects", relatedObjects);	
-							
+
 							return "projects";	// straight to projects.html				
 						}
 					}
 					//   *********************************    END of projects     ************************************
 
 					//   *********************************        Cycles          ************************************
-					if(userPathArray[x].equalsIgnoreCase(company.getCyclesDisplayName()) || userPathArray[x].equalsIgnoreCase(company.getCycleDisplayName()))
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getCyclesDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getCycleDisplayName().replace(" ","")))
 					{										
 						if(x < (userPathArray.length - 1))
 						{// there is a details view in the userpath i.e //Home>Cycles>"CD 1">Projects
 							Long cycleID = Long.valueOf(userPathArray[x+1]);
-							
+
 							Cycle cycle = cycleService.getCycle(cycleID);
 							if(cycle != null)
 							{
@@ -233,11 +258,11 @@ public class CompanyController {
 
 								newuserpath = newuserpath + ">"+cycle.getCycleID();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+cycle.getCycleName()+"</a> >";
-	
+
 								gridUrl = "/summaryList/"+companyID+"?cycleID="+cycleID;
 								relatedObjects = "?cycleID="+cycleID;							
-										
-								allCompanyProjects = false;
+
+								//allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5								
@@ -281,6 +306,228 @@ public class CompanyController {
 						}
 					}
 					//   *********************************    END of Cycles     ************************************
+					//   *********************************        Testcases          ************************************
+					// id userpath contains project or projects 
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestcasesDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestcaseDisplayName().replace(" ","")))							
+					{										
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Tescases>"5">Cycles
+							Long testcaseID = Long.valueOf(userPathArray[x+1]);
+							try{
+								Testcase testcase = testcaseService.getTestcase(testcaseID);
+
+								newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestcasesDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+testcase.getTestcaseID();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testcase.getTestcaseName()+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?testcaseID="+testcaseID;
+								relatedObjects = "?testcaseID="+testcaseID;
+								//allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl","testcase"+gridUrl);	
+									model.addAttribute("relatedObjects", relatedObjects);	
+									return "testcaseDetails";
+								}
+							}catch(NoResultException nre)
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Cycles>33>testcases
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}
+							newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
+							breadCrumb = breadCrumb + " "+company.getTestcasesDisplayName();
+
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "testcase"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);	
+							model.addAttribute("allCompanyProjects", allCompanyProjects);
+							if(allCompanyProjects == true)
+							{
+								model.addAttribute("projects", company.getProjects());
+							}
+							else
+							{
+								Project project = projectService.getProject(projectID);
+								model.addAttribute("projectID", projectID);	
+								model.addAttribute("projects", project);
+							}				
+							return "testcases";	// straight to projects.html				
+						}
+					}
+					//   *********************************      END of Testcases        ************************************
+					//   *********************************        Testruns          ************************************
+					// id userpath contains project or projects 
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestrunsDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestrunDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase("all"+company.getTestrunsDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase("all"+company.getTestrunDisplayName().replace(" ","")))
+					{										
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Tesruns>"5">Cycles
+							Long testrunID = Long.valueOf(userPathArray[x+1]);
+							try{
+								Testrun testrun = testrunService.getTestrun(testrunID);
+
+								newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestrunsDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+testrun.getTestrunID();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testrun.getTestrunName()+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?testrunID="+testrunID;
+								relatedObjects = "?testrunID="+testrunID;
+								allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl","testrun"+gridUrl);	
+									model.addAttribute("relatedObjects", relatedObjects);	
+									return "testrunDetails";
+								}
+							}catch(NoResultException nre)
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Cycles>33>testruns
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}
+							newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
+							breadCrumb = breadCrumb + " "+company.getTestrunsDisplayName();
+
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "testrun"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);	
+
+							return "testruns";	// straight to projects.html				
+						}
+					}
+					//   *********************************      END of Testruns        ************************************
+					//   *********************************       required Testruns          ************************************
+					// id userpath contains project or projects 
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase("required"+company.getTestrunsDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase("required"+company.getTestrunDisplayName().replace(" ","")))
+					{		
+						model.addAttribute("required", "required");
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Tesruns>"5">Cycles
+							Long testrunID = Long.valueOf(userPathArray[x+1]);
+							try{
+								Testrun testrun = testrunService.getTestrun(testrunID);
+
+								newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestrunsDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+testrun.getTestrunID();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testrun.getTestrunName()+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?testrunID="+testrunID;
+								relatedObjects = "?testrunID="+testrunID;
+								allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl","testrun"+gridUrl);	
+									model.addAttribute("relatedObjects", relatedObjects);	
+									return "testrunDetails";
+								}
+							}catch(NoResultException nre)
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Cycles>33>testruns
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}
+							newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
+							breadCrumb = breadCrumb + " Required "+company.getTestrunsDisplayName();
+
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "testrun"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);	
+
+							return "testruns";	// straight to projects.html				
+						}
+					}
+					//   *********************************    END of  required Testruns     ************************************
+					//   *********************************       optional Testruns          ************************************
+					// id userpath contains project or projects 
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase("optional"+company.getTestrunsDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase("optional"+company.getTestrunDisplayName().replace(" ","")))
+					{		
+						model.addAttribute("required", "optional");
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Tesruns>"5">Cycles
+							Long testrunID = Long.valueOf(userPathArray[x+1]);
+							try{
+								Testrun testrun = testrunService.getTestrun(testrunID);
+
+								newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestrunsDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+testrun.getTestrunID();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testrun.getTestrunName()+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?testrunID="+testrunID;
+								relatedObjects = "?testrunID="+testrunID;
+								allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl","testrun"+gridUrl);	
+									model.addAttribute("relatedObjects", relatedObjects);	
+									return "testrunDetails";
+								}
+							}catch(NoResultException nre)
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Cycles>33>testruns
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}
+							newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
+							breadCrumb = breadCrumb + " Optional "+company.getTestrunsDisplayName();
+
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "testrun"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);	
+
+							return "testruns";	// straight to projects.html				
+						}
+					}
+					//   *********************************    END of  optional Testruns     ************************************
 
 					// TODO : complete rest  of related objects				
 				}

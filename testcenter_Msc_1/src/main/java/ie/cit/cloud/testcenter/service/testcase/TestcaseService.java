@@ -10,6 +10,7 @@ package ie.cit.cloud.testcenter.service.testcase;
 
 import java.util.Set;
 
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
@@ -18,6 +19,8 @@ import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
+import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
 
 /**
  * Peforms business operation on Test case 
@@ -123,5 +126,15 @@ public interface TestcaseService {
 	Set<TestcenterUser> getCascadedSnrTesters(long testcaseID);
 	Set<TestcenterUser> getCascadedDevelopers(long testcaseID);
 	Set<TestcenterUser> getCascadedSnrDevelopers(long testcaseID);
+	
+	ColModelAndNames getColumnModelAndNames(Long companyID);
+	
+	TestcaseSummaryList getGridTestcases(long companyID, String projectID,
+				String cycleID, String testplanID, String testcaseID,
+				String testrunID, String defectID, String requirementID,
+				String environmentID, String userID,String level,String stage,String required);
+
+	TestcaseSummary getTestcaseSummary(long companyID, Testcase testcase,
+			String level,String stage,String required);
 
 }

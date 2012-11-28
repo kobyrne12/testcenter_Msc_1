@@ -39,56 +39,56 @@ public class CycleAjaxController {
 	@Autowired
 	private CycleService cycleService;  
 
-	/**
-	 * Handles request for create a new Cycle
-	 */
-	@RequestMapping(value = "/newcycleAJAX", method = RequestMethod.POST)
-	public @ResponseBody String addNewCycleAJAX(
-			@RequestParam(value="projectID", required=true) long projectID,
-			@RequestParam(value="cycleName", required=true) String cycleName,
-			@RequestParam(value="cycleStartDate", required=true) String cycleStartDate,
-			@RequestParam(value="cycleEndDate", required=true) String cycleEndDate,			
-			Model model) 
-	{
-		System.out.println("************|||||||| ---: Received Ajax Request to create new Cycle");
-		boolean alreadyExists = false;
-		try
-		{  
-			Cycle cycle = cycleService.getCycleByName(cycleName);	
-			if (cycle.getProjectID() == projectID )
-			{				
-				alreadyExists = true;
-			}
-		}
-		catch(NoResultException e)
-		{   			
-			System.out.println("No Cycle Exists with that name "); 			
-		}
-		if(alreadyExists == false)
-		{
-			try{    
-				int projectPosition = cycleService.getMaxProjectPosNum(projectID) + 1;					
-				cycleService.addNewCycle(new Cycle(cycleName,projectID,1,projectPosition,"START_DATE","END_DATE"));
-				return "ok";   
-			}
-			catch(ConstraintViolationException CVE)
-			{   			
-				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 					
-				return CVE.getConstraintViolations().toString();
-			}			
-		}
-		else
-		{
-			return cycleName + " already Exists";	
-		}
-	}
-	
-	@RequestMapping(value = "/deletecycleAJAX", method = RequestMethod.POST )
-	@ResponseStatus(HttpStatus.NO_CONTENT)	
-	public void deleteCycle(@RequestParam(value="id", required=true) long cycleID) {
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% long cycleID = " +cycleID);
-		cycleService.remove(cycleID);
-	}	 
+//	/**
+//	 * Handles request for create a new Cycle
+//	 */
+//	@RequestMapping(value = "/newcycleAJAX", method = RequestMethod.POST)
+//	public @ResponseBody String addNewCycleAJAX(
+//			@RequestParam(value="projectID", required=true) long projectID,
+//			@RequestParam(value="cycleName", required=true) String cycleName,
+//			@RequestParam(value="cycleStartDate", required=true) String cycleStartDate,
+//			@RequestParam(value="cycleEndDate", required=true) String cycleEndDate,			
+//			Model model) 
+//	{
+//		System.out.println("************|||||||| ---: Received Ajax Request to create new Cycle");
+//		boolean alreadyExists = false;
+//		try
+//		{  
+//			Cycle cycle = cycleService.getCycleByName(cycleName);	
+//			if (cycle.getProjectID() == projectID )
+//			{				
+//				alreadyExists = true;
+//			}
+//		}
+//		catch(NoResultException e)
+//		{   			
+//			System.out.println("No Cycle Exists with that name "); 			
+//		}
+//		if(alreadyExists == false)
+//		{
+//			try{    
+//				int projectPosition = cycleService.getMaxProjectPosNum(projectID) + 1;					
+//				cycleService.addNewCycle(new Cycle(cycleName,projectID,1,projectPosition,"START_DATE","END_DATE"));
+//				return "ok";   
+//			}
+//			catch(ConstraintViolationException CVE)
+//			{   			
+//				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 					
+//				return CVE.getConstraintViolations().toString();
+//			}			
+//		}
+//		else
+//		{
+//			return cycleName + " already Exists";	
+//		}
+//	}
+//	
+//	@RequestMapping(value = "/deletecycleAJAX", method = RequestMethod.POST )
+//	@ResponseStatus(HttpStatus.NO_CONTENT)	
+//	public void deleteCycle(@RequestParam(value="id", required=true) long cycleID) {
+//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% long cycleID = " +cycleID);
+//		cycleService.remove(cycleID);
+//	}	 
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)

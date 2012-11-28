@@ -3,7 +3,9 @@ package ie.cit.cloud.testcenter.controller.json;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
+import javax.validation.ConstraintViolationException;
 
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.GridAttributes;
@@ -34,6 +37,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -142,7 +146,7 @@ public class ProjectJSONController {
     }     
   
     // Columns for project CHANGE companyID TO UserID
-    @RequestMapping(value = "/projectColsAndNames/{index}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ColsAndNames/{index}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody ColModelAndNames testArray(@PathVariable("index") long companyID) {		
     	return projectService.getColumnModelAndNames(companyID);    	
@@ -176,36 +180,27 @@ public class ProjectJSONController {
 	    	
 	    	relatedObjectSet.add(new RelatedObject(3,company.getCyclesDisplayName(),Integer.toString(projectSummary.getTotalCycles()), projectID, company.getCyclesDisplayName().replace(" ","")));
 	    	
-	    	relatedObjectSet.add(new RelatedObject(4,"All "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalAllTestruns()), projectID, "all"+company.getTestrunsDisplayName().replace(" ",""))); 
-	    	relatedObjectSet.add(new RelatedObject(5,"Required "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestruns()), projectID, "required"+company.getTestrunsDisplayName().replace(" ",""))); 
-	    	relatedObjectSet.add(new RelatedObject(6,"Optional "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestruns()), projectID, "optional"+company.getTestrunsDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(4,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalAllTestplans()), projectID,  company.getTestplansDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(5,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalAllTestcases()), projectID,  company.getTestcasesDisplayName().replace(" ","")));
+	    
+	    	relatedObjectSet.add(new RelatedObject(6,"All "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalAllTestruns()), projectID, "all"+company.getTestrunsDisplayName().replace(" ",""))); 
+	    	relatedObjectSet.add(new RelatedObject(7,"Required "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestruns()), projectID, "required"+company.getTestrunsDisplayName().replace(" ",""))); 
+	    	relatedObjectSet.add(new RelatedObject(8,"Optional "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestruns()), projectID, "optional"+company.getTestrunsDisplayName().replace(" ","")));
+	    		    	
+	    	relatedObjectSet.add(new RelatedObject(9,company.getEnvironmentsDisplayName(),Integer.toString(projectSummary.getTotalEnvironments()), projectID, company.getEnvironmentsDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(10,company.getRequirementsDisplayName(),Integer.toString(projectSummary.getTotalRequirements()), projectID, company.getRequirementsDisplayName().replace(" ","")));
 	    	
-	    	relatedObjectSet.add(new RelatedObject(7,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalAllTestcases()), projectID,  "all"+company.getTestcasesDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(10,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalAllTestplans()), projectID,  "all"+company.getTestplansDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Total",Integer.toString(projectSummary.getTotalDefects()), projectID, company.getDefectsDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(12,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(projectSummary.getTotalCurrentSev1s()), projectID,"sev1"));
+	    	relatedObjectSet.add(new RelatedObject(13,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(projectSummary.getTotalCurrentSev2s()), projectID,"sev2"));
+	    	relatedObjectSet.add(new RelatedObject(14,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(projectSummary.getTotalCurrentSev3s()), projectID,"sev3"));
+	    	relatedObjectSet.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(projectSummary.getTotalCurrentSev4s()), projectID,"sev4"));
 	    	
-//	    	
-//	    	relatedObjectSet.add(new RelatedObject(7,"All "+ company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalAllTestcases()), projectID,  "all"+company.getTestcasesDisplayName()));
-//	    	relatedObjectSet.add(new RelatedObject(8,"Required "+ company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestcases()), projectID, "required"+company.getTestcasesDisplayName()));
-//	    	relatedObjectSet.add(new RelatedObject(9,"Optional "+ company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestcases()), projectID, "optional"+company.getTestcasesDisplayName()));
-//	    	
-//	    	relatedObjectSet.add(new RelatedObject(10,"All "+ company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalAllTestplans()), projectID,  "all"+company.getTestplansDisplayName()));
-//	    	relatedObjectSet.add(new RelatedObject(11,"Required "+ company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestplans()), projectID, "required"+company.getTestplansDisplayName()));
-//	    	relatedObjectSet.add(new RelatedObject(12,"Optional "+ company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalOptionalTestplans()), projectID, "optional"+company.getTestplansDisplayName()));
-//	 		    	
-	    	relatedObjectSet.add(new RelatedObject(13,company.getTestersDisplayName(),Integer.toString(projectSummary.getTotalTesters()), projectID, company.getTestersDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(14,company.getSeniorTestersDisplayName(),Integer.toString(projectSummary.getTotalSeniorTesters()), projectID, company.getSeniorTestersDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(15,company.getDevelopersDisplayName(),Integer.toString(projectSummary.getTotalDevelopers()), projectID, company.getDevelopersDisplayName().replace(" ",""))); 	
-	    	relatedObjectSet.add(new RelatedObject(16,company.getSeniordevelopersDisplayName(),Integer.toString(projectSummary.getTotalSeniorDevelopers()), projectID, company.getSeniordevelopersDisplayName().replace(" ","")));
-	    	
-	    	relatedObjectSet.add(new RelatedObject(17,company.getEnvironmentsDisplayName(),Integer.toString(projectSummary.getTotalEnvironments()), projectID, company.getEnvironmentsDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(18,company.getRequirementsDisplayName(),Integer.toString(projectSummary.getTotalRequirements()), projectID, company.getRequirementsDisplayName().replace(" ","")));
-	    	
-	    	relatedObjectSet.add(new RelatedObject(19,company.getDefectsDisplayName()+"-Total",Integer.toString(projectSummary.getTotalDefects()), projectID, company.getDefectsDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(20,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(projectSummary.getTotalCurrentSev1s()), projectID,"sev1"));
-	    	relatedObjectSet.add(new RelatedObject(21,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(projectSummary.getTotalCurrentSev2s()), projectID,"sev2"));
-	    	relatedObjectSet.add(new RelatedObject(22,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(projectSummary.getTotalCurrentSev3s()), projectID,"sev3"));
-	    	relatedObjectSet.add(new RelatedObject(23,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(projectSummary.getTotalCurrentSev4s()), projectID,"sev4"));
-	        			
+	    	relatedObjectSet.add(new RelatedObject(16,company.getTestersDisplayName(),Integer.toString(projectSummary.getTotalTesters()), projectID, company.getTestersDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(17,company.getSeniorTestersDisplayName(),Integer.toString(projectSummary.getTotalSeniorTesters()), projectID, company.getSeniorTestersDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(18,company.getDevelopersDisplayName(),Integer.toString(projectSummary.getTotalDevelopers()), projectID, company.getDevelopersDisplayName().replace(" ",""))); 	
+	    	relatedObjectSet.add(new RelatedObject(19,company.getSeniordevelopersDisplayName(),Integer.toString(projectSummary.getTotalSeniorDevelopers()), projectID, company.getSeniordevelopersDisplayName().replace(" ","")));
+	    				
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 			
@@ -216,7 +211,58 @@ public class ProjectJSONController {
 			return relatedObjectList;
 		}    	
     } 
-    
+    /**
+	 * Handles request for create a new project 
+	 */
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public @ResponseBody String addNewProjectAJAX(
+			@RequestParam(value="companyID", required=true) long companyID,
+			@RequestParam(value="projectName", required=true) String projectName,
+			@RequestParam(value="regression", required=true) int regression,
+			@RequestParam(value="newFeature", required=true) int newFeature,
+			@RequestParam(value="minSev1", required=true) int minSev1,
+			@RequestParam(value="minSev2", required=true) int minSev2,
+			@RequestParam(value="minSev3", required=true) int minSev3,
+			@RequestParam(value="minSev4", required=true) int minSev4,
+			Model model) 
+	{
+		boolean alreadyExists = false;
+		try
+		{  
+			Project project = projectService.getProjectByName(projectName);		
+			if(project.getCompanyID() == companyID )
+			{				
+				alreadyExists = true;
+			}
+		}
+		catch(NoResultException e)
+		{   			
+			System.out.println("No Cycle Exists with that name "); 			
+		}
+		if(alreadyExists == false)
+		{
+			try{    					
+				projectService.addNewProject(new Project(companyID,projectName,0,regression,newFeature,minSev1,minSev2,minSev3,minSev4,GetDateNow(),getCurrentUser()));
+				return "ok";   
+
+			}
+			catch(ConstraintViolationException CVE)
+			{   			
+				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
+				return CVE.getConstraintViolations().toString();
+			}		
+		}
+		else
+		{
+			return projectName + " already Exists";	 
+		}		
+	}
+	@RequestMapping(value = "/delete", method = RequestMethod.POST )
+	@ResponseStatus(HttpStatus.NO_CONTENT)	
+	public void deleteProject(@RequestParam(value="id", required=true) long projectID) {
+		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE projectID = " +projectID);
+		projectService.remove(projectID);
+	}	
     // Project summary
     @RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -242,4 +288,19 @@ public class ProjectJSONController {
     public void emptyResult() {
 	// no code needed
     }
+    public String GetDateNow()
+	{ 	 
+		Calendar currentDate = Calendar.getInstance();
+		SimpleDateFormat formatter= new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss");
+		String dateNow = formatter.format(currentDate.getTime()); 
+		//System.out.println("*********** Now the currentDate is :=>  " + currentDate);
+		System.out.println("*********** Now the dateNow is :=>  " + dateNow);
+		return dateNow;
+	}
+
+	private String getCurrentUser() 
+	{
+		System.out.println("*********** Current User is :=>  " + SecurityContextHolder.getContext().getAuthentication().getName());
+		return SecurityContextHolder.getContext().getAuthentication().getName();
+	}
 }

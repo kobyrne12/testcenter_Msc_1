@@ -18,6 +18,7 @@ import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
+import ie.cit.cloud.testcenter.model.TestplanSection;
 import ie.cit.cloud.testcenter.model.Testrun;
 
 /**
@@ -27,13 +28,18 @@ public interface TestplanService {
  
 	void addNewTestplan(Testplan testplan);
 
-    Testplan getTestplan(long testplanID);   
+    Testplan getTestplan(long testplanID);     
     
-    Testplan getTestplanByName(String testplanName);
+    Testplan getTestplanByName(String testplanName);    
     
-    void update(Testplan testplan);
+    void update(Testplan testplan);    
     
     void remove(long testplanID);  
+    
+    TestplanSection getTestplanSection(long testplanSectionID);
+    void addNewTestplanSection(TestplanSection testplanSection);
+    void updateTestplanSection(TestplanSection testplanSection);    
+    void removeTestplanSection(long testplanSectionID);  
     ///////////////////////////
     /**
 	 * Returns a collection of All Testcases for a test plan

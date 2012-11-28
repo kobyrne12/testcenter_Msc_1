@@ -12,6 +12,7 @@ import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testplan;
+import ie.cit.cloud.testcenter.model.TestplanSection;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.respository.testplan.TestplanRepository;
 
@@ -69,6 +70,26 @@ public class HibernateTestplanRespository implements TestplanRepository {
 		Query query = em.createQuery("from Testplan where testplanName=:testplanName");
 		query.setParameter("testplanName", testplanName);
 		return (Testplan) query.getSingleResult();
+	}
+
+	public TestplanSection findTestplanSectionById(long testplanSectionID) {
+		Query query = em.createQuery("from TestplanSection where testplanSectionID=:testplanSectionID");
+		query.setParameter("testplanSectionID", testplanSectionID);
+		return (TestplanSection) query.getSingleResult();	
+	}
+
+	public void createTestplanSection(TestplanSection testplanSection) {
+		em.persist(testplanSection);		
+	}
+
+	public void updateTestplanSection(TestplanSection testplanSection) {
+		em.merge(testplanSection);
+		
+	}
+
+	public void deleteTestplanSection(TestplanSection testplanSection) {
+		em.remove(testplanSection);
+		
 	}
 
 

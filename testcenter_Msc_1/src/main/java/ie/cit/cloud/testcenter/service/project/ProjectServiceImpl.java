@@ -361,9 +361,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Requirement projects
 		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
+			if(requirementService.getProjects(Long.valueOf(requirementID).longValue()) != null)
 			{
-				projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
+				projects.retainAll(requirementService.getProjects(Long.valueOf(requirementID).longValue()));				
 			}				
 		}
 		if(projects == null || projects.isEmpty()){return null;}
@@ -371,9 +371,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Environment projects
 		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(environmentService.getProjects(Long.valueOf(defectID).longValue()) != null)
+			if(environmentService.getProjects(Long.valueOf(environmentID).longValue()) != null)
 			{
-				projects.retainAll(environmentService.getProjects(Long.valueOf(defectID).longValue()));				
+				projects.retainAll(environmentService.getProjects(Long.valueOf(environmentID).longValue()));				
 			}			
 		}
 		if(projects == null || projects.isEmpty()){return null;}

@@ -30,6 +30,7 @@ import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.environment.EnvironmentService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testplan.TestplanService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
@@ -67,6 +68,8 @@ public class CycleServiceImpl implements CycleService {
 	DefectService defectService;	
 	@Autowired
 	EnvironmentService environmentService;
+	@Autowired
+	RequirementService requirementService;
 	@Autowired
 	TestrunService testrunService;	
 	@Autowired
@@ -271,9 +274,9 @@ public class CycleServiceImpl implements CycleService {
 		// Retain Requirement cycles
 		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(defectService.getCascadedCycles(Long.valueOf(defectID).longValue()) != null)
+			if(requirementService.getCycles(Long.valueOf(requirementID).longValue()) != null)
 			{
-				cycles.retainAll(defectService.getCascadedCycles(Long.valueOf(defectID).longValue()));				
+				cycles.retainAll(requirementService.getCycles(Long.valueOf(requirementID).longValue()));				
 			}				
 		}
 		if(cycles == null || cycles.isEmpty()){return null;}
@@ -281,9 +284,9 @@ public class CycleServiceImpl implements CycleService {
 		// Retain Environment cycles
 		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(environmentService.getCycles(Long.valueOf(defectID).longValue()) != null)
+			if(environmentService.getCycles(Long.valueOf(environmentID).longValue()) != null)
 			{
-				cycles.retainAll(environmentService.getCycles(Long.valueOf(defectID).longValue()));				
+				cycles.retainAll(environmentService.getCycles(Long.valueOf(environmentID).longValue()));				
 			}			
 		}
 		if(cycles == null || cycles.isEmpty()){return null;}

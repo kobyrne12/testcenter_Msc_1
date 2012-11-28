@@ -38,52 +38,7 @@ public class ProjectAjaxController {
 	@Autowired
 	private ProjectService projectService;  
 
-	/**
-	 * Handles request for create a new project 
-	 */
-	@RequestMapping(value = "/newprojectAJAX", method = RequestMethod.POST)
-	public @ResponseBody String addNewProjectAJAX(
-			@RequestParam(value="companyID", required=true) long companyID,
-			@RequestParam(value="projectName", required=true) String projectName,
-			@RequestParam(value="regression", required=true) int regression,
-			@RequestParam(value="newFeature", required=true) int newFeature,
-			@RequestParam(value="minSev1", required=true) int minSev1,
-			@RequestParam(value="minSev2", required=true) int minSev2,
-			@RequestParam(value="minSev3", required=true) int minSev3,
-			@RequestParam(value="minSev4", required=true) int minSev4,
-			Model model) 
-	{
-		boolean alreadyExists = false;
-		try
-		{  
-			Project project = projectService.getProjectByName(projectName);		
-			if(project.getCompanyID() == companyID )
-			{				
-				alreadyExists = true;
-			}
-		}
-		catch(NoResultException e)
-		{   			
-			System.out.println("No Cycle Exists with that name "); 			
-		}
-		if(alreadyExists == false)
-		{
-			try{    					
-				projectService.addNewProject(new Project(companyID,projectName,0,regression,newFeature,minSev1,minSev2,minSev3,minSev4,GetDateNow(),getCurrentUser()));
-				return "ok";   
-
-			}
-			catch(ConstraintViolationException CVE)
-			{   			
-				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
-				return CVE.getConstraintViolations().toString();
-			}		
-		}
-		else
-		{
-			return projectName + " already Exists";	 
-		}		
-	}
+	
 	/**
 	 * Handles empty Result 
 	 */

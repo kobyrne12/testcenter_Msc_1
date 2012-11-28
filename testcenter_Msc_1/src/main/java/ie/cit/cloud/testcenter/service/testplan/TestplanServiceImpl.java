@@ -8,7 +8,6 @@ package ie.cit.cloud.testcenter.service.testplan;
  *
  */
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +19,7 @@ import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
+import ie.cit.cloud.testcenter.model.TestplanSection;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.respository.testplan.TestplanRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
@@ -83,6 +83,31 @@ public class TestplanServiceImpl implements TestplanService {
 	//  @Secured("ROLE_ADMIN")
 	public void remove(long testplanID) {
 		testplanRepo.delete(getTestplan(testplanID));
+	}
+	
+	public TestplanSection getTestplanSection(long testplanSectionID) {
+		try{
+			return testplanRepo.findTestplanSectionById(testplanSectionID);						
+		}
+		catch(NoResultException nre)			
+		{	
+			return null;
+		}	
+	}
+
+	public void addNewTestplanSection(TestplanSection testplanSection) {
+		testplanRepo.createTestplanSection(testplanSection);	
+		
+	}
+
+	public void updateTestplanSection(TestplanSection testplanSection) {
+		testplanRepo.updateTestplanSection(testplanSection);
+		
+	}
+
+	public void removeTestplanSection(long testplanSectionID) {
+		testplanRepo.deleteTestplanSection(getTestplanSection(testplanSectionID));
+		
 	}
 	////////////////
 
@@ -384,5 +409,7 @@ public class TestplanServiceImpl implements TestplanService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 }

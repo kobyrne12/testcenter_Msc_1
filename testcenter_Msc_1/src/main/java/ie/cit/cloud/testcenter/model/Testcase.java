@@ -8,6 +8,7 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +22,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
@@ -85,7 +88,18 @@ public class Testcase {
 	private String tester;
 	@Basic
 	private String seniorTester;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "creationDate", nullable = false, length = 10) 
+	private Date creationDate;		
+	@Temporal(TemporalType.DATE)
+	@Column(name = "lastModifiedDate", nullable = false, length = 10) 
+	private Date lastModifiedDate;
 
+	@Basic    
+	private long createdByUserID;
+	@Basic    
+	private long lastModifiedByUserID;
 	
 	public Testcase() {	
 	}
@@ -370,6 +384,62 @@ public class Testcase {
 	 */
 	public void setProjects(Set<Project> projects) {
 		this.projects = projects;
+	}
+
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	/**
+	 * @return the lastModifiedDate
+	 */
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	/**
+	 * @param lastModifiedDate the lastModifiedDate to set
+	 */
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	/**
+	 * @return the createdByUserID
+	 */
+	public long getCreatedByUserID() {
+		return createdByUserID;
+	}
+
+	/**
+	 * @param createdByUserID the createdByUserID to set
+	 */
+	public void setCreatedByUserID(long createdByUserID) {
+		this.createdByUserID = createdByUserID;
+	}
+
+	/**
+	 * @return the lastModifiedByUserID
+	 */
+	public long getLastModifiedByUserID() {
+		return lastModifiedByUserID;
+	}
+
+	/**
+	 * @param lastModifiedByUserID the lastModifiedByUserID to set
+	 */
+	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+		this.lastModifiedByUserID = lastModifiedByUserID;
 	}
 
 
