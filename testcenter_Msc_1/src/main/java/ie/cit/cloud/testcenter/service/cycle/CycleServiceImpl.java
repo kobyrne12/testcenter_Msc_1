@@ -662,11 +662,9 @@ public class CycleServiceImpl implements CycleService {
 				else
 				{
 					for(final Testrun testrun : cycle.getTestruns())
-					{
-						if(testrun.getLevel().equalsIgnoreCase(level))
-						{
-							allTestruns.add(testrun);
-						}						
+					{						
+						allTestruns.add(testrun);
+												
 					}
 				}
 

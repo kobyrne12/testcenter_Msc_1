@@ -234,7 +234,7 @@ public class CompanyJSONController {
     {
     	String testcaseName = "TestCase_"+companyID+"_"+testcaseID;
     	Project project = projectService.getProject(projectID);
-    	Testcase testcase = new Testcase(companyID,testcaseName,"REGRESSION","APPROVED",
+    	Testcase testcase = new Testcase(companyID,testcaseName,null,"APPROVED",
     			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER");	
     	testcaseService.addNewTestcase(testcase);	
     	project.getTestcases().add(testcase);     

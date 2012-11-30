@@ -21,6 +21,7 @@ import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.TestrunLevel;
 import ie.cit.cloud.testcenter.respository.testrun.TestrunRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
@@ -91,6 +92,39 @@ public class TestrunServiceImpl implements TestrunService {
 	//  @Secured("ROLE_ADMIN")
 	public void remove(long testrunID) {
 		testrunRepo.delete(getTestrun(testrunID));
+	}
+	
+	public void addNewTestrunLevel(TestrunLevel testrunLevel) {
+		testrunRepo.createTestrunLevel(testrunLevel);	
+		
+	}
+
+	public TestrunLevel getTestrunLevel(long testrunLevelID) {
+		try{
+			return testrunRepo.findTestrunLevelById(testrunLevelID);					
+		}
+		catch(NoResultException nre)			
+		{	
+			return null;
+		}			
+	}
+	public TestrunLevel getTestrunLevelByName(String testrunLevelName) {
+		try{
+			return testrunRepo.findTestrunLevelByName(testrunLevelName);					
+		}
+		catch(NoResultException nre)			
+		{	
+			return null;
+		}			
+	}
+
+	public void updateTestrunLevel(TestrunLevel testrunLevel) {
+		testrunRepo.updateTestrunLevel(testrunLevel);
+	}  
+	
+	public void removeTestrunLevel(long testrunLevelID) {
+		testrunRepo.deleteTestrunLevel(getTestrunLevel(testrunLevelID));
+		
 	}
 	/**
 	 * Returns true if this testruns cycle is the latest cycle for a project 
@@ -307,5 +341,7 @@ public class TestrunServiceImpl implements TestrunService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }

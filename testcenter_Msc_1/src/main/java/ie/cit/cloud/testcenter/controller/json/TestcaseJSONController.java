@@ -265,7 +265,7 @@ public class TestcaseJSONController {
 		if(alreadyExists == false)
 		{
 			try{    		    	
-		    	Testcase testcase = new Testcase(companyID,testcaseName,"REGRESSION","APPROVED",
+		    	Testcase testcase = new Testcase(companyID,testcaseName,null,"APPROVED",
 		    			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER");
 		    	try
 		    	{

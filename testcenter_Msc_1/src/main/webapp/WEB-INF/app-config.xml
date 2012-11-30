@@ -18,16 +18,15 @@
 		<context:exclude-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
-
 	
-	<!--<jdbc:embedded-database id="dataSource" type="H2" /> -->
-	 <cloud:data-source id="dataSource" />
+	 <jdbc:embedded-database id="dataSource" type="H2" /> 
+	<!--<cloud:data-source id="dataSource" />
 
 	<bean id="org.h2.tools.Server-WebServer" class="org.h2.tools.Server"
 		factory-method="createWebServer" depends-on="dataSource" init-method="start"
 		lazy-init="false" destroy-method="stop">
 		<constructor-arg value="-web,-webPort,8782" />
-	</bean>
+	</bean>-->
 
 	<aop:aspectj-autoproxy />
 	

@@ -22,6 +22,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -68,8 +70,11 @@ public class Testcase {
 	@Basic
 	private int testplanOrderNum;
 
-	@Basic
-	private String level; // Regression/New Feature
+
+	@OneToOne(fetch=FetchType.EAGER)
+	@PrimaryKeyJoinColumn
+	private TestrunLevel level; 
+	
 	@Basic
 	private String stage; // Draft/Ready For Review / Approved
 	@Basic
@@ -116,7 +121,7 @@ public class Testcase {
 	 * @param tester
 	 * @param seniorTester
 	 */	
-	public Testcase(long companyID, String testcaseName,String level, String stage,
+	public Testcase(long companyID, String testcaseName,TestrunLevel level, String stage,
 			String testcaseSummary,	String testcasePreCondition, String testcaseSteps,
 			String testcasePassCondition,String tester, String seniorTester)
 	{
@@ -140,7 +145,7 @@ public class Testcase {
 	 * @param tester
 	 * @param seniorTester
 	 */
-	public Testcase(long companyID, String testcaseName, String level,
+	public Testcase(long companyID, String testcaseName, TestrunLevel level,
 			String stage, Double estimatedTime, String testcaseSummary,
 			String testcasePreCondition, String testcaseSteps,
 			String testcasePassCondition, String tester, String seniorTester) {
@@ -307,14 +312,14 @@ public class Testcase {
 	/**
 	 * @return the level
 	 */
-	public String getLevel() {
+	public TestrunLevel getLevel() {
 		return level;
 	}
 
 	/**
 	 * @param level the level to set
 	 */
-	public void setLevel(String level) {
+	public void setLevel(TestrunLevel level) {
 		this.level = level;
 	}
 

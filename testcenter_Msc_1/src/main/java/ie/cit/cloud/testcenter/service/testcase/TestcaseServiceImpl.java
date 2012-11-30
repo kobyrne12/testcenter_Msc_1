@@ -740,7 +740,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 			testcaseSummary.setTestplanName("NONE");
 		}
 		testcaseSummary.setTotalProjects(getProjectsCount(testcaseID));
-		testcaseSummary.setLevel(testcase.getLevel());
+		testcaseSummary.setLevel(testcase.getLevel().getTestrunLevelName());
 		testcaseSummary.setStage(testcase.getStage());
 		testcaseSummary.setEstimatedTime(testcase.getEstimatedTime());
 		

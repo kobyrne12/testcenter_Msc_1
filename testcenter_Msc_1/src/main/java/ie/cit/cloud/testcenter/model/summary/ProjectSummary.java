@@ -3,65 +3,269 @@
  */
 package ie.cit.cloud.testcenter.model.summary;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import javax.persistence.NoResultException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
+
 /**
  * @author byrnek1
  *
  */
 
-public class ProjectSummary {	
-	
-    private long projectID;	   
-    private String projectName;  
-    private String parentProjectName;
-    private int childProjects;
-    private int regressionRequiredPercent;
-    private int regressionCurrentPercent;
-    private int newFeatureRequiredPercent;
-    private int newFeatureCurrentPercent;
-    private int sanityRequiredPercent;
-    private int sanityCurrentPercent;
-    private int totalAllowedSev1s;
-    private int totalCurrentSev1s;
-    private int totalAllowedSev2s;
-    private int totalCurrentSev2s;
-    private int totalAllowedSev3s;
-    private int totalCurrentSev3s;
-    private int totalAllowedSev4s;  
-    private int totalCurrentSev4s;   
-    private int totalDefects;  
-    private long companyID;
-    private int totalCycles;
-    private int totalEnvironments;
-    private int totalRequirements;
-    private int totalAllTestruns;
-    private int totalRequiredTestruns;
-    private int totalOptionalTestruns;
-    private int totalAllTestcases;
-    private int totalRequiredTestcases;
-    private int totalOptionalTestcases;
-    private int totalAllTestplans;
-    private int totalRequiredTestplans;
-    private int totalOptionalTestplans;    
-    private int totalTesters;
-    private int totalSeniorTesters;
-    private int totalDevelopers;
-    private int totalSeniorDevelopers;
-    private String lastModifiedBy;
-    private String lastModifiedDate;    
-    private String createdBy;
-    private String creationDate; 
-    
-    private String customObject1;
-    private String customObject2;
-    private String customObject3;
-    private String customObject4;
-    private String customObject5;
-   // private int level = 0; 			
-  //  private Boolean isLeaf = false;
-    
-    public ProjectSummary() {	
-    }
+public class ProjectSummary 
+{			
+	@Autowired
+	ProjectService projectService;	
+	@Autowired
+	TestrunService testrunService;
+	@Autowired
+	DefectService defectService;	
 
+
+	private Set<Project> cascadedProjects = new LinkedHashSet<Project>();
+	private Set<Cycle> cascadedCycles = new LinkedHashSet<Cycle>();
+	private Set<Testrun> cascadedTestruns = new LinkedHashSet<Testrun>();
+	private Set<Testrun> requiredTestruns = new LinkedHashSet<Testrun>();
+	private Set<Defect> defects = new LinkedHashSet<Defect>();
+
+	///////////////////////////////////
+
+	private Project project = new Project();	
+
+	private long projectID;	    
+	private String projectName;  
+	private String parentProjectName;
+
+	private long companyID = -1;
+	private int totalChildProjects = -1;
+
+	private String levelName = null;
+
+	private int requiredPercent = -1;
+	private int currentPercent = -1;
+
+	private int totalAllowedSev1s = -1;
+	private int totalCurrentSev1s = -1;
+	private int totalAllowedSev2s = -1;
+	private int totalCurrentSev2s = -1;
+	private int totalAllowedSev3s = -1;
+	private int totalCurrentSev3s = -1;
+	private int totalAllowedSev4s = -1; 
+	private int totalCurrentSev4s = -1;   
+	private int totalDefects = -1;
+
+	private int totalCycles = -1;
+	private int totalEnvironments = -1;
+	private int totalRequirements = -1;
+	private int totalAllTestruns = -1;
+	private int totalRequiredTestruns = -1;
+	private int totalOptionalTestruns = -1;
+	private int totalTestcases = -1;  
+	private int totalTestplans = -1;
+
+	private int totalTesters = -1;
+	private int totalSeniorTesters = -1;
+	private int totalDevelopers = -1;
+	private int totalSeniorDevelopers = -1;
+
+	private String lastModifiedBy;
+	private String lastModifiedDate;    
+	private String createdBy;
+	private String creationDate; 
+
+	private String customObject1;
+	private String customObject2;
+	private String customObject3;
+	private String customObject4;
+	private String customObject5;
+
+	@Autowired
+	public ProjectSummary()
+	{
+
+	}
+
+	//    public ProjectSummary(Long projectID)
+	//    {
+	//    	this.projectID = projectID;      	
+	//    }
+	//    public ProjectSummary(Project project)
+	//    {
+	//    	this.projectID = project.getProjectID();    	
+	//    	this.project = project;     	
+	//    }
+	@Autowired
+	public ProjectSummary(Project project, String levelName)
+	{
+		this.projectID = project.getProjectID();
+		if(levelName != null)
+		{
+			this.levelName = levelName;
+		}
+		this.project = project;  	
+		//setCascadedProjects();
+	}
+	/**
+	 * @return the cascadedProjects
+	 */
+	private Set<Project> getCascadedProjects() 
+	{
+		if(cascadedProjects == null || cascadedProjects.isEmpty())
+		{		
+			if(projectService.getParentAndChildProjects(projectID) != null && 
+					!projectService.getParentAndChildProjects(projectID).isEmpty())
+			{
+			cascadedProjects = projectService.getParentAndChildProjects(projectID);		
+			}
+		}	
+		return cascadedProjects;
+	}
+
+	/**
+	 * @param cascadedProjects the cascadedProjects to set
+	 */
+	private void setCascadedProjects(Set<Project> cascadedProjects) 
+	{		
+		this.cascadedProjects = cascadedProjects;
+	}
+
+	/**
+	 * @return the cascadedCycles
+	 */
+	private Set<Cycle> getCascadedCycles() 
+	{		
+		if(cascadedCycles == null || cascadedCycles.isEmpty())
+		{		
+			if(projectService.getParentAndChildCycles(projectID) != null && 
+					!projectService.getParentAndChildCycles(projectID).isEmpty())
+			{
+			cascadedCycles = projectService.getParentAndChildCycles(projectID);  
+			}
+		}	
+		return cascadedCycles;
+	}
+	/**
+	 * @param cascadedCycles the cascadedCycles to set
+	 */
+	private void setCascadedCycles(Set<Cycle> cascadedCycles) {
+		this.cascadedCycles = cascadedCycles;
+	}
+
+	/**
+	 * @return the cascadedTestruns
+	 */
+	private Set<Testrun> getCascadedTestruns() 
+	{
+		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
+		{		
+			if(projectService.getCascadedAllTestRuns(projectID) != null && 
+					!projectService.getCascadedAllTestRuns(projectID).isEmpty())
+			{
+				cascadedTestruns = projectService.getCascadedAllTestRuns(projectID);  		
+			}
+		}
+		return cascadedTestruns;
+	}
+
+	/**
+	 * @param cascadedTestruns the cascadedTestruns to set
+	 */
+	private void setCascadedTestruns(Set<Testrun> cascadedTestruns) {
+		this.cascadedTestruns = cascadedTestruns;
+	}
+
+	/**
+	 * @return the requiredTestruns
+	 */
+	private Set<Testrun> getRequiredTestruns() 
+	{
+		if(requiredTestruns == null || requiredTestruns.isEmpty() )
+		{
+			if(cascadedTestruns == null || requiredTestruns.isEmpty())
+			{
+				cascadedTestruns = getCascadedTestruns(); 
+			}
+			if(cascadedTestruns != null && !cascadedTestruns.isEmpty())
+			{			
+				for(final Testrun testrun : cascadedTestruns)
+				{
+					if(testrunService.isRequired(testrun.getTestrunID()))
+					{
+						this.requiredTestruns.add(testrun);
+					}
+				}			
+
+			}
+		}
+		return requiredTestruns;
+	}
+
+	/**
+	 * @param requiredTestruns the requiredTestruns to set
+	 */
+	private void setRequiredTestruns(Set<Testrun> requiredTestruns) {
+		this.requiredTestruns = requiredTestruns;
+	}
+
+	/**
+	 * @return the defects
+	 */
+	private Set<Defect> getDefects() 
+	{
+		if(defects == null || defects.isEmpty())
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
+					{
+						defects.addAll(testrun.getDefects());
+					}					
+				}				
+			}
+
+		}	
+		return defects;
+	}
+
+	/**
+	 * @param defects the defects to set
+	 */
+	private void setDefects(Set<Defect> defects) {
+		this.defects = defects;
+	}
+
+	/**
+	 * @return the project
+	 */
+	private Project getProject() {
+		return project;
+	}
+
+	/**
+	 * @param project the project to set
+	 */
+	private void setProject(Project project) {
+		this.project = project;
+	}
 	/**
 	 * @return the projectID
 	 */
@@ -79,7 +283,15 @@ public class ProjectSummary {
 	/**
 	 * @return the projectName
 	 */
-	public String getProjectName() {
+	public String getProjectName() 
+	{
+		if(projectName == null)
+		{
+			if(project != null)
+			{
+				projectName = project.getProjectName();
+			}
+		}
 		return projectName;
 	}
 
@@ -93,7 +305,15 @@ public class ProjectSummary {
 	/**
 	 * @return the parentProjectName
 	 */
-	public String getParentProjectName() {
+	public String getParentProjectName() 
+	{
+		if(parentProjectName == null)
+		{
+			if(project.isParent())
+			{
+				parentProjectName = projectService.getProject(project.getParentID()).getProjectName();
+			}
+		}
 		return parentProjectName;
 	}
 
@@ -105,108 +325,134 @@ public class ProjectSummary {
 	}
 
 	/**
-	 * @return the childProjects
+	 * @return the companyID
 	 */
-	public int getChildProjects() {
-		return childProjects;
+	public long getCompanyID() 
+	{
+		if(companyID == -1)
+		{
+			companyID = project.getCompanyID();
+		}
+		return companyID;
 	}
 
 	/**
-	 * @param childProjects the childProjects to set
+	 * @param companyID the companyID to set
 	 */
-	public void setChildProjects(int childProjects) {
-		this.childProjects = childProjects;
+	public void setCompanyID(long companyID) {
+		this.companyID = companyID;
+	}
+
+
+	/**
+	 * @return the totalChildProjects
+	 */
+	public int getTotalChildProjects() 
+	{		
+		int count = 0;
+		if(totalChildProjects == -1)
+		{		
+			if(project.isParent())
+			{   
+				try{count = projectService.getAllChildProjects(projectID).size();}
+				catch(NoResultException nre){}
+			}
+		}
+		return count;
 	}
 
 	/**
-	 * @return the regressionRequiredPercent
+	 * @param totalChildProjects the totalChildProjects to set
 	 */
-	public int getRegressionRequiredPercent() {
-		return regressionRequiredPercent;
+	public void setTotalChildProjects(int totalChildProjects) {
+		this.totalChildProjects = totalChildProjects;
 	}
 
 	/**
-	 * @param regressionRequiredPercent the regressionRequiredPercent to set
+	 * @return the level
 	 */
-	public void setRegressionRequiredPercent(int regressionRequiredPercent) {
-		this.regressionRequiredPercent = regressionRequiredPercent;
+	public String getLevelName() {
+		return levelName;
 	}
 
 	/**
-	 * @return the regressionCurrentPercent
+	 * @param level the level to set
 	 */
-	public int getRegressionCurrentPercent() {
-		return regressionCurrentPercent;
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
 	}
 
 	/**
-	 * @param regressionCurrentPercent the regressionCurrentPercent to set
+	 * @return the requiredPercent
 	 */
-	public void setRegressionCurrentPercent(int regressionCurrentPercent) {
-		this.regressionCurrentPercent = regressionCurrentPercent;
+	public int getRequiredPercent() 
+	{	
+		int count = 94;
+		if(requiredPercent == -1)
+		{					
+			if(levelName != null)
+			{
+				try{
+					count = testrunService.getTestrunLevelByName(levelName).getTestrunLevelRequiredPercent();
+				}
+				catch(NoResultException nre){}
+			}		
+		}		
+		return count;
 	}
 
 	/**
-	 * @return the newFeatureRequiredPercent
+	 * @param requiredPercent the requiredPercent to set
 	 */
-	public int getNewFeatureRequiredPercent() {
-		return newFeatureRequiredPercent;
+	public void setRequiredPercent(int requiredPercent) {
+		this.requiredPercent = requiredPercent;
 	}
 
 	/**
-	 * @param newFeatureRequiredPercent the newFeatureRequiredPercent to set
+	 * @return the currentPercent "Passed"
 	 */
-	public void setNewFeatureRequiredPercent(int newFeatureRequiredPercent) {
-		this.newFeatureRequiredPercent = newFeatureRequiredPercent;
+	public int getCurrentPercent()
+	{
+		int count = 0;
+		if(currentPercent == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty() )
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.isPassed())
+					{
+						count++;
+					}					
+				}				
+
+			}
+		}
+		return count;
 	}
 
 	/**
-	 * @return the newFeatureCurrentPercent
+	 * @param currentPercent the currentPercent to set
 	 */
-	public int getNewFeatureCurrentPercent() {
-		return newFeatureCurrentPercent;
-	}
-
-	/**
-	 * @param newFeatureCurrentPercent the newFeatureCurrentPercent to set
-	 */
-	public void setNewFeatureCurrentPercent(int newFeatureCurrentPercent) {
-		this.newFeatureCurrentPercent = newFeatureCurrentPercent;
-	}
-
-	/**
-	 * @return the sanityRequiredPercent
-	 */
-	public int getSanityRequiredPercent() {
-		return sanityRequiredPercent;
-	}
-
-	/**
-	 * @param sanityRequiredPercent the sanityRequiredPercent to set
-	 */
-	public void setSanityRequiredPercent(int sanityRequiredPercent) {
-		this.sanityRequiredPercent = sanityRequiredPercent;
-	}
-
-	/**
-	 * @return the sanityCurrentPercent
-	 */
-	public int getSanityCurrentPercent() {
-		return sanityCurrentPercent;
-	}
-
-	/**
-	 * @param sanityCurrentPercent the sanityCurrentPercent to set
-	 */
-	public void setSanityCurrentPercent(int sanityCurrentPercent) {
-		this.sanityCurrentPercent = sanityCurrentPercent;
+	public void setCurrentPercent(int currentPercent) {
+		this.currentPercent = currentPercent;
 	}
 
 	/**
 	 * @return the totalAllowedSev1s
 	 */
-	public int getTotalAllowedSev1s() {
-		return totalAllowedSev1s;
+	public int getTotalAllowedSev1s() 
+	{
+		int count = 0;
+		if(totalAllowedSev1s == -1)
+		{
+			totalAllowedSev1s = project.getAllowedSev1();			
+		}
+		return count;		
 	}
 
 	/**
@@ -219,8 +465,28 @@ public class ProjectSummary {
 	/**
 	 * @return the totalCurrentSev1s
 	 */
-	public int getTotalCurrentSev1s() {
-		return totalCurrentSev1s;
+	public int getTotalCurrentSev1s() 
+	{
+		int count = 0;
+		if(totalCurrentSev1s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev1(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}				
+
+			}
+		}
+		return count;		
 	}
 
 	/**
@@ -234,7 +500,12 @@ public class ProjectSummary {
 	 * @return the totalAllowedSev2s
 	 */
 	public int getTotalAllowedSev2s() {
-		return totalAllowedSev2s;
+		int count = 0;
+		if(totalAllowedSev2s == -1)
+		{
+			totalAllowedSev2s = project.getAllowedSev2();			
+		}
+		return count;
 	}
 
 	/**
@@ -247,8 +518,29 @@ public class ProjectSummary {
 	/**
 	 * @return the totalCurrentSev2s
 	 */
-	public int getTotalCurrentSev2s() {
-		return totalCurrentSev2s;
+	public int getTotalCurrentSev2s()
+	{
+		int count = 0;
+		if(totalCurrentSev2s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev2(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}
+
+			}		
+		}
+		return count;		
+
 	}
 
 	/**
@@ -262,7 +554,12 @@ public class ProjectSummary {
 	 * @return the totalAllowedSev3s
 	 */
 	public int getTotalAllowedSev3s() {
-		return totalAllowedSev3s;
+		int count = 0;
+		if(totalAllowedSev3s == -1)
+		{
+			totalAllowedSev3s = project.getAllowedSev3();			
+		}
+		return count;
 	}
 
 	/**
@@ -275,8 +572,28 @@ public class ProjectSummary {
 	/**
 	 * @return the totalCurrentSev3s
 	 */
-	public int getTotalCurrentSev3s() {
-		return totalCurrentSev3s;
+	public int getTotalCurrentSev3s()
+	{
+		int count = 0;
+		if(totalCurrentSev3s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev3(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}				
+
+			}
+		}
+		return count;		
 	}
 
 	/**
@@ -290,7 +607,12 @@ public class ProjectSummary {
 	 * @return the totalAllowedSev4s
 	 */
 	public int getTotalAllowedSev4s() {
-		return totalAllowedSev4s;
+		int count = 0;
+		if(totalAllowedSev4s == -1)
+		{
+			totalAllowedSev4s = project.getAllowedSev4();			
+		}
+		return count;
 	}
 
 	/**
@@ -303,8 +625,28 @@ public class ProjectSummary {
 	/**
 	 * @return the totalCurrentSev4s
 	 */
-	public int getTotalCurrentSev4s() {
-		return totalCurrentSev4s;
+	public int getTotalCurrentSev4s() 
+	{
+		int count = 0;
+		if(totalCurrentSev4s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev4(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}
+
+			}		
+		}
+		return count;		
 	}
 
 	/**
@@ -317,8 +659,28 @@ public class ProjectSummary {
 	/**
 	 * @return the totalDefects
 	 */
-	public int getTotalDefects() {
-		return totalDefects;
+	public int getTotalDefects() 
+	{
+		int count = 0;
+		if(totalDefects == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
+					{
+						count += testrun.getDefects().size();
+					}					
+				}
+			}
+
+		}
+		return count;
 	}
 
 	/**
@@ -329,23 +691,19 @@ public class ProjectSummary {
 	}
 
 	/**
-	 * @return the companyID
-	 */
-	public long getCompanyID() {
-		return companyID;
-	}
-
-	/**
-	 * @param companyID the companyID to set
-	 */
-	public void setCompanyID(long companyID) {
-		this.companyID = companyID;
-	}
-
-	/**
 	 * @return the totalCycles
 	 */
-	public int getTotalCycles() {
+	public int getTotalCycles() 
+	{
+		int totalCycles = 0;
+		if(cascadedCycles == null || cascadedCycles.isEmpty())	
+		{
+			cascadedCycles = getCascadedCycles();
+		}
+		if(cascadedCycles != null && !cascadedCycles.isEmpty())
+		{
+			totalCycles = cascadedCycles.size();
+		}		
 		return totalCycles;
 	}
 
@@ -359,8 +717,27 @@ public class ProjectSummary {
 	/**
 	 * @return the totalEnvironments
 	 */
-	public int getTotalEnvironments() {
-		return totalEnvironments;
+	public int getTotalEnvironments()
+	{
+		int count = 0;
+		if(totalEnvironments == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty())
+					{
+						count += testrun.getEnvironments().size();
+					}					
+				}				
+			}		
+		}
+		return count;
 	}
 
 	/**
@@ -373,8 +750,28 @@ public class ProjectSummary {
 	/**
 	 * @return the totalRequirements
 	 */
-	public int getTotalRequirements() {
-		return totalRequirements;
+	public int getTotalRequirements() 
+	{
+		int count = 0;
+		if(totalRequirements == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
+					{
+						count += testrun.getRequirements().size();
+					}
+				}
+
+			}		
+		}
+		return count;
 	}
 
 	/**
@@ -385,10 +782,49 @@ public class ProjectSummary {
 	}
 
 	/**
+	 * @return the totalAllTestruns
+	 */
+	public int getTotalAllTestruns() 
+	{
+		int totalAllTestruns = 0;
+		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
+		{
+			cascadedTestruns = getCascadedTestruns();
+		}
+		if(cascadedTestruns != null && !cascadedTestruns.isEmpty())
+		{			
+			totalAllTestruns = cascadedTestruns.size();
+		}
+		return totalAllTestruns;
+	}
+
+	/**
+	 * @param totalAllTestruns the totalAllTestruns to set
+	 */
+	public void setTotalAllTestruns(int totalAllTestruns) {
+		this.totalAllTestruns = totalAllTestruns;
+	}
+
+
+	/**
 	 * @return the totalRequiredTestruns
 	 */
-	public int getTotalRequiredTestruns() {
-		return totalRequiredTestruns;
+	public int getTotalRequiredTestruns() 
+	{
+		int count = 0;
+		if(totalRequiredTestruns == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				count = requiredTestruns.size();
+			}
+
+		}
+		return count;
 	}
 
 	/**
@@ -399,24 +835,90 @@ public class ProjectSummary {
 	}
 
 	/**
-	 * @return the totalAllTestruns
+	 * @return the totalOptionalTestruns
 	 */
-	public int getTotalAllTestruns() {
-		return totalAllTestruns;
+	public int getTotalOptionalTestruns() 
+	{
+		int count = 0;
+		if (totalOptionalTestruns == -1)
+		{
+			if(cascadedTestruns == null || cascadedTestruns.isEmpty())
+			{
+				cascadedTestruns = getCascadedTestruns();
+			}
+			if(cascadedTestruns != null && !cascadedTestruns.isEmpty())
+			{			
+				for(final Testrun testrun : cascadedTestruns)
+				{
+					if(!testrunService.isRequired(testrun.getTestrunID()))
+					{
+						count++;
+					}
+				}			
+			}
+		}
+		return count;		
 	}
 
 	/**
-	 * @param totalAllTestruns the totalAllTestruns to set
+	 * @param totalOptionalTestruns the totalOptionalTestruns to set
 	 */
-	public void setTotalAllTestruns(int totalAllTestruns) {
-		this.totalAllTestruns = totalAllTestruns;
+	public void setTotalOptionalTestruns(int totalOptionalTestruns) {
+		this.totalOptionalTestruns = totalOptionalTestruns;
 	}
-	
+
+	/**
+	 * @return the totalTestcases
+	 */
+	public int getTotalTestcases() 
+	{
+		int count = 0;
+		if(totalTestcases == -1)
+		{
+			if(project.getTestcases() != null && !project.getTestcases().isEmpty())
+			{
+				count = project.getTestcases().size();
+			}		
+		}
+		return count;
+	}
+
+	/**
+	 * @param totalTestcases the totalTestcases to set
+	 */
+	public void setTotalTestcases(int totalTestcases) {
+		this.totalTestcases = totalTestcases;
+	}
+
+	/**
+	 * @return the totalTestplans
+	 */
+	public int getTotalTestplans() 
+	{
+		int count = 0;
+		if(totalTestplans == -1)
+		{
+			if(project.getTestplans() != null && !project.getTestplans().isEmpty())
+			{
+				count = project.getTestplans().size();
+			}		
+		}
+		return count;
+	}
+
+	/**
+	 * @param totalTestplans the totalTestplans to set
+	 */
+	public void setTotalTestplans(int totalTestplans) {
+		this.totalTestplans = totalTestplans;
+	}
 
 	/**
 	 * @return the totalTesters
 	 */
 	public int getTotalTesters() {
+		//TODO : get users
+		totalTesters = 100;
 		return totalTesters;
 	}
 
@@ -431,6 +933,8 @@ public class ProjectSummary {
 	 * @return the totalSeniorTesters
 	 */
 	public int getTotalSeniorTesters() {
+		//TODO : get users
+		totalSeniorTesters = 100;
 		return totalSeniorTesters;
 	}
 
@@ -445,6 +949,8 @@ public class ProjectSummary {
 	 * @return the totalDevelopers
 	 */
 	public int getTotalDevelopers() {
+		//TODO : get users
+		totalDevelopers = 100;
 		return totalDevelopers;
 	}
 
@@ -459,6 +965,8 @@ public class ProjectSummary {
 	 * @return the totalSeniorDevelopers
 	 */
 	public int getTotalSeniorDevelopers() {
+		//TODO : get users
+		totalSeniorDevelopers = 100;
 		return totalSeniorDevelopers;
 	}
 
@@ -473,6 +981,10 @@ public class ProjectSummary {
 	 * @return the lastModifiedBy
 	 */
 	public String getLastModifiedBy() {
+		if(lastModifiedBy == null)
+		{
+			lastModifiedBy = project.getLastModifiedBy();
+		}
 		return lastModifiedBy;
 	}
 
@@ -487,7 +999,11 @@ public class ProjectSummary {
 	 * @return the lastModifiedDate
 	 */
 	public String getLastModifiedDate() {
-		return lastModifiedDate;
+		if(lastModifiedDate == null)
+		{
+			lastModifiedDate = project.getLastModifiedDate();
+		}
+		return lastModifiedDate;		
 	}
 
 	/**
@@ -501,6 +1017,10 @@ public class ProjectSummary {
 	 * @return the createdBy
 	 */
 	public String getCreatedBy() {
+		if(createdBy == null)
+		{
+			createdBy = project.getCreatedBy();
+		}
 		return createdBy;
 	}
 
@@ -515,6 +1035,10 @@ public class ProjectSummary {
 	 * @return the creationDate
 	 */
 	public String getCreationDate() {
+		if(creationDate == null)
+		{
+			creationDate = project.getCreationDate();
+		}
 		return creationDate;
 	}
 
@@ -595,103 +1119,4 @@ public class ProjectSummary {
 		this.customObject5 = customObject5;
 	}
 
-	/**
-	 * @return the totalOptionalTestruns
-	 */
-	public int getTotalOptionalTestruns() {
-		return totalOptionalTestruns;
-	}
-
-	/**
-	 * @param totalOptionalTestruns the totalOptionalTestruns to set
-	 */
-	public void setTotalOptionalTestruns(int totalOptionalTestruns) {
-		this.totalOptionalTestruns = totalOptionalTestruns;
-	}
-
-	/**
-	 * @return the totalAllTestcases
-	 */
-	public int getTotalAllTestcases() {
-		return totalAllTestcases;
-	}
-
-	/**
-	 * @param totalAllTestcases the totalAllTestcases to set
-	 */
-	public void setTotalAllTestcases(int totalAllTestcases) {
-		this.totalAllTestcases = totalAllTestcases;
-	}
-
-	/**
-	 * @return the totalRequiredTestcases
-	 */
-	public int getTotalRequiredTestcases() {
-		return totalRequiredTestcases;
-	}
-
-	/**
-	 * @param totalRequiredTestcases the totalRequiredTestcases to set
-	 */
-	public void setTotalRequiredTestcases(int totalRequiredTestcases) {
-		this.totalRequiredTestcases = totalRequiredTestcases;
-	}
-
-	/**
-	 * @return the totalOptionalTestcases
-	 */
-	public int getTotalOptionalTestcases() {
-		return totalOptionalTestcases;
-	}
-
-	/**
-	 * @param totalOptionalTestcases the totalOptionalTestcases to set
-	 */
-	public void setTotalOptionalTestcases(int totalOptionalTestcases) {
-		this.totalOptionalTestcases = totalOptionalTestcases;
-	}
-
-	/**
-	 * @return the totalAllTestplans
-	 */
-	public int getTotalAllTestplans() {
-		return totalAllTestplans;
-	}
-
-	/**
-	 * @param totalAllTestplans the totalAllTestplans to set
-	 */
-	public void setTotalAllTestplans(int totalAllTestplans) {
-		this.totalAllTestplans = totalAllTestplans;
-	}
-
-	/**
-	 * @return the totalRequiredTestplans
-	 */
-	public int getTotalRequiredTestplans() {
-		return totalRequiredTestplans;
-	}
-
-	/**
-	 * @param totalRequiredTestplans the totalRequiredTestplans to set
-	 */
-	public void setTotalRequiredTestplans(int totalRequiredTestplans) {
-		this.totalRequiredTestplans = totalRequiredTestplans;
-	}
-
-	/**
-	 * @return the totalOptionalTestplans
-	 */
-	public int getTotalOptionalTestplans() {
-		return totalOptionalTestplans;
-	}
-
-	/**
-	 * @param totalOptionalTestplans the totalOptionalTestplans to set
-	 */
-	public void setTotalOptionalTestplans(int totalOptionalTestplans) {
-		this.totalOptionalTestplans = totalOptionalTestplans;
-	}    
-   
-   
 }

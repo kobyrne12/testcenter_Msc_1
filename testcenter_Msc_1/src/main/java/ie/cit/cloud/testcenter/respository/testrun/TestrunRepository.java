@@ -9,6 +9,8 @@ package ie.cit.cloud.testcenter.respository.testrun;
  */
 
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.TestrunLevel;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 
 public interface TestrunRepository {
@@ -67,5 +69,15 @@ public interface TestrunRepository {
      * @param id
      *            Testrun ID
      * @return Testrun for given name, null if Testrun was not found
-     */	
+     */
+
+	void deleteTestrunLevel(TestrunLevel testrunLevel);
+
+	void updateTestrunLevel(TestrunLevel testrunLevel);
+
+	TestrunLevel findTestrunLevelById(long testrunLevelID);
+
+	void createTestrunLevel(TestrunLevel testrunLevel);
+
+	TestrunLevel findTestrunLevelByName(String testrunLevelName);	
 }

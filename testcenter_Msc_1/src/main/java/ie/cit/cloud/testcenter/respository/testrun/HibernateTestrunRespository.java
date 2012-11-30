@@ -11,6 +11,7 @@ package ie.cit.cloud.testcenter.respository.testrun;
 
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.TestrunLevel;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -67,6 +68,33 @@ public class HibernateTestrunRespository implements TestrunRepository {
 		query.setParameter("testrunName", testrunName);
 		return (Testrun) query.getSingleResult();
 	}
+	
+	///////// testrunLevel
+	public TestrunLevel findTestrunLevelById(long testrunLevelID) {
+		Query query = em.createQuery("from TestrunLevel where testrunLevelID=:testrunLevelID");		
+		query.setParameter("testrunLevelID", testrunLevelID);
+		return (TestrunLevel) query.getSingleResult();	
+	}
+	public TestrunLevel findTestrunLevelByName(String testrunLevelName) {
+		Query query = em.createQuery("from TestrunLevel where testrunLevelName=:testrunLevelName");		
+		query.setParameter("testrunLevelName", testrunLevelName);
+		return (TestrunLevel) query.getSingleResult();	
+	}
+	public void deleteTestrunLevel(TestrunLevel testrunLevel) {
+		em.remove(testrunLevel);
+		
+	}
 
+	public void updateTestrunLevel(TestrunLevel testrunLevel) {
+		em.merge(testrunLevel);
+		
+	}
+
+
+
+	public void createTestrunLevel(TestrunLevel testrunLevel) {
+		em.persist(testrunLevel);		
+	}
+	
 
 }

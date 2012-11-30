@@ -20,6 +20,7 @@ import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.TestrunLevel;
 
 /**
  * Peforms business operation on Test run 
@@ -39,6 +40,14 @@ public interface TestrunService {
 	boolean isLatest(long testrunID);
 
 	Set<Testrun> getTestHistory(long testrunID);
+	
+	
+	 
+	void addNewTestrunLevel(TestrunLevel testrunLevel);
+	TestrunLevel getTestrunLevel(long testrunLevelID); 
+	TestrunLevel getTestrunLevelByName(String testrunLevelName); 
+	void updateTestrunLevel(TestrunLevel testrunLevel);
+	void removeTestrunLevel(long testrunLevelID);  
 
 	/**
 	 * Returns true if a testruns' priority is less than or equal to cycle priority 

@@ -142,152 +142,133 @@ public class ProjectServiceImpl implements ProjectService {
 	public Set<Project> getAllProjectsByCompanyID(long companyID) {
 		return projectRepo.findAllProjectsByCompanyID(companyID);
 	}
-//////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////
+
 
 	public ColModelAndNames getColumnModelAndNames(Long companyID) 
 	{
 		// Constructor in order
-				// name;index;hidden;width;align;
-				// sortable;resizable;search;sorttype;jsonmap;key;
-				Company company = companyService.getCompany(companyID);
-				Collection<String> colNames = new ArrayList<String>();
-				ColModelAndNames colModelAndName = new ColModelAndNames();
-				Collection<GridAttributes> columnModelSet =  new ArrayList<GridAttributes>();	
+		// name;index;hidden;width;align;
+		// sortable;resizable;search;sorttype;jsonmap;key;
+		Company company = companyService.getCompany(companyID);
+		Collection<String> colNames = new ArrayList<String>();
+		ColModelAndNames colModelAndName = new ColModelAndNames();
+		Collection<GridAttributes> columnModelSet =  new ArrayList<GridAttributes>();	
 
-				colNames.add("ID");	 
-				columnModelSet.add(new GridAttributes("projectID",10));	
-				colNames.add(company.getProjectDisplayName()+ " Name");
-				columnModelSet.add(new GridAttributes("projectName",40));
+		colNames.add("ID");	 
+		columnModelSet.add(new GridAttributes("projectID",10));	
+		
+		colNames.add(company.getProjectDisplayName()+ " Name");
+		columnModelSet.add(new GridAttributes("projectName",40));
 
-				colNames.add("Overall");
-				columnModelSet.add(new GridAttributes("overAllState","setOverallBarChart","unSetBarChart", 80));
-				colNames.add(company.getNewFeatureDisplayName());
-				columnModelSet.add(new GridAttributes("newFeatureState","setNewFeatureBarChart","unSetBarChart",60));
-				colNames.add(company.getRegressionDisplayName());
-				columnModelSet.add(new GridAttributes("regressionState","setRegressionBarChart","unSetBarChart", 60));	 
-//				colNames.add(company.getSanityDisplayName());
-//				columnModelSet.add(new GridAttributes("sanityState","setSanityBarChart","unSetBarChart",60));
+		colNames.add("State");
+		columnModelSet.add(new GridAttributes("overAllState","setOverallBarChart","unSetBarChart", 80));
+		
+		colNames.add("Parent");
+		columnModelSet.add(new GridAttributes("parentProjectName",25));
+		
+		colNames.add("Child "+ company.getProjectsDisplayName());
+		columnModelSet.add(new GridAttributes("childProjects",15));
 
-				colNames.add("Parent");
-				columnModelSet.add(new GridAttributes("parentProjectName",25));
-				colNames.add("Child "+ company.getProjectsDisplayName());
-				columnModelSet.add(new GridAttributes("childProjects",15));
+		colNames.add("Level");
+		columnModelSet.add(new GridAttributes("level",15));
 
-				colNames.add("Min " + company.getRegressionDisplayName());
-				columnModelSet.add(new GridAttributes("regressionCompulsoryPercent","percentFmatter","unformatPercent",15));
-				colNames.add("Current " + company.getRegressionDisplayName());
-				columnModelSet.add(new GridAttributes("regressionCurrentPercent","percentFmatter","unformatPercent",15));
-				colNames.add("Min " + company.getNewFeatureDisplayName());
-				columnModelSet.add(new GridAttributes("newFeatureCompulsoryPercent","percentFmatter","unformatPercent",15));
-				colNames.add("Current " + company.getNewFeatureDisplayName());
-				columnModelSet.add(new GridAttributes("newFeatureCurrentPercent","percentFmatter","unformatPercent",15));
-//				colNames.add("Min " + company.getSanityDisplayName());
-//				columnModelSet.add(new GridAttributes("sanityCompulsoryPercent","percentFmatter","unformatPercent",15));
-//				colNames.add("Current " + company.getSanityDisplayName());
-//				columnModelSet.add(new GridAttributes("sanityCurrentPercent","percentFmatter","unformatPercent",15));
+		//for each level
+		//{
+		colNames.add("Min %");
+		columnModelSet.add(new GridAttributes("requiredPercent","percentFmatter","unformatPercent",15));
+		
+		colNames.add("Current %");
+		columnModelSet.add(new GridAttributes("currentPercent","percentFmatter","unformatPercent",15));
+		//}
+		colNames.add("Total "+ company.getDefectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalDefects"));
+		
+		colNames.add("Max Sev 1s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
+		colNames.add("Current Sev 1s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));
+		colNames.add("Max Sev 2s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
+		colNames.add("Current Sev 2s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));
+		colNames.add("Max Sev 3s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
+		colNames.add("Current Sev 3s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));	
+		colNames.add("Max Sev 4s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
+		colNames.add("Current Sev 4s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));
 
-				colNames.add("Total "+ company.getDefectsDisplayName());
-				columnModelSet.add(new GridAttributes("totalDefects"));
-				colNames.add("Max Sev 1s");
-				columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
-				colNames.add("Current Sev 1s");
-				columnModelSet.add(new GridAttributes("totalCurrentSev1s"));
-				colNames.add("Max Sev 2s");
-				columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
-				colNames.add("Current Sev 2s");
-				columnModelSet.add(new GridAttributes("totalCurrentSev2s"));
-				colNames.add("Max Sev 3s");
-				columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
-				colNames.add("Current Sev 3s");
-				columnModelSet.add(new GridAttributes("totalCurrentSev3s"));	
-				colNames.add("Max Sev 4s");
-				columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
-				colNames.add("Current Sev 4s");
-				columnModelSet.add(new GridAttributes("totalCurrentSev4s"));
-		
-				colNames.add("Company ID");
-				columnModelSet.add(new GridAttributes("companyID",true));
-		
-				colNames.add(company.getCyclesDisplayName());
-				columnModelSet.add(new GridAttributes("totalCycles",true));
-				
-				colNames.add("All "+company.getTestrunsDisplayName());
-				columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
-				colNames.add("Compulsory "+company.getTestrunsDisplayName());
-				columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
-				colNames.add("Optional "+company.getTestrunsDisplayName());
-				columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));	
-				
-				colNames.add("All "+company.getTestplansDisplayName());
-				columnModelSet.add(new GridAttributes("totalAllTestplans",10,true));		
-				colNames.add("Compulsory "+company.getTestplansDisplayName());
-				columnModelSet.add(new GridAttributes("totalRequiredTestplans",10,true));	
-				colNames.add("Optional "+company.getTestplansDisplayName());
-				columnModelSet.add(new GridAttributes("totalOptionalTestplans",10,true));	
-				
-				colNames.add("All "+company.getTestcasesDisplayName());
-				columnModelSet.add(new GridAttributes("totalAllTestcases",10,true));		
-				colNames.add("Compulsory "+company.getTestcasesDisplayName());
-				columnModelSet.add(new GridAttributes("totalRequiredTestcases",10,true));	
-				colNames.add("Optional "+company.getTestcasesDisplayName());
-				columnModelSet.add(new GridAttributes("totalOptionalTestcases",10,true));	
-		
-				colNames.add(company.getTestplansDisplayName());
-				columnModelSet.add(new GridAttributes("totalTestplans",true));
-				colNames.add(company.getTestcasesDisplayName());
-				columnModelSet.add(new GridAttributes("totalTestcases",true));	 
-		
-				colNames.add(company.getEnvironmentsDisplayName());
-				columnModelSet.add(new GridAttributes("totalEnvironments",true));
-				colNames.add(company.getRequirementsDisplayName());
-				columnModelSet.add(new GridAttributes("totalRequirements",true));
-		
-				colNames.add(company.getTestersDisplayName());
-				columnModelSet.add(new GridAttributes("totalTesters",true));
-				colNames.add(company.getSeniorTestersDisplayName());
-				columnModelSet.add(new GridAttributes("totalSeniorTesters",true));
-				colNames.add(company.getDevelopersDisplayName());
-				columnModelSet.add(new GridAttributes("totalDevelopers",true));
-				colNames.add(company.getSeniordevelopersDisplayName());
-				columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
-		
-				colNames.add("LastModifiedDate");
-				columnModelSet.add(new GridAttributes("lastModifiedDate",true));
-				colNames.add("LastModifiedBy");
-				columnModelSet.add(new GridAttributes("lastModifiedBy",true));	 
-				colNames.add("CreatedBy");
-				columnModelSet.add(new GridAttributes("createdBy",true));
-				colNames.add("CreationDate");
-				columnModelSet.add(new GridAttributes("creationDate",true));
-				colNames.add("Position");
-				columnModelSet.add(new GridAttributes("companyPosition",true));	
-								
-				// if customValue1 set then 	
-				//colNames.add("customValue1");
-				//columnModelSet.add(new GridAttributes("customColumn1",true));	 
-				// if customValue2 set then 
-				//colNames.add("customValue1");
-				//columnModelSet.add(new GridAttributes("customColumn2",true));		
-				// if customValue3 set then 
-				//colNames.add("customValue3");
-				//columnModelSet.add(new GridAttributes("customColumn3",true));		
-				// if customValue4 set then 
-				//colNames.add("customValue4");	
-				//columnModelSet.add(new GridAttributes("customColumn4",true));		
-				// if customValue5 set then 
-				//colNames.add("customValue5");	
-				//columnModelSet.add(new GridAttributes("customColumn5",true));	
+		colNames.add("Company ID");
+		columnModelSet.add(new GridAttributes("companyID",true));
 
-				colModelAndName.setColName(colNames);    	
-				colModelAndName.setColModel(columnModelSet);
-				return colModelAndName;
+		colNames.add(company.getCyclesDisplayName());
+		columnModelSet.add(new GridAttributes("totalCycles",true));
+
+		colNames.add("All "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
+		colNames.add("Compulsory "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
+		colNames.add("Optional "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));	
+
+		colNames.add(company.getTestplansDisplayName());
+		columnModelSet.add(new GridAttributes("totalTestplans",true));
+		colNames.add(company.getTestcasesDisplayName());
+		columnModelSet.add(new GridAttributes("totalTestcases",true));	 
+
+		colNames.add(company.getEnvironmentsDisplayName());
+		columnModelSet.add(new GridAttributes("totalEnvironments",true));
+		colNames.add(company.getRequirementsDisplayName());
+		columnModelSet.add(new GridAttributes("totalRequirements",true));
+
+		colNames.add(company.getTestersDisplayName());
+		columnModelSet.add(new GridAttributes("totalTesters",true));
+		colNames.add(company.getSeniorTestersDisplayName());
+		columnModelSet.add(new GridAttributes("totalSeniorTesters",true));
+		colNames.add(company.getDevelopersDisplayName());
+		columnModelSet.add(new GridAttributes("totalDevelopers",true));
+		colNames.add(company.getSeniordevelopersDisplayName());
+		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
+
+		colNames.add("LastModifiedDate");
+		columnModelSet.add(new GridAttributes("lastModifiedDate",true));
+		colNames.add("LastModifiedBy");
+		columnModelSet.add(new GridAttributes("lastModifiedBy",true));	 
+		colNames.add("CreatedBy");
+		columnModelSet.add(new GridAttributes("createdBy",true));
+		colNames.add("CreationDate");
+		columnModelSet.add(new GridAttributes("creationDate",true));
+		colNames.add("Position");
+		columnModelSet.add(new GridAttributes("companyPosition",true));	
+
+		// if customValue1 set then 	
+		//colNames.add("customValue1");
+		//columnModelSet.add(new GridAttributes("customColumn1",true));	 
+		// if customValue2 set then 
+		//colNames.add("customValue1");
+		//columnModelSet.add(new GridAttributes("customColumn2",true));		
+		// if customValue3 set then 
+		//colNames.add("customValue3");
+		//columnModelSet.add(new GridAttributes("customColumn3",true));		
+		// if customValue4 set then 
+		//colNames.add("customValue4");	
+		//columnModelSet.add(new GridAttributes("customColumn4",true));		
+		// if customValue5 set then 
+		//colNames.add("customValue5");	
+		//columnModelSet.add(new GridAttributes("customColumn5",true));	
+
+		colModelAndName.setColName(colNames);    	
+		colModelAndName.setColModel(columnModelSet);
+		return colModelAndName;
 	}
 
 	public ProjectSummaryList getGridProjects(long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
-			String environmentID, String userID,String level)
+			String environmentID, String userID,String levelName)
 	{
 		// Check which projects wil be displayed 
 		Company company = companyService.getCompany(companyID);
@@ -392,96 +373,66 @@ public class ProjectServiceImpl implements ProjectService {
 		ProjectSummaryList projectSummaryList = new ProjectSummaryList();
 
 		for(final Project project : projects)
-		{				
-			ProjectSummary projectSummary = getProjectSummary(companyID, project.getProjectID(),level);	
-			projectSummarySet.add(projectSummary);
-
+		{						
+			projectSummarySet.add(getProjectSummary(new ProjectSummary(project, levelName)));
 		}
-		
+
 		projectSummaryList.setProjects(projectSummarySet);
 		return projectSummaryList;
 	}
-	
-	public ProjectSummary getProjectSummary(long companyID, long projectID, String level )
-	{
-		Project project = getProject(projectID);
-		ProjectSummary projectSummary = new ProjectSummary();
 
-		projectSummary.setProjectID(project.getProjectID());
-		projectSummary.setCompanyID(companyID);
-		projectSummary.setProjectName(project.getProjectName());	
-
-		if(getParentProjectName(projectID) !=null)
+		public ProjectSummary getProjectSummary(ProjectSummary oldProjectSummary )
 		{
-			projectSummary.setParentProjectName(getParentProjectName(projectID));
-		}
-		else		
-		{
-			projectSummary.setParentProjectName("NONE");
-		}
-		projectSummary.setChildProjects(getChildProjectsCount(projectID));
-		
-		projectSummary.setTotalCycles(getParentAndChildCyclesCount(projectID));
-		projectSummary.setTotalEnvironments(getCascadedEnvironmentsCount(projectID));
-		projectSummary.setTotalRequirements(getCascadedRequirementsCount(projectID));
-		
-		projectSummary.setTotalAllTestruns(getCascadedAllTestRunsCount(projectID));
-		projectSummary.setTotalRequiredTestruns(getCascadedCompulsoryTestRunsCount(projectID));
-		projectSummary.setTotalOptionalTestruns(getCascadedOptionalTestRunsCount(projectID));
-		
-		projectSummary.setTotalAllTestplans(getCascadedAllTestPlansCount(projectID));
-		projectSummary.setTotalRequiredTestplans(getCascadedCompulsoryTestPlansCount(projectID));
-		projectSummary.setTotalOptionalTestplans(getCascadedOptionalTestPlansCount(projectID));
-		
-		projectSummary.setTotalAllTestcases(getCascadedAllTestCasesCount(projectID));
-		projectSummary.setTotalRequiredTestcases(getCascadedCompulsoryTestCasesCount(projectID));
-		projectSummary.setTotalOptionalTestcases(getCascadedOptionalTestCasesCount(projectID));
-		
-		projectSummary.setTotalDefects(getCascadedDefectsCount(projectID));
-		
-		projectSummary.setTotalCurrentSev1s(getCascadedSev1DefectsCount(projectID));
-		projectSummary.setTotalCurrentSev2s(getCascadedSev2DefectsCount(projectID));
-		projectSummary.setTotalCurrentSev3s(getCascadedSev3DefectsCount(projectID));
-		projectSummary.setTotalCurrentSev4s(getCascadedSev4DefectsCount(projectID));
-		
-		projectSummary.setTotalAllowedSev1s(project.getAllowedSev1());
-		projectSummary.setTotalAllowedSev2s(project.getAllowedSev2());
-		projectSummary.setTotalAllowedSev3s(project.getAllowedSev3());
-		projectSummary.setTotalAllowedSev4s(project.getAllowedSev4());
-		
-//		if(project.getCycles() != null && !project.getCycles().isEmpty() )
-//		{
-//			for(final Cycle cycle :project.getCycles())
-//			{
-//				if(cycleService.isLatest(cycle.getCycleID()))
-//				{
-//					Set<Testrun> requiredTestruns;
-//					if(cycleService.getCascadedCompulsoryTestRuns(cycle.getCycleID(),level) != null)
-//					 requiredTestruns = cycleService.getCascadedCompulsoryTestRuns(cycle.getCycleID(),level);					
-//				}
-//			}			
-//		}
-		
-		projectSummary.setNewFeatureRequiredPercent(project.getNewFeatureRequiredPercent());
-		int currentNewFeaturePercent = (int) (Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
-		projectSummary.setNewFeatureCurrentPercent(currentNewFeaturePercent);
-		projectSummary.setRegressionCurrentPercent(project.getRegressionRequiredPercent());
-		int currentRegressionPercent = (int) (Math.random() * ((100 - 1) + 1)); // just a random number until all entities are populated 
-		projectSummary.setRegressionRequiredPercent(currentRegressionPercent);
-
-		projectSummary.setTotalTesters(getCascadedTestersCount(projectID));
-		projectSummary.setTotalSeniorTesters(getCascadedSnrDevelopersCount(projectID));
-		projectSummary.setTotalDevelopers(getCascadedDevelopersCount(projectID));
-		projectSummary.setTotalSeniorDevelopers(getCascadedSnrDevelopersCount(projectID));
-		
-		projectSummary.setLastModifiedBy(project.getLastModifiedBy());
-		projectSummary.setLastModifiedDate(project.getLastModifiedDate());
-		projectSummary.setCreatedBy(project.getCreatedBy());
-		projectSummary.setCreationDate(project.getCreationDate());	
-		
-		return projectSummary;
-	}
+			
+			ProjectSummary newProjectSummary = new ProjectSummary();
 	
+			newProjectSummary.setProjectID(oldProjectSummary.getProjectID());
+			newProjectSummary.setCompanyID(oldProjectSummary.getCompanyID());
+			newProjectSummary.setProjectName(oldProjectSummary.getProjectName());	
+			newProjectSummary.setParentProjectName(oldProjectSummary.getParentProjectName());
+			
+			newProjectSummary.setTotalChildProjects(oldProjectSummary.getTotalChildProjects());
+			
+			newProjectSummary.setCurrentPercent(oldProjectSummary.getCurrentPercent());
+			newProjectSummary.setRequiredPercent(oldProjectSummary.getRequiredPercent());
+			
+			newProjectSummary.setTotalCycles(oldProjectSummary.getTotalCycles());
+			newProjectSummary.setTotalEnvironments(oldProjectSummary.getTotalEnvironments());
+			newProjectSummary.setTotalRequirements(oldProjectSummary.getTotalRequirements());
+			
+			newProjectSummary.setTotalAllTestruns(oldProjectSummary.getTotalAllTestruns());
+			newProjectSummary.setTotalRequiredTestruns(oldProjectSummary.getTotalRequiredTestruns());
+			newProjectSummary.setTotalOptionalTestruns(oldProjectSummary.getTotalOptionalTestruns());
+			
+			newProjectSummary.setTotalTestplans(oldProjectSummary.getTotalTestplans());
+			
+			newProjectSummary.setTotalTestcases(oldProjectSummary.getTotalTestcases());
+			
+			newProjectSummary.setTotalDefects(oldProjectSummary.getTotalDefects());
+			
+			newProjectSummary.setTotalCurrentSev1s(oldProjectSummary.getTotalCurrentSev1s());
+			newProjectSummary.setTotalCurrentSev2s(oldProjectSummary.getTotalCurrentSev2s());
+			newProjectSummary.setTotalCurrentSev3s(oldProjectSummary.getTotalCurrentSev3s());
+			newProjectSummary.setTotalCurrentSev4s(oldProjectSummary.getTotalCurrentSev4s());
+			
+			newProjectSummary.setTotalAllowedSev1s(oldProjectSummary.getTotalAllowedSev1s());
+			newProjectSummary.setTotalAllowedSev2s(oldProjectSummary.getTotalAllowedSev2s());
+			newProjectSummary.setTotalAllowedSev3s(oldProjectSummary.getTotalAllowedSev3s());
+			newProjectSummary.setTotalAllowedSev4s(oldProjectSummary.getTotalAllowedSev4s());
+	
+			newProjectSummary.setTotalTesters(oldProjectSummary.getTotalTesters());
+			newProjectSummary.setTotalSeniorTesters(oldProjectSummary.getTotalSeniorTesters());
+			newProjectSummary.setTotalDevelopers(oldProjectSummary.getTotalDevelopers());
+			newProjectSummary.setTotalSeniorDevelopers(oldProjectSummary.getTotalSeniorDevelopers());
+			
+			newProjectSummary.setLastModifiedBy(oldProjectSummary.getLastModifiedBy());
+			newProjectSummary.setLastModifiedDate(oldProjectSummary.getLastModifiedDate());
+			newProjectSummary.setCreatedBy(oldProjectSummary.getCreatedBy());
+			newProjectSummary.setCreationDate(oldProjectSummary.getCreationDate());	
+			
+			return newProjectSummary;
+		}
+		
 	public RelatedObjectList getRelatedObjects(long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID) {
@@ -492,7 +443,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 
-	
+
 
 	///////////////////////////////////////////////////////
 	public int getChildProjectsCount(long projectID)
@@ -523,7 +474,7 @@ public class ProjectServiceImpl implements ProjectService {
 			return null;
 		}
 	} 
-	
+
 	public Set<Project> getParentAndChildProjects(long projectID)
 	{		
 		Project project = getProject(projectID);
@@ -544,7 +495,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return projects;		
 	} 
-	
+
 	public Project getParentProject(long projectID)
 	{		
 		Project project = getProject(projectID);
@@ -565,7 +516,7 @@ public class ProjectServiceImpl implements ProjectService {
 			return null;
 		}
 	}
-	
+
 	public String getParentProjectName(long projectID)
 	{		
 		Project project = getProject(projectID);
@@ -1036,7 +987,7 @@ public class ProjectServiceImpl implements ProjectService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public int getCascadedDevelopersCount(long projectID)
 	{	
 		if(getCascadedDevelopers(projectID) == null)
@@ -1049,7 +1000,7 @@ public class ProjectServiceImpl implements ProjectService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public int getCascadedSnrDevelopersCount(long projectID)
 	{	
 		if(getCascadedSnrDevelopers(projectID) == null)
@@ -1063,5 +1014,5 @@ public class ProjectServiceImpl implements ProjectService {
 		return null;
 	}
 
-	
+
 }

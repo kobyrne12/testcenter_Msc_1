@@ -21,6 +21,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -59,7 +61,11 @@ public class Testrun {
     @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "TESTRUNS_JOIN_USERS", joinColumns = { @JoinColumn(name = "testrunID") }, inverseJoinColumns = { @JoinColumn(name = "userID") })
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Set<TestcenterUser> users  = new HashSet<TestcenterUser>();   
+	private Set<TestcenterUser> users  = new HashSet<TestcenterUser>(); 
+    
+    @OneToOne(fetch=FetchType.EAGER)
+    @PrimaryKeyJoinColumn
+   	private TestrunLevel level; 
     
     @Basic
     @Column(name="testcaseID")
@@ -88,9 +94,7 @@ public class Testrun {
     
     @Basic
     private Double estimatedTime;
-    @Basic
-    private String level; // Regression/New Feature    
-  
+    
     @Basic
     private long previousTestrunID; 
     
@@ -128,7 +132,7 @@ public class Testrun {
    	 * @param seniorTester
    	 */
    	public Testrun(String testrunName, long testcaseID, long cycleID, 
-   			Double estimatedTime,String level,long previousTestrunID, String tester,String seniorTester)   
+   			Double estimatedTime,TestrunLevel level,long previousTestrunID, String tester,String seniorTester)   
    	{
    		this(testrunName,testcaseID,cycleID,
    				false,false,false,false,false,false,1,1,
@@ -163,7 +167,7 @@ public class Testrun {
    	public Testrun(String testrunName, long testcaseID, long cycleID,
    			boolean notrun, boolean passed, boolean failed, boolean inprogress,
    			boolean deferred, boolean blocked, int priority,
-   			int recommendedPriority, Double estimatedTime, String level,
+   			int recommendedPriority, Double estimatedTime, TestrunLevel level,
    			long previousTestrunID,String creationDate, String createdBy,
    			String lastModifiedDate, String lastModifiedBy, String tester,
    			String seniorTester) 
@@ -362,14 +366,14 @@ public class Testrun {
 	/**
 	 * @return the level
 	 */
-	public String getLevel() {
+	public TestrunLevel getLevel() {
 		return level;
 	}
 
 	/**
 	 * @param level the level to set
 	 */
-	public void setLevel(String level) {
+	public void setLevel(TestrunLevel level) {
 		this.level = level;
 	}
 

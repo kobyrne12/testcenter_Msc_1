@@ -10,6 +10,7 @@ package ie.cit.cloud.testcenter.model;
 
 import ie.cit.cloud.testcenter.service.project.ProjectService;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -64,6 +65,14 @@ public class Project {
 	inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Set<Testcase> testcases  = new HashSet<Testcase>();    	
+
+
+	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "PROJECT_JOIN_TESTRUNLEVELS",
+	joinColumns = { @JoinColumn(name = "projectID") },
+	inverseJoinColumns = { @JoinColumn(name = "testrunLevelID") })
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Set<TestrunLevel> testrunLevels  = new LinkedHashSet<TestrunLevel>();    	
 
 	@Basic    
 	private long parentID;   
@@ -347,6 +356,20 @@ public class Project {
 	 */
 	public void setTestcases(Set<Testcase> testcases) {
 		this.testcases = testcases;
+	}
+
+	/**
+	 * @return the testrunLevels
+	 */
+	public Set<TestrunLevel> getTestrunLevels() {
+		return testrunLevels;
+	}
+
+	/**
+	 * @param testrunLevels the testrunLevels to set
+	 */
+	public void setTestrunLevels(Set<TestrunLevel> testrunLevels) {
+		this.testrunLevels = testrunLevels;
 	}
 
 

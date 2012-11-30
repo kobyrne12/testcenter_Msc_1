@@ -73,7 +73,7 @@ public class ProjectJSONController {
     		@RequestParam(required = false) String requirementID,
     		@RequestParam(required = false) String environmentID,    		
     		@RequestParam(required = false) String userID,
-    		@RequestParam(required = false) String level,
+    		@RequestParam(required = false) String levelName,
     		@RequestParam("_search") boolean search,
     		@RequestParam(value="filters", required=false) String filters,
     		@RequestParam(value="page", required=false) Integer page,
@@ -88,7 +88,7 @@ public class ProjectJSONController {
     		JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class);  
     		
         	ProjectSummaryList projectSummaryList = projectService.getGridProjects(companyID, projectID,
-        			cycleID, testplanID, testcaseID, testrunID, defectID, requirementID, environmentID, userID,level);
+        			cycleID, testplanID, testcaseID, testrunID, defectID, requirementID, environmentID, userID,levelName);
     		
         	Set<ProjectSummary> oldProjectSummarySet = projectSummaryList.getProjects();
     		Set<ProjectSummary> newProjectSummarySet = new LinkedHashSet<ProjectSummary>();
@@ -140,7 +140,7 @@ public class ProjectJSONController {
     	else
     	{
     		return projectService.getGridProjects(companyID, projectID, cycleID, testplanID,
-        			testcaseID, testrunID, defectID, requirementID, environmentID, userID, level);
+        			testcaseID, testrunID, defectID, requirementID, environmentID, userID, levelName);
     	}
     	
     }     
@@ -164,24 +164,25 @@ public class ProjectJSONController {
     		@RequestParam(required = false) String environmentID,
     		@RequestParam(required = false) String requirementID,
     		@RequestParam(required = false) String defectID,    		
-    		@RequestParam(required = false) String testrunID
+    		@RequestParam(required = false) String testrunID,
+    		@RequestParam(required = false) String levelName
     		) 
     {   	
     	Set<RelatedObject> relatedObjectSet =  new LinkedHashSet<RelatedObject>();
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
 			Project project = projectService.getProject(projectID); 
-			ProjectSummary projectSummary = projectService.getProjectSummary(project.getCompanyID(), projectID, null);
+			ProjectSummary projectSummary = new ProjectSummary(project, levelName);
 			
 	    	Company company = companyService.getCompany(projectSummary.getCompanyID());
 	    	
 	    	relatedObjectSet.add(new RelatedObject(1,"Parent "+ company.getProjectDisplayName(),projectSummary.getParentProjectName(), projectID, "Parent"+ company.getProjectDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(2,"Child "+ company.getProjectsDisplayName(),Integer.toString(projectSummary.getChildProjects()), projectID, "Child"+ company.getProjectsDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(2,"Child "+ company.getProjectsDisplayName(),Integer.toString(projectSummary.getTotalChildProjects()), projectID, "Child"+ company.getProjectsDisplayName().replace(" ","")));
 	    	
 	    	relatedObjectSet.add(new RelatedObject(3,company.getCyclesDisplayName(),Integer.toString(projectSummary.getTotalCycles()), projectID, company.getCyclesDisplayName().replace(" ","")));
 	    	
-	    	relatedObjectSet.add(new RelatedObject(4,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalAllTestplans()), projectID,  company.getTestplansDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(5,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalAllTestcases()), projectID,  company.getTestcasesDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(4,company.getTestplansDisplayName(),Integer.toString(projectSummary.getTotalTestplans()), projectID,  company.getTestplansDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(5,company.getTestcasesDisplayName(),Integer.toString(projectSummary.getTotalTestcases()), projectID,  company.getTestcasesDisplayName().replace(" ","")));
 	    
 	    	relatedObjectSet.add(new RelatedObject(6,"All "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalAllTestruns()), projectID, "all"+company.getTestrunsDisplayName().replace(" ",""))); 
 	    	relatedObjectSet.add(new RelatedObject(7,"Required "+ company.getTestrunsDisplayName(),Integer.toString(projectSummary.getTotalRequiredTestruns()), projectID, "required"+company.getTestrunsDisplayName().replace(" ",""))); 
