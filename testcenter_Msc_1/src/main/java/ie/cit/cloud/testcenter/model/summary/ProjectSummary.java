@@ -24,19 +24,61 @@ import ie.cit.cloud.testcenter.service.testrun.TestrunService;
  * @author byrnek1
  *
  */
-
+@Component
 public class ProjectSummary 
 {			
-	@Autowired
-	ProjectService projectService;	
-	@Autowired
-	TestrunService testrunService;
-	@Autowired
-	DefectService defectService;	
+	//@Autowired
+	private ProjectService projectService;	
+	//@Autowired
+	private TestrunService testrunService;
+	//@Autowired
+	private DefectService defectService;	
 
 
 	private Set<Project> cascadedProjects = new LinkedHashSet<Project>();
 	private Set<Cycle> cascadedCycles = new LinkedHashSet<Cycle>();
+	/**
+	 * @return the projectService
+	 */
+	private ProjectService getProjectService() {
+		return projectService;
+	}
+
+	/**
+	 * @param projectService the projectService to set
+	 */
+	private void setProjectService(ProjectService projectService) {
+		this.projectService = projectService;
+	}
+
+	/**
+	 * @return the testrunService
+	 */
+	private TestrunService getTestrunService() {
+		return testrunService;
+	}
+
+	/**
+	 * @param testrunService the testrunService to set
+	 */
+	private void setTestrunService(TestrunService testrunService) {
+		this.testrunService = testrunService;
+	}
+
+	/**
+	 * @return the defectService
+	 */
+	private DefectService getDefectService() {
+		return defectService;
+	}
+
+	/**
+	 * @param defectService the defectService to set
+	 */
+	private void setDefectService(DefectService defectService) {
+		this.defectService = defectService;
+	}
+
 	private Set<Testrun> cascadedTestruns = new LinkedHashSet<Testrun>();
 	private Set<Testrun> requiredTestruns = new LinkedHashSet<Testrun>();
 	private Set<Defect> defects = new LinkedHashSet<Defect>();
@@ -91,8 +133,7 @@ public class ProjectSummary
 	private String customObject3;
 	private String customObject4;
 	private String customObject5;
-
-	@Autowired
+	
 	public ProjectSummary()
 	{
 
@@ -107,8 +148,8 @@ public class ProjectSummary
 	//    	this.projectID = project.getProjectID();    	
 	//    	this.project = project;     	
 	//    }
-	@Autowired
-	public ProjectSummary(Project project, String levelName)
+	
+	public ProjectSummary(Project project, String levelName, ProjectService projectService,TestrunService testrunService, DefectService defectService )
 	{
 		this.projectID = project.getProjectID();
 		if(levelName != null)
@@ -116,6 +157,9 @@ public class ProjectSummary
 			this.levelName = levelName;
 		}
 		this.project = project;  	
+		this.projectService = projectService;
+		this.testrunService = testrunService;
+		this.defectService = defectService;
 		//setCascadedProjects();
 	}
 	/**
@@ -125,10 +169,11 @@ public class ProjectSummary
 	{
 		if(cascadedProjects == null || cascadedProjects.isEmpty())
 		{		
+			
 			if(projectService.getParentAndChildProjects(projectID) != null && 
 					!projectService.getParentAndChildProjects(projectID).isEmpty())
 			{
-			cascadedProjects = projectService.getParentAndChildProjects(projectID);		
+				cascadedProjects = projectService.getParentAndChildProjects(projectID);		
 			}
 		}	
 		return cascadedProjects;
@@ -149,11 +194,32 @@ public class ProjectSummary
 	{		
 		if(cascadedCycles == null || cascadedCycles.isEmpty())
 		{		
-			if(projectService.getParentAndChildCycles(projectID) != null && 
-					!projectService.getParentAndChildCycles(projectID).isEmpty())
+			if(cascadedProjects == null || cascadedProjects.isEmpty())
 			{
-			cascadedCycles = projectService.getParentAndChildCycles(projectID);  
+				cascadedProjects = getCascadedProjects(); 
 			}
+			if(cascadedProjects != null && !cascadedProjects.isEmpty())
+			{
+				for(final Project project : cascadedProjects)
+				{
+					if(project.getCycles() != null && !project.getCycles().isEmpty())
+					{
+						if(cascadedCycles == null || cascadedCycles.isEmpty())
+						{
+							cascadedCycles = project.getCycles();
+						}
+						else
+						{
+							cascadedCycles.addAll(project.getCycles());
+						}
+					}
+				}
+			}
+//			if(projectService.getParentAndChildCycles(projectID) != null && 
+//					!projectService.getParentAndChildCycles(projectID).isEmpty())
+//			{
+//			cascadedCycles = projectService.getParentAndChildCycles(projectID);  
+//			}
 		}	
 		return cascadedCycles;
 	}
@@ -170,13 +236,34 @@ public class ProjectSummary
 	private Set<Testrun> getCascadedTestruns() 
 	{
 		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
-		{		
-			if(projectService.getCascadedAllTestRuns(projectID) != null && 
-					!projectService.getCascadedAllTestRuns(projectID).isEmpty())
+		{
+			cascadedCycles = getCascadedCycles(); 
+		}
+		if(cascadedCycles != null && !cascadedCycles.isEmpty())
+		{
+			for(final Cycle cycle : cascadedCycles)
 			{
-				cascadedTestruns = projectService.getCascadedAllTestRuns(projectID);  		
+				if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
+				{
+					if(cascadedTestruns == null || cascadedCycles.isEmpty())
+					{
+						cascadedTestruns = cycle.getTestruns();
+					}
+					else
+					{
+						cascadedTestruns.addAll(cycle.getTestruns());
+					}
+				}
 			}
 		}
+//		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
+//		{		
+//			if(projectService.getCascadedAllTestRuns(projectID) != null && 
+//					!projectService.getCascadedAllTestRuns(projectID).isEmpty())
+//			{
+//				cascadedTestruns = projectService.getCascadedAllTestRuns(projectID);  		
+//			}
+//		}
 		return cascadedTestruns;
 	}
 

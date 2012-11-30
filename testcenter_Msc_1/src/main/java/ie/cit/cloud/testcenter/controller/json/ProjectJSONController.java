@@ -29,7 +29,9 @@ import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -56,7 +58,11 @@ public class ProjectJSONController {
     @Autowired
     private ProjectService projectService;  
     @Autowired
-    private CycleService cycleService;   
+    private CycleService cycleService;    
+  	@Autowired
+  	private TestrunService testrunService;
+  	@Autowired
+  	private DefectService defectService;	
     
    
     // All Projects For a company
@@ -172,7 +178,7 @@ public class ProjectJSONController {
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
 			Project project = projectService.getProject(projectID); 
-			ProjectSummary projectSummary = new ProjectSummary(project, levelName);
+			ProjectSummary projectSummary = new ProjectSummary(project, levelName, projectService, testrunService, defectService);
 			
 	    	Company company = companyService.getCompany(projectSummary.getCompanyID());
 	    	

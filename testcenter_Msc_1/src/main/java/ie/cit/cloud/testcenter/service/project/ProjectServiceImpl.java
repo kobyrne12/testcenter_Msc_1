@@ -58,24 +58,24 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Autowired
 	@Qualifier("hibernateProjectRespository")
-	ProjectRepository projectRepo;    
+	private ProjectRepository projectRepo;    
 
 	@Autowired
-	CompanyService companyService;
+	private CompanyService companyService;
 	@Autowired
-	CycleService cycleService;
+	private CycleService cycleService;
 	@Autowired
-	TestplanService testplanService;
+	private TestplanService testplanService;
 	@Autowired
-	TestcaseService testcaseService;
+	private TestcaseService testcaseService;
 	@Autowired
-	TestrunService testrunService;
+	private TestrunService testrunService;
 	@Autowired
-	DefectService defectService;
+	private DefectService defectService;
 	@Autowired
-	RequirementService requirementService;
+	private RequirementService requirementService;
 	@Autowired
-	EnvironmentService environmentService;	
+	private EnvironmentService environmentService;	
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Set<Project> getAllProjects() {
@@ -374,75 +374,73 @@ public class ProjectServiceImpl implements ProjectService {
 
 		for(final Project project : projects)
 		{						
-			projectSummarySet.add(getProjectSummary(new ProjectSummary(project, levelName)));
+			//projectSummarySet.add(getProjectSummary(new ProjectSummary(project, levelName)));
+			projectSummarySet.add(new ProjectSummary(project, levelName, this, testrunService, defectService));
 		}
 
 		projectSummaryList.setProjects(projectSummarySet);
 		return projectSummaryList;
 	}
 
-		public ProjectSummary getProjectSummary(ProjectSummary oldProjectSummary )
-		{
-			
-			ProjectSummary newProjectSummary = new ProjectSummary();
-	
-			newProjectSummary.setProjectID(oldProjectSummary.getProjectID());
-			newProjectSummary.setCompanyID(oldProjectSummary.getCompanyID());
-			newProjectSummary.setProjectName(oldProjectSummary.getProjectName());	
-			newProjectSummary.setParentProjectName(oldProjectSummary.getParentProjectName());
-			
-			newProjectSummary.setTotalChildProjects(oldProjectSummary.getTotalChildProjects());
-			
-			newProjectSummary.setCurrentPercent(oldProjectSummary.getCurrentPercent());
-			newProjectSummary.setRequiredPercent(oldProjectSummary.getRequiredPercent());
-			
-			newProjectSummary.setTotalCycles(oldProjectSummary.getTotalCycles());
-			newProjectSummary.setTotalEnvironments(oldProjectSummary.getTotalEnvironments());
-			newProjectSummary.setTotalRequirements(oldProjectSummary.getTotalRequirements());
-			
-			newProjectSummary.setTotalAllTestruns(oldProjectSummary.getTotalAllTestruns());
-			newProjectSummary.setTotalRequiredTestruns(oldProjectSummary.getTotalRequiredTestruns());
-			newProjectSummary.setTotalOptionalTestruns(oldProjectSummary.getTotalOptionalTestruns());
-			
-			newProjectSummary.setTotalTestplans(oldProjectSummary.getTotalTestplans());
-			
-			newProjectSummary.setTotalTestcases(oldProjectSummary.getTotalTestcases());
-			
-			newProjectSummary.setTotalDefects(oldProjectSummary.getTotalDefects());
-			
-			newProjectSummary.setTotalCurrentSev1s(oldProjectSummary.getTotalCurrentSev1s());
-			newProjectSummary.setTotalCurrentSev2s(oldProjectSummary.getTotalCurrentSev2s());
-			newProjectSummary.setTotalCurrentSev3s(oldProjectSummary.getTotalCurrentSev3s());
-			newProjectSummary.setTotalCurrentSev4s(oldProjectSummary.getTotalCurrentSev4s());
-			
-			newProjectSummary.setTotalAllowedSev1s(oldProjectSummary.getTotalAllowedSev1s());
-			newProjectSummary.setTotalAllowedSev2s(oldProjectSummary.getTotalAllowedSev2s());
-			newProjectSummary.setTotalAllowedSev3s(oldProjectSummary.getTotalAllowedSev3s());
-			newProjectSummary.setTotalAllowedSev4s(oldProjectSummary.getTotalAllowedSev4s());
-	
-			newProjectSummary.setTotalTesters(oldProjectSummary.getTotalTesters());
-			newProjectSummary.setTotalSeniorTesters(oldProjectSummary.getTotalSeniorTesters());
-			newProjectSummary.setTotalDevelopers(oldProjectSummary.getTotalDevelopers());
-			newProjectSummary.setTotalSeniorDevelopers(oldProjectSummary.getTotalSeniorDevelopers());
-			
-			newProjectSummary.setLastModifiedBy(oldProjectSummary.getLastModifiedBy());
-			newProjectSummary.setLastModifiedDate(oldProjectSummary.getLastModifiedDate());
-			newProjectSummary.setCreatedBy(oldProjectSummary.getCreatedBy());
-			newProjectSummary.setCreationDate(oldProjectSummary.getCreationDate());	
-			
-			return newProjectSummary;
-		}
-		
+//	public ProjectSummary getProjectSummary(ProjectSummary oldProjectSummary )
+//	{
+//
+//		ProjectSummary newProjectSummary = new ProjectSummary();
+//
+//		newProjectSummary.setProjectID(oldProjectSummary.getProjectID());
+//		newProjectSummary.setCompanyID(oldProjectSummary.getCompanyID());
+//		newProjectSummary.setProjectName(oldProjectSummary.getProjectName());	
+//		newProjectSummary.setParentProjectName(oldProjectSummary.getParentProjectName());
+//
+//		newProjectSummary.setTotalChildProjects(oldProjectSummary.getTotalChildProjects());
+//
+//		newProjectSummary.setCurrentPercent(oldProjectSummary.getCurrentPercent());
+//		newProjectSummary.setRequiredPercent(oldProjectSummary.getRequiredPercent());
+//
+//		newProjectSummary.setTotalCycles(oldProjectSummary.getTotalCycles());
+//		newProjectSummary.setTotalEnvironments(oldProjectSummary.getTotalEnvironments());
+//		newProjectSummary.setTotalRequirements(oldProjectSummary.getTotalRequirements());
+//
+//		newProjectSummary.setTotalAllTestruns(oldProjectSummary.getTotalAllTestruns());
+//		newProjectSummary.setTotalRequiredTestruns(oldProjectSummary.getTotalRequiredTestruns());
+//		newProjectSummary.setTotalOptionalTestruns(oldProjectSummary.getTotalOptionalTestruns());
+//
+//		newProjectSummary.setTotalTestplans(oldProjectSummary.getTotalTestplans());
+//
+//		newProjectSummary.setTotalTestcases(oldProjectSummary.getTotalTestcases());
+//
+//		newProjectSummary.setTotalDefects(oldProjectSummary.getTotalDefects());
+//
+//		newProjectSummary.setTotalCurrentSev1s(oldProjectSummary.getTotalCurrentSev1s());
+//		newProjectSummary.setTotalCurrentSev2s(oldProjectSummary.getTotalCurrentSev2s());
+//		newProjectSummary.setTotalCurrentSev3s(oldProjectSummary.getTotalCurrentSev3s());
+//		newProjectSummary.setTotalCurrentSev4s(oldProjectSummary.getTotalCurrentSev4s());
+//
+//		newProjectSummary.setTotalAllowedSev1s(oldProjectSummary.getTotalAllowedSev1s());
+//		newProjectSummary.setTotalAllowedSev2s(oldProjectSummary.getTotalAllowedSev2s());
+//		newProjectSummary.setTotalAllowedSev3s(oldProjectSummary.getTotalAllowedSev3s());
+//		newProjectSummary.setTotalAllowedSev4s(oldProjectSummary.getTotalAllowedSev4s());
+//
+//		newProjectSummary.setTotalTesters(oldProjectSummary.getTotalTesters());
+//		newProjectSummary.setTotalSeniorTesters(oldProjectSummary.getTotalSeniorTesters());
+//		newProjectSummary.setTotalDevelopers(oldProjectSummary.getTotalDevelopers());
+//		newProjectSummary.setTotalSeniorDevelopers(oldProjectSummary.getTotalSeniorDevelopers());
+//
+//		newProjectSummary.setLastModifiedBy(oldProjectSummary.getLastModifiedBy());
+//		newProjectSummary.setLastModifiedDate(oldProjectSummary.getLastModifiedDate());
+//		newProjectSummary.setCreatedBy(oldProjectSummary.getCreatedBy());
+//		newProjectSummary.setCreationDate(oldProjectSummary.getCreationDate());	
+//
+//		return newProjectSummary;
+//	}
+//	
+
 	public RelatedObjectList getRelatedObjects(long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-
 
 
 	///////////////////////////////////////////////////////
