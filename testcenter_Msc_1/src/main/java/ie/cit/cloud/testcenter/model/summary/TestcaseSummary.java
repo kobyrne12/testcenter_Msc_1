@@ -3,7 +3,17 @@
  */
 package ie.cit.cloud.testcenter.model.summary;
 
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
+import ie.cit.cloud.testcenter.service.testplan.TestplanService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
+
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.Basic;
 
@@ -12,48 +22,180 @@ import javax.persistence.Basic;
  *
  */
 
-public class TestcaseSummary {	
-	
-    private long testcaseID;
-    private long companyID;
-    private String testcaseName;
-    private String testplanName;
-	private String testplanSection;	
-	private int testplanOrderNum;	
-	private String level; // Regression/New Feature	
-	private String stage; // Draft/Ready For Review / Approved	
-	private Double estimatedTime; // Draft/Ready For Review / Approved
-    private int totalCurrentSev1s;
-    private int totalCurrentSev2s;
-    private int totalCurrentSev3s; 
-    private int totalCurrentSev4s;   
-    private int totalDefects;  
-    private int totalCycles;
-    private int totalProjects;
-    private int totalEnvironments;
-    private int totalRequirements;
-    private int totalAllTestruns;
-    private int totalRequiredTestruns;
-    private int totalOptionalTestruns;   
-    private int totalTesters;
-    private int totalSeniorTesters;
-    private int totalDevelopers;
-    private int totalSeniorDevelopers;
-    private String lastModifiedBy;
-    private Date lastModifiedDate;    
-    private String createdBy;
-    private Date creationDate; 
-    
-    private String customObject1;
-    private String customObject2;
-    private String customObject3;
-    private String customObject4;
-    private String customObject5;
-   // private int level = 0; 			
-  //  private Boolean isLeaf = false;
-    
-    public TestcaseSummary() {	
-    }
+public class TestcaseSummary
+{	
+
+	//private ProjectService projectService;
+	//private CycleService cycleService;
+	private TestcaseService testcaseService;
+	private TestrunService testrunService;
+	private DefectService defectService;	
+	private TestplanService testplanService;
+
+	private Set<Testrun> allTestruns = new LinkedHashSet<Testrun>();
+	private Set<Testrun> requiredTestruns = new LinkedHashSet<Testrun>();
+	//private Set<Testrun> completedTestruns = new LinkedHashSet<Testrun>();
+	//private Set<Testrun> incompleteTestruns = new LinkedHashSet<Testrun>();
+	private Set<Defect> defects = new LinkedHashSet<Defect>();
+
+	//private Project project = new Project();
+	//private Cycle cycle = new Cycle();
+	private Testcase testcase = new Testcase();
+	////////////////////////////////////
+	private long testcaseID = -1;    
+	private String testcaseName = null;
+	private String testplanName = null;
+	private String testplanSection = null;
+	private int testplanOrderNum = -1;
+
+	private String levelName = null;
+	private String stage = null; // Draft/Ready For Review / Approved	
+	private Double estimatedTime = null; // Draft/Ready For Review / Approved
+
+	private int totalDefects = -1; 
+	private int totalCurrentSev1s = -1;
+	private int totalCurrentSev2s = -1;
+	private int totalCurrentSev3s = -1;
+	private int totalCurrentSev4s = -1; 
+
+	private int totalCycles = -1;
+	private int totalProjects = -1;
+	private int totalEnvironments = -1;
+	private int totalRequirements = -1;
+
+	private int totalAllTestruns = -1;
+	private int totalRequiredTestruns = -1;
+	private int totalOptionalTestruns = -1;   
+
+	private int totalTesters = -1;
+	private int totalSeniorTesters = -1;
+	private int totalDevelopers = -1;
+	private int totalSeniorDevelopers = -1;
+
+	private String lastModifiedBy = null;
+	private Date lastModifiedDate = null;    
+	private String createdBy = null;
+	private Date creationDate = null;
+
+	private long companyID = -1;
+
+	private String customObject1;
+	private String customObject2;
+	private String customObject3;
+	private String customObject4;
+	private String customObject5;
+
+	public TestcaseSummary() {	
+	}
+
+	public TestcaseSummary(Testcase testcase, String levelName, TestrunService testrunService, DefectService defectService,TestplanService testplanService )
+	{
+		this.testcaseID = testcase.getTestcaseID();
+		if(levelName != null)
+		{
+			this.levelName = levelName;
+		}
+		this.testcase = testcase;  	
+		//this.projectService = projectService; 
+		//this.cycleService = cycleService;
+		this.testrunService = testrunService;
+		this.defectService = defectService;		
+		this.testplanService = testplanService;
+	}
+
+
+	/**
+	 * @return the allTestruns
+	 */
+	private Set<Testrun> getAllTestruns()
+	{
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			if(testcase.getTestruns() != null || !testcase.getTestruns().isEmpty())
+			{
+				allTestruns = testcase.getTestruns();
+			}	
+		}			
+		return allTestruns;
+	}
+
+	/**
+	 * @param allTestruns the allTestruns to set
+	 */
+	private void setAllTestruns(Set<Testrun> allTestruns) {
+		this.allTestruns = allTestruns;
+	}
+
+	/**
+	 * @return the requiredTestruns
+	 */
+	private Set<Testrun> getRequiredTestruns() 
+	{
+		if(requiredTestruns == null || requiredTestruns.isEmpty() )
+		{
+			if(allTestruns == null || allTestruns.isEmpty())
+			{
+				allTestruns = getAllTestruns(); 
+			}
+			if(allTestruns != null && !allTestruns.isEmpty())
+			{			
+				for(final Testrun testrun : allTestruns)
+				{
+					if(testrunService.isRequired(testrun.getTestrunID()))
+					{
+						this.requiredTestruns.add(testrun);
+					}
+				}	
+			}
+		}
+		return requiredTestruns;		
+	}
+
+	/**
+	 * @param requiredTestruns the requiredTestruns to set
+	 */
+	private void setRequiredTestruns(Set<Testrun> requiredTestruns) {
+		this.requiredTestruns = requiredTestruns;
+	}
+
+	/**
+	 * @return the defects
+	 */
+	private Set<Defect> getDefects() 
+	{
+		if(defects == null || defects.isEmpty())
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
+					{
+						if(defects == null || defects.isEmpty())
+						{
+							defects = testrun.getDefects();
+						}
+						else
+						{
+							defects.addAll(testrun.getDefects());
+						}						
+					}					
+				}				
+			}
+		}	
+		return defects;		
+	}
+
+	/**
+	 * @param defects the defects to set
+	 */
+	private void setDefects(Set<Defect> defects) {
+		this.defects = defects;
+	}
 
 	/**
 	 * @return the testcaseID
@@ -70,24 +212,18 @@ public class TestcaseSummary {
 	}
 
 	/**
-	 * @return the companyID
-	 */
-	public long getCompanyID() {
-		return companyID;
-	}
-
-	/**
-	 * @param companyID the companyID to set
-	 */
-	public void setCompanyID(long companyID) {
-		this.companyID = companyID;
-	}
-
-	/**
 	 * @return the testcaseName
 	 */
-	public String getTestcaseName() {
-		return testcaseName;
+	public String getTestcaseName()
+	{
+		if(testcaseName == null)
+		{
+			if(testcase != null)
+			{
+				testcaseName = testcase.getTestcaseName();
+			}
+		}
+		return testcaseName;		
 	}
 
 	/**
@@ -97,74 +233,149 @@ public class TestcaseSummary {
 		this.testcaseName = testcaseName;
 	}
 
-	
 	/**
-	 * @return the totalCurrentSev1s
+	 * @return the testplanName
 	 */
-	public int getTotalCurrentSev1s() {
-		return totalCurrentSev1s;
+	public String getTestplanName()
+	{
+		if(testplanName == null)
+		{
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			{
+				testplanName = testplanService.getTestplan(testcase.getTestplanID()).getTestplanName();
+			}
+		}
+		return testplanName;
 	}
 
 	/**
-	 * @param totalCurrentSev1s the totalCurrentSev1s to set
+	 * @param testplanName the testplanName to set
 	 */
-	public void setTotalCurrentSev1s(int totalCurrentSev1s) {
-		this.totalCurrentSev1s = totalCurrentSev1s;
-	}
-
-
-
-	/**
-	 * @return the totalCurrentSev2s
-	 */
-	public int getTotalCurrentSev2s() {
-		return totalCurrentSev2s;
+	public void setTestplanName(String testplanName) {
+		this.testplanName = testplanName;
 	}
 
 	/**
-	 * @param totalCurrentSev2s the totalCurrentSev2s to set
+	 * @return the testplanSection
 	 */
-	public void setTotalCurrentSev2s(int totalCurrentSev2s) {
-		this.totalCurrentSev2s = totalCurrentSev2s;
-	}
-
-	
-
-	/**
-	 * @return the totalCurrentSev3s
-	 */
-	public int getTotalCurrentSev3s() {
-		return totalCurrentSev3s;
-	}
-
-	/**
-	 * @param totalCurrentSev3s the totalCurrentSev3s to set
-	 */
-	public void setTotalCurrentSev3s(int totalCurrentSev3s) {
-		this.totalCurrentSev3s = totalCurrentSev3s;
-	}
-
-	
-
-	/**
-	 * @return the totalCurrentSev4s
-	 */
-	public int getTotalCurrentSev4s() {
-		return totalCurrentSev4s;
+	public String getTestplanSection() 
+	{
+		if(testplanSection == null)
+		{
+			if(testplanService.getTestplanSection(testcase.getTestplanSectionID()) != null)
+			{
+				testplanSection = testplanService.getTestplanSection(testcase.getTestplanSectionID()).getTestplanSectionName();
+			}
+		}
+		return testplanSection;
 	}
 
 	/**
-	 * @param totalCurrentSev4s the totalCurrentSev4s to set
+	 * @param testplanSection the testplanSection to set
 	 */
-	public void setTotalCurrentSev4s(int totalCurrentSev4s) {
-		this.totalCurrentSev4s = totalCurrentSev4s;
+	public void setTestplanSection(String testplanSection) {
+		this.testplanSection = testplanSection;
+	}
+
+	/**
+	 * @return the testplanOrderNum
+	 */
+	public int getTestplanOrderNum() 
+	{
+		if(testcaseName == null)
+		{
+			if(testcase.getTestplanOrderNum() != -1)
+			{
+				testplanOrderNum = testcase.getTestplanOrderNum();
+			}
+		}		
+		return testplanOrderNum;
+	}
+
+	/**
+	 * @param testplanOrderNum the testplanOrderNum to set
+	 */
+	public void setTestplanOrderNum(int testplanOrderNum) {
+		this.testplanOrderNum = testplanOrderNum;
+	}
+
+	/**
+	 * @return the levelName
+	 */
+	public String getLevelName()
+	{
+		return levelName;
+	}
+
+	/**
+	 * @param levelName the levelName to set
+	 */
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+	/**
+	 * @return the stage
+	 */
+	public String getStage() 
+	{
+		if(stage == null)
+		{
+			if(testcase.getStage() != null)
+			{
+				stage = testcase.getStage();
+			}
+		}			
+		return stage;
+	}
+
+	/**
+	 * @param stage the stage to set
+	 */
+	public void setStage(String stage) {
+		this.stage = stage;
+	}
+
+	/**
+	 * @return the estimatedTime
+	 */
+	public Double getEstimatedTime() 
+	{
+		if(estimatedTime == null)
+		{
+			if(testcase.getStage() != null)
+			{
+				estimatedTime = testcase.getEstimatedTime();
+			}
+		}				
+		return estimatedTime;
+	}
+
+	/**
+	 * @param estimatedTime the estimatedTime to set
+	 */
+	public void setEstimatedTime(Double estimatedTime) {
+		this.estimatedTime = estimatedTime;
 	}
 
 	/**
 	 * @return the totalDefects
 	 */
-	public int getTotalDefects() {
-		return totalDefects;
+	public int getTotalDefects() 
+	{
+		int count = 0;
+		if(totalDefects == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				count = defects.size();
+			}
+		}
+		return count;	
 	}
 
 	/**
@@ -175,10 +386,155 @@ public class TestcaseSummary {
 	}
 
 	/**
+	 * @return the totalCurrentSev1s
+	 */
+	public int getTotalCurrentSev1s() 
+	{
+		int count = 0;
+		if(totalCurrentSev1s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev1(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}	
+			}
+		}
+		return count;	
+	}
+
+	/**
+	 * @param totalCurrentSev1s the totalCurrentSev1s to set
+	 */
+	public void setTotalCurrentSev1s(int totalCurrentSev1s) {
+		this.totalCurrentSev1s = totalCurrentSev1s;
+	}
+
+	/**
+	 * @return the totalCurrentSev2s
+	 */
+	public int getTotalCurrentSev2s() 
+	{
+		int count = 0;
+		if(totalCurrentSev2s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev2(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}	
+			}
+		}
+		return count;	
+	}
+
+	/**
+	 * @param totalCurrentSev2s the totalCurrentSev2s to set
+	 */
+	public void setTotalCurrentSev2s(int totalCurrentSev2s) {
+		this.totalCurrentSev2s = totalCurrentSev2s;
+	}
+
+	/**
+	 * @return the totalCurrentSev3s
+	 */
+	public int getTotalCurrentSev3s()
+	{
+		int count = 0;
+		if(totalCurrentSev3s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev3(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}	
+			}
+		}
+		return count;		
+	}
+
+	/**
+	 * @param totalCurrentSev3s the totalCurrentSev3s to set
+	 */
+	public void setTotalCurrentSev3s(int totalCurrentSev3s) {
+		this.totalCurrentSev3s = totalCurrentSev3s;
+	}
+
+	/**
+	 * @return the totalCurrentSev4s
+	 */
+	public int getTotalCurrentSev4s() 
+	{
+		int count = 0;
+		if(totalCurrentSev4s == -1)
+		{
+			if(defects == null || defects.isEmpty())
+			{
+				defects = getDefects();
+			}
+			if(defects != null && !defects.isEmpty())
+			{
+				for(final Defect defect : defects)
+				{
+					if(defectService.isSev4(defect.getDefectID()))
+					{
+						count ++;
+					}					
+				}	
+			}
+		}
+		return count;	
+	}
+
+	/**
+	 * @param totalCurrentSev4s the totalCurrentSev4s to set
+	 */
+	public void setTotalCurrentSev4s(int totalCurrentSev4s) {
+		this.totalCurrentSev4s = totalCurrentSev4s;
+	}
+
+	/**
 	 * @return the totalCycles
 	 */
-	public int getTotalCycles() {
-		return totalCycles;
+	public int getTotalCycles() 
+	{
+		int count = 0;
+		if (totalCycles == -1)
+		{
+			if(allTestruns == null || allTestruns.isEmpty())
+			{
+				allTestruns = getAllTestruns();
+			}
+			if(allTestruns != null && !allTestruns.isEmpty())
+			{	
+				count = allTestruns.size();				
+			}
+		}
+		return count;			
 	}
 
 	/**
@@ -189,10 +545,56 @@ public class TestcaseSummary {
 	}
 
 	/**
+	 * @return the totalProjects
+	 */
+	public int getTotalProjects()
+	{
+		int count = 0;
+		if (totalProjects == -1)
+		{
+			if(allTestruns == null || allTestruns.isEmpty())
+			{
+				allTestruns = getAllTestruns();
+			}
+			if(allTestruns != null && !allTestruns.isEmpty())
+			{	
+				count = allTestruns.size();				
+			}
+		}
+		return count;			
+	}
+
+	/**
+	 * @param totalProjects the totalProjects to set
+	 */
+	public void setTotalProjects(int totalProjects) {
+		this.totalProjects = totalProjects;
+	}
+
+	/**
 	 * @return the totalEnvironments
 	 */
-	public int getTotalEnvironments() {
-		return totalEnvironments;
+	public int getTotalEnvironments() 
+	{
+		int count = 0;
+		if(totalEnvironments == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty())
+					{
+						count += testrun.getEnvironments().size();
+					}					
+				}				
+			}		
+		}
+		return count;
 	}
 
 	/**
@@ -205,8 +607,27 @@ public class TestcaseSummary {
 	/**
 	 * @return the totalRequirements
 	 */
-	public int getTotalRequirements() {
-		return totalRequirements;
+	public int getTotalRequirements() 
+	{
+		int count = 0;
+		if(totalRequirements == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				for(final Testrun testrun : requiredTestruns)
+				{
+					if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
+					{
+						count += testrun.getRequirements().size();
+					}
+				}
+			}		
+		}
+		return count;
 	}
 
 	/**
@@ -219,8 +640,21 @@ public class TestcaseSummary {
 	/**
 	 * @return the totalAllTestruns
 	 */
-	public int getTotalAllTestruns() {
-		return totalAllTestruns;
+	public int getTotalAllTestruns()
+	{
+		int count = 0;
+		if (totalAllTestruns == -1)
+		{
+			if(allTestruns == null || allTestruns.isEmpty())
+			{
+				allTestruns = getAllTestruns();
+			}
+			if(allTestruns != null && !allTestruns.isEmpty())
+			{			
+				count = allTestruns.size();
+			}
+		}
+		return count;			
 	}
 
 	/**
@@ -233,8 +667,21 @@ public class TestcaseSummary {
 	/**
 	 * @return the totalRequiredTestruns
 	 */
-	public int getTotalRequiredTestruns() {
-		return totalRequiredTestruns;
+	public int getTotalRequiredTestruns()
+	{
+		int count = 0;
+		if(totalRequiredTestruns == -1)
+		{
+			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			{
+				requiredTestruns = getRequiredTestruns();
+			}
+			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			{
+				count = requiredTestruns.size();
+			}
+		}
+		return count;
 	}
 
 	/**
@@ -247,8 +694,27 @@ public class TestcaseSummary {
 	/**
 	 * @return the totalOptionalTestruns
 	 */
-	public int getTotalOptionalTestruns() {
-		return totalOptionalTestruns;
+	public int getTotalOptionalTestruns() 
+	{
+		int count = 0;
+		if (totalOptionalTestruns == -1)
+		{
+			if(allTestruns == null || allTestruns.isEmpty())
+			{
+				allTestruns = getAllTestruns();
+			}
+			if(allTestruns != null && !allTestruns.isEmpty())
+			{			
+				for(final Testrun testrun : allTestruns)
+				{
+					if(!testrunService.isRequired(testrun.getTestrunID()))
+					{
+						count++;
+					}
+				}			
+			}
+		}
+		return count;			
 	}
 
 	/**
@@ -317,7 +783,20 @@ public class TestcaseSummary {
 	/**
 	 * @return the lastModifiedBy
 	 */
-	public String getLastModifiedBy() {
+	public String getLastModifiedBy() 
+	{
+		if(lastModifiedBy == null)
+		{			
+			if(testcase.getLastModifiedByUserID() == -1)
+			{
+				lastModifiedBy = "n/a";
+			}
+			else
+			{
+				//TODO look up user name testcase.getLastModifiedByUserID()
+				lastModifiedBy = "USERNAME";
+			}	
+		}
 		return lastModifiedBy;
 	}
 
@@ -331,21 +810,42 @@ public class TestcaseSummary {
 	/**
 	 * @return the lastModifiedDate
 	 */
-	public Date getLastModifiedDate() {
+	public Date getLastModifiedDate() 
+	{
+		if(lastModifiedDate == null)
+		{
+			if(testcase.getLastModifiedDate() != null)			
+			{
+				lastModifiedDate = testcase.getLastModifiedDate();
+			}				
+		}
 		return lastModifiedDate;
 	}
 
 	/**
-	 * @param date the lastModifiedDate to set
+	 * @param lastModifiedDate the lastModifiedDate to set
 	 */
-	public void setLastModifiedDate(Date date) {
-		this.lastModifiedDate = date;
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 
 	/**
 	 * @return the createdBy
 	 */
-	public String getCreatedBy() {
+	public String getCreatedBy()
+	{
+		if(createdBy == null)
+		{			
+			if(testcase.getCreatedByUserID() == -1)
+			{
+				createdBy = "n/a";
+			}
+			else
+			{
+				//TODO look up user name testcase.getCreatedByUserID()
+				createdBy = "USERNAME";
+			}	
+		}
 		return createdBy;
 	}
 
@@ -359,8 +859,16 @@ public class TestcaseSummary {
 	/**
 	 * @return the creationDate
 	 */
-	public Date getCreationDate() {
-		return creationDate;
+	public Date getCreationDate()
+	{
+		if(creationDate == null)
+		{
+			if(testcase.getCreationDate() != null)			
+			{
+				creationDate = testcase.getCreationDate();
+			}				
+		}
+		return creationDate;		
 	}
 
 	/**
@@ -369,6 +877,18 @@ public class TestcaseSummary {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+
+	/**
+	 * @return the companyID
+	 */
+	public long getCompanyID() 
+	{
+		if(testcase.getCompanyID() != -1)			
+		{
+			companyID = testcase.getCompanyID();
+		}	
+		return companyID;
+	}	
 
 	/**
 	 * @return the customObject1
@@ -440,104 +960,5 @@ public class TestcaseSummary {
 		this.customObject5 = customObject5;
 	}
 
-	/**
-	 * @return the testplanSection
-	 */
-	public String getTestplanSection() {
-		return testplanSection;
-	}
 
-	/**
-	 * @param testplanSection the testplanSection to set
-	 */
-	public void setTestplanSection(String testplanSection) {
-		this.testplanSection = testplanSection;
-	}
-
-	/**
-	 * @return the testplanOrderNum
-	 */
-	public int getTestplanOrderNum() {
-		return testplanOrderNum;
-	}
-
-	/**
-	 * @param testplanOrderNum the testplanOrderNum to set
-	 */
-	public void setTestplanOrderNum(int testplanOrderNum) {
-		this.testplanOrderNum = testplanOrderNum;
-	}
-
-	/**
-	 * @return the level
-	 */
-	public String getLevel() {
-		return level;
-	}
-
-	/**
-	 * @param level the level to set
-	 */
-	public void setLevel(String level) {
-		this.level = level;
-	}
-
-	/**
-	 * @return the stage
-	 */
-	public String getStage() {
-		return stage;
-	}
-
-	/**
-	 * @param stage the stage to set
-	 */
-	public void setStage(String stage) {
-		this.stage = stage;
-	}
-
-	/**
-	 * @return the estimatedTime
-	 */
-	public Double getEstimatedTime() {
-		return estimatedTime;
-	}
-
-	/**
-	 * @param estimatedTime the estimatedTime to set
-	 */
-	public void setEstimatedTime(Double estimatedTime) {
-		this.estimatedTime = estimatedTime;
-	}
-
-	/**
-	 * @return the testplanName
-	 */
-	public String getTestplanName() {
-		return testplanName;
-	}
-
-	/**
-	 * @param testplanName the testplanName to set
-	 */
-	public void setTestplanName(String testplanName) {
-		this.testplanName = testplanName;
-	}
-
-	/**
-	 * @return the totalProjects
-	 */
-	public int getTotalProjects() {
-		return totalProjects;
-	}
-
-	/**
-	 * @param totalProjects the totalProjects to set
-	 */
-	public void setTotalProjects(int totalProjects) {
-		this.totalProjects = totalProjects;
-	}
-
-
-   
 }

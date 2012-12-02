@@ -24,12 +24,16 @@ import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
+import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
+import ie.cit.cloud.testcenter.service.testplan.TestplanService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 
 
 import org.codehaus.jackson.JsonParseException;
@@ -51,12 +55,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 @RequestMapping("testcase")
 public class TestcaseJSONController {    
-    @Autowired
+	@Autowired
     private CompanyService companyService; 
     @Autowired
     private ProjectService projectService;  
     @Autowired
+    private CycleService cycleService;    
+	@Autowired
+  	private TestplanService testplanService;
+    @Autowired
     private TestcaseService testcaseService;   
+	@Autowired
+  	private TestrunService testrunService;
+  	@Autowired
+  	private DefectService defectService;
     
    
     // All Testcases For a company
@@ -170,7 +182,7 @@ public class TestcaseJSONController {
     		@RequestParam(required = false) String requirementID,
     		@RequestParam(required = false) String defectID,    		
     		@RequestParam(required = false) String testrunID,
-    		@RequestParam(required = false) String level,
+    		@RequestParam(required = false) String levelName,
     		@RequestParam(required = false) String stage,
     		@RequestParam(required = false) String required
     		) 
@@ -179,7 +191,7 @@ public class TestcaseJSONController {
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
 			Testcase testcase = testcaseService.getTestcase(testcaseID); 
-			TestcaseSummary testcaseSummary = testcaseService.getTestcaseSummary(testcase.getCompanyID(), testcase,level,stage,required);
+			TestcaseSummary testcaseSummary = new TestcaseSummary(testcase, levelName, testrunService, defectService, testplanService);
 			
 	    	Company company = companyService.getCompany(testcaseSummary.getCompanyID());
 	    	
@@ -243,13 +255,15 @@ public class TestcaseJSONController {
 	 * Handles request for create a new Testcase 
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public @ResponseBody String addNewProjectAJAX(
-			@RequestParam(value="companyID", required=true) long companyID,
+	public @ResponseBody String addNewTestcase(
+			@RequestParam(value="companyID", required=true) Long companyID,
 			@RequestParam(value="testcaseName", required=true) String testcaseName,
 			@RequestParam(value="projectID", defaultValue="") String projectID,		
 			Model model) 
 	{
+		
 		boolean alreadyExists = false;
+		System.out.println("#%%#%#%#%#%#%#%# : "+companyID);
 		try
 		{  
 			Testcase testcase = testcaseService.getTestcaseByName(testcaseName);		
@@ -264,25 +278,32 @@ public class TestcaseJSONController {
 		}
 		if(alreadyExists == false)
 		{
-			try{    		    	
-		    	Testcase testcase = new Testcase(companyID,testcaseName,null,"APPROVED",
-		    			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER");
-		    	try
-		    	{
-		    		testcaseService.addNewTestcase(testcase);	
-		    	}
-		    	catch(Exception e)
-		    	{
-		    		return "ERROR :: Could not add Test Case :"+testcaseName; 
-		    	}
+			try{    	
+				if(companyID != null)
+				{
+					Testcase testcase = new Testcase(companyID,testcaseName,null,"DRAFT",
+							"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER");
+
+					try
+					{
+						testcaseService.addNewTestcase(testcase);	
+					}
+					catch(ConstraintViolationException CVE)
+					{   			
+						System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
+						return CVE.getConstraintViolations().toString();
+					}
+				
+//		    		System.out.println(e);
+//		    		return "ERROR :: Could not add Test Case :"+testcaseName; 
+//		    	}
 		    	if(!projectID.isEmpty())
 		    	{
 			    	Project project = projectService.getProject(Long.valueOf(projectID));
 			    	if(project == null)
 			    	{
 			    		return "ERROR :: Could not find project :"+ projectID; 
-			    	}			    	
-			    	
+			    	}				    	
 			    	try
 			    	{
 			    		project.getTestcases().add(testcase);     
@@ -293,7 +314,12 @@ public class TestcaseJSONController {
 			    		return "ERROR :: Could not add Test Case :"+testcaseName+" To project :"+ projectID; 
 			    	}					
 				}
-		    	return "ok";   
+		    		return "ERROR:: company is null";   
+				}
+				else
+				{
+					return "ok";   
+				}
 			}
 			catch(ConstraintViolationException CVE)
 			{   			

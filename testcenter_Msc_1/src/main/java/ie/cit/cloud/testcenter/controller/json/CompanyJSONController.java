@@ -299,7 +299,7 @@ public class CompanyJSONController {
     	Testcase testcase = testcaseService.getTestcase(testcaseID);
     	
     	testrunService.addNewTestrun(new Testrun(testcase.getTestcaseName(),testcaseID,cycleID,
-    			testcase.getEstimatedTime(),testcase.getLevel(),
+    			testcase.getEstimatedTime(),testcase.getTestrunLevel(),
     			testcaseService.getLastTestRunID(testcase.getTestcaseID()),     			   			
     			testcase.getTester(),testcase.getSeniorTester()));    	
     } 

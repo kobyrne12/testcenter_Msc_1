@@ -198,7 +198,7 @@ public interface CycleService {
 	 
 	Set<Cycle> getAllChildCycles(long cycleID);
 	 
-	CycleSummary getCycleSummary(long companyID, long cycleID, String level);
+	//CycleSummary getCycleSummary(long companyID, long cycleID, String level);
 	 
 	CycleSummaryList getGridCycles(long companyID, String projectID, String cycleID,
 			String testplanID,String testcaseID, String testrunID, String defectID, 

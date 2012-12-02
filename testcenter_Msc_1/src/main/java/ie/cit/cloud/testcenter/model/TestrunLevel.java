@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -32,10 +33,12 @@ public class TestrunLevel
 	@Basic    
 	private int testrunLevelRequiredPercent;
 
-	@OneToOne(mappedBy="level", fetch=FetchType.EAGER)	
+	@OneToOne(mappedBy="testrunLevel", fetch=FetchType.EAGER)		
+    @PrimaryKeyJoinColumn	
 	private Testrun testrun;
 	
-	@OneToOne(mappedBy="level", fetch=FetchType.EAGER)	
+	@OneToOne(mappedBy="testrunLevel", fetch=FetchType.EAGER)		
+    @PrimaryKeyJoinColumn
 	private Testcase testcase;
 	
 	@ManyToMany(mappedBy="testrunLevels", fetch=FetchType.EAGER)

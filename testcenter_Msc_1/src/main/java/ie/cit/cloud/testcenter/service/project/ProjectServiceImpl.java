@@ -89,7 +89,13 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Project getProject(long projectID) {
-		return projectRepo.findById(projectID);
+		try{
+			return projectRepo.findById(projectID);			
+		}
+		catch(NoResultException nre)			
+		{	
+			return null;
+		}			
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
@@ -165,13 +171,16 @@ public class ProjectServiceImpl implements ProjectService {
 		columnModelSet.add(new GridAttributes("overAllState","setOverallBarChart","unSetBarChart", 80));
 		
 		colNames.add("Parent");
-		columnModelSet.add(new GridAttributes("parentProjectName",25));
+		columnModelSet.add(new GridAttributes("parentProject",25));
 		
 		colNames.add("Child "+ company.getProjectsDisplayName());
-		columnModelSet.add(new GridAttributes("childProjects",15));
+		columnModelSet.add(new GridAttributes("totalChildProjects",15));		
 
 		colNames.add("Level");
-		columnModelSet.add(new GridAttributes("level",15));
+		columnModelSet.add(new GridAttributes("levelName",15));
+		
+		colNames.add(company.getCyclesDisplayName());
+		columnModelSet.add(new GridAttributes("totalCycles",true));
 
 		//for each level
 		//{
@@ -181,32 +190,19 @@ public class ProjectServiceImpl implements ProjectService {
 		colNames.add("Current %");
 		columnModelSet.add(new GridAttributes("currentPercent","percentFmatter","unformatPercent",15));
 		//}
-		colNames.add("Total "+ company.getDefectsDisplayName());
-		columnModelSet.add(new GridAttributes("totalDefects"));
 		
-		colNames.add("Max Sev 1s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
+		colNames.add("Total "+ company.getDefectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalDefects"));		
+		
 		colNames.add("Current Sev 1s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));
-		colNames.add("Max Sev 2s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
+		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));		
 		colNames.add("Current Sev 2s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));
-		colNames.add("Max Sev 3s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
+		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));		
 		colNames.add("Current Sev 3s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));	
-		colNames.add("Max Sev 4s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
+		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));		
 		colNames.add("Current Sev 4s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));
-
-		colNames.add("Company ID");
-		columnModelSet.add(new GridAttributes("companyID",true));
-
-		colNames.add(company.getCyclesDisplayName());
-		columnModelSet.add(new GridAttributes("totalCycles",true));
-
+		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));		
+		
 		colNames.add("All "+company.getTestrunsDisplayName());
 		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
 		colNames.add("Compulsory "+company.getTestrunsDisplayName());
@@ -233,6 +229,15 @@ public class ProjectServiceImpl implements ProjectService {
 		colNames.add(company.getSeniordevelopersDisplayName());
 		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
 
+		colNames.add("Max Sev 1s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
+		colNames.add("Max Sev 2s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
+		colNames.add("Max Sev 3s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
+		colNames.add("Max Sev 4s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
+		
 		colNames.add("LastModifiedDate");
 		columnModelSet.add(new GridAttributes("lastModifiedDate",true));
 		colNames.add("LastModifiedBy");
@@ -241,6 +246,10 @@ public class ProjectServiceImpl implements ProjectService {
 		columnModelSet.add(new GridAttributes("createdBy",true));
 		colNames.add("CreationDate");
 		columnModelSet.add(new GridAttributes("creationDate",true));
+		
+		colNames.add("Company ID");
+		columnModelSet.add(new GridAttributes("companyID",true));
+
 		colNames.add("Position");
 		columnModelSet.add(new GridAttributes("companyPosition",true));	
 

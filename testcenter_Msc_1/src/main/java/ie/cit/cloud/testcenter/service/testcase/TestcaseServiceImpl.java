@@ -21,6 +21,7 @@ import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
 
@@ -132,7 +133,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 
 	public boolean isRequired(long testcaseID) 
 	{
-		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> compulsoryTestruns = getRequiredTestRuns(testcaseID);
 		if(compulsoryTestruns != null && !compulsoryTestruns.isEmpty())
 		{
 			return true;
@@ -161,15 +162,15 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}	
 		return testcase.getTestruns();		
 	}
-	public int getCompulsoryTestRunsCount(long projectID)
+	public int getRequiredTestRunsCount(long projectID)
 	{	
-		if(getCompulsoryTestRuns(projectID) == null)
+		if(getRequiredTestRuns(projectID) == null)
 		{
 			return 0;	
 		}
-		return getCompulsoryTestRuns(projectID).size();		
+		return getRequiredTestRuns(projectID).size();		
 	}	
-	public Set<Testrun> getCompulsoryTestRuns(long testcaseID) 
+	public Set<Testrun> getRequiredTestRuns(long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(testcaseID);		
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -223,7 +224,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Cycle> getCycles(long testcaseID)
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -248,7 +249,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Project> getProjects(long testcaseID)
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -273,7 +274,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Requirement> getRequirements(long testcaseID) 
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -298,7 +299,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Environment> getEnvironments(long testcaseID)
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -323,7 +324,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Defect> getCascadedAllDefects(long testcaseID) 
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -349,7 +350,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Defect> getCascadedSev1Defects(long testcaseID) 
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -375,7 +376,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Defect> getCascadedSev2Defects(long testcaseID) 
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -401,7 +402,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Defect> getCascadedSev3Defects(long testcaseID) 
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -427,7 +428,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}	
 	public Set<Defect> getCascadedSev4Defects(long testcaseID) 
 	{
-		Set<Testrun> allTestruns = getCompulsoryTestRuns(testcaseID);
+		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
@@ -506,64 +507,41 @@ public class TestcaseServiceImpl implements TestcaseService {
 		colNames.add(company.getTestcaseDisplayName()+ " Name");
 		columnModelSet.add(new GridAttributes("testcaseName",40));
 
+		colNames.add(company.getTestplanDisplayName());
+		columnModelSet.add(new GridAttributes("testplanName"));
 		colNames.add(company.getTestplanDisplayName() + " Section");
 		columnModelSet.add(new GridAttributes("testplanSection"));
+		
 		colNames.add("Level");
-		columnModelSet.add(new GridAttributes("level"));
+		columnModelSet.add(new GridAttributes("levelName"));
 		colNames.add("Stage");
 		columnModelSet.add(new GridAttributes("stage"));
 		colNames.add("Est. Time");
 		columnModelSet.add(new GridAttributes("estimatedTime"));
 
-		colNames.add("Total "+ company.getDefectsDisplayName());
-		columnModelSet.add(new GridAttributes("totalDefects"));
-		colNames.add("Max Sev 1s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
-		colNames.add("Current Sev 1s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));
-		colNames.add("Max Sev 2s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
-		colNames.add("Current Sev 2s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));
-		colNames.add("Max Sev 3s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
-		colNames.add("Current Sev 3s");
+		colNames.add(company.getDefectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalDefects"));		
+		colNames.add("Sev 1s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));		
+		colNames.add("Sev 2s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));		
+		colNames.add("Sev 3s");
 		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));	
-		colNames.add("Max Sev 4s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
-		colNames.add("Current Sev 4s");
+		colNames.add("Sev 4s");
 		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));
-
-
-		colNames.add(company.getCyclesDisplayName());
-		columnModelSet.add(new GridAttributes("totalCycles",true));
 
 		colNames.add("All "+company.getTestrunsDisplayName());
 		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
-		colNames.add("Compulsory "+company.getTestrunsDisplayName());
+		colNames.add("Required "+company.getTestrunsDisplayName());
 		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
 		colNames.add("Optional "+company.getTestrunsDisplayName());
 		columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));	
 
-		colNames.add("All "+company.getTestplansDisplayName());
-		columnModelSet.add(new GridAttributes("totalAllTestplans",10,true));		
-		colNames.add("Compulsory "+company.getTestplansDisplayName());
-		columnModelSet.add(new GridAttributes("totalRequiredTestplans",10,true));	
-		colNames.add("Optional "+company.getTestplansDisplayName());
-		columnModelSet.add(new GridAttributes("totalOptionalTestplans",10,true));	
-
-		colNames.add("All "+company.getTestcasesDisplayName());
-		columnModelSet.add(new GridAttributes("totalAllTestcases",10,true));		
-		colNames.add("Compulsory "+company.getTestcasesDisplayName());
-		columnModelSet.add(new GridAttributes("totalRequiredTestcases",10,true));	
-		colNames.add("Optional "+company.getTestcasesDisplayName());
-		columnModelSet.add(new GridAttributes("totalOptionalTestcases",10,true));	
-
-		colNames.add(company.getTestplansDisplayName());
-		columnModelSet.add(new GridAttributes("totalTestplans",true));
-		colNames.add(company.getTestcasesDisplayName());
-		columnModelSet.add(new GridAttributes("totalTestcases",true));	 
-
+		colNames.add(company.getCyclesDisplayName());
+		columnModelSet.add(new GridAttributes("totalCycles",true));
+		colNames.add(company.getProjectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalProjects",true));
+		
 		colNames.add(company.getEnvironmentsDisplayName());
 		columnModelSet.add(new GridAttributes("totalEnvironments",true));
 		colNames.add(company.getRequirementsDisplayName());
@@ -615,7 +593,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	public TestcaseSummaryList getGridTestcases(long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
-			String environmentID, String userID,String level,String stage,String required)
+			String environmentID, String userID,String levelName,String stage,String required)
 	{
 		// Check which testcases wil be displayed 
 		Company company = companyService.getCompany(companyID);
@@ -706,72 +684,73 @@ public class TestcaseServiceImpl implements TestcaseService {
 
 		for(final Testcase testcase : testcases)
 		{				
-			TestcaseSummary testcaseSummary = getTestcaseSummary(companyID, testcase,
-					level,stage,required);	
-			testcaseSummarySet.add(testcaseSummary);
-
+			//TestcaseSummary testcaseSummary = getTestcaseSummary(companyID, testcase,
+			//		level,stage,required);	
+			//testcaseSummarySet.add(testcaseSummary);			
+			testcaseSummarySet.add(new TestcaseSummary(testcase, levelName, testrunService, defectService, testplanService));
+			
 		}
 
 		testcaseSummaryList.setTestcases(testcaseSummarySet);
 		return testcaseSummaryList;
 	}
 
-	public TestcaseSummary getTestcaseSummary(long companyID,Testcase testcase, 
-			String level,String stage,String required )
-	{
-		Long testcaseID =  testcase.getTestcaseID();
-		TestcaseSummary testcaseSummary = new TestcaseSummary();
-
-		testcaseSummary.setTestcaseID(testcase.getTestcaseID());
-		testcaseSummary.setCompanyID(companyID);
-		testcaseSummary.setTestcaseName(testcase.getTestcaseName());
-		Testplan testplan = testplanService.getTestplan(testcase.getTestplanID());
-		if(testplan != null)
-		{
-			testcaseSummary.setTestplanName(testplan.getTestplanName());
-			testcaseSummary.setTestplanSection(
-					testplanService.getTestplanSection(testcase.getTestplanSectionID()).getTestplanSectionName());
-			testcaseSummary.setTestplanOrderNum(testcase.getTestplanOrderNum());
-		}
-		else
-		{
-			testcaseSummary.setTestplanSection("NONE");
-			testcaseSummary.setTestplanOrderNum(0);
-			testcaseSummary.setTestplanName("NONE");
-		}
-		testcaseSummary.setTotalProjects(getProjectsCount(testcaseID));
-		testcaseSummary.setLevel(testcase.getLevel().getTestrunLevelName());
-		testcaseSummary.setStage(testcase.getStage());
-		testcaseSummary.setEstimatedTime(testcase.getEstimatedTime());
-		
-		testcaseSummary.setTotalAllTestruns(getAllTestRunsCount(testcaseID));
-		testcaseSummary.setTotalRequiredTestruns(getCompulsoryTestRunsCount(testcaseID));
-		testcaseSummary.setTotalOptionalTestruns(getOptionalTestRunsCount(testcaseID));
-
-		testcaseSummary.setTotalCycles(getCyclesCount(testcaseID));
-		testcaseSummary.setTotalEnvironments(getEnvironmentsCount(testcaseID));
-		testcaseSummary.setTotalRequirements(getCascadedTestersCount(testcaseID));
-		testcaseSummary.setTotalDefects(getCascadedAllDefectsCount(testcaseID));
-
-		testcaseSummary.setTotalCurrentSev1s(getCascadedSev1DefectsCount(testcaseID));
-		testcaseSummary.setTotalCurrentSev2s(getCascadedSev2DefectsCount(testcaseID));
-		testcaseSummary.setTotalCurrentSev3s(getCascadedSev3DefectsCount(testcaseID));
-		testcaseSummary.setTotalCurrentSev4s(getCascadedSev4DefectsCount(testcaseID));
-
-		testcaseSummary.setTotalTesters(getCascadedTestersCount(testcaseID));
-		testcaseSummary.setTotalSeniorTesters(getCascadedSnrDevelopersCount(testcaseID));
-		testcaseSummary.setTotalDevelopers(getCascadedDevelopersCount(testcaseID));
-		testcaseSummary.setTotalSeniorDevelopers(getCascadedSnrDevelopersCount(testcaseID));
-
-		// get User name from ID testcase.getLastModifiedBy()
-		testcaseSummary.setLastModifiedBy("USER");
-		testcaseSummary.setLastModifiedDate(testcase.getLastModifiedDate());
-		// get User name from ID testcase.getCreatedByUserID()
-		testcaseSummary.setCreatedBy("USER");
-		testcaseSummary.setCreationDate(testcase.getCreationDate());	
-
-
-		return testcaseSummary;
-	}
+//	public TestcaseSummary getTestcaseSummary(long companyID,Testcase testcase, 
+//			String level,String stage,String required )
+//	{
+//		Long testcaseID =  testcase.getTestcaseID();
+//		TestcaseSummary testcaseSummary = new TestcaseSummary();
+//
+//		testcaseSummary.setTestcaseID(testcase.getTestcaseID());
+//		testcaseSummary.setCompanyID(companyID);
+//		testcaseSummary.setTestcaseName(testcase.getTestcaseName());
+//		Testplan testplan = testplanService.getTestplan(testcase.getTestplanID());
+//		if(testplan != null)
+//		{
+//			testcaseSummary.setTestplanName(testplan.getTestplanName());
+//			testcaseSummary.setTestplanSection(
+//					testplanService.getTestplanSection(testcase.getTestplanSectionID()).getTestplanSectionName());
+//			testcaseSummary.setTestplanOrderNum(testcase.getTestplanOrderNum());
+//		}
+//		else
+//		{
+//			testcaseSummary.setTestplanSection("NONE");
+//			testcaseSummary.setTestplanOrderNum(0);
+//			testcaseSummary.setTestplanName("NONE");
+//		}
+//		testcaseSummary.setTotalProjects(getProjectsCount(testcaseID));
+//		testcaseSummary.setLevel(testcase.getLevel().getTestrunLevelName());
+//		testcaseSummary.setStage(testcase.getStage());
+//		testcaseSummary.setEstimatedTime(testcase.getEstimatedTime());
+//		
+//		testcaseSummary.setTotalAllTestruns(getAllTestRunsCount(testcaseID));
+//		testcaseSummary.setTotalRequiredTestruns(getRequiredTestRunsCount(testcaseID));
+//		testcaseSummary.setTotalOptionalTestruns(getOptionalTestRunsCount(testcaseID));
+//
+//		testcaseSummary.setTotalCycles(getCyclesCount(testcaseID));
+//		testcaseSummary.setTotalEnvironments(getEnvironmentsCount(testcaseID));
+//		testcaseSummary.setTotalRequirements(getCascadedTestersCount(testcaseID));
+//		testcaseSummary.setTotalDefects(getCascadedAllDefectsCount(testcaseID));
+//
+//		testcaseSummary.setTotalCurrentSev1s(getCascadedSev1DefectsCount(testcaseID));
+//		testcaseSummary.setTotalCurrentSev2s(getCascadedSev2DefectsCount(testcaseID));
+//		testcaseSummary.setTotalCurrentSev3s(getCascadedSev3DefectsCount(testcaseID));
+//		testcaseSummary.setTotalCurrentSev4s(getCascadedSev4DefectsCount(testcaseID));
+//
+//		testcaseSummary.setTotalTesters(getCascadedTestersCount(testcaseID));
+//		testcaseSummary.setTotalSeniorTesters(getCascadedSnrDevelopersCount(testcaseID));
+//		testcaseSummary.setTotalDevelopers(getCascadedDevelopersCount(testcaseID));
+//		testcaseSummary.setTotalSeniorDevelopers(getCascadedSnrDevelopersCount(testcaseID));
+//
+//		// get User name from ID testcase.getLastModifiedBy()
+//		testcaseSummary.setLastModifiedBy("USER");
+//		testcaseSummary.setLastModifiedDate(testcase.getLastModifiedDate());
+//		// get User name from ID testcase.getCreatedByUserID()
+//		testcaseSummary.setCreatedBy("USER");
+//		testcaseSummary.setCreationDate(testcase.getCreationDate());	
+//
+//
+//		return testcaseSummary;
+//	}
 
 }

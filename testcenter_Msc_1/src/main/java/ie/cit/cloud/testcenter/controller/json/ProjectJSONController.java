@@ -182,7 +182,13 @@ public class ProjectJSONController {
 			
 	    	Company company = companyService.getCompany(projectSummary.getCompanyID());
 	    	
-	    	relatedObjectSet.add(new RelatedObject(1,"Parent "+ company.getProjectDisplayName(),projectSummary.getParentProjectName(), projectID, "Parent"+ company.getProjectDisplayName().replace(" ","")));
+	    	String parentprojectName = "";
+			if(projectSummary.getParentProjectName() != null)
+			{
+				parentprojectName = projectSummary.getParentProjectName();							
+			}
+
+	    	relatedObjectSet.add(new RelatedObject(1,"Parent "+ company.getProjectDisplayName(),parentprojectName, projectID, "Parent"+ company.getProjectDisplayName().replace(" ","")));
 	    	relatedObjectSet.add(new RelatedObject(2,"Child "+ company.getProjectsDisplayName(),Integer.toString(projectSummary.getTotalChildProjects()), projectID, "Child"+ company.getProjectsDisplayName().replace(" ","")));
 	    	
 	    	relatedObjectSet.add(new RelatedObject(3,company.getCyclesDisplayName(),Integer.toString(projectSummary.getTotalCycles()), projectID, company.getCyclesDisplayName().replace(" ","")));

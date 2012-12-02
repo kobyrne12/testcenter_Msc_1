@@ -8,7 +8,6 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
-import ie.cit.cloud.testcenter.service.project.ProjectService;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -22,15 +21,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 @Entity
 @Table(name = "Project")
@@ -75,7 +72,7 @@ public class Project {
 	private Set<TestrunLevel> testrunLevels  = new LinkedHashSet<TestrunLevel>();    	
 
 	@Basic    
-	private long parentID;   
+	private long parentID = -1;   
 	@Basic    
 	private boolean parent;  
 	@Basic    
@@ -85,13 +82,13 @@ public class Project {
 	@Basic    
 	private int newFeatureRequiredPercent;
 	@Basic    
-	private int allowedSev1;
+	private int allowedSev1 = -1; 
 	@Basic    
-	private int allowedSev2;
+	private int allowedSev2 = -1; 
 	@Basic    
-	private int allowedSev3;
+	private int allowedSev3 = -1; 
 	@Basic    
-	private int allowedSev4;
+	private int allowedSev4 = -1; 
 	@Basic    
 	private String creationDate;
 	@Basic    

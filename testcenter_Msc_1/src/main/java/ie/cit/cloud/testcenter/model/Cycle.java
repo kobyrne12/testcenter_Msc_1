@@ -52,7 +52,7 @@ public class Cycle {
 	private Set<Testrun> testruns = new HashSet<Testrun>();   
 
 	@Basic    
-	private long parentID; 
+	private long parentID = -1;
 	@Basic    
 	private boolean parent;  
 	@Basic    

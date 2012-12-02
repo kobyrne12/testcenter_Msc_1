@@ -60,7 +60,7 @@ public interface TestcaseService {
 	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a Testcase,
 	 */	
-	Set<Testrun> getCompulsoryTestRuns(long testcaseID);
+	Set<Testrun> getRequiredTestRuns(long testcaseID);
 	/**
 	 * Returns a collection of All Optional Testruns in a Testcase
 	 * Set<Testrun>
@@ -132,9 +132,9 @@ public interface TestcaseService {
 	TestcaseSummaryList getGridTestcases(long companyID, String projectID,
 				String cycleID, String testplanID, String testcaseID,
 				String testrunID, String defectID, String requirementID,
-				String environmentID, String userID,String level,String stage,String required);
+				String environmentID, String userID,String levelName,String stage,String required);
 
-	TestcaseSummary getTestcaseSummary(long companyID, Testcase testcase,
-			String level,String stage,String required);
+	//TestcaseSummary getTestcaseSummary(long companyID, Testcase testcase,
+	//		String level,String stage,String required);
 
 }

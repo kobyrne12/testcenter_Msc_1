@@ -44,8 +44,8 @@ public class Testcase {
 
 	@Basic
 	@Column(name="companyID")
-	private long companyID;    
-
+	private long companyID;
+	
 	@Basic
 	@Length(min = 2, max = 254, message = "Testcase name must be between 2 to 254 characters.")
 	@NotEmpty(message = "TestCase Name is required.")
@@ -53,7 +53,7 @@ public class Testcase {
 
 	@Basic
 	@Column(name="testplanID")
-	private long testplanID;
+	private long testplanID = 1;
 	
 //	@Transient
 	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER)
@@ -70,10 +70,9 @@ public class Testcase {
 	@Basic
 	private int testplanOrderNum;
 
-
 	@OneToOne(fetch=FetchType.EAGER)
 	@PrimaryKeyJoinColumn
-	private TestrunLevel level; 
+	private TestrunLevel testrunLevel; 
 	
 	@Basic
 	private String stage; // Draft/Ready For Review / Approved
@@ -86,20 +85,20 @@ public class Testcase {
 	private String testcasePreCondition;
 	@Basic
 	@Column(length=10000)
-	private String testcaseSteps;
+	private String testcaseSteps ;
 	@Basic
 	private String testcasePassCondition;
 	@Basic
-	private String tester;
+	private String tester ;
 	@Basic
-	private String seniorTester;
+	private String seniorTester ;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "creationDate", nullable = false, length = 10) 
-	private Date creationDate;		
+	private Date creationDate = new Date();	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "lastModifiedDate", nullable = false, length = 10) 
-	private Date lastModifiedDate;
+	private Date lastModifiedDate = new Date();
 
 	@Basic    
 	private long createdByUserID;
@@ -145,13 +144,14 @@ public class Testcase {
 	 * @param tester
 	 * @param seniorTester
 	 */
-	public Testcase(long companyID, String testcaseName, TestrunLevel level,
+	public Testcase(long companyID, String testcaseName, TestrunLevel testrunLevel,
 			String stage, Double estimatedTime, String testcaseSummary,
 			String testcasePreCondition, String testcaseSteps,
 			String testcasePassCondition, String tester, String seniorTester) {
-		this.companyID = companyID;
+	
+		this.companyID = companyID;		
 		this.testcaseName = testcaseName;		
-		this.level = level;
+		this.testrunLevel = testrunLevel;
 		this.stage = stage;
 		this.estimatedTime = estimatedTime;
 		this.testcaseSummary = testcaseSummary;
@@ -312,15 +312,15 @@ public class Testcase {
 	/**
 	 * @return the level
 	 */
-	public TestrunLevel getLevel() {
-		return level;
+	public TestrunLevel getTestrunLevel() {
+		return testrunLevel;
 	}
 
 	/**
-	 * @param level the level to set
+	 * @param level the testrunLevel to set
 	 */
-	public void setLevel(TestrunLevel level) {
-		this.level = level;
+	public void setTestrunLevel(TestrunLevel testrunLevel) {
+		this.testrunLevel = testrunLevel;
 	}
 
 	/**

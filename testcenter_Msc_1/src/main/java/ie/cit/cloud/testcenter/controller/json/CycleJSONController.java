@@ -19,7 +19,9 @@ import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -44,16 +46,20 @@ public class CycleJSONController {
 	@Autowired
 	private ProjectService projectService;  
 	@Autowired
-	private CycleService cycleService;   
+	private CycleService cycleService;   	  
+	@Autowired
+	private TestrunService testrunService;
+	@Autowired
+	private DefectService defectService;	
 
 	// Cycles
 	@RequestMapping(value = "/summary/{cycleID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody CycleSummary getCycleSummaryAt(@PathVariable("cycleID") long cycleID)
 	{
-		Cycle cycle = cycleService.getCycle(cycleID);
-		Project project = projectService.getProject(cycle.getProjectID());
-		return cycleService.getCycleSummary(project.getCompanyID(), cycleID, null);
+		Cycle cycle = cycleService.getCycle(cycleID);		
+		CycleSummary cycleSummary = new CycleSummary(cycle, null, projectService, cycleService, testrunService, defectService);
+		return cycleSummary;
 	} 	
 
 	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
@@ -113,16 +119,22 @@ public class CycleJSONController {
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
 			Cycle cycle = cycleService.getCycle(cycleID);
-			Project project = projectService.getProject(cycle.getProjectID());			
-			CycleSummary cycleSummary = cycleService.getCycleSummary(project.getCompanyID(), cycleID, null);
-			Company company = companyService.getCompany(cycleSummary.getCompanyID());
+			//Project project = projectService.getProject(cycle.getProjectID());			
+			CycleSummary cycleSummary = new CycleSummary(cycle, null, projectService, cycleService, testrunService, defectService);
+			Company company = companyService.getCompany(cycleSummary.getCompanyID());			
+			
+			String parentCycleName = "";
+			if(cycleSummary.getParentCycleName() != null)
+			{
+				parentCycleName = cycleSummary.getParentCycleName();							
+			}
 
-			relatedObjectSet.add(new RelatedObject(1,"Parent "+ company.getCycleDisplayName(),cycleSummary.getParentCycleName(), cycleID, "parentCycle"));
+			relatedObjectSet.add(new RelatedObject(1,"Parent "+ company.getCycleDisplayName(),parentCycleName, cycleID, "parentCycle"));
 			relatedObjectSet.add(new RelatedObject(2,"Child "+ company.getCyclesDisplayName(),String.valueOf(cycleSummary.getTotalChildCycles()), cycleID, "childCycles"));   	
 			relatedObjectSet.add(new RelatedObject(3,company.getProjectDisplayName(),cycleSummary.getProjectName(), cycleID, company.getProjectDisplayName().replace(" ","")));
 
-			relatedObjectSet.add(new RelatedObject(4,company.getTestplansDisplayName(),Integer.toString(cycleSummary.getTotalAllTestplans()), cycleID, company.getTestplansDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(5,company.getTestcasesDisplayName(),Integer.toString(cycleSummary.getTotalAllTestcases()), cycleID, company.getTestcasesDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(4,company.getTestplansDisplayName(),Integer.toString(cycleSummary.getTotalTestplans()), cycleID, company.getTestplansDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(5,company.getTestcasesDisplayName(),Integer.toString(cycleSummary.getTotalTestcases()), cycleID, company.getTestcasesDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(6,"All "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalAllTestruns()), cycleID, "all"+company.getTestrunsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(7,"Required "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalRequiredTestruns()), cycleID, "required"+company.getTestrunsDisplayName().replace(" ","")));

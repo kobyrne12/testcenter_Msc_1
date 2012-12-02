@@ -199,7 +199,7 @@ public class CycleServiceImpl implements CycleService {
 	public CycleSummaryList getGridCycles(long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
-			String environmentID, String userID, String level)
+			String environmentID, String userID, String levelName)
 	{
 		// Check which projects wil be displayed 
 		Company company = companyService.getCompany(companyID);
@@ -305,177 +305,178 @@ public class CycleServiceImpl implements CycleService {
 		CycleSummaryList cycleSummaryList = new CycleSummaryList();
 
 		for(final Cycle cycle : cycles)
-		{				
-			CycleSummary cycleSummary = getCycleSummary(companyID, cycle.getCycleID(),level);	
-			cycleSummarySet.add(cycleSummary);
+		{		
+			cycleSummarySet.add(new CycleSummary(cycle, levelName,projectService, this, testrunService, defectService));
+			//CycleSummary cycleSummary = getCycleSummary(companyID, cycle.getCycleID(),level);	
+			//cycleSummarySet.add(cycleSummary);
 
 		}
 
 		cycleSummaryList.setCycles(cycleSummarySet);
-		return cycleSummaryList;
+		return cycleSummaryList;	
 
 	}
 
 
-	public CycleSummary getCycleSummary(long companyID, long cycleID, String level)
-	{
-		Cycle cycle = getCycle(cycleID);		
-		Project project = projectService.getProject(cycle.getProjectID());		
-		CycleSummary cycleSummary = new CycleSummary();
-
-		// Cycle info only 
-		cycleSummary.setCycleID(cycleID);
-		cycleSummary.setCycleName(cycle.getCycleName());	
-		cycleSummary.setRequiredPriority(cycle.getRequiredPriority());		
-		
-		cycleSummary.setTotalAllTestruns(getCascadedAllTestRunsCount(cycleID, level));		
-		cycleSummary.setTotalRequiredTestruns(getCascadedCompulsoryTestRunsCount(cycleID, level));
-		cycleSummary.setTotalOptionalTestruns(getCascadedOptionalTestRunsCount(cycleID, level));
-		
-		cycleSummary.setTotalAllTestcases(getCascadedAllTestCasesCount(cycleID, level));		
-		cycleSummary.setTotalRequiredTestcases(getCascadedCompulsoryTestCasesCount(cycleID, level));
-		cycleSummary.setTotalOptionalTestcases(getCascadedOptionalTestCasesCount(cycleID, level));
-		
-		cycleSummary.setTotalAllTestplans(getCascadedAllTestPlansCount(cycleID, level));		
-		cycleSummary.setTotalRequiredTestplans(getCascadedCompulsoryTestPlansCount(cycleID, level));
-		cycleSummary.setTotalOptionalTestplans(getCascadedOptionalTestPlansCount(cycleID, level));
+//	public CycleSummary getCycleSummary(long companyID, long cycleID, String level)
+//	{
+//		Cycle cycle = getCycle(cycleID);		
+//		Project project = projectService.getProject(cycle.getProjectID());		
+//		CycleSummary cycleSummary = new CycleSummary();
+//
+//		// Cycle info only 
+//		cycleSummary.setCycleID(cycleID);
+//		cycleSummary.setCycleName(cycle.getCycleName());	
+//		cycleSummary.setRequiredPriority(cycle.getRequiredPriority());		
+//		
+//		cycleSummary.setTotalAllTestruns(getCascadedAllTestRunsCount(cycleID, level));		
+//		cycleSummary.setTotalRequiredTestruns(getCascadedCompulsoryTestRunsCount(cycleID, level));
+//		cycleSummary.setTotalOptionalTestruns(getCascadedOptionalTestRunsCount(cycleID, level));
+//		
+//		cycleSummary.setTotalAllTestcases(getCascadedAllTestCasesCount(cycleID, level));		
+//		cycleSummary.setTotalRequiredTestcases(getCascadedCompulsoryTestCasesCount(cycleID, level));
+//		cycleSummary.setTotalOptionalTestcases(getCascadedOptionalTestCasesCount(cycleID, level));
+//		
+//		cycleSummary.setTotalAllTestplans(getCascadedAllTestPlansCount(cycleID, level));		
+//		cycleSummary.setTotalRequiredTestplans(getCascadedCompulsoryTestPlansCount(cycleID, level));
+//		cycleSummary.setTotalOptionalTestplans(getCascadedOptionalTestPlansCount(cycleID, level));
+//	
+//		cycleSummary.setTotalTestrunsPassed(getTestRunsPassedCount(cycleID, level));	
+//		cycleSummary.setTotalTestrunsFailed(getTestRunsFailedCount(cycleID, level));		
+//		cycleSummary.setTotalTestrunsDeferred(getTestRunsDeferredCount(cycleID, level));		
+//		cycleSummary.setTotalTestrunsBlocked(getTestRunsBlockedCount(cycleID, level));
+//		cycleSummary.setTotalTestrunsNotRun(getTestRunsNotrunCount(cycleID, level));	
+//		cycleSummary.setTotalTestrunsInProg(getTestRunsInprogressCount(cycleID, level));		
+//		cycleSummary.setTotalTestrunsCompleted(getTestRunsCompletedCount(cycleID, level));	
+//		cycleSummary.setTotalTestrunsNotCompleted(getTestRunsInCompletedCount(cycleID, level));
+//
+//		cycleSummary.setTotalCycleEstTime(getTotalTestRunsEstTime(cycleID,level));
+//		
+//		cycleSummary.setCycleStartDate(cycle.getCycleStartDate());
+//		cycleSummary.setCycleEndDate(cycle.getCycleEndDate());
+//		
+//		cycleSummary.setParentCycleName(getParentCycleName(cycleID));	
+//		cycleSummary.setTotalChildCycles((getAllChildCycles(cycleID)) != null ? getAllChildCycles(cycleID).size() : 0);
+//	
+//		cycleSummary.setTotalDefects(getCascadedDefectsCount(cycleID));
+//		cycleSummary.setTotalAllowedSev1s(project.getAllowedSev1());
+//		cycleSummary.setTotalAllowedSev2s(project.getAllowedSev2());
+//		cycleSummary.setTotalAllowedSev3s(project.getAllowedSev3());
+//		cycleSummary.setTotalAllowedSev4s(project.getAllowedSev4());
+//		
+//		cycleSummary.setTotalCurrentSev1s(getCascadedSev1DefectsCount(cycleID));		
+//		cycleSummary.setTotalCurrentSev2s(getCascadedSev2DefectsCount(cycleID));
+//		cycleSummary.setTotalCurrentSev3s(getCascadedSev3DefectsCount(cycleID));
+//		cycleSummary.setTotalCurrentSev4s(getCascadedSev4DefectsCount(cycleID));
+//
+//		cycleSummary.setCompanyID(project.getCompanyID());	
+//		cycleSummary.setProjectID(project.getProjectID());
+//		cycleSummary.setProjectName(project.getProjectName());
+//		
+//		cycleSummary.setTotalDefectRules((cycle.getDefectRules() != null) ? cycle.getDefectRules().size() : 0);
+//		cycleSummary.setTotalTestHistoryRules((cycle.getTesthistoryRules() != null) ? cycle.getTesthistoryRules().size() : 0);
+//		cycleSummary.setTotalCodeImpactRules((cycle.getChangeImpactRules() != null) ? cycle.getChangeImpactRules().size() : 0);
+//		cycleSummary.setTotalReqRules((cycle.getRequirementRules() != null) ? cycle.getRequirementRules().size() : 0);
+//
+//		cycleSummary.setTotalEnvironments(getCascadedEnvironmentsCount(cycleID));		
+//		cycleSummary.setTotalRequirements(getCascadedRequirementsCount(cycleID));	
+//		
+//		cycleSummary.setTotalTesters(getCascadedTestersCount(cycleID));
+//		cycleSummary.setTotalSeniorTesters(getCascadedSnrTestersCount(cycleID));
+//		cycleSummary.setTotalDevelopers(getCascadedDevelopersCount(cycleID));	
+//		cycleSummary.setTotalSeniorDevelopers(getCascadedSnrDevelopersCount(cycleID));
+//
+//		cycleSummary.setProjectPosition(cycle.getProjectPosition());		
+//
+//		cycleSummary.setLastModifiedBy(cycle.getLastModifiedBy());
+//		cycleSummary.setLastModifiedDate(cycle.getLastModifiedDate());
+//		cycleSummary.setCreatedBy(cycle.getCreatedBy());
+//		cycleSummary.setCreationDate(cycle.getCreationDate());
+//
+//		return cycleSummary;
+//	}
 	
-		cycleSummary.setTotalTestrunsPassed(getTestRunsPassedCount(cycleID, level));	
-		cycleSummary.setTotalTestrunsFailed(getTestRunsFailedCount(cycleID, level));		
-		cycleSummary.setTotalTestrunsDeferred(getTestRunsDeferredCount(cycleID, level));		
-		cycleSummary.setTotalTestrunsBlocked(getTestRunsBlockedCount(cycleID, level));
-		cycleSummary.setTotalTestrunsNotRun(getTestRunsNotrunCount(cycleID, level));	
-		cycleSummary.setTotalTestrunsInProg(getTestRunsInprogressCount(cycleID, level));		
-		cycleSummary.setTotalTestrunsCompleted(getTestRunsCompletedCount(cycleID, level));	
-		cycleSummary.setTotalTestrunsNotCompleted(getTestRunsInCompletedCount(cycleID, level));
-
-		cycleSummary.setTotalCycleEstTime(getTotalTestRunsEstTime(cycleID,level));
-		
-		cycleSummary.setCycleStartDate(cycle.getCycleStartDate());
-		cycleSummary.setCycleEndDate(cycle.getCycleEndDate());
-		
-		cycleSummary.setParentCycleName(getParentCycleName(cycleID));	
-		cycleSummary.setTotalChildCycles((getAllChildCycles(cycleID)) != null ? getAllChildCycles(cycleID).size() : 0);
-	
-		cycleSummary.setTotalDefects(getCascadedDefectsCount(cycleID));
-		cycleSummary.setTotalAllowedSev1s(project.getAllowedSev1());
-		cycleSummary.setTotalAllowedSev2s(project.getAllowedSev2());
-		cycleSummary.setTotalAllowedSev3s(project.getAllowedSev3());
-		cycleSummary.setTotalAllowedSev4s(project.getAllowedSev4());
-		
-		cycleSummary.setTotalCurrentSev1s(getCascadedSev1DefectsCount(cycleID));		
-		cycleSummary.setTotalCurrentSev2s(getCascadedSev2DefectsCount(cycleID));
-		cycleSummary.setTotalCurrentSev3s(getCascadedSev3DefectsCount(cycleID));
-		cycleSummary.setTotalCurrentSev4s(getCascadedSev4DefectsCount(cycleID));
-
-		cycleSummary.setCompanyID(project.getCompanyID());	
-		cycleSummary.setProjectID(project.getProjectID());
-		cycleSummary.setProjectName(project.getProjectName());
-		
-		cycleSummary.setTotalDefectRules((cycle.getDefectRules() != null) ? cycle.getDefectRules().size() : 0);
-		cycleSummary.setTotalTestHistoryRules((cycle.getTesthistoryRules() != null) ? cycle.getTesthistoryRules().size() : 0);
-		cycleSummary.setTotalCodeImpactRules((cycle.getChangeImpactRules() != null) ? cycle.getChangeImpactRules().size() : 0);
-		cycleSummary.setTotalReqRules((cycle.getRequirementRules() != null) ? cycle.getRequirementRules().size() : 0);
-
-		cycleSummary.setTotalEnvironments(getCascadedEnvironmentsCount(cycleID));		
-		cycleSummary.setTotalRequirements(getCascadedRequirementsCount(cycleID));	
-		
-		cycleSummary.setTotalTesters(getCascadedTestersCount(cycleID));
-		cycleSummary.setTotalSeniorTesters(getCascadedSnrTestersCount(cycleID));
-		cycleSummary.setTotalDevelopers(getCascadedDevelopersCount(cycleID));	
-		cycleSummary.setTotalSeniorDevelopers(getCascadedSnrDevelopersCount(cycleID));
-
-		cycleSummary.setProjectPosition(cycle.getProjectPosition());		
-
-		cycleSummary.setLastModifiedBy(cycle.getLastModifiedBy());
-		cycleSummary.setLastModifiedDate(cycle.getLastModifiedDate());
-		cycleSummary.setCreatedBy(cycle.getCreatedBy());
-		cycleSummary.setCreationDate(cycle.getCreationDate());
-
-		return cycleSummary;
-	}
 	public ColModelAndNames getColumnModelAndNames(Long companyID)
 	{
 		Company company = companyService.getCompany(companyID);
 		Collection<String> colNames = new ArrayList<String>();
 		ColModelAndNames colModelAndName = new ColModelAndNames();
-		Set<GridAttributes> columnModelSet =  new HashSet<GridAttributes>();	
+		Collection<GridAttributes> columnModelSet =  new ArrayList<GridAttributes>();	
 
 		colNames.add("ID");
 		columnModelSet.add(new GridAttributes("cycleID",10));	
 
 		colNames.add(company.getCycleDisplayName()+ " Name");
 		columnModelSet.add(new GridAttributes("cycleName",40));	 
-
-		colNames.add("Required Priority");
-		columnModelSet.add(new GridAttributes("requiredPriority",10));	 	
-
+		
 		colNames.add("State");
 		columnModelSet.add(new GridAttributes("cycleState","setCycleStateBarChart","unSetBarChart", 80));
-
-		colNames.add("Required "+company.getTestrunsDisplayName());
-		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
-
-		colNames.add("All "+company.getTestrunsDisplayName());
-		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
+		
+		colNames.add("Parent");
+		columnModelSet.add(new GridAttributes("parentCycle",10));
+		colNames.add("Child "+ company.getCyclesDisplayName());	
+		columnModelSet.add(new GridAttributes("totalChildCycles",15,true));			
+		colNames.add("Parent "+ company.getCyclesDisplayName());	
+		columnModelSet.add(new GridAttributes("parentCycleName",15,true));	
 
 		colNames.add("Complete");
-		columnModelSet.add(new GridAttributes("totalTestrunsCompleted",10,true));
+		columnModelSet.add(new GridAttributes("totalTestrunsCompleted",10));
 		colNames.add("Passed");
-		columnModelSet.add(new GridAttributes("totalTestrunsPassed",10,true));
+		columnModelSet.add(new GridAttributes("totalTestrunsPassed",10));
 		colNames.add("Failed");
-		columnModelSet.add(new GridAttributes("totalTestrunsFailed",10,true));	
+		columnModelSet.add(new GridAttributes("totalTestrunsFailed",10));	
 		colNames.add("Deferred");
-		columnModelSet.add(new GridAttributes("totalTestrunsDeferred",10,true));
+		columnModelSet.add(new GridAttributes("totalTestrunsDeferred",10));
 		colNames.add("Blocked");
-		columnModelSet.add(new GridAttributes("totalTestrunsBlocked",10,true));
-		colNames.add("Not Complete");
-		columnModelSet.add(new GridAttributes("totalTestrunsNotCompleted",10,true));
+		columnModelSet.add(new GridAttributes("totalTestrunsBlocked",10));
+		colNames.add("Incomplete");
+		columnModelSet.add(new GridAttributes("totalTestrunsInComplete",10));
 		colNames.add("Not Run");
-		columnModelSet.add(new GridAttributes("totalTestrunsNotRun",10,true));
+		columnModelSet.add(new GridAttributes("totalTestrunsNotRun",10));
 		colNames.add("In Prog");
-		columnModelSet.add(new GridAttributes("totalTestrunsInProg",10,true));
+		columnModelSet.add(new GridAttributes("totalTestrunsInProg",10));
+		
+		colNames.add("Req. Priority");
+		columnModelSet.add(new GridAttributes("requiredPriority",10,true));
+		
+		colNames.add(company.getProjectDisplayName() +" Req. %");
+		columnModelSet.add(new GridAttributes("requiredPercent",10,true));
+		
+		colNames.add(company.getDefectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalDefects"));		
+		
+		colNames.add("Sev 1s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev1s",true));
+		colNames.add("Sev 2s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev2s",true));	
+		colNames.add("Sev 3s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev3s",true));
+		colNames.add("Sev 4s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev4s",true));
+		
+		colNames.add("Max Sev 1s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
+		colNames.add("Max Sev 2s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
+		colNames.add("Max Sev 3s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
+		colNames.add("Max Sev 4s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));		
+
+		
+		colNames.add("Req. "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));
+		colNames.add("Optional "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));	
+		colNames.add("All "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));	
 
 		colNames.add("Est.Time");
 		columnModelSet.add(new GridAttributes("totalCycleEstTime",15,true));
-
 		colNames.add("Start Date");
 		columnModelSet.add(new GridAttributes("cycleStartDate",20,true));
-
 		colNames.add("End Date");
 		columnModelSet.add(new GridAttributes("cycleEndDate",20,true));	
-
-		colNames.add("Parent");
-		columnModelSet.add(new GridAttributes("parentCycleName",25,true));
-
-		colNames.add("Child "+ company.getCyclesDisplayName());	
-		columnModelSet.add(new GridAttributes("totalChildCycles",15,true));	
-
-		colNames.add("Total "+ company.getDefectsDisplayName());
-		columnModelSet.add(new GridAttributes("totalDefects"));
-		colNames.add("Max Sev 1s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
-		colNames.add("Current Sev 1s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));
-		colNames.add("Max Sev 2s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
-		colNames.add("Current Sev 2s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));
-		colNames.add("Max Sev 3s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
-		colNames.add("Current Sev 3s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));	
-		colNames.add("Max Sev 4s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
-		colNames.add("Current Sev 4s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));
-
-		colNames.add("Company ID");
-		columnModelSet.add(new GridAttributes("companyID",true));
-		colNames.add("Project ID");
-		columnModelSet.add(new GridAttributes("projectID",true));
-		colNames.add("Project Name");
-		columnModelSet.add(new GridAttributes("projectName",true));
 
 		colNames.add(company.getDefectDisplayName()+" Rules");
 		columnModelSet.add(new GridAttributes("totalDefectRules",true));
@@ -485,7 +486,6 @@ public class CycleServiceImpl implements CycleService {
 		columnModelSet.add(new GridAttributes("totalCodeImpactRules",true));
 		colNames.add(company.getRequirementDisplayName()+" Rules");
 		columnModelSet.add(new GridAttributes("totalReqRules",true));	
-
 
 		colNames.add(company.getTestplansDisplayName());
 		columnModelSet.add(new GridAttributes("totalTestplans",true));
@@ -504,7 +504,14 @@ public class CycleServiceImpl implements CycleService {
 		colNames.add(company.getDevelopersDisplayName());
 		columnModelSet.add(new GridAttributes("totalDevelopers",true));
 		colNames.add(company.getSeniordevelopersDisplayName());
-		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));
+		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));		
+	
+		colNames.add("Project ID");
+		columnModelSet.add(new GridAttributes("projectID",true));
+		colNames.add("Project Name");
+		columnModelSet.add(new GridAttributes("projectName",true));
+		colNames.add("Company ID");
+		columnModelSet.add(new GridAttributes("companyID",true));
 
 		colNames.add("LastModifiedDate");
 		columnModelSet.add(new GridAttributes("lastModifiedDate",true));
@@ -667,11 +674,11 @@ public class CycleServiceImpl implements CycleService {
 												
 					}
 				}
-
 			}  			
 		}
 		return allTestruns;		
 	}
+	
 	public int getCascadedCompulsoryTestRunsCount(long cycleID)
 	{	
 		if(getCascadedCompulsoryTestRuns(cycleID) == null)
@@ -680,6 +687,7 @@ public class CycleServiceImpl implements CycleService {
 		}
 		return getCascadedCompulsoryTestRuns(cycleID).size();		
 	}	
+	
 	public Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID)
 	{
 		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
@@ -697,6 +705,7 @@ public class CycleServiceImpl implements CycleService {
 		}		
 		return compulsoryTestruns;		
 	}
+	
 	public int getCascadedCompulsoryTestRunsCount(long cycleID,String level)
 	{	
 		if(getCascadedCompulsoryTestRuns(cycleID,level) == null)
@@ -704,7 +713,8 @@ public class CycleServiceImpl implements CycleService {
 			return 0;	
 		}
 		return getCascadedCompulsoryTestRuns(cycleID,level).size();		
-	}	
+	}
+	
 	public Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID,String level)
 	{
 		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID,level);
@@ -731,6 +741,7 @@ public class CycleServiceImpl implements CycleService {
 		}
 		return getCascadedOptionalTestRuns(cycleID).size();		
 	}	
+	
 	public Set<Testrun> getCascadedOptionalTestRuns(long cycleID)
 	{
 		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);

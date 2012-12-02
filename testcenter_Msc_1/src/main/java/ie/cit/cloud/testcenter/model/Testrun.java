@@ -65,7 +65,7 @@ public class Testrun {
     
     @OneToOne(fetch=FetchType.EAGER)
     @PrimaryKeyJoinColumn
-   	private TestrunLevel level; 
+   	private TestrunLevel testrunLevel; 
     
     @Basic
     @Column(name="testcaseID")
@@ -167,7 +167,7 @@ public class Testrun {
    	public Testrun(String testrunName, long testcaseID, long cycleID,
    			boolean notrun, boolean passed, boolean failed, boolean inprogress,
    			boolean deferred, boolean blocked, int priority,
-   			int recommendedPriority, Double estimatedTime, TestrunLevel level,
+   			int recommendedPriority, Double estimatedTime, TestrunLevel testrunLevel,
    			long previousTestrunID,String creationDate, String createdBy,
    			String lastModifiedDate, String lastModifiedBy, String tester,
    			String seniorTester) 
@@ -185,7 +185,7 @@ public class Testrun {
    		this.priority = priority;
    		this.recommendedPriority = recommendedPriority;
    		this.estimatedTime = estimatedTime;
-   		this.level = level;
+   		this.testrunLevel = testrunLevel;
    		this.previousTestrunID = previousTestrunID;   		
    		this.creationDate = creationDate;
    		this.createdBy = createdBy;
@@ -364,17 +364,17 @@ public class Testrun {
 	}
 
 	/**
-	 * @return the level
+	 * @return the testrunLevel
 	 */
-	public TestrunLevel getLevel() {
-		return level;
+	public TestrunLevel getTestrunLevel() {
+		return testrunLevel;
 	}
 
 	/**
-	 * @param level the level to set
+	 * @param level the testrunLevel to set
 	 */
-	public void setLevel(TestrunLevel level) {
-		this.level = level;
+	public void setTestrunLevel(TestrunLevel testrunLevel) {
+		this.testrunLevel = testrunLevel;
 	}
 
 	/**

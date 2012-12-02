@@ -7,11 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Project;
@@ -27,69 +23,26 @@ import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 @Component
 public class ProjectSummary 
 {			
-	//@Autowired
-	private ProjectService projectService;	
-	//@Autowired
+
+	private ProjectService projectService;
 	private TestrunService testrunService;
-	//@Autowired
 	private DefectService defectService;	
 
-
 	private Set<Project> cascadedProjects = new LinkedHashSet<Project>();
-	private Set<Cycle> cascadedCycles = new LinkedHashSet<Cycle>();
-	/**
-	 * @return the projectService
-	 */
-	private ProjectService getProjectService() {
-		return projectService;
-	}
-
-	/**
-	 * @param projectService the projectService to set
-	 */
-	private void setProjectService(ProjectService projectService) {
-		this.projectService = projectService;
-	}
-
-	/**
-	 * @return the testrunService
-	 */
-	private TestrunService getTestrunService() {
-		return testrunService;
-	}
-
-	/**
-	 * @param testrunService the testrunService to set
-	 */
-	private void setTestrunService(TestrunService testrunService) {
-		this.testrunService = testrunService;
-	}
-
-	/**
-	 * @return the defectService
-	 */
-	private DefectService getDefectService() {
-		return defectService;
-	}
-
-	/**
-	 * @param defectService the defectService to set
-	 */
-	private void setDefectService(DefectService defectService) {
-		this.defectService = defectService;
-	}
+	private Set<Cycle> cascadedCycles = new LinkedHashSet<Cycle>();	
 
 	private Set<Testrun> cascadedTestruns = new LinkedHashSet<Testrun>();
 	private Set<Testrun> requiredTestruns = new LinkedHashSet<Testrun>();
 	private Set<Defect> defects = new LinkedHashSet<Defect>();
 
-	///////////////////////////////////
-
 	private Project project = new Project();	
+
+	///////////////////////////////////	
 
 	private long projectID;	    
 	private String projectName;  
-	private String parentProjectName;
+	private boolean parentProject;
+	private String parentProjectName = null;  
 
 	private long companyID = -1;
 	private int totalChildProjects = -1;
@@ -133,7 +86,9 @@ public class ProjectSummary
 	private String customObject3;
 	private String customObject4;
 	private String customObject5;
-	
+
+	private int companyPosition = -1;
+
 	public ProjectSummary()
 	{
 
@@ -148,7 +103,7 @@ public class ProjectSummary
 	//    	this.projectID = project.getProjectID();    	
 	//    	this.project = project;     	
 	//    }
-	
+
 	public ProjectSummary(Project project, String levelName, ProjectService projectService,TestrunService testrunService, DefectService defectService )
 	{
 		this.projectID = project.getProjectID();
@@ -169,7 +124,7 @@ public class ProjectSummary
 	{
 		if(cascadedProjects == null || cascadedProjects.isEmpty())
 		{		
-			
+
 			if(projectService.getParentAndChildProjects(projectID) != null && 
 					!projectService.getParentAndChildProjects(projectID).isEmpty())
 			{
@@ -179,13 +134,13 @@ public class ProjectSummary
 		return cascadedProjects;
 	}
 
-	/**
-	 * @param cascadedProjects the cascadedProjects to set
-	 */
-	private void setCascadedProjects(Set<Project> cascadedProjects) 
-	{		
-		this.cascadedProjects = cascadedProjects;
-	}
+	//	/**
+	//	 * @param cascadedProjects the cascadedProjects to set
+	//	 */
+	//	private void setCascadedProjects(Set<Project> cascadedProjects) 
+	//	{		
+	//		this.cascadedProjects = cascadedProjects;
+	//	}
 
 	/**
 	 * @return the cascadedCycles
@@ -215,20 +170,20 @@ public class ProjectSummary
 					}
 				}
 			}
-//			if(projectService.getParentAndChildCycles(projectID) != null && 
-//					!projectService.getParentAndChildCycles(projectID).isEmpty())
-//			{
-//			cascadedCycles = projectService.getParentAndChildCycles(projectID);  
-//			}
+			//			if(projectService.getParentAndChildCycles(projectID) != null && 
+			//					!projectService.getParentAndChildCycles(projectID).isEmpty())
+			//			{
+			//			cascadedCycles = projectService.getParentAndChildCycles(projectID);  
+			//			}
 		}	
 		return cascadedCycles;
 	}
-	/**
-	 * @param cascadedCycles the cascadedCycles to set
-	 */
-	private void setCascadedCycles(Set<Cycle> cascadedCycles) {
-		this.cascadedCycles = cascadedCycles;
-	}
+	//	/**
+	//	 * @param cascadedCycles the cascadedCycles to set
+	//	 */
+	//	private void setCascadedCycles(Set<Cycle> cascadedCycles) {
+	//		this.cascadedCycles = cascadedCycles;
+	//	}
 
 	/**
 	 * @return the cascadedTestruns
@@ -236,43 +191,46 @@ public class ProjectSummary
 	private Set<Testrun> getCascadedTestruns() 
 	{
 		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
-		{
-			cascadedCycles = getCascadedCycles(); 
-		}
-		if(cascadedCycles != null && !cascadedCycles.isEmpty())
-		{
-			for(final Cycle cycle : cascadedCycles)
+		{	
+			if(cascadedCycles == null || cascadedCycles.isEmpty())
 			{
-				if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
+				cascadedCycles = getCascadedCycles(); 
+			}
+			if(cascadedCycles != null && !cascadedCycles.isEmpty())
+			{
+				for(final Cycle cycle : cascadedCycles)
 				{
-					if(cascadedTestruns == null || cascadedCycles.isEmpty())
+					if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
 					{
-						cascadedTestruns = cycle.getTestruns();
-					}
-					else
-					{
-						cascadedTestruns.addAll(cycle.getTestruns());
+						if(cascadedTestruns == null || cascadedCycles.isEmpty())
+						{
+							cascadedTestruns = cycle.getTestruns();
+						}
+						else
+						{
+							cascadedTestruns.addAll(cycle.getTestruns());
+						}
 					}
 				}
 			}
 		}
-//		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
-//		{		
-//			if(projectService.getCascadedAllTestRuns(projectID) != null && 
-//					!projectService.getCascadedAllTestRuns(projectID).isEmpty())
-//			{
-//				cascadedTestruns = projectService.getCascadedAllTestRuns(projectID);  		
-//			}
-//		}
+		//		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
+		//		{		
+		//			if(projectService.getCascadedAllTestRuns(projectID) != null && 
+		//					!projectService.getCascadedAllTestRuns(projectID).isEmpty())
+		//			{
+		//				cascadedTestruns = projectService.getCascadedAllTestRuns(projectID);  		
+		//			}
+		//		}
 		return cascadedTestruns;
 	}
 
-	/**
-	 * @param cascadedTestruns the cascadedTestruns to set
-	 */
-	private void setCascadedTestruns(Set<Testrun> cascadedTestruns) {
-		this.cascadedTestruns = cascadedTestruns;
-	}
+	//	/**
+	//	 * @param cascadedTestruns the cascadedTestruns to set
+	//	 */
+	//	private void setCascadedTestruns(Set<Testrun> cascadedTestruns) {
+	//		this.cascadedTestruns = cascadedTestruns;
+	//	}
 
 	/**
 	 * @return the requiredTestruns
@@ -281,7 +239,7 @@ public class ProjectSummary
 	{
 		if(requiredTestruns == null || requiredTestruns.isEmpty() )
 		{
-			if(cascadedTestruns == null || requiredTestruns.isEmpty())
+			if(cascadedTestruns == null || cascadedTestruns.isEmpty())
 			{
 				cascadedTestruns = getCascadedTestruns(); 
 			}
@@ -300,12 +258,12 @@ public class ProjectSummary
 		return requiredTestruns;
 	}
 
-	/**
-	 * @param requiredTestruns the requiredTestruns to set
-	 */
-	private void setRequiredTestruns(Set<Testrun> requiredTestruns) {
-		this.requiredTestruns = requiredTestruns;
-	}
+	//	/**
+	//	 * @param requiredTestruns the requiredTestruns to set
+	//	 */
+	//	private void setRequiredTestruns(Set<Testrun> requiredTestruns) {
+	//		this.requiredTestruns = requiredTestruns;
+	//	}
 
 	/**
 	 * @return the defects
@@ -333,26 +291,26 @@ public class ProjectSummary
 		return defects;
 	}
 
-	/**
-	 * @param defects the defects to set
-	 */
-	private void setDefects(Set<Defect> defects) {
-		this.defects = defects;
-	}
-
-	/**
-	 * @return the project
-	 */
-	private Project getProject() {
-		return project;
-	}
-
-	/**
-	 * @param project the project to set
-	 */
-	private void setProject(Project project) {
-		this.project = project;
-	}
+	//	/**
+	//	 * @param defects the defects to set
+	//	 */
+	//	private void setDefects(Set<Defect> defects) {
+	//		this.defects = defects;
+	//	}
+	//
+	//	/**
+	//	 * @return the project
+	//	 */
+	//	private Project getProject() {
+	//		return project;
+	//	}
+	//
+	//	/**
+	//	 * @param project the project to set
+	//	 */
+	//	private void setProject(Project project) {
+	//		this.project = project;
+	//	}
 	/**
 	 * @return the projectID
 	 */
@@ -389,27 +347,6 @@ public class ProjectSummary
 		this.projectName = projectName;
 	}
 
-	/**
-	 * @return the parentProjectName
-	 */
-	public String getParentProjectName() 
-	{
-		if(parentProjectName == null)
-		{
-			if(project.isParent())
-			{
-				parentProjectName = projectService.getProject(project.getParentID()).getProjectName();
-			}
-		}
-		return parentProjectName;
-	}
-
-	/**
-	 * @param parentProjectName the parentProjectName to set
-	 */
-	public void setParentProjectName(String parentProjectName) {
-		this.parentProjectName = parentProjectName;
-	}
 
 	/**
 	 * @return the companyID
@@ -429,7 +366,20 @@ public class ProjectSummary
 	public void setCompanyID(long companyID) {
 		this.companyID = companyID;
 	}
+	/**
+	 * @return the parentProject
+	 */
+	public boolean isParentProject() 
+	{		
+		return project.isParent();
+	}
 
+	/**
+	 * @param parentProject the parentProject to set
+	 */
+	public void setParentProject(boolean parentProject) {
+		this.parentProject = parentProject;
+	}
 
 	/**
 	 * @return the totalChildProjects
@@ -751,23 +701,16 @@ public class ProjectSummary
 		int count = 0;
 		if(totalDefects == -1)
 		{
-			if(requiredTestruns == null || requiredTestruns.isEmpty())
+			if(defects == null || defects.isEmpty())
 			{
-				requiredTestruns = getRequiredTestruns();
+				defects = getDefects();
 			}
-			if(requiredTestruns != null && !requiredTestruns.isEmpty())
+			if(defects != null && !defects.isEmpty())
 			{
-				for(final Testrun testrun : requiredTestruns)
-				{
-					if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
-					{
-						count += testrun.getDefects().size();
-					}					
-				}
+				count = defects.size();
 			}
-
 		}
-		return count;
+		return count;			
 	}
 
 	/**
@@ -873,16 +816,19 @@ public class ProjectSummary
 	 */
 	public int getTotalAllTestruns() 
 	{
-		int totalAllTestruns = 0;
-		if(cascadedTestruns == null || cascadedTestruns.isEmpty())
+		int count = 0;
+		if(totalAllTestruns == -1)
 		{
-			cascadedTestruns = getCascadedTestruns();
+			if(cascadedTestruns == null || cascadedTestruns.isEmpty())
+			{
+				cascadedTestruns = getCascadedTestruns();
+			}
+			if(cascadedTestruns != null && !cascadedTestruns.isEmpty())
+			{			
+				count = cascadedTestruns.size();
+			}
 		}
-		if(cascadedTestruns != null && !cascadedTestruns.isEmpty())
-		{			
-			totalAllTestruns = cascadedTestruns.size();
-		}
-		return totalAllTestruns;
+		return count;		
 	}
 
 	/**
@@ -1069,8 +1015,15 @@ public class ProjectSummary
 	 */
 	public String getLastModifiedBy() {
 		if(lastModifiedBy == null)
-		{
-			lastModifiedBy = project.getLastModifiedBy();
+		{			
+			if(project.getLastModifiedBy() == null)
+			{
+				lastModifiedBy = "n/a";
+			}
+			else
+			{
+				lastModifiedBy = project.getLastModifiedBy();
+			}	
 		}
 		return lastModifiedBy;
 	}
@@ -1088,7 +1041,14 @@ public class ProjectSummary
 	public String getLastModifiedDate() {
 		if(lastModifiedDate == null)
 		{
-			lastModifiedDate = project.getLastModifiedDate();
+			if(project.getLastModifiedDate() == null)
+			{
+				lastModifiedDate = "n/a";
+			}
+			else
+			{
+				lastModifiedDate = project.getLastModifiedDate();
+			}				
 		}
 		return lastModifiedDate;		
 	}
@@ -1106,7 +1066,14 @@ public class ProjectSummary
 	public String getCreatedBy() {
 		if(createdBy == null)
 		{
-			createdBy = project.getCreatedBy();
+			if(project.getCreatedBy() == null)
+			{
+				createdBy = "n/a";
+			}
+			else
+			{
+				createdBy = project.getCreatedBy();
+			}		
 		}
 		return createdBy;
 	}
@@ -1121,10 +1088,18 @@ public class ProjectSummary
 	/**
 	 * @return the creationDate
 	 */
-	public String getCreationDate() {
+	public String getCreationDate() 
+	{
 		if(creationDate == null)
 		{
-			creationDate = project.getCreationDate();
+			if(project.getCreationDate() == null)
+			{
+				creationDate = "n/a";
+			}
+			else
+			{
+				creationDate = project.getCreationDate();
+			}
 		}
 		return creationDate;
 	}
@@ -1205,5 +1180,93 @@ public class ProjectSummary
 	public void setCustomObject5(String customObject5) {
 		this.customObject5 = customObject5;
 	}
+	//	/**
+	//	 * @return the projectService
+	//	 */
+	//	private ProjectService getProjectService() {
+	//		return projectService;
+	//	}
+	//
+	//	/**
+	//	 * @param projectService the projectService to set
+	//	 */
+	//	private void setProjectService(ProjectService projectService) {
+	//		this.projectService = projectService;
+	//	}
+	//
+	//	/**
+	//	 * @return the testrunService
+	//	 */
+	//	private TestrunService getTestrunService() {
+	//		return testrunService;
+	//	}
+	//
+	//	/**
+	//	 * @param testrunService the testrunService to set
+	//	 */
+	//	private void setTestrunService(TestrunService testrunService) {
+	//		this.testrunService = testrunService;
+	//	}
+	//
+	//	/**
+	//	 * @return the defectService
+	//	 */
+	//	private DefectService getDefectService() {
+	//		return defectService;
+	//	}
+	//
+	//	/**
+	//	 * @param defectService the defectService to set
+	//	 */
+	//	private void setDefectService(DefectService defectService) {
+	//		this.defectService = defectService;
+	//	}
+
+	/**
+	 * @return the companyPosition
+	 */
+	public int getCompanyPosition()
+	{		
+		int count = 0;
+		if(totalTestplans == -1)
+		{
+			// TODO : handle project position
+			count = 555;
+		}
+		return count;
+	}
+
+	/**
+	 * @param companyPosition the companyPosition to set
+	 */
+	public void setCompanyPosition(int companyPosition) {
+		this.companyPosition = companyPosition;
+	}
+
+	/**
+	 * @return the parentProjectName
+	 */
+	public String getParentProjectName()
+	{
+		if(parentProjectName == null)
+		{
+			if(project.getParentID() != -1)
+			{
+				if(projectService.getProject(project.getParentID()) != null)
+				{
+					parentProjectName = projectService.getProject(project.getParentID()).getProjectName();
+				}
+			}
+		}
+		return parentProjectName;
+	}
+
+	/**
+	 * @param parentProjectName the parentProjectName to set
+	 */
+	public void setParentProjectName(String parentProjectName) {
+		this.parentProjectName = parentProjectName;
+	}
+
 
 }
