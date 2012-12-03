@@ -27,7 +27,7 @@ public class HibernateTestrunRespository implements TestrunRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Testrun get(long testrunID) {
+	public Testrun get(Long testrunID) {
 		Query query = em.createQuery("from Testrun where testrunID=:testrunID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -59,7 +59,7 @@ public class HibernateTestrunRespository implements TestrunRepository {
 		return set;	
 	}
 
-	public Testrun findById(long testrunID) {
+	public Testrun findById(Long testrunID) {
 		return get(testrunID);
 	}
 
@@ -70,7 +70,7 @@ public class HibernateTestrunRespository implements TestrunRepository {
 	}
 	
 	///////// testrunLevel
-	public TestrunLevel findTestrunLevelById(long testrunLevelID) {
+	public TestrunLevel findTestrunLevelById(Long testrunLevelID) {
 		Query query = em.createQuery("from TestrunLevel where testrunLevelID=:testrunLevelID");		
 		query.setParameter("testrunLevelID", testrunLevelID);
 		return (TestrunLevel) query.getSingleResult();	

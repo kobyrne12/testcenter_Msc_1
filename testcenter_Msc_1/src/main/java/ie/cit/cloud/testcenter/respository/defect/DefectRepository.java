@@ -23,7 +23,7 @@ public interface DefectRepository {
      * @return Defect for given id, {@link EmptyResultDataAccessException} if no
      *         Defect was found
      */
-	Defect get(long defectID);
+	Defect get(Long defectID);
 
     /**
      * Adds new Defect into repository
@@ -54,7 +54,7 @@ public interface DefectRepository {
      *            Defect ID
      * @return Defect for given id, null if test was not found
      */
-    Defect findById(long defectID);
+    Defect findById(Long defectID);
     /**
      * Returns Defect items given by its name
      * 
@@ -71,5 +71,5 @@ public interface DefectRepository {
      * @return Defect for given name, null if Defect was not found
      */
 
-	Set<Defect> findAllDefectsByParentID(long defectID);	
+	Set<Defect> findAllDefectsByParentID(Long defectID);	
 }

@@ -29,7 +29,7 @@ public class HibernateTestcaseRespository implements TestcaseRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Testcase get(long testcaseID) {
+	public Testcase get(Long testcaseID) {
 		Query query = em.createQuery("from Testcase where testcaseID=:testcaseID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -61,7 +61,7 @@ public class HibernateTestcaseRespository implements TestcaseRepository {
 		return set;	
 	}
 
-	public Testcase findById(long testcaseID) {
+	public Testcase findById(Long testcaseID) {
 		return get(testcaseID);
 	}
 

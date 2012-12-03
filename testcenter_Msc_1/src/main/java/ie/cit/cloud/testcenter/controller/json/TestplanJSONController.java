@@ -1,18 +1,14 @@
 package ie.cit.cloud.testcenter.controller.json;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.NoResultException;
 import javax.validation.ConstraintViolationException;
-
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.display.RelatedObject;
@@ -22,11 +18,14 @@ import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestplanSummary;
+import ie.cit.cloud.testcenter.model.summary.TestplanSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
@@ -34,8 +33,6 @@ import ie.cit.cloud.testcenter.service.project.ProjectService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testplan.TestplanService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
-
-
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -53,8 +50,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-@RequestMapping("testcase")
-public class TestcaseJSONController {    
+@RequestMapping("testplan")
+public class TestplanJSONController {    
 	@Autowired
 	private CompanyService companyService; 
 	@Autowired
@@ -71,10 +68,10 @@ public class TestcaseJSONController {
 	private DefectService defectService;
 
 
-	// All Testcases For a company
+	// All Testplans For a company
 	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody TestcaseSummaryList returnTestcases(
+	public @ResponseBody TestplanSummaryList returnTestplans(
 			@PathVariable Long companyID,
 			@RequestParam(required = false) String projectID,
 			@RequestParam(required = false) String cycleID,
@@ -97,64 +94,64 @@ public class TestcaseJSONController {
 			{    	
 		if (search == true) 
 		{   	
-			System.out.println(" ^^^^^^ 2 : " + filters);
+			
 			ObjectMapper mapper = new ObjectMapper();    	
-			JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class);  
-
-			TestcaseSummaryList testcaseSummaryList = testcaseService.getGridTestcases(companyID, projectID,cycleID, testplanID, testcaseID,
+			JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class); 
+			
+			TestplanSummaryList testplanSummaryList = testplanService.getGridTestplans(companyID, projectID,cycleID, testplanID, testcaseID,
 					testrunID, defectID, requirementID,
 					environmentID, userID,level,stage,required);
 
-			Set<TestcaseSummary> oldTestcaseSummarySet = testcaseSummaryList.getTestcases();
-			Set<TestcaseSummary> newTestcaseSummarySet = new LinkedHashSet<TestcaseSummary>();
+			Set<TestplanSummary> oldTestplanSummarySet = testplanSummaryList.getTestplans();
+			Set<TestplanSummary> newTestplanSummarySet = new LinkedHashSet<TestplanSummary>();
 
-			for(TestcaseSummary oldTestcaseSummary : oldTestcaseSummarySet)
+			for(TestplanSummary oldTestplanSummary : oldTestplanSummarySet)
 			{
-				boolean testcaseNameFound = false; 
-				boolean testcaseIDFound = false; 
-				//System.out.println(" ^^^^^^ 3 : " + oldTestcaseSummary.getTestcaseName());
+				boolean testplanNameFound = false; 
+				boolean testplanIDFound = false; 
+				//System.out.println(" ^^^^^^ 3 : " + oldTestplanSummary.getTestplanName());
 				for(Rule rule : jqgridFilter.getRules())
 				{        			
 					//System.out.println(" ^^^^^^ 4 : " + rule.getField());
-					if(rule.getField().equalsIgnoreCase("testcaseName"))
+					if(rule.getField().equalsIgnoreCase("testplanName"))
 					{
-						//System.out.println(" ^^^^^^ 5 a : " +oldTestcaseSummary.getTestcaseName());
-						if(oldTestcaseSummary.getTestcaseName().toLowerCase().contains(rule.getData().toLowerCase()))
+						//System.out.println(" ^^^^^^ 5 a : " +oldTestplanSummary.getTestplanName());
+						if(oldTestplanSummary.getTestplanName().toLowerCase().contains(rule.getData().toLowerCase()))
 						{
-							testcaseNameFound = true;      					
+							testplanNameFound = true;      					
 						}
 					}
 					else
 					{
-						testcaseNameFound = true;   
+						testplanNameFound = true;   
 					}
-					if(rule.getField().equalsIgnoreCase("testcaseID"))
+					if(rule.getField().equalsIgnoreCase("testplanID"))
 					{
-						System.out.println(" ^^^^^^ 5 a : " +oldTestcaseSummary.getTestcaseID());
-						if(String.valueOf(oldTestcaseSummary.getTestcaseID()).toLowerCase().contains(rule.getData().toLowerCase()))
+						System.out.println(" ^^^^^^ 5 a : " +oldTestplanSummary.getTestplanID());
+						if(String.valueOf(oldTestplanSummary.getTestplanID()).toLowerCase().contains(rule.getData().toLowerCase()))
 						{        		
-							System.out.println(" ^^^^^^ 5 b : " +oldTestcaseSummary.getTestcaseID());
-							testcaseIDFound = true; 
+							System.out.println(" ^^^^^^ 5 b : " +oldTestplanSummary.getTestplanID());
+							testplanIDFound = true; 
 						}
 					}
 					else
 					{
-						System.out.println(" ^^^^^^ 5 c : " +oldTestcaseSummary.getTestcaseID());
-						testcaseIDFound = true; 
+						System.out.println(" ^^^^^^ 5 c : " +oldTestplanSummary.getTestplanID());
+						testplanIDFound = true; 
 					}
 				}
-				if(testcaseNameFound == true && testcaseIDFound == true)
+				if(testplanNameFound == true && testplanIDFound == true)
 				{
-					newTestcaseSummarySet.add(oldTestcaseSummary);
+					newTestplanSummarySet.add(oldTestplanSummary);
 				}
 			}
 
-			testcaseSummaryList.setTestcases(newTestcaseSummarySet);    		
-			return testcaseSummaryList;
+			testplanSummaryList.setTestplans(newTestplanSummarySet);    		
+			return testplanSummaryList;
 		}
 		else
 		{
-			return testcaseService.getGridTestcases(companyID, projectID,
+			return testplanService.getGridTestplans(companyID, projectID,
 					cycleID, testplanID, testcaseID,
 					testrunID, defectID, requirementID,
 					environmentID, userID,level,stage,required);
@@ -162,20 +159,20 @@ public class TestcaseJSONController {
 
 			}     
 
-	// Columns for testcase CHANGE companyID TO UserID
+	// Columns for testplan CHANGE companyID TO UserID
 	@RequestMapping(value = "/ColsAndNames/{index}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody ColModelAndNames testArray(@PathVariable("index") Long companyID) {		
-		return testcaseService.getColumnModelAndNames(companyID);    	
+		return testplanService.getColumnModelAndNames(companyID);    	
 	}     
 
-	// Testcase Related Items
-	@RequestMapping(value = "/relatedObjects/{testcaseID}", method = RequestMethod.GET)
+	// Testplan Related Items
+	@RequestMapping(value = "/relatedObjects/{testplanID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody RelatedObjectList returnRelatedObjects(
-			@PathVariable Long testcaseID,    		
+			@PathVariable Long testplanID,    		
 			@RequestParam(required = false) String cycleID,
-			@RequestParam(required = false) String testplanID,// +1 testcases
+			@RequestParam(required = false) String testcaseID,// +1 testcases
 			@RequestParam(required = false) String projectID,// +1 testcases    		
 			@RequestParam(required = false) String userID, // +1 testcases
 			@RequestParam(required = false) String environmentID,
@@ -190,79 +187,76 @@ public class TestcaseJSONController {
 		Set<RelatedObject> relatedObjectSet =  new LinkedHashSet<RelatedObject>();
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
-			Testcase testcase = testcaseService.getTestcase(testcaseID); 
-			TestcaseSummary testcaseSummary = new TestcaseSummary(testcase, levelName, testrunService, defectService, testplanService);
+			Testplan testplan = testplanService.getTestplan(testplanID); 
+			TestplanSummary testplanSummary = new TestplanSummary(testplan, levelName, testrunService, defectService);
 
-			Company company = companyService.getCompany(testcaseSummary.getCompanyID());
+			Company company = companyService.getCompany(testplanSummary.getCompanyID());
 
 			relatedObjectSet.add(new RelatedObject(1,
 					company.getProjectsDisplayName(),
-					Integer.toString(testcaseSummary.getTotalProjects()), 
-					testcaseID, 
+					Integer.toString(testplanSummary.getTotalProjects()), 
+					testplanID, 
 					company.getProjectsDisplayName().replace(" ","")));
+			
 			relatedObjectSet.add(new RelatedObject(2,
 					company.getCyclesDisplayName(),
-					Integer.toString(testcaseSummary.getTotalCycles()),
-					testcaseID,
-					company.getCyclesDisplayName().replace(" ","")));	
+					Integer.toString(testplanSummary.getTotalCycles()),
+					testplanID,
+					company.getCyclesDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(3,
-					company.getTestplanDisplayName(),
-					testcaseSummary.getTestplanName(),
-					testcaseID,
-					company.getTestplanDisplayName().replace(" ","")));		
+					company.getTestcasesDisplayName(),
+					Integer.toString(testplanSummary.getTotalTestcases()),
+					testplanID,
+					company.getTestcasesDisplayName().replace(" ","")));			
 			relatedObjectSet.add(new RelatedObject(4,
 					"All "+ company.getTestrunsDisplayName(),
-					Integer.toString(testcaseSummary.getTotalAllTestruns()),
-					testcaseID,
+					Integer.toString(testplanSummary.getTotalAllTestruns()),
+					testplanID,
 					"all"+company.getTestrunsDisplayName().replace(" ",""))); 
 			relatedObjectSet.add(new RelatedObject(5,
 					"Required "+ company.getTestrunsDisplayName(),
-					Integer.toString(testcaseSummary.getTotalRequiredTestruns()),
-					testcaseID,
+					Integer.toString(testplanSummary.getTotalRequiredTestruns()),
+					testplanID,
 					"required"+company.getTestrunsDisplayName().replace(" ",""))); 
 			relatedObjectSet.add(new RelatedObject(6,
 					"Optional "+ company.getTestrunsDisplayName(),
-					Integer.toString(testcaseSummary.getTotalOptionalTestruns()),
-					testcaseID, 
+					Integer.toString(testplanSummary.getTotalOptionalTestruns()),
+					testplanID, 
 					"optional"+company.getTestrunsDisplayName().replace(" ","")));
 
-			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Total",Integer.toString(testcaseSummary.getTotalDefects()), testcaseID, company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testcaseSummary.getTotalCurrentSev1s()), testcaseID,"sev1"));
-			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testcaseSummary.getTotalCurrentSev2s()), testcaseID,"sev2"));
-			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testcaseSummary.getTotalCurrentSev3s()), testcaseID,"sev3"));
-			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testcaseSummary.getTotalCurrentSev4s()), testcaseID,"sev4"));
+			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Total",Integer.toString(testplanSummary.getTotalDefects()), testplanID, company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testplanSummary.getTotalCurrentSev1s()), testplanID,"sev1"));
+			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testplanSummary.getTotalCurrentSev2s()), testplanID,"sev2"));
+			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testplanSummary.getTotalCurrentSev3s()), testplanID,"sev3"));
+			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testplanSummary.getTotalCurrentSev4s()), testplanID,"sev4"));
 
-			relatedObjectSet.add(new RelatedObject(12,company.getEnvironmentsDisplayName(),Integer.toString(testcaseSummary.getTotalEnvironments()), testcaseID, company.getEnvironmentsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(13,company.getRequirementsDisplayName(),Integer.toString(testcaseSummary.getTotalRequirements()), testcaseID, company.getRequirementsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(12,company.getEnvironmentsDisplayName(),Integer.toString(testplanSummary.getTotalEnvironments()), testplanID, company.getEnvironmentsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(13,company.getRequirementsDisplayName(),Integer.toString(testplanSummary.getTotalRequirements()), testplanID, company.getRequirementsDisplayName().replace(" ","")));
 
-			relatedObjectSet.add(new RelatedObject(14,company.getTestersDisplayName(),Integer.toString(testcaseSummary.getTotalTesters()), testcaseID, company.getTestersDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(15,company.getSeniorTestersDisplayName(),Integer.toString(testcaseSummary.getTotalSeniorTesters()), testcaseID, company.getSeniorTestersDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(16,company.getDevelopersDisplayName(),Integer.toString(testcaseSummary.getTotalDevelopers()), testcaseID, company.getDevelopersDisplayName().replace(" ",""))); 	
-			relatedObjectSet.add(new RelatedObject(17,company.getSeniordevelopersDisplayName(),Integer.toString(testcaseSummary.getTotalSeniorDevelopers()), testcaseID, company.getSeniordevelopersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(14,company.getTestersDisplayName(),Integer.toString(testplanSummary.getTotalTesters()), testplanID, company.getTestersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(15,company.getSeniorTestersDisplayName(),Integer.toString(testplanSummary.getTotalSeniorTesters()), testplanID, company.getSeniorTestersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(16,company.getDevelopersDisplayName(),Integer.toString(testplanSummary.getTotalDevelopers()), testplanID, company.getDevelopersDisplayName().replace(" ",""))); 	
+			relatedObjectSet.add(new RelatedObject(17,company.getSeniordevelopersDisplayName(),Integer.toString(testplanSummary.getTotalSeniorDevelopers()), testplanID, company.getSeniordevelopersDisplayName().replace(" ","")));
 
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 
 		}catch(NoResultException e)
 		{
-			relatedObjectSet.add(new RelatedObject(1,"Select a Row to View Details","", testcaseID, null));  
+			relatedObjectSet.add(new RelatedObject(1,"Select a Row to View Details","", testplanID, null));  
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 		}    	
 	} 
 
 	/**
-	 * Handles request for create a new Testcase 
+	 * Handles request for create a new Testplan 
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public @ResponseBody String addNewTestcase(
+	public @ResponseBody String addNewTestplan(
 			@RequestParam(value="companyID", required=true) Long companyID,
-			@RequestParam(value="testcaseName", required=true) String testcaseName,
-			@RequestParam(value="projectID", defaultValue="") String projectID,	
-			@RequestParam(value="testcaseSummary", defaultValue="") String testcaseSummary,	
-			@RequestParam(value="testcasePreCondition", defaultValue="") String testcasePreCondition,	
-			@RequestParam(value="testcaseSteps", defaultValue="") String testcaseSteps,	
-			@RequestParam(value="testcasePassCondition", defaultValue="") String testcasePassCondition,	
+			@RequestParam(value="testplanName", required=true) String testplanName,
+			@RequestParam(value="projectID", defaultValue="") String projectID,			
 			Model model) 
 	{
 
@@ -270,27 +264,26 @@ public class TestcaseJSONController {
 		System.out.println("#%%#%#%#%#%#%#%# : "+companyID);
 		try
 		{  
-			Testcase testcase = testcaseService.getTestcaseByName(testcaseName);		
-			if(testcase.getCompanyID() == companyID )
+			Testplan testplan = testplanService.getTestplanByName(testplanName);		
+			if(testplan.getCompanyID() == companyID )
 			{				
 				alreadyExists = true;
 			}
 		}
 		catch(NoResultException e)
 		{   			
-			System.out.println("No Test Case Exists with that name "); 			
+			System.out.println("No Test plan Exists with that name "); 			
 		}
 		if(alreadyExists == false)
 		{
 			try{    	
 				if(companyID != null)
 				{
-					Testcase testcase = new Testcase(companyID,(long) 1,testcaseName,null,"DRAFT",
-							testcaseSummary,testcasePreCondition,testcaseSteps,testcasePassCondition,"TESTER","SENIOR TESTER");
+					Testplan testplan = new Testplan(companyID,testplanName);
 
 					try
 					{
-						testcaseService.addNewTestcase(testcase);	
+						testplanService.addNewTestplan(testplan);	
 					}
 					catch(ConstraintViolationException CVE)
 					{   			
@@ -299,7 +292,7 @@ public class TestcaseJSONController {
 					}
 
 					//		    		System.out.println(e);
-					//		    		return "ERROR :: Could not add Test Case :"+testcaseName; 
+					//		    		return "ERROR :: Could not add Test plan :"+testplanName; 
 					//		    	}
 					if(!projectID.isEmpty())
 					{
@@ -310,12 +303,12 @@ public class TestcaseJSONController {
 						}				    	
 						try
 						{
-							project.getTestcases().add(testcase);     
+							project.getTestplans().add(testplan);     
 							projectService.update(project);  	
 						}
 						catch(Exception e)
 						{
-							return "ERROR :: Could not add Test Case :"+testcaseName+" To project :"+ projectID; 
+							return "ERROR :: Could not add Test plan :"+testplanName+" To project :"+ projectID; 
 						}					
 					}
 					return "ok";  
@@ -333,32 +326,32 @@ public class TestcaseJSONController {
 		}
 		else
 		{
-			return testcaseName + " already Exists";	 
+			return testplanName + " already Exists";	 
 		}		
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST )
 	@ResponseStatus(HttpStatus.NO_CONTENT)	
-	public void deleteCycle(@RequestParam(value="id", required=true) Long testcaseID) {
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE testcaseID = " + testcaseID);
-		testcaseService.remove(testcaseID);
+	public void deleteCycle(@RequestParam(value="id", required=true) Long testplanID) {
+		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE testplanID = " + testplanID);
+		testplanService.remove(testplanID);
 	}
-	// Testcase summary
+	// Testplan summary
 	@RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody TestcaseSummary getCompanySummaryAt(@PathVariable("index") Long testcaseID) {
-		//return testcaseService.getTestcaseSummary(testcaseID);   
+	public @ResponseBody TestplanSummary getCompanySummaryAt(@PathVariable("index") Long testplanID) {
+		//return testplanService.getTestplanSummary(testplanID);   
 		return null;
 	} 
-	/* @RequestMapping(value = {"jsontestcaseTEST"}, method = GET)
-     public String jsontestcaseTEST(@RequestParam(required = false)Long companyID, Model model) {
+	/* @RequestMapping(value = {"jsontestplanTEST"}, method = GET)
+     public String jsontestplanTEST(@RequestParam(required = false)Long companyID, Model model) {
      	model.addAttribute("company", companyService.getCompany(companyID));
-     	return "jsontestcaseTEST";  
+     	return "jsontestplanTEST";  
    }  
-     // All Testcases For a company
+     // All Testplans For a company
      @RequestMapping(value = "/summaryList/{companyID}/cycle/{cycleID}", method = RequestMethod.GET)
      @ResponseStatus(HttpStatus.OK)
-     public @ResponseBody TestcaseSummaryList returnTestcasesForCycle(@PathVariable("companyID") Long companyID) {
+     public @ResponseBody TestplanSummaryList returnTestplansForCycle(@PathVariable("companyID") Long companyID) {
      	return companyService.getAllTestcaseSummaryForCompany(companyID);     	   	
      }  */
 

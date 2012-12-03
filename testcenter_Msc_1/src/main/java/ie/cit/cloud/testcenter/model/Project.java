@@ -36,7 +36,7 @@ public class Project {
 	@Id        
 	@GeneratedValue
 	@Column(name = "projectID", unique = true, nullable = false)
-	private long projectID;
+	private Long projectID;
 
 	@Basic
 	@Column(name="companyID")
@@ -72,7 +72,7 @@ public class Project {
 	private Set<TestrunLevel> testrunLevels  = new LinkedHashSet<TestrunLevel>();    	
 
 	@Basic    
-	private long parentID = -1;   
+	private Long parentID;   
 	@Basic    
 	private boolean parent;  
 	@Basic    
@@ -103,7 +103,7 @@ public class Project {
 	public Project() {	
 	}
 
-	public Project(long companyID, String projectName,long parentID,int regressionRequiredPercent,int newFeatureRequiredPercent, int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,String lastModifiedDate,String lastModifiedBy ) {
+	public Project(Long companyID, String projectName,Long parentID,int regressionRequiredPercent,int newFeatureRequiredPercent, int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,String lastModifiedDate,String lastModifiedBy ) {
 		this(companyID,projectName,
 				null,null,null,parentID,
 				regressionRequiredPercent,newFeatureRequiredPercent,
@@ -111,8 +111,8 @@ public class Project {
 				lastModifiedDate, lastModifiedBy);
 	}
 
-	public Project(long companyID, String projectName,
-			Set<Cycle> cycles,Set<Testplan> tesplans,	Set<Testcase> testcases, long parentID,
+	public Project(Long companyID, String projectName,
+			Set<Cycle> cycles,Set<Testplan> tesplans,	Set<Testcase> testcases, Long parentID,
 			int regressionRequiredPercent,int newFeatureRequiredPercent,
 			int allowedSev1,int allowedSev2,int allowedSev3,int allowedSev4,
 			String lastModifiedDate,String lastModifiedBy) {
@@ -171,13 +171,13 @@ public class Project {
 	/**
 	 * @return the parentID
 	 */
-	public long getParentID() {
+	public Long getParentID() {
 		return parentID;
 	}
 	/**
 	 * @param parentID the parentID to set
 	 */
-	public void setParentID(long parentID) {
+	public void setParentID(Long parentID) {
 		this.parentID = parentID;
 	}
 	/**
@@ -327,7 +327,7 @@ public class Project {
 	/**
 	 * @return the projectID
 	 */
-	public long getProjectID() {
+	public Long getProjectID() {
 		return projectID;
 	}
 	/**

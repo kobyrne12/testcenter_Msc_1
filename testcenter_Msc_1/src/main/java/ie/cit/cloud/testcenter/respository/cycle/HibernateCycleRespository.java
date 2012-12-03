@@ -28,7 +28,7 @@ public class HibernateCycleRespository implements CycleRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Cycle get(long cycleID) {
+    public Cycle get(Long cycleID) {
 	Query query = em.createQuery("from Cycle where cycleID=:cycleID");
 //	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 //	query.setParameter("user", getCurrentUser());
@@ -58,7 +58,7 @@ public class HibernateCycleRespository implements CycleRepository {
 	return (Set<Cycle>) query.getResultList();
     }
 
-    public Cycle findById(long cycleID) {
+    public Cycle findById(Long cycleID) {
     	return get(cycleID);
     }
     
@@ -72,7 +72,7 @@ public class HibernateCycleRespository implements CycleRepository {
 //   }	
     
     @SuppressWarnings("unchecked")
-	public Set<Cycle> findAllCyclesByProjectID(long projectID)
+	public Set<Cycle> findAllCyclesByProjectID(Long projectID)
 	{
 		Query query = em.createQuery("from Cycle where projectID=:projectID"); 		
 		query.setParameter("projectID", projectID);
@@ -81,7 +81,7 @@ public class HibernateCycleRespository implements CycleRepository {
 		return cyclesSet;	
 	}
     @SuppressWarnings("unchecked")
-	public  Set<Cycle> findAllCyclesByParentID(long cycleID)
+	public  Set<Cycle> findAllCyclesByParentID(Long cycleID)
 	{
 		Query query = em.createQuery("from Cycle where parentID=:parentID"); 		
 		query.setParameter("parentID", cycleID);
@@ -90,7 +90,7 @@ public class HibernateCycleRespository implements CycleRepository {
 		return childCyclesSet;
 	}	
 
-    public int getMaxProjectPosNum(long projectID)
+    public int getMaxProjectPosNum(Long projectID)
     {
     	Query query = em.createQuery("select max(projectPosition) from Cycle where projectID=:projectID");
     	query.setParameter("projectID", projectID);

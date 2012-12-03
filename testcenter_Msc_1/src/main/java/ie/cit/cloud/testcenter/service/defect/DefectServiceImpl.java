@@ -65,7 +65,7 @@ public class DefectServiceImpl implements DefectService {
 
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Defect getDefect(long defectID) {
+	public Defect getDefect(Long defectID) {
 		return defectRepo.findById(defectID);
 	}
 
@@ -75,7 +75,7 @@ public class DefectServiceImpl implements DefectService {
 	}
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Set<Defect> getAllChildDefects(long defectID) {
+	public Set<Defect> getAllChildDefects(Long defectID) {
 		return defectRepo.findAllDefectsByParentID(defectID);
 	}
 	
@@ -91,11 +91,11 @@ public class DefectServiceImpl implements DefectService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long defectID) {
+	public void remove(Long defectID) {
 		defectRepo.delete(getDefect(defectID));
 	}
 
-	public boolean isSev1(long defectID)
+	public boolean isSev1(Long defectID)
 	{
 		Defect defect = getDefect(defectID);
 		if(defect.getSeverity() == 1)
@@ -105,7 +105,7 @@ public class DefectServiceImpl implements DefectService {
 		return false;				
 	}
 
-	public boolean isSev2(long defectID)
+	public boolean isSev2(Long defectID)
 	{
 		Defect defect = getDefect(defectID);
 		if(defect.getSeverity()  == 2)
@@ -115,7 +115,7 @@ public class DefectServiceImpl implements DefectService {
 		return false;				
 	}
 
-	public boolean isSev3(long defectID)
+	public boolean isSev3(Long defectID)
 	{
 		Defect defect = getDefect(defectID);
 		if(defect.getSeverity()  == 3)
@@ -125,7 +125,7 @@ public class DefectServiceImpl implements DefectService {
 		return false;				
 	}
 
-	public boolean isSev4(long defectID)
+	public boolean isSev4(Long defectID)
 	{
 		Defect defect = getDefect(defectID);
 		if(defect.getSeverity() == 4)
@@ -136,7 +136,7 @@ public class DefectServiceImpl implements DefectService {
 	}
 	/////////////////////////
 		
-	public Set<Defect> getParentAndChildDefects(long defectID)
+	public Set<Defect> getParentAndChildDefects(Long defectID)
 	{		
 		Defect defect = getDefect(defectID);
 		Set<Defect> defects = new HashSet<Defect>(); 
@@ -157,7 +157,7 @@ public class DefectServiceImpl implements DefectService {
 		return defects;	
 	}
 	
-	public Set<Defect> getChildDefects(long defectID) {
+	public Set<Defect> getChildDefects(Long defectID) {
 		Defect defect = getDefect(defectID);
 		if(!defect.isParent())
 		{   			 
@@ -177,7 +177,7 @@ public class DefectServiceImpl implements DefectService {
 		}
 	}
 
-	public Defect getParentDefect(long defectID) {
+	public Defect getParentDefect(Long defectID) {
 		Defect defect = getDefect(defectID);
 		if(!defect.isChild())
 		{   			 
@@ -197,7 +197,7 @@ public class DefectServiceImpl implements DefectService {
 		}
 	}
 
-	public Set<Testrun> getCascadedAllTestRuns(long defectID) 
+	public Set<Testrun> getCascadedAllTestRuns(Long defectID) 
 	{
 		Set<Defect> allDefects = getParentAndChildDefects(defectID);
 		if(allDefects == null || allDefects.isEmpty())
@@ -225,7 +225,7 @@ public class DefectServiceImpl implements DefectService {
 		return allTestruns;		
 	} 
 	
-	public Set<Testrun> getCascadedCompulsoryTestRuns(long defectID)
+	public Set<Testrun> getCascadedCompulsoryTestRuns(Long defectID)
 	{
 		Set<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -243,7 +243,7 @@ public class DefectServiceImpl implements DefectService {
 		return compulsoryTestruns;		
 	}	
 	
-	public Set<Testrun> getCascadedOptionalTestRuns(long defectID)
+	public Set<Testrun> getCascadedOptionalTestRuns(Long defectID)
 	{
 		Set<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -261,7 +261,7 @@ public class DefectServiceImpl implements DefectService {
 		return optionalTestruns;		
 	}
 	
-	public Set<Testcase> getCascadedAllTestCases(long defectID)
+	public Set<Testcase> getCascadedAllTestCases(Long defectID)
 	{
 		Set<Testrun> allTestruns = getCascadedAllTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -279,7 +279,7 @@ public class DefectServiceImpl implements DefectService {
 		return allTestcases;
 	}
 	
-	public Set<Testcase> getCascadedCompulsoryTestCases(long defectID)
+	public Set<Testcase> getCascadedCompulsoryTestCases(Long defectID)
 	{
 		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -297,7 +297,7 @@ public class DefectServiceImpl implements DefectService {
 		return allTestcases;
 	}
 	
-	public Set<Testcase> getCascadedOptionalTestCases(long defectID)
+	public Set<Testcase> getCascadedOptionalTestCases(Long defectID)
 	{
 		Set<Testrun> allTestruns = getCascadedOptionalTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -315,7 +315,7 @@ public class DefectServiceImpl implements DefectService {
 		return allTestcases;
 	}
 	
-	public Set<Testplan> getCascadedAllTestPlans(long defectID)
+	public Set<Testplan> getCascadedAllTestPlans(Long defectID)
 	{		
 		Set<Testcase> allTestcases = getCascadedAllTestCases(defectID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -333,7 +333,7 @@ public class DefectServiceImpl implements DefectService {
 		return allTestplans;
 	}
 	
-	public Set<Testplan> getCascadedCompulsoryTestPlans(long defectID)
+	public Set<Testplan> getCascadedCompulsoryTestPlans(Long defectID)
 	{		
 		Set<Testcase> allTestcases = getCascadedCompulsoryTestCases(defectID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -351,7 +351,7 @@ public class DefectServiceImpl implements DefectService {
 		return allTestplans;
 	}
 	
-	public Set<Testplan> getCascadedOptionalTestPlans(long defectID)
+	public Set<Testplan> getCascadedOptionalTestPlans(Long defectID)
 	{		
 		Set<Testcase> allTestcases = getCascadedOptionalTestCases(defectID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -369,7 +369,7 @@ public class DefectServiceImpl implements DefectService {
 		return allTestplans;
 	}
 	
-	public Set<Cycle> getCascadedCycles(long defectID) {
+	public Set<Cycle> getCascadedCycles(Long defectID) {
 		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
@@ -386,7 +386,7 @@ public class DefectServiceImpl implements DefectService {
 		return cycles;
 	}
 
-	public Set<Project> getCascadedProjects(long defectID)
+	public Set<Project> getCascadedProjects(Long defectID)
 	{
 		Set<Cycle> cycles =  getCascadedCycles(defectID);
 		if(cycles == null || cycles.isEmpty())
@@ -405,7 +405,7 @@ public class DefectServiceImpl implements DefectService {
 	}
 
 	
-	public Set<Environment> getCascadedEnvironments(long defectID) {
+	public Set<Environment> getCascadedEnvironments(Long defectID) {
 		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
@@ -422,7 +422,7 @@ public class DefectServiceImpl implements DefectService {
 		return environments;
 	}
 
-	public Set<Requirement> getCascadedRequirements(long defectID) 
+	public Set<Requirement> getCascadedRequirements(Long defectID) 
 	{
 		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(defectID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -445,22 +445,22 @@ public class DefectServiceImpl implements DefectService {
 		return requirements;		
 	}
 
-	public Set<TestcenterUser> getCascadedTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedTesters(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedSnrTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedDevelopers(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedSnrDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrDevelopers(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

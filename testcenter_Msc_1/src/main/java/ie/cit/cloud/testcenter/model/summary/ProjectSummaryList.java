@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class ProjectSummaryList {	
 	
-    //private long companyID;   
+    //private Long companyID;   
     private Set<ProjectSummary> projects; 
     
    

@@ -63,7 +63,7 @@ public class TestrunServiceImpl implements TestrunService {
 	
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Testrun getTestrun(long testrunID) {
+	public Testrun getTestrun(Long testrunID) {
 		try{
 			return testrunRepo.findById(testrunID);					
 		}
@@ -90,7 +90,7 @@ public class TestrunServiceImpl implements TestrunService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long testrunID) {
+	public void remove(Long testrunID) {
 		testrunRepo.delete(getTestrun(testrunID));
 	}
 	
@@ -99,7 +99,7 @@ public class TestrunServiceImpl implements TestrunService {
 		
 	}
 
-	public TestrunLevel getTestrunLevel(long testrunLevelID) {
+	public TestrunLevel getTestrunLevel(Long testrunLevelID) {
 		try{
 			return testrunRepo.findTestrunLevelById(testrunLevelID);					
 		}
@@ -122,7 +122,7 @@ public class TestrunServiceImpl implements TestrunService {
 		testrunRepo.updateTestrunLevel(testrunLevel);
 	}  
 	
-	public void removeTestrunLevel(long testrunLevelID) {
+	public void removeTestrunLevel(Long testrunLevelID) {
 		testrunRepo.deleteTestrunLevel(getTestrunLevel(testrunLevelID));
 		
 	}
@@ -131,7 +131,7 @@ public class TestrunServiceImpl implements TestrunService {
 	 * boolean
 	 * @return true if this testruns cycle is the latest cycle for a project, otherwise false
 	 */  
-	public boolean isLatest(long testrunID)
+	public boolean isLatest(Long testrunID)
 	{		
 		Testrun testrun= getTestrun(testrunID);
 		try{
@@ -148,7 +148,7 @@ public class TestrunServiceImpl implements TestrunService {
 			return false;
 		}			
 	}
-	public Set<Testrun> getTestHistory(long testrunID) 
+	public Set<Testrun> getTestHistory(Long testrunID) 
 	{
 		Testrun testrun = getTestrun(testrunID);
 		try{
@@ -160,7 +160,7 @@ public class TestrunServiceImpl implements TestrunService {
 		}		
 	} 
 
-	public boolean isRequired(long testrunID) 
+	public boolean isRequired(Long testrunID) 
 	{
 		Testrun testrun = getTestrun(testrunID);
 		try{
@@ -177,7 +177,7 @@ public class TestrunServiceImpl implements TestrunService {
 	}   
 	//////////////////////////////////
 
-	public Cycle getCycle(long testrunID)
+	public Cycle getCycle(Long testrunID)
 	{
 		Testrun testrun = getTestrun(testrunID);
 		try{
@@ -188,7 +188,7 @@ public class TestrunServiceImpl implements TestrunService {
 		}
 	}
 
-	public Testcase getTestcase(long testrunID) {
+	public Testcase getTestcase(Long testrunID) {
 		Testrun testrun = getTestrun(testrunID);
 		try{
 			return testcaseService.getTestcase(testrun.getTestcaseID());			
@@ -198,7 +198,7 @@ public class TestrunServiceImpl implements TestrunService {
 		}
 	}
 
-	public Project getProject(long testrunID)
+	public Project getProject(Long testrunID)
 	{
 		Cycle cycle = getCycle(testrunID);
 		if(cycle == null)
@@ -213,7 +213,7 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 	}
 
-	public Testplan getTestPlan(long testrunID) {
+	public Testplan getTestPlan(Long testrunID) {
 		Testcase testcase = getTestcase(testrunID);
 		if(testcase == null)
 		{
@@ -226,7 +226,7 @@ public class TestrunServiceImpl implements TestrunService {
 			return null;
 		}	
 	}		
-	public Set<Defect> getCascadedAllDefects(long testrunID) 
+	public Set<Defect> getCascadedAllDefects(Long testrunID) 
 	{		
 		Testrun testrun = getTestrun(testrunID);
 		if(testrun == null)
@@ -253,7 +253,7 @@ public class TestrunServiceImpl implements TestrunService {
 		return allDefects;
 	}
 		
-	public Set<Defect> getCascadedSev1Defects(long testrunID) 
+	public Set<Defect> getCascadedSev1Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -270,7 +270,7 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 		return sev1defects;
 	}
-	public Set<Defect> getCascadedSev2Defects(long testrunID) 
+	public Set<Defect> getCascadedSev2Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -288,7 +288,7 @@ public class TestrunServiceImpl implements TestrunService {
 		return sev2defects;
 	}
 		
-	public Set<Defect> getCascadedSev3Defects(long testrunID) 
+	public Set<Defect> getCascadedSev3Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -305,7 +305,7 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 		return sev3defects;
 	}	
-	public Set<Defect> getCascadedSev4Defects(long testrunID) 
+	public Set<Defect> getCascadedSev4Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -322,22 +322,22 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 		return sev4defects;
 	}
-	public Set<TestcenterUser> getCascadedTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedTesters(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedSnrTesters(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedDevelopers(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedSnrDevelopers(long defectID) {
+	public Set<TestcenterUser> getCascadedSnrDevelopers(Long defectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

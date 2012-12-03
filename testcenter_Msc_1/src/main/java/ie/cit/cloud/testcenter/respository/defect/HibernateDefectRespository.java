@@ -26,7 +26,7 @@ public class HibernateDefectRespository implements DefectRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Defect get(long defectID) {
+	public Defect get(Long defectID) {
 		Query query = em.createQuery("from Defect where defectID=:defectID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -58,7 +58,7 @@ public class HibernateDefectRespository implements DefectRepository {
 		return defectSet;
 	}
 
-	public Defect findById(long defectID) {
+	public Defect findById(Long defectID) {
 		return get(defectID);
 	}
 
@@ -69,7 +69,7 @@ public class HibernateDefectRespository implements DefectRepository {
 	}
 
 	@SuppressWarnings("unchecked")
-	public  Set<Defect> findAllDefectsByParentID(long defectID)
+	public  Set<Defect> findAllDefectsByParentID(Long defectID)
 	{
 		Query query = em.createQuery("from Defect where parentID=:parentID"); 		
 		query.setParameter("parentID", defectID);

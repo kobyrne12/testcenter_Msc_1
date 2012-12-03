@@ -23,7 +23,7 @@ public interface TestrunRepository {
      * @return Testrun for given id, {@link EmptyResultDataAccessException} if no
      *         Testrun was found
      */
-	Testrun get(long testrunID);
+	Testrun get(Long testrunID);
 
     /**
      * Adds new Testrun into repository
@@ -54,7 +54,7 @@ public interface TestrunRepository {
      *            Testrun ID
      * @return Testrun for given id, null if test was not found
      */
-    Testrun findById(long testrunID);
+    Testrun findById(Long testrunID);
     /**
      * Returns Testrun items given by its name
      * 
@@ -75,7 +75,7 @@ public interface TestrunRepository {
 
 	void updateTestrunLevel(TestrunLevel testrunLevel);
 
-	TestrunLevel findTestrunLevelById(long testrunLevelID);
+	TestrunLevel findTestrunLevelById(Long testrunLevelID);
 
 	void createTestrunLevel(TestrunLevel testrunLevel);
 

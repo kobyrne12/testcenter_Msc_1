@@ -59,9 +59,9 @@ public class Requirement {
 	private Date lastModifiedDate;
 
 	@Basic    
-	private long createdByUserID;
+	private Long createdByUserID;
 	@Basic    
-	private long lastModifiedByUserID;
+	private Long lastModifiedByUserID;
 
 	@ManyToMany(mappedBy="requirements", fetch=FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -87,9 +87,9 @@ public class Requirement {
 	 * @param requirementSectionID	
 	 */
 	public Requirement(Long companyID, String requirementSummary,
-			String requirementDetails, long requirementSectionID) {
+			String requirementDetails, Long requirementSectionID) {
 		this(companyID,requirementSummary,requirementDetails,requirementSectionID,
-				new Date(),new Date(),(long) 0,(long) 0,null,null,null);	
+				new Date(),new Date(),null,null,null,null,null);	
 	}
 
 	/**
@@ -107,8 +107,8 @@ public class Requirement {
 	 */
 	public Requirement(Long companyID, String requirementSummary,
 			String requirementDetails, Long requirementSectionID,
-			Date creationDate, Date lastModifiedDate, long createdByUserID,
-			long lastModifiedByUserID, Set<Testrun> testruns,
+			Date creationDate, Date lastModifiedDate, Long createdByUserID,
+			Long lastModifiedByUserID, Set<Testrun> testruns,
 			Set<TestcenterUser> users, Set<Defect> defects) {
 		this.companyID = companyID;
 		this.requirementSummary = requirementSummary;
@@ -210,28 +210,28 @@ public class Requirement {
 	/**
 	 * @return the createdByUserID
 	 */
-	public long getCreatedByUserID() {
+	public Long getCreatedByUserID() {
 		return createdByUserID;
 	}
 
 	/**
 	 * @param createdByUserID the createdByUserID to set
 	 */
-	public void setCreatedByUserID(long createdByUserID) {
+	public void setCreatedByUserID(Long createdByUserID) {
 		this.createdByUserID = createdByUserID;
 	}
 
 	/**
 	 * @return the lastModifiedByUserID
 	 */
-	public long getLastModifiedByUserID() {
+	public Long getLastModifiedByUserID() {
 		return lastModifiedByUserID;
 	}
 
 	/**
 	 * @param lastModifiedByUserID the lastModifiedByUserID to set
 	 */
-	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+	public void setLastModifiedByUserID(Long lastModifiedByUserID) {
 		this.lastModifiedByUserID = lastModifiedByUserID;
 	}
 

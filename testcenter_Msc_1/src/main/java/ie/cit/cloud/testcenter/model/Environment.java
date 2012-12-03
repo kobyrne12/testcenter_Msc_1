@@ -59,11 +59,11 @@ public class Environment {
 	private Date lastModifiedDate;
 	
 	@Basic    
-	private long createdByUserID;	
+	private Long createdByUserID;	
 	@Basic    
-	private long lastModifiedByUserID;	
+	private Long lastModifiedByUserID;	
 	@Basic    
-	private long currentOwnerUserID;
+	private Long currentOwnerUserID;
 
 	@ManyToMany(mappedBy="environments", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -86,7 +86,7 @@ public class Environment {
 			String environmentOs, String environmentOsVersion) 
 	{
 		this(companyID, environmentName, environmentOs, environmentOsVersion,
-				new Date(),new Date(),(long) 0,(long) 0,(long) 0,null,null);		
+				new Date(),new Date(),null,null,null,null,null);		
 	}
 	
 	/**
@@ -104,8 +104,8 @@ public class Environment {
 	 */
 	public Environment(Long companyID, String environmentName,
 			String environmentOs, String environmentOsVersion,
-			Date creationDate, Date lastModifiedDate, long createdByUserID,
-			long lastModifiedByUserID, long currentOwnerUserID,
+			Date creationDate, Date lastModifiedDate, Long createdByUserID,
+			Long lastModifiedByUserID, Long currentOwnerUserID,
 			Set<Testrun> testruns, Set<TestcenterUser> users) {
 		this.companyID = companyID;
 		this.environmentName = environmentName;
@@ -207,42 +207,42 @@ public class Environment {
 	/**
 	 * @return the createdByUserID
 	 */
-	public long getCreatedByUserID() {
+	public Long getCreatedByUserID() {
 		return createdByUserID;
 	}
 
 	/**
 	 * @param createdByUserID the createdByUserID to set
 	 */
-	public void setCreatedByUserID(long createdByUserID) {
+	public void setCreatedByUserID(Long createdByUserID) {
 		this.createdByUserID = createdByUserID;
 	}
 
 	/**
 	 * @return the lastModifiedByUserID
 	 */
-	public long getLastModifiedByUserID() {
+	public Long getLastModifiedByUserID() {
 		return lastModifiedByUserID;
 	}
 
 	/**
 	 * @param lastModifiedByUserID the lastModifiedByUserID to set
 	 */
-	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+	public void setLastModifiedByUserID(Long lastModifiedByUserID) {
 		this.lastModifiedByUserID = lastModifiedByUserID;
 	}
 
 	/**
 	 * @return the currentOwnerUserID
 	 */
-	public long getCurrentOwnerUserID() {
+	public Long getCurrentOwnerUserID() {
 		return currentOwnerUserID;
 	}
 
 	/**
 	 * @param currentOwnerUserID the currentOwnerUserID to set
 	 */
-	public void setCurrentOwnerUserID(long currentOwnerUserID) {
+	public void setCurrentOwnerUserID(Long currentOwnerUserID) {
 		this.currentOwnerUserID = currentOwnerUserID;
 	}
 

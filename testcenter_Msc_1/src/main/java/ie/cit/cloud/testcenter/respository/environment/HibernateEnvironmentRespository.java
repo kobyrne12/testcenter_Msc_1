@@ -26,7 +26,7 @@ public class HibernateEnvironmentRespository implements EnvironmentRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Environment get(long environmentID) {
+	public Environment get(Long environmentID) {
 		Query query = em.createQuery("from Environment where environmentID=:environmentID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -58,7 +58,7 @@ public class HibernateEnvironmentRespository implements EnvironmentRepository {
 		return environmentSet;		
 	}
 
-	public Environment findById(long environmentID) {
+	public Environment findById(Long environmentID) {
 		return get(environmentID);
 	}
 

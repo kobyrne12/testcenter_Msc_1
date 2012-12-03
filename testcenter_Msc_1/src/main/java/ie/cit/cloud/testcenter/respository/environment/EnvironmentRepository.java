@@ -21,7 +21,7 @@ public interface EnvironmentRepository {
      * @return Environment for given id, {@link EmptyResultDataAccessException} if no
      *         Environment was found
      */
-	Environment get(long environmentID);
+	Environment get(Long environmentID);
 
     /**
      * Adds new Environment into repository
@@ -52,7 +52,7 @@ public interface EnvironmentRepository {
      *            Environment ID
      * @return Environment for given id, null if test was not found
      */
-    Environment findById(long environmentID);
+    Environment findById(Long environmentID);
     /**
      * Returns Environment items given by its name
      * 

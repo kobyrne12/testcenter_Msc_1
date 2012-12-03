@@ -21,7 +21,7 @@ public interface RequirementRepository {
      * @return Requirement for given id, {@link EmptyResultDataAccessException} if no
      *         Requirement was found
      */
-	Requirement get(long requirementID);
+	Requirement get(Long requirementID);
 
     /**
      * Adds new Requirement into repository
@@ -52,7 +52,7 @@ public interface RequirementRepository {
      *            Requirement ID
      * @return Requirement for given id, null if test was not found
      */
-    Requirement findById(long requirementID);
+    Requirement findById(Long requirementID);
     /**
      * Returns Requirement items given by its name
      * 

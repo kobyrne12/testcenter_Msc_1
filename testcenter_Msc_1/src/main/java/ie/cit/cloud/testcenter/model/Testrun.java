@@ -36,7 +36,7 @@ public class Testrun {
 	@Id    
     @GeneratedValue
     @Column(name="testrunID")
-    private long testrunID;   
+    private Long testrunID;   
     
     @Basic
     @Length(min = 2, max = 254, message = " name must be between 2 to 254 characters.")
@@ -69,10 +69,10 @@ public class Testrun {
     
     @Basic
     @Column(name="testcaseID")
-    private long testcaseID;
+    private Long testcaseID;
     @Basic
     @Column(name="cycleID")
-    private long cycleID;
+    private Long cycleID;
   
     @Basic
     private boolean notrun;
@@ -96,7 +96,7 @@ public class Testrun {
     private Double estimatedTime;
     
     @Basic
-    private long previousTestrunID; 
+    private Long previousTestrunID; 
     
     @Basic    
     private String creationDate;
@@ -131,8 +131,8 @@ public class Testrun {
    	 * @param tester
    	 * @param seniorTester
    	 */
-   	public Testrun(String testrunName, long testcaseID, long cycleID, 
-   			Double estimatedTime,TestrunLevel level,long previousTestrunID, String tester,String seniorTester)   
+   	public Testrun(String testrunName, Long testcaseID, Long cycleID, 
+   			Double estimatedTime,TestrunLevel level,Long previousTestrunID, String tester,String seniorTester)   
    	{
    		this(testrunName,testcaseID,cycleID,
    				false,false,false,false,false,false,1,1,
@@ -164,11 +164,11 @@ public class Testrun {
    	 * @param tester
    	 * @param seniorTester
    	 */
-   	public Testrun(String testrunName, long testcaseID, long cycleID,
+   	public Testrun(String testrunName, Long testcaseID, Long cycleID,
    			boolean notrun, boolean passed, boolean failed, boolean inprogress,
    			boolean deferred, boolean blocked, int priority,
    			int recommendedPriority, Double estimatedTime, TestrunLevel testrunLevel,
-   			long previousTestrunID,String creationDate, String createdBy,
+   			Long previousTestrunID,String creationDate, String createdBy,
    			String lastModifiedDate, String lastModifiedBy, String tester,
    			String seniorTester) 
    	{
@@ -212,28 +212,28 @@ public class Testrun {
 	/**
 	 * @return the testcaseID
 	 */
-	public long getTestcaseID() {
+	public Long getTestcaseID() {
 		return testcaseID;
 	}
 
 	/**
 	 * @param testcaseID the testcaseID to set
 	 */
-	public void setTestcaseID(long testcaseID) {
+	public void setTestcaseID(Long testcaseID) {
 		this.testcaseID = testcaseID;
 	}
 
 	/**
 	 * @return the cycleID
 	 */
-	public long getCycleID() {
+	public Long getCycleID() {
 		return cycleID;
 	}
 
 	/**
 	 * @param cycleID the cycleID to set
 	 */
-	public void setCycleID(long cycleID) {
+	public void setCycleID(Long cycleID) {
 		this.cycleID = cycleID;
 	}
 
@@ -380,14 +380,14 @@ public class Testrun {
 	/**
 	 * @return the previousRun
 	 */
-	public long getPreviousTestrunID() {
+	public Long getPreviousTestrunID() {
 		return previousTestrunID;
 	}
 
 	/**
 	 * @param previousRun the previousRun to set
 	 */
-	public void setPreviousTestrunID(long previousTestrunID) {
+	public void setPreviousTestrunID(Long previousTestrunID) {
 		this.previousTestrunID = previousTestrunID;
 	}
 	
@@ -478,7 +478,7 @@ public class Testrun {
 	/**
 	 * @return the testrunID
 	 */
-	public long getTestrunID() {
+	public Long getTestrunID() {
 		return testrunID;
 	}
 

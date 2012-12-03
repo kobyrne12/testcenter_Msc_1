@@ -82,7 +82,7 @@ public class CycleServiceImpl implements CycleService {
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Cycle getCycle(long cycleID) {
+	public Cycle getCycle(Long cycleID) {
 		try{
 			return cycleRepo.findById(cycleID);			
 		}
@@ -99,7 +99,7 @@ public class CycleServiceImpl implements CycleService {
 
 	// @Secured("ROLE_ADMIN")
 	@Transactional(rollbackFor=ConstraintViolationException.class)   
-	public long addNewCycle(Cycle cycle) {
+	public Long addNewCycle(Cycle cycle) {
 		cycleRepo.create(cycle);	
 		return cycle.getCycleID();
 	}
@@ -110,7 +110,7 @@ public class CycleServiceImpl implements CycleService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long cycleID) {
+	public void remove(Long cycleID) {
 		cycleRepo.delete(cycleRepo.get(cycleID));
 	}
 
@@ -121,12 +121,12 @@ public class CycleServiceImpl implements CycleService {
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Set<Cycle> getAllCyclesByProjectID(long projectID) {
+	public Set<Cycle> getAllCyclesByProjectID(Long projectID) {
 		return cycleRepo.findAllCyclesByProjectID(projectID);
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Set<Cycle> getAllCyclesByCompanyID(long companyID) {
+	public Set<Cycle> getAllCyclesByCompanyID(Long companyID) {
 		Set<Cycle> cycles = new HashSet<Cycle>();
 		Company company = companyService.getCompany(companyID);
 		Set<Project> projects = company.getProjects();
@@ -140,12 +140,12 @@ public class CycleServiceImpl implements CycleService {
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Set<Cycle> getAllChildCycles(long cycleID) {
+	public Set<Cycle> getAllChildCycles(Long cycleID) {
 		return cycleRepo.findAllCyclesByParentID(cycleID);
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public int getMaxProjectPosNum(long projectID) {		
+	public int getMaxProjectPosNum(Long projectID) {		
 		return cycleRepo.getMaxProjectPosNum(projectID);
 	}			
 
@@ -154,7 +154,7 @@ public class CycleServiceImpl implements CycleService {
 	 * boolean
 	 * @return true if this cycle is the latest cycle for a project, otherwise false
 	 */	
-	public boolean isLatest(long cycleID)
+	public boolean isLatest(Long cycleID)
 	{			
 		try{
 			Cycle cycle = getCycle(cycleID);
@@ -171,7 +171,7 @@ public class CycleServiceImpl implements CycleService {
 		}
 	} 
 
-	public String getParentCycleName(long cycleID)
+	public String getParentCycleName(Long cycleID)
 	{		
 		Cycle cycle = getCycle(cycleID);
 		if(!cycle.isChild())
@@ -196,129 +196,8 @@ public class CycleServiceImpl implements CycleService {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	
-	public CycleSummaryList getGridCycles(long companyID, String projectID,
-			String cycleID, String testplanID, String testcaseID,
-			String testrunID, String defectID, String requirementID,
-			String environmentID, String userID, String levelName)
-	{
-		// Check which projects wil be displayed 
-		Company company = companyService.getCompany(companyID);
-		Set<Cycle> cycles = new HashSet<Cycle>();				
-
-
-		if (projectID != null && !projectID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
-		{						
-			Project project = projectService.getProject(Long.valueOf(projectID).longValue());
-			if(project == null)
-			{
-				return null;
-			}
-			if(project.getCycles() == null || project.getCycles().isEmpty())
-			{
-				return null;
-			}	
-			cycles.addAll(project.getCycles());						
-		}
-		else
-		{
-			if(companyService.getAllCycles(company.getCompanyID()) == null)
-			{
-				return null;
-			}
-			cycles.addAll(companyService.getAllCycles(company.getCompanyID()));
-		}		
-		if(cycles == null || cycles.isEmpty()){return null;}
-
-		// Retain Testplan cycles
-		if (testplanID != null && !testplanID.isEmpty()) 
-		{			
-			if(testplanService.getCycles(Long.valueOf(testplanID).longValue()) != null)
-			{
-				cycles.retainAll(testplanService.getCycles(Long.valueOf(testplanID).longValue()));
-			}			
-		}		
-		if(cycles == null || cycles.isEmpty()){return null;}
-
-		// Retain Testcase cycles
-		if (testcaseID != null && !testcaseID.isEmpty()) 
-		{			
-			if(testcaseService.getCycles(Long.valueOf(testcaseID).longValue()) != null)
-			{
-				cycles.retainAll(testcaseService.getCycles(Long.valueOf(testcaseID).longValue()));
-			}			
-		}		
-		if(cycles == null || cycles.isEmpty()){return null;}
-
-		// Retain Testrun cycles
-		if (testrunID != null && !testrunID.isEmpty()) 
-		{			
-			if(testrunService.getCycle(Long.valueOf(testrunID).longValue()) != null)
-			{
-				Set<Cycle> testrunCycles = new HashSet<Cycle>();
-				testrunCycles.add(testrunService.getCycle(Long.valueOf(testrunID).longValue()));
-				cycles.retainAll(testrunCycles);				
-			}			
-		}
-		if(cycles == null || cycles.isEmpty()){return null;}
-
-		// Retain Defect cycles
-		if (defectID != null && !defectID.isEmpty()) // limit to projects that have this test plan id in it
-		{			
-			if(defectService.getCascadedCycles(Long.valueOf(defectID).longValue()) != null)
-			{
-				cycles.retainAll(defectService.getCascadedCycles(Long.valueOf(defectID).longValue()));				
-			}			
-		}
-		if(cycles == null || cycles.isEmpty()){return null;}
-
-		// Retain Requirement cycles
-		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
-		{			
-			if(requirementService.getCycles(Long.valueOf(requirementID).longValue()) != null)
-			{
-				cycles.retainAll(requirementService.getCycles(Long.valueOf(requirementID).longValue()));				
-			}				
-		}
-		if(cycles == null || cycles.isEmpty()){return null;}
-
-		// Retain Environment cycles
-		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
-		{			
-			if(environmentService.getCycles(Long.valueOf(environmentID).longValue()) != null)
-			{
-				cycles.retainAll(environmentService.getCycles(Long.valueOf(environmentID).longValue()));				
-			}			
-		}
-		if(cycles == null || cycles.isEmpty()){return null;}
-
-		// Retain User cycles
-		//		if (userID != null && !userID.isEmpty()) // limit to projects that have this test plan id in it
-		//		{			
-		//			if(userService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
-		//			{
-		//				projects.retainAll(userService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
-		//			}			
-		//		}
-		//		if(projects == null || projects.isEmpty()){return null;}
-
-		Set<CycleSummary> cycleSummarySet = new HashSet<CycleSummary>();
-		CycleSummaryList cycleSummaryList = new CycleSummaryList();
-
-		for(final Cycle cycle : cycles)
-		{		
-			cycleSummarySet.add(new CycleSummary(cycle, levelName,projectService, this, testrunService, defectService));
-			//CycleSummary cycleSummary = getCycleSummary(companyID, cycle.getCycleID(),level);	
-			//cycleSummarySet.add(cycleSummary);
-
-		}
-
-		cycleSummaryList.setCycles(cycleSummarySet);
-		return cycleSummaryList;	
-
-	}
-
-
-//	public CycleSummary getCycleSummary(long companyID, long cycleID, String level)
+	
+//	public CycleSummary getCycleSummary(Long companyID, Long cycleID, String level)
 //	{
 //		Cycle cycle = getCycle(cycleID);		
 //		Project project = projectService.getProject(cycle.getProjectID());		
@@ -395,6 +274,862 @@ public class CycleServiceImpl implements CycleService {
 //
 //		return cycleSummary;
 //	}
+	
+	
+
+	/**
+	 * Returns a Total collection of child Cycles including the parent
+	 * Set<Cycle>
+	 * @return Total collection of child Cycles including the parent
+	 */
+	public Set<Cycle> getParentAndChildCycles(Long cycleID)
+	{ 
+		Cycle cycle = getCycle(cycleID);
+		Set<Cycle> cycles = new HashSet<Cycle>(); 
+		cycles.add(cycle);
+		if(cycle.isParent())
+		{   	
+			try{
+				Set<Cycle> childcyles = getAllChildCycles(cycleID);
+				if(childcyles != null && !childcyles.isEmpty())
+				{
+					cycles.addAll(childcyles);				
+				}						
+			}
+			catch(NoResultException nre)			
+			{			
+			}			
+		}
+		return cycles;	
+	}
+	/**
+	 * Returns a collection of Child cycles for a cycle 
+	 * Set<Cycle>
+	 * @return collection of Child cycles for a cycle
+	 */	
+	public Set<Cycle> getChildCycles(Long cycleID)
+	{		
+		Cycle cycle = getCycle(cycleID);
+		if(!cycle.isParent())
+		{   			 
+			return null;
+		}
+		try{
+			Set<Cycle> childCycles = getAllChildCycles(cycleID);
+			if(childCycles == null || childCycles.isEmpty())
+			{
+				return null;
+			}
+			return childCycles;			
+		}
+		catch(NoResultException nre)			
+		{
+			return null;
+		}
+	} 
+
+	/**
+	 * Returns a Cycle Parent Cycle  
+	 * Cycle
+	 * @return a Cycle Parent Cycle, otherwise null
+	 */	
+	public Cycle getParentCycle(Long cycleID)
+	{		
+		Cycle cycle = getCycle(cycleID);
+		if(!cycle.isChild())
+		{   			 
+			return null;
+		}
+		try{
+			Cycle parentCycle = getCycle(cycle.getParentID());
+			if(parentCycle == null)
+			{
+				return null;
+			}
+			return parentCycle;			
+		}
+		catch(NoResultException nre)			
+		{
+			return null;
+		}
+	} 	
+	/**
+	 * Returns a collection of All Testruns in a cycle incl all child cycles 
+	 * Set<Testrun>
+	 * @return collection of All Testruns in a cycle incl all child cycles,
+	 */	
+	public Set<Testrun> getCascadedAllTestRuns(Long cycleID)
+	{
+		Set<Cycle> cycles = getParentAndChildCycles(cycleID);
+		if(cycles == null || cycles.isEmpty())
+		{
+			return null;
+		}
+		Set<Testrun> allTestruns = new HashSet<Testrun>();
+		for(final Cycle cycle : cycles)
+		{		
+			if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
+			{
+				allTestruns.addAll(cycle.getTestruns());	
+			}  			
+		}
+		return allTestruns;		
+	}
+	public int getCascadedAllTestRunsCount(Long cycleID,String level)
+	{	
+		if(getCascadedAllTestRuns(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getCascadedAllTestRuns(cycleID,level).size();		
+	}	
+	public Set<Testrun> getCascadedAllTestRuns(Long cycleID, String level)
+	{
+		Set<Cycle> cycles = getParentAndChildCycles(cycleID);
+		if(cycles == null || cycles.isEmpty())
+		{
+			return null;
+		}
+		Set<Testrun> allTestruns = new HashSet<Testrun>();
+		for(final Cycle cycle : cycles)
+		{		
+			if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
+			{	
+				if(level == null || level.equalsIgnoreCase("all"))
+				{
+					allTestruns.addAll(cycle.getTestruns());
+				}
+				else
+				{
+					for(final Testrun testrun : cycle.getTestruns())
+					{						
+						allTestruns.add(testrun);
+												
+					}
+				}
+			}  			
+		}
+		return allTestruns;		
+	}
+	
+	public int getCascadedCompulsoryTestRunsCount(Long cycleID)
+	{	
+		if(getCascadedCompulsoryTestRuns(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedCompulsoryTestRuns(cycleID).size();		
+	}	
+	
+	public Set<Testrun> getCascadedCompulsoryTestRuns(Long cycleID)
+	{
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrunService.isRequired(testrun.getTestrunID()))
+			{
+				compulsoryTestruns.add(testrun);
+			}
+		}		
+		return compulsoryTestruns;		
+	}
+	
+	public int getCascadedCompulsoryTestRunsCount(Long cycleID,String level)
+	{	
+		if(getCascadedCompulsoryTestRuns(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getCascadedCompulsoryTestRuns(cycleID,level).size();		
+	}
+	
+	public Set<Testrun> getCascadedCompulsoryTestRuns(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID,level);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrunService.isRequired(testrun.getTestrunID()))
+			{
+				compulsoryTestruns.add(testrun);
+			}
+		}		
+		return compulsoryTestruns;		
+	}
+
+	public int getCascadedOptionalTestRunsCount(Long cycleID)
+	{	
+		if(getCascadedOptionalTestRuns(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedOptionalTestRuns(cycleID).size();		
+	}	
+	
+	public Set<Testrun> getCascadedOptionalTestRuns(Long cycleID)
+	{
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(!testrunService.isRequired(testrun.getTestrunID()))
+			{
+				optionalTestruns.add(testrun);
+			}
+		}		
+		return optionalTestruns;		
+	}
+	public int getCascadedOptionalTestRunsCount(Long cycleID,String level)
+	{	
+		if(getCascadedOptionalTestRuns(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getCascadedOptionalTestRuns(cycleID,level).size();		
+	}	
+	public Set<Testrun> getCascadedOptionalTestRuns(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID, level);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(!testrunService.isRequired(testrun.getTestrunID()))
+			{
+				optionalTestruns.add(testrun);
+			}
+		}		
+		return optionalTestruns;		
+	}
+	
+	
+	
+	public int getCascadedAllTestCasesCount(Long cycleID, String level)
+	{	
+		if(getCascadedAllTestCases(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedAllTestCases(cycleID).size();		
+	}		
+	public Set<Testcase> getCascadedAllTestCases(Long cycleID)
+	{
+		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
+			{
+				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
+			}
+		}		
+		return allTestcases;
+	}
+	public int getCascadedCompulsoryTestCasesCount(Long cycleID, String level)
+	{	
+		if(getCascadedCompulsoryTestCases(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedCompulsoryTestCases(cycleID).size();		
+	}	
+	public Set<Testcase> getCascadedCompulsoryTestCases(Long cycleID)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
+			{
+				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
+			}
+		}		
+		return allTestcases;
+	}
+	public int getCascadedOptionalTestCasesCount(Long cycleID, String level)
+	{	
+		if(getCascadedOptionalTestCases(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedOptionalTestCases(cycleID).size();		
+	}	
+	public Set<Testcase> getCascadedOptionalTestCases(Long cycleID)
+	{
+		Set<Testrun> allTestruns = getCascadedOptionalTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Set<Testcase> allTestcases = new HashSet<Testcase>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
+			{
+				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
+			}
+		}		
+		return allTestcases;
+	}
+	public int getCascadedAllTestPlansCount(Long cycleID, String level)
+	{	
+		if(getCascadedAllTestPlans(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedAllTestPlans(cycleID).size();		
+	}	
+	public Set<Testplan> getCascadedAllTestPlans(Long cycleID)
+	{		
+		Set<Testcase> allTestcases = getCascadedAllTestCases(cycleID);
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			return null;
+		}	
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
+		for(final Testcase testcase : allTestcases)
+		{				
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			{
+				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
+			}
+		}		
+		return allTestplans;
+	}
+	public int getCascadedCompulsoryTestPlansCount(Long cycleID, String level)
+	{	
+		if(getCascadedCompulsoryTestPlans(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedCompulsoryTestPlans(cycleID).size();		
+	}
+	public Set<Testplan> getCascadedCompulsoryTestPlans(Long cycleID)
+	{		
+		Set<Testcase> allTestcases = getCascadedCompulsoryTestCases(cycleID);
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			return null;
+		}	
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
+		for(final Testcase testcase : allTestcases)
+		{				
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			{
+				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
+			}
+		}		
+		return allTestplans;
+	}
+	public int getCascadedOptionalTestPlansCount(Long cycleID, String level)
+	{	
+		if(getCascadedOptionalTestPlans(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedOptionalTestPlans(cycleID).size();		
+	}
+	public Set<Testplan> getCascadedOptionalTestPlans(Long cycleID)
+	{		
+		Set<Testcase> allTestcases = getCascadedOptionalTestCases(cycleID);
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			return null;
+		}	
+		Set<Testplan> allTestplans = new HashSet<Testplan>();
+		for(final Testcase testcase : allTestcases)
+		{				
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			{
+				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
+			}
+		}		
+		return allTestplans;
+	}	
+	public int getCascadedDefectsCount(Long cycleID)
+	{	
+		if(getCascadedDefects(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedDefects(cycleID).size();		
+	}
+	public Set<Defect> getCascadedDefects(Long cycleID)
+	{				
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Set<Defect> defects = new HashSet<Defect>();  
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrunService.getCascadedAllDefects(testrun.getTestrunID()) != null &&
+					!testrunService.getCascadedAllDefects(testrun.getTestrunID()).isEmpty())
+			{
+				defects.addAll(testrunService.getCascadedAllDefects(testrun.getTestrunID()));
+			}					
+		}		
+		return defects;					
+	}
+	public int getCascadedSev1DefectsCount(Long cycleID)
+	{	
+		if(getCascadedSev1Defects(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedSev1Defects(cycleID).size();		
+	}		
+	public Set<Defect> getCascadedSev1Defects(Long cycleID) 
+	{		
+		Set<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Set<Defect> sev1defects = new HashSet<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev1(defect.getDefectID()))
+			{
+				sev1defects.add(defect);						
+			}
+		}	
+		return sev1defects;
+	}
+	public int getCascadedSev2DefectsCount(Long cycleID)
+	{	
+		if(getCascadedSev2Defects(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedSev2Defects(cycleID).size();		
+	}	
+	public Set<Defect> getCascadedSev2Defects(Long cycleID) 
+	{		
+		Set<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Set<Defect> sev2defects = new HashSet<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev2(defect.getDefectID()))
+			{
+				sev2defects.add(defect);						
+			}
+		}	
+		return sev2defects;
+	}
+	public int getCascadedSev3DefectsCount(Long cycleID)
+	{	
+		if(getCascadedSev3Defects(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedSev3Defects(cycleID).size();		
+	}		
+	public Set<Defect> getCascadedSev3Defects(Long cycleID) 
+	{		
+		Set<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Set<Defect> sev3defects = new HashSet<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev3(defect.getDefectID()))
+			{
+				sev3defects.add(defect);						
+			}
+		}	
+		return sev3defects;
+	}
+	public int getCascadedSev4DefectsCount(Long cycleID)
+	{	
+		if(getCascadedSev4Defects(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedSev4Defects(cycleID).size();		
+	}	
+	public Set<Defect> getCascadedSev4Defects(Long cycleID) 
+	{		
+		Set<Defect> allDefects = getCascadedDefects(cycleID);		
+		if(allDefects == null || allDefects.isEmpty())
+		{
+			return null;
+		}	
+		Set<Defect> sev4defects = new HashSet<Defect>();  
+		for(final Defect defect : allDefects)
+		{
+			if(defectService.isSev4(defect.getDefectID()))
+			{
+				sev4defects.add(defect);						
+			}
+		}	
+		return sev4defects;
+	}
+	public int getTestRunsPassedCount(Long cycleID,String level)
+	{	
+		if(getTestRunsPassed(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsPassed(cycleID,level).size();		
+	}	
+	public Set<Testrun> getTestRunsPassed(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> passedTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.isPassed())
+			{
+				passedTestruns.add(testrun);
+			}
+		}		
+		return passedTestruns;		
+	}
+	public int getTestRunsFailedCount(Long cycleID,String level)
+	{	
+		if(getTestRunsFailed(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsFailed(cycleID,level).size();		
+	}	
+	public Set<Testrun> getTestRunsFailed(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> failedTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.isFailed())
+			{
+				failedTestruns.add(testrun);
+			}
+		}		
+		return failedTestruns;		
+	}
+	public int getTestRunsDeferredCount(Long cycleID,String level)
+	{	
+		if(getTestRunsDeferred(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsDeferred(cycleID,level).size();		
+	}	
+	public Set<Testrun> getTestRunsDeferred(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> deferredTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.isDeferred())
+			{
+				deferredTestruns.add(testrun);
+			}
+		}		
+		return deferredTestruns;		
+	}
+	public int getTestRunsBlockedCount(Long cycleID,String level)
+	{	
+		if(getTestRunsBlocked(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsBlocked(cycleID,level).size();		
+	}	
+	public Set<Testrun> getTestRunsBlocked(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> blockedTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.isBlocked())
+			{
+				blockedTestruns.add(testrun);
+			}
+		}		
+		return blockedTestruns;		
+	}
+	public int getTestRunsNotrunCount(Long cycleID,String level)
+	{	
+		if(getTestRunsNotrun(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsNotrun(cycleID,level).size();		
+	}	
+	public Set<Testrun> getTestRunsNotrun(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> notrunTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.isNotrun())
+			{
+				notrunTestruns.add(testrun);
+			}
+		}		
+		return notrunTestruns;		
+	}
+	public int getTestRunsInprogressCount(Long cycleID,String level)
+	{	
+		if(getTestRunsInprogress(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsInprogress(cycleID,level).size();		
+	}	
+	public Set<Testrun> getTestRunsInprogress(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> inprogressTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.isInprogress())
+			{
+				inprogressTestruns.add(testrun);
+			}
+		}		
+		return inprogressTestruns;		
+	}
+	public int getTestRunsCompletedCount(Long cycleID,String level)
+	{	
+		if(getTestRunsCompleted(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsCompleted(cycleID,level).size();		
+	}	
+	public Set<Testrun> getTestRunsCompleted(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> completedTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(!testrun.isInprogress() || !testrun.isNotrun())
+			{
+				completedTestruns.add(testrun);
+			}
+		}		
+		return completedTestruns;		
+	}
+	public int getTestRunsInCompletedCount(Long cycleID,String level)
+	{	
+		if(getTestRunsInCompleted(cycleID,level) == null)
+		{
+			return 0;	
+		}
+		return getTestRunsInCompleted(cycleID,level).size();		
+	}	
+	
+	public Set<Testrun> getTestRunsInCompleted(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}			
+		Set<Testrun> incompletedTestruns = new HashSet<Testrun>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.isInprogress() || testrun.isNotrun())
+			{
+				incompletedTestruns.add(testrun);
+			}
+		}		
+		return incompletedTestruns;		
+	}
+		
+	public Double getTotalTestRunsEstTime(Long cycleID,String level)
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		Double totalEstTime = 0.00;
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return totalEstTime;
+		}			
+		
+		for(final Testrun testrun : allTestruns)
+		{	
+			
+			if(testrun.getEstimatedTime() != null)
+			{
+				totalEstTime = totalEstTime + testrun.getEstimatedTime();				
+			}
+		}		
+		return totalEstTime;		
+	}
+	public int getCascadedEnvironmentsCount(Long cycleID)
+	{	
+		if(getCascadedEnvironments(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedEnvironments(cycleID).size();		
+	}
+	public Set<Environment> getCascadedEnvironments(Long cycleID) 
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Set<Environment> environements = new HashSet<Environment>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty())
+			{
+				environements.addAll(testrun.getEnvironments());
+			}
+		}
+		return environements;		
+	}
+	
+	public int getCascadedRequirementsCount(Long cycleID)
+	{	
+		if(getCascadedRequirements(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedRequirements(cycleID).size();		
+	}		
+	public Set<Requirement> getCascadedRequirements(Long cycleID) 
+	{
+		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
+		if(allTestruns == null || allTestruns.isEmpty())
+		{
+			return null;
+		}	
+		Set<Requirement> requirements = new HashSet<Requirement>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
+			{
+				requirements.addAll(testrun.getRequirements());
+			}
+		}
+		return requirements;		
+	}
+
+	public int getCascadedTestersCount(Long cycleID)
+	{	
+		if(getCascadedTesters(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedTesters(cycleID).size();		
+	}
+	public Set<TestcenterUser> getCascadedTesters(Long cycleID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public int getCascadedSnrTestersCount(Long cycleID)
+	{	
+		if(getCascadedSnrTesters(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedSnrTesters(cycleID).size();		
+	}	
+	public Set<TestcenterUser> getCascadedSnrTesters(Long cycleID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public int getCascadedDevelopersCount(Long cycleID)
+	{	
+		if(getCascadedDevelopers(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedDevelopers(cycleID).size();		
+	}	
+	public Set<TestcenterUser> getCascadedDevelopers(Long cycleID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public int getCascadedSnrDevelopersCount(Long cycleID)
+	{	
+		if(getCascadedSnrDevelopers(cycleID) == null)
+		{
+			return 0;	
+		}
+		return getCascadedSnrDevelopers(cycleID).size();		
+	}	
+	public Set<TestcenterUser> getCascadedSnrDevelopers(Long cycleID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+	public RelatedObjectList getRelatedObjects(Long projectID, String cycleID,
+			String testplanID, String userID, String environmentID,
+			String requirementID, String defectID, String testrunID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	
 	public ColModelAndNames getColumnModelAndNames(Long companyID)
 	{
@@ -544,855 +1279,125 @@ public class CycleServiceImpl implements CycleService {
 		colModelAndName.setColModel(columnModelSet);
 		return colModelAndName;
 	}
-	/**
-	 * Returns a Total collection of child Cycles including the parent
-	 * Set<Cycle>
-	 * @return Total collection of child Cycles including the parent
-	 */
-	public Set<Cycle> getParentAndChildCycles(long cycleID)
-	{ 
-		Cycle cycle = getCycle(cycleID);
-		Set<Cycle> cycles = new HashSet<Cycle>(); 
-		cycles.add(cycle);
-		if(cycle.isParent())
-		{   	
-			try{
-				Set<Cycle> childcyles = getAllChildCycles(cycleID);
-				if(childcyles != null && !childcyles.isEmpty())
-				{
-					cycles.addAll(childcyles);				
-				}						
+	public CycleSummaryList getGridCycles(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID, String levelName)
+	{
+		// Check which projects wil be displayed 
+		Company company = companyService.getCompany(companyID);
+		Set<Cycle> cycles = new HashSet<Cycle>();				
+
+
+		if (projectID != null && !projectID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
+		{						
+			Project project = projectService.getProject(Long.valueOf(projectID));
+			if(project == null)
+			{
+				return null;
 			}
-			catch(NoResultException nre)			
-			{			
+			if(project.getCycles() == null || project.getCycles().isEmpty())
+			{
+				return null;
+			}	
+			cycles.addAll(project.getCycles());						
+		}
+		else
+		{
+			if(companyService.getAllCycles(company.getCompanyID()) == null)
+			{
+				return null;
+			}
+			cycles.addAll(companyService.getAllCycles(company.getCompanyID()));
+		}		
+		if(cycles == null || cycles.isEmpty()){return null;}
+
+		// Retain Testplan cycles
+		if (testplanID != null && !testplanID.isEmpty()) 
+		{			
+			if(testplanService.getCycles(Long.valueOf(testplanID)) != null)
+			{
+				cycles.retainAll(testplanService.getCycles(Long.valueOf(testplanID)));
+			}			
+		}		
+		if(cycles == null || cycles.isEmpty()){return null;}
+
+		// Retain Testcase cycles
+		if (testcaseID != null && !testcaseID.isEmpty()) 
+		{			
+			if(testcaseService.getCycles(Long.valueOf(testcaseID)) != null)
+			{
+				cycles.retainAll(testcaseService.getCycles(Long.valueOf(testcaseID)));
+			}			
+		}		
+		if(cycles == null || cycles.isEmpty()){return null;}
+
+		// Retain Testrun cycles
+		if (testrunID != null && !testrunID.isEmpty()) 
+		{			
+			if(testrunService.getCycle(Long.valueOf(testrunID)) != null)
+			{
+				Set<Cycle> testrunCycles = new HashSet<Cycle>();
+				testrunCycles.add(testrunService.getCycle(Long.valueOf(testrunID)));
+				cycles.retainAll(testrunCycles);				
 			}			
 		}
-		return cycles;	
-	}
-	/**
-	 * Returns a collection of Child cycles for a cycle 
-	 * Set<Cycle>
-	 * @return collection of Child cycles for a cycle
-	 */	
-	public Set<Cycle> getChildCycles(long cycleID)
-	{		
-		Cycle cycle = getCycle(cycleID);
-		if(!cycle.isParent())
-		{   			 
-			return null;
-		}
-		try{
-			Set<Cycle> childCycles = getAllChildCycles(cycleID);
-			if(childCycles == null || childCycles.isEmpty())
-			{
-				return null;
-			}
-			return childCycles;			
-		}
-		catch(NoResultException nre)			
-		{
-			return null;
-		}
-	} 
+		if(cycles == null || cycles.isEmpty()){return null;}
 
-	/**
-	 * Returns a Cycle Parent Cycle  
-	 * Cycle
-	 * @return a Cycle Parent Cycle, otherwise null
-	 */	
-	public Cycle getParentCycle(long cycleID)
-	{		
-		Cycle cycle = getCycle(cycleID);
-		if(!cycle.isChild())
-		{   			 
-			return null;
-		}
-		try{
-			Cycle parentCycle = getCycle(cycle.getParentID());
-			if(parentCycle == null)
+		// Retain Defect cycles
+		if (defectID != null && !defectID.isEmpty()) // limit to projects that have this test plan id in it
+		{			
+			if(defectService.getCascadedCycles(Long.valueOf(defectID)) != null)
 			{
-				return null;
-			}
-			return parentCycle;			
+				cycles.retainAll(defectService.getCascadedCycles(Long.valueOf(defectID)));				
+			}			
 		}
-		catch(NoResultException nre)			
-		{
-			return null;
+		if(cycles == null || cycles.isEmpty()){return null;}
+
+		// Retain Requirement cycles
+		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
+		{			
+			if(requirementService.getCycles(Long.valueOf(requirementID)) != null)
+			{
+				cycles.retainAll(requirementService.getCycles(Long.valueOf(requirementID)));				
+			}				
 		}
-	} 	
-	/**
-	 * Returns a collection of All Testruns in a cycle incl all child cycles 
-	 * Set<Testrun>
-	 * @return collection of All Testruns in a cycle incl all child cycles,
-	 */	
-	public Set<Testrun> getCascadedAllTestRuns(long cycleID)
-	{
-		Set<Cycle> cycles = getParentAndChildCycles(cycleID);
-		if(cycles == null || cycles.isEmpty())
-		{
-			return null;
+		if(cycles == null || cycles.isEmpty()){return null;}
+
+		// Retain Environment cycles
+		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
+		{			
+			if(environmentService.getCycles(Long.valueOf(environmentID)) != null)
+			{
+				cycles.retainAll(environmentService.getCycles(Long.valueOf(environmentID)));				
+			}			
 		}
-		Set<Testrun> allTestruns = new HashSet<Testrun>();
+		if(cycles == null || cycles.isEmpty()){return null;}
+
+		// Retain User cycles
+		//		if (userID != null && !userID.isEmpty()) // limit to projects that have this test plan id in it
+		//		{			
+		//			if(userService.getCascadedProjects(Long.valueOf(defectID)) != null)
+		//			{
+		//				projects.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
+		//			}			
+		//		}
+		//		if(projects == null || projects.isEmpty()){return null;}
+
+		Set<CycleSummary> cycleSummarySet = new HashSet<CycleSummary>();
+		CycleSummaryList cycleSummaryList = new CycleSummaryList();
+
 		for(final Cycle cycle : cycles)
 		{		
-			if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
-			{
-				allTestruns.addAll(cycle.getTestruns());	
-			}  			
+			cycleSummarySet.add(new CycleSummary(cycle, levelName,projectService, this, testrunService, defectService));
+			//CycleSummary cycleSummary = getCycleSummary(companyID, cycle.getCycleID(),level);	
+			//cycleSummarySet.add(cycleSummary);
+
 		}
-		return allTestruns;		
-	}
-	public int getCascadedAllTestRunsCount(long cycleID,String level)
-	{	
-		if(getCascadedAllTestRuns(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getCascadedAllTestRuns(cycleID,level).size();		
-	}	
-	public Set<Testrun> getCascadedAllTestRuns(long cycleID, String level)
-	{
-		Set<Cycle> cycles = getParentAndChildCycles(cycleID);
-		if(cycles == null || cycles.isEmpty())
-		{
-			return null;
-		}
-		Set<Testrun> allTestruns = new HashSet<Testrun>();
-		for(final Cycle cycle : cycles)
-		{		
-			if(cycle.getTestruns() != null && !cycle.getTestruns().isEmpty())
-			{	
-				if(level == null || level.equalsIgnoreCase("all"))
-				{
-					allTestruns.addAll(cycle.getTestruns());
-				}
-				else
-				{
-					for(final Testrun testrun : cycle.getTestruns())
-					{						
-						allTestruns.add(testrun);
-												
-					}
-				}
-			}  			
-		}
-		return allTestruns;		
-	}
-	
-	public int getCascadedCompulsoryTestRunsCount(long cycleID)
-	{	
-		if(getCascadedCompulsoryTestRuns(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedCompulsoryTestRuns(cycleID).size();		
-	}	
-	
-	public Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID)
-	{
-		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrunService.isRequired(testrun.getTestrunID()))
-			{
-				compulsoryTestruns.add(testrun);
-			}
-		}		
-		return compulsoryTestruns;		
-	}
-	
-	public int getCascadedCompulsoryTestRunsCount(long cycleID,String level)
-	{	
-		if(getCascadedCompulsoryTestRuns(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getCascadedCompulsoryTestRuns(cycleID,level).size();		
-	}
-	
-	public Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID,level);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrunService.isRequired(testrun.getTestrunID()))
-			{
-				compulsoryTestruns.add(testrun);
-			}
-		}		
-		return compulsoryTestruns;		
+
+		cycleSummaryList.setCycles(cycleSummarySet);
+		return cycleSummaryList;	
+
 	}
 
-	public int getCascadedOptionalTestRunsCount(long cycleID)
-	{	
-		if(getCascadedOptionalTestRuns(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedOptionalTestRuns(cycleID).size();		
-	}	
-	
-	public Set<Testrun> getCascadedOptionalTestRuns(long cycleID)
-	{
-		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(!testrunService.isRequired(testrun.getTestrunID()))
-			{
-				optionalTestruns.add(testrun);
-			}
-		}		
-		return optionalTestruns;		
-	}
-	public int getCascadedOptionalTestRunsCount(long cycleID,String level)
-	{	
-		if(getCascadedOptionalTestRuns(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getCascadedOptionalTestRuns(cycleID,level).size();		
-	}	
-	public Set<Testrun> getCascadedOptionalTestRuns(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID, level);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(!testrunService.isRequired(testrun.getTestrunID()))
-			{
-				optionalTestruns.add(testrun);
-			}
-		}		
-		return optionalTestruns;		
-	}
-	
-	
-	
-	public int getCascadedAllTestCasesCount(long cycleID, String level)
-	{	
-		if(getCascadedAllTestCases(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedAllTestCases(cycleID).size();		
-	}		
-	public Set<Testcase> getCascadedAllTestCases(long cycleID)
-	{
-		Set<Testrun> allTestruns = getCascadedAllTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}	
-		Set<Testcase> allTestcases = new HashSet<Testcase>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
-			{
-				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
-			}
-		}		
-		return allTestcases;
-	}
-	public int getCascadedCompulsoryTestCasesCount(long cycleID, String level)
-	{	
-		if(getCascadedCompulsoryTestCases(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedCompulsoryTestCases(cycleID).size();		
-	}	
-	public Set<Testcase> getCascadedCompulsoryTestCases(long cycleID)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}	
-		Set<Testcase> allTestcases = new HashSet<Testcase>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
-			{
-				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
-			}
-		}		
-		return allTestcases;
-	}
-	public int getCascadedOptionalTestCasesCount(long cycleID, String level)
-	{	
-		if(getCascadedOptionalTestCases(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedOptionalTestCases(cycleID).size();		
-	}	
-	public Set<Testcase> getCascadedOptionalTestCases(long cycleID)
-	{
-		Set<Testrun> allTestruns = getCascadedOptionalTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}	
-		Set<Testcase> allTestcases = new HashSet<Testcase>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testcaseService.getTestcase(testrun.getTestcaseID()) != null)
-			{
-				allTestcases.add(testcaseService.getTestcase(testrun.getTestcaseID()));	
-			}
-		}		
-		return allTestcases;
-	}
-	public int getCascadedAllTestPlansCount(long cycleID, String level)
-	{	
-		if(getCascadedAllTestPlans(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedAllTestPlans(cycleID).size();		
-	}	
-	public Set<Testplan> getCascadedAllTestPlans(long cycleID)
-	{		
-		Set<Testcase> allTestcases = getCascadedAllTestCases(cycleID);
-		if(allTestcases == null || allTestcases.isEmpty())
-		{
-			return null;
-		}	
-		Set<Testplan> allTestplans = new HashSet<Testplan>();
-		for(final Testcase testcase : allTestcases)
-		{				
-			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
-			{
-				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
-			}
-		}		
-		return allTestplans;
-	}
-	public int getCascadedCompulsoryTestPlansCount(long cycleID, String level)
-	{	
-		if(getCascadedCompulsoryTestPlans(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedCompulsoryTestPlans(cycleID).size();		
-	}
-	public Set<Testplan> getCascadedCompulsoryTestPlans(long cycleID)
-	{		
-		Set<Testcase> allTestcases = getCascadedCompulsoryTestCases(cycleID);
-		if(allTestcases == null || allTestcases.isEmpty())
-		{
-			return null;
-		}	
-		Set<Testplan> allTestplans = new HashSet<Testplan>();
-		for(final Testcase testcase : allTestcases)
-		{				
-			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
-			{
-				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
-			}
-		}		
-		return allTestplans;
-	}
-	public int getCascadedOptionalTestPlansCount(long cycleID, String level)
-	{	
-		if(getCascadedOptionalTestPlans(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedOptionalTestPlans(cycleID).size();		
-	}
-	public Set<Testplan> getCascadedOptionalTestPlans(long cycleID)
-	{		
-		Set<Testcase> allTestcases = getCascadedOptionalTestCases(cycleID);
-		if(allTestcases == null || allTestcases.isEmpty())
-		{
-			return null;
-		}	
-		Set<Testplan> allTestplans = new HashSet<Testplan>();
-		for(final Testcase testcase : allTestcases)
-		{				
-			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
-			{
-				allTestplans.add(testplanService.getTestplan(testcase.getTestplanID()));	
-			}
-		}		
-		return allTestplans;
-	}	
-	public int getCascadedDefectsCount(long cycleID)
-	{	
-		if(getCascadedDefects(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedDefects(cycleID).size();		
-	}
-	public Set<Defect> getCascadedDefects(long cycleID)
-	{				
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}	
-		Set<Defect> defects = new HashSet<Defect>();  
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrunService.getCascadedAllDefects(testrun.getTestrunID()) != null &&
-					!testrunService.getCascadedAllDefects(testrun.getTestrunID()).isEmpty())
-			{
-				defects.addAll(testrunService.getCascadedAllDefects(testrun.getTestrunID()));
-			}					
-		}		
-		return defects;					
-	}
-	public int getCascadedSev1DefectsCount(long cycleID)
-	{	
-		if(getCascadedSev1Defects(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedSev1Defects(cycleID).size();		
-	}		
-	public Set<Defect> getCascadedSev1Defects(long cycleID) 
-	{		
-		Set<Defect> allDefects = getCascadedDefects(cycleID);		
-		if(allDefects == null || allDefects.isEmpty())
-		{
-			return null;
-		}	
-		Set<Defect> sev1defects = new HashSet<Defect>();  
-		for(final Defect defect : allDefects)
-		{
-			if(defectService.isSev1(defect.getDefectID()))
-			{
-				sev1defects.add(defect);						
-			}
-		}	
-		return sev1defects;
-	}
-	public int getCascadedSev2DefectsCount(long cycleID)
-	{	
-		if(getCascadedSev2Defects(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedSev2Defects(cycleID).size();		
-	}	
-	public Set<Defect> getCascadedSev2Defects(long cycleID) 
-	{		
-		Set<Defect> allDefects = getCascadedDefects(cycleID);		
-		if(allDefects == null || allDefects.isEmpty())
-		{
-			return null;
-		}	
-		Set<Defect> sev2defects = new HashSet<Defect>();  
-		for(final Defect defect : allDefects)
-		{
-			if(defectService.isSev2(defect.getDefectID()))
-			{
-				sev2defects.add(defect);						
-			}
-		}	
-		return sev2defects;
-	}
-	public int getCascadedSev3DefectsCount(long cycleID)
-	{	
-		if(getCascadedSev3Defects(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedSev3Defects(cycleID).size();		
-	}		
-	public Set<Defect> getCascadedSev3Defects(long cycleID) 
-	{		
-		Set<Defect> allDefects = getCascadedDefects(cycleID);		
-		if(allDefects == null || allDefects.isEmpty())
-		{
-			return null;
-		}	
-		Set<Defect> sev3defects = new HashSet<Defect>();  
-		for(final Defect defect : allDefects)
-		{
-			if(defectService.isSev3(defect.getDefectID()))
-			{
-				sev3defects.add(defect);						
-			}
-		}	
-		return sev3defects;
-	}
-	public int getCascadedSev4DefectsCount(long cycleID)
-	{	
-		if(getCascadedSev4Defects(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedSev4Defects(cycleID).size();		
-	}	
-	public Set<Defect> getCascadedSev4Defects(long cycleID) 
-	{		
-		Set<Defect> allDefects = getCascadedDefects(cycleID);		
-		if(allDefects == null || allDefects.isEmpty())
-		{
-			return null;
-		}	
-		Set<Defect> sev4defects = new HashSet<Defect>();  
-		for(final Defect defect : allDefects)
-		{
-			if(defectService.isSev4(defect.getDefectID()))
-			{
-				sev4defects.add(defect);						
-			}
-		}	
-		return sev4defects;
-	}
-	public int getTestRunsPassedCount(long cycleID,String level)
-	{	
-		if(getTestRunsPassed(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsPassed(cycleID,level).size();		
-	}	
-	public Set<Testrun> getTestRunsPassed(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> passedTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.isPassed())
-			{
-				passedTestruns.add(testrun);
-			}
-		}		
-		return passedTestruns;		
-	}
-	public int getTestRunsFailedCount(long cycleID,String level)
-	{	
-		if(getTestRunsFailed(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsFailed(cycleID,level).size();		
-	}	
-	public Set<Testrun> getTestRunsFailed(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> failedTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.isFailed())
-			{
-				failedTestruns.add(testrun);
-			}
-		}		
-		return failedTestruns;		
-	}
-	public int getTestRunsDeferredCount(long cycleID,String level)
-	{	
-		if(getTestRunsDeferred(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsDeferred(cycleID,level).size();		
-	}	
-	public Set<Testrun> getTestRunsDeferred(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> deferredTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.isDeferred())
-			{
-				deferredTestruns.add(testrun);
-			}
-		}		
-		return deferredTestruns;		
-	}
-	public int getTestRunsBlockedCount(long cycleID,String level)
-	{	
-		if(getTestRunsBlocked(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsBlocked(cycleID,level).size();		
-	}	
-	public Set<Testrun> getTestRunsBlocked(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> blockedTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.isBlocked())
-			{
-				blockedTestruns.add(testrun);
-			}
-		}		
-		return blockedTestruns;		
-	}
-	public int getTestRunsNotrunCount(long cycleID,String level)
-	{	
-		if(getTestRunsNotrun(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsNotrun(cycleID,level).size();		
-	}	
-	public Set<Testrun> getTestRunsNotrun(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> notrunTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.isNotrun())
-			{
-				notrunTestruns.add(testrun);
-			}
-		}		
-		return notrunTestruns;		
-	}
-	public int getTestRunsInprogressCount(long cycleID,String level)
-	{	
-		if(getTestRunsInprogress(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsInprogress(cycleID,level).size();		
-	}	
-	public Set<Testrun> getTestRunsInprogress(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> inprogressTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.isInprogress())
-			{
-				inprogressTestruns.add(testrun);
-			}
-		}		
-		return inprogressTestruns;		
-	}
-	public int getTestRunsCompletedCount(long cycleID,String level)
-	{	
-		if(getTestRunsCompleted(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsCompleted(cycleID,level).size();		
-	}	
-	public Set<Testrun> getTestRunsCompleted(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> completedTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(!testrun.isInprogress() || !testrun.isNotrun())
-			{
-				completedTestruns.add(testrun);
-			}
-		}		
-		return completedTestruns;		
-	}
-	public int getTestRunsInCompletedCount(long cycleID,String level)
-	{	
-		if(getTestRunsInCompleted(cycleID,level) == null)
-		{
-			return 0;	
-		}
-		return getTestRunsInCompleted(cycleID,level).size();		
-	}	
-	
-	public Set<Testrun> getTestRunsInCompleted(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}			
-		Set<Testrun> incompletedTestruns = new HashSet<Testrun>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.isInprogress() || testrun.isNotrun())
-			{
-				incompletedTestruns.add(testrun);
-			}
-		}		
-		return incompletedTestruns;		
-	}
-		
-	public Double getTotalTestRunsEstTime(long cycleID,String level)
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		Double totalEstTime = 0.00;
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return totalEstTime;
-		}			
-		
-		for(final Testrun testrun : allTestruns)
-		{	
-			
-			if(testrun.getEstimatedTime() != null)
-			{
-				totalEstTime = totalEstTime + testrun.getEstimatedTime();				
-			}
-		}		
-		return totalEstTime;		
-	}
-	public int getCascadedEnvironmentsCount(long cycleID)
-	{	
-		if(getCascadedEnvironments(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedEnvironments(cycleID).size();		
-	}
-	public Set<Environment> getCascadedEnvironments(long cycleID) 
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}	
-		Set<Environment> environements = new HashSet<Environment>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.getEnvironments() != null && !testrun.getEnvironments().isEmpty())
-			{
-				environements.addAll(testrun.getEnvironments());
-			}
-		}
-		return environements;		
-	}
-	
-	public int getCascadedRequirementsCount(long cycleID)
-	{	
-		if(getCascadedRequirements(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedRequirements(cycleID).size();		
-	}		
-	public Set<Requirement> getCascadedRequirements(long cycleID) 
-	{
-		Set<Testrun> allTestruns = getCascadedCompulsoryTestRuns(cycleID);
-		if(allTestruns == null || allTestruns.isEmpty())
-		{
-			return null;
-		}	
-		Set<Requirement> requirements = new HashSet<Requirement>();
-		for(final Testrun testrun : allTestruns)
-		{	
-			if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
-			{
-				requirements.addAll(testrun.getRequirements());
-			}
-		}
-		return requirements;		
-	}
-
-	public int getCascadedTestersCount(long cycleID)
-	{	
-		if(getCascadedTesters(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedTesters(cycleID).size();		
-	}
-	public Set<TestcenterUser> getCascadedTesters(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public int getCascadedSnrTestersCount(long cycleID)
-	{	
-		if(getCascadedSnrTesters(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedSnrTesters(cycleID).size();		
-	}	
-	public Set<TestcenterUser> getCascadedSnrTesters(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public int getCascadedDevelopersCount(long cycleID)
-	{	
-		if(getCascadedDevelopers(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedDevelopers(cycleID).size();		
-	}	
-	public Set<TestcenterUser> getCascadedDevelopers(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public int getCascadedSnrDevelopersCount(long cycleID)
-	{	
-		if(getCascadedSnrDevelopers(cycleID) == null)
-		{
-			return 0;	
-		}
-		return getCascadedSnrDevelopers(cycleID).size();		
-	}	
-	public Set<TestcenterUser> getCascadedSnrDevelopers(long cycleID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-
-	public RelatedObjectList getRelatedObjects(long projectID, String cycleID,
-			String testplanID, String userID, String environmentID,
-			String requirementID, String defectID, String testrunID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -25,7 +25,7 @@ public class TestrunLevel
 	@Id        
 	@GeneratedValue
 	@Column(name = "TestrunLevelID", unique = true, nullable = false)
-	private long TestrunLevelID;
+	private Long TestrunLevelID;
 
 	@Basic    
 	private String testrunLevelName;
@@ -87,7 +87,7 @@ public class TestrunLevel
 	/**
 	 * @return the testrunLevelID
 	 */
-	public long getTestrunLevelID() {
+	public Long getTestrunLevelID() {
 		return TestrunLevelID;
 	}
 

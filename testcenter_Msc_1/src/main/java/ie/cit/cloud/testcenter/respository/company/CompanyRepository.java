@@ -23,7 +23,7 @@ public interface CompanyRepository {
      * @return Company for given id, {@link EmptyResultDataAccessException} if no
      *         Company was found
      */
-	Company get(long companyID);
+	Company get(Long companyID);
 
     /**
      * Adds new Company into repository
@@ -62,7 +62,7 @@ public interface CompanyRepository {
      *            Company ID
      * @return Company for given id, null if test was not found
      */
-    Company findById(long companyID);
+    Company findById(Long companyID);
     /**
      * Returns Company items given by its name
      * 

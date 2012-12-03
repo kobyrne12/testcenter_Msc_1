@@ -26,7 +26,7 @@ public class HibernateRequirementRespository implements RequirementRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Requirement get(long requirementID) {
+	public Requirement get(Long requirementID) {
 		Query query = em.createQuery("from Requirement where requirementID=:requirementID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -58,7 +58,7 @@ public class HibernateRequirementRespository implements RequirementRepository {
 		return set;	
 	}
 
-	public Requirement findById(long requirementID) {
+	public Requirement findById(Long requirementID) {
 		return get(requirementID);
 	}
 

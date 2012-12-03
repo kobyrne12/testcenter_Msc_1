@@ -39,12 +39,12 @@ public class ProjectSummary
 
 	///////////////////////////////////	
 
-	private long projectID;	    
-	private String projectName;  
+	private Long projectID = null;	    
+	private String projectName = null;  
 	private boolean parentProject;
 	private String parentProjectName = null;  
 
-	private long companyID = -1;
+	private Long companyID = null;
 	private int totalChildProjects = -1;
 
 	private String levelName = null;
@@ -314,14 +314,14 @@ public class ProjectSummary
 	/**
 	 * @return the projectID
 	 */
-	public long getProjectID() {
+	public Long getProjectID() {
 		return projectID;
 	}
 
 	/**
 	 * @param projectID the projectID to set
 	 */
-	public void setProjectID(long projectID) {
+	public void setProjectID(Long projectID) {
 		this.projectID = projectID;
 	}
 
@@ -351,9 +351,9 @@ public class ProjectSummary
 	/**
 	 * @return the companyID
 	 */
-	public long getCompanyID() 
+	public Long getCompanyID() 
 	{
-		if(companyID == -1)
+		if(companyID == null)
 		{
 			companyID = project.getCompanyID();
 		}
@@ -363,7 +363,7 @@ public class ProjectSummary
 	/**
 	 * @param companyID the companyID to set
 	 */
-	public void setCompanyID(long companyID) {
+	public void setCompanyID(Long companyID) {
 		this.companyID = companyID;
 	}
 	/**
@@ -1250,7 +1250,7 @@ public class ProjectSummary
 	{
 		if(parentProjectName == null)
 		{
-			if(project.getParentID() != -1)
+			if(project.getParentID() != null)
 			{
 				if(projectService.getProject(project.getParentID()) != null)
 				{

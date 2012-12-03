@@ -42,7 +42,7 @@ public class CycleSummary
 	private Cycle cycle = new Cycle();
 	///////////////////////////////////
 
-	private long cycleID = -1;	    
+	private Long cycleID = null;	    
 	private String cycleName = null;
 	private String parentCycleName = null;
 	private boolean parentCycle;
@@ -104,8 +104,8 @@ public class CycleSummary
 
 	private int projectPosition = -1;
 
-	private long companyID = -1;
-	private long projectID = -1;
+	private Long companyID = null;
+	private Long projectID = null;
 	private String projectName = null;
 
 	public CycleSummary()
@@ -350,13 +350,13 @@ public class CycleSummary
 	/**
 	 * @return the cycleID
 	 */
-	public long getCycleID() {
+	public Long getCycleID() {
 		return cycleID;
 	}
 	/**
 	 * @param cycleID the cycleID to set
 	 */
-	public void setCycleID(long cycleID) {
+	public void setCycleID(Long cycleID) {
 		this.cycleID = cycleID;
 	}
 	/**
@@ -1526,7 +1526,7 @@ public class CycleSummary
 	/**
 	 * @return the companyID
 	 */
-	public long getCompanyID() 
+	public Long getCompanyID() 
 	{
 		if(companyID == -1)
 		{
@@ -1547,13 +1547,13 @@ public class CycleSummary
 	/**
 	 * @param companyID the companyID to set
 	 */
-	public void setCompanyID(long companyID) {
+	public void setCompanyID(Long companyID) {
 		this.companyID = companyID;
 	}
 	/**
 	 * @return the projectID
 	 */
-	public long getProjectID() 
+	public Long getProjectID() 
 	{
 		if(cycle != null)
 		{
@@ -1564,7 +1564,7 @@ public class CycleSummary
 	/**
 	 * @param projectID the projectID to set
 	 */
-	public void setProjectID(long projectID) {
+	public void setProjectID(Long projectID) {
 		this.projectID = projectID;
 	}
 	/**

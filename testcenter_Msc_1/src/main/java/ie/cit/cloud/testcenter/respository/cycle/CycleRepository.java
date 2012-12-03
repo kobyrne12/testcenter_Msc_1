@@ -27,7 +27,7 @@ public interface CycleRepository {
      * @return Cycle for given id, {@link EmptyResultDataAccessException} if no
      *         Cycle was found
      */
-	Cycle get(long cycleID);
+	Cycle get(Long cycleID);
 
     /**
      * Adds new Cycle into repository
@@ -66,7 +66,7 @@ public interface CycleRepository {
      *            Cycle ID
      * @return Cycle for given id, null if test was not found
      */
-    Cycle findById(long cycleID);
+    Cycle findById(Long cycleID);
     /**
      * Returns Cycle items given by its name
      * 
@@ -83,7 +83,7 @@ public interface CycleRepository {
      * @return Cycle for given name, null if Cycle was not found
      */
 
-	Set<Cycle> findAllCyclesByProjectID(long projectID);
+	Set<Cycle> findAllCyclesByProjectID(Long projectID);
 	
 	 /**
      * Returns the highest project position number for a project 
@@ -93,8 +93,8 @@ public interface CycleRepository {
      * @return highest position number for project, null if no other cycle exists
      *      */
 
-	int getMaxProjectPosNum(long projectID);
+	int getMaxProjectPosNum(Long projectID);
 
-	Set<Cycle> findAllCyclesByParentID(long cycleID);
+	Set<Cycle> findAllCyclesByParentID(Long cycleID);
 	
 }

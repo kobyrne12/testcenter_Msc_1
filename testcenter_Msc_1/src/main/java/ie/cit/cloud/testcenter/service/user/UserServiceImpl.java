@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	TestcaseService testcaseService;	
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public TestcenterUser getUser(long userID) {
+	public TestcenterUser getUser(Long userID) {
 		return userRepo.findById(userID);
 	}
 
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long userID) {
+	public void remove(Long userID) {
 		userRepo.delete(getUser(userID));
 	}
 

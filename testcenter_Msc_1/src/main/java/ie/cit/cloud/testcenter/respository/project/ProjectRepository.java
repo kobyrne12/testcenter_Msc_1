@@ -25,7 +25,7 @@ public interface ProjectRepository {
      * @return Project for given id, {@link EmptyResultDataAccessException} if no
      *         Project was found
      */
-	Project get(long projectID);
+	Project get(Long projectID);
 
     /**
      * Adds new Project into repository
@@ -64,7 +64,7 @@ public interface ProjectRepository {
      *            Project ID
      * @return Project for given id, null if test was not found
      */
-    Project findById(long projectID);
+    Project findById(Long projectID);
     /**
      * Returns Project items given by its name
      * 
@@ -74,9 +74,9 @@ public interface ProjectRepository {
      */
     Project findProjectByName(String projectName);
 
-	Set<Project> findAllProjectsByCompanyID(long companyID);
+	Set<Project> findAllProjectsByCompanyID(Long companyID);
 
-	Set<Project> findAllProjectsByCycleID(long cycleID);
+	Set<Project> findAllProjectsByCycleID(Long cycleID);
 	
 	//////////////////////////////////////////////////
 

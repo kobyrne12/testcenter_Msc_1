@@ -26,7 +26,7 @@ public class RequirementRule {
 
 	@Basic
 	@Column(name="cycleID")
-	private long cycleID;    
+	private Long cycleID;    
 
 	@Length(min = 2, max = 64, message = "Requirement Rule Name must be between 2 to 64 characters.")
 	@NotEmpty(message = "Requirement Rule Name is required.")
@@ -39,7 +39,7 @@ public class RequirementRule {
 	 * @param cycleID
 	 * @param requirementRuleName
 	 */
-	public RequirementRule(long cycleID, String requirementRuleName) {
+	public RequirementRule(Long cycleID, String requirementRuleName) {
 		this.cycleID = cycleID;
 		this.requirementRuleName = requirementRuleName;
 	}
@@ -47,14 +47,14 @@ public class RequirementRule {
 	/**
 	 * @return the cycleID
 	 */
-	public long getCycleID() {
+	public Long getCycleID() {
 		return cycleID;
 	}
 
 	/**
 	 * @param cycleID the cycleID to set
 	 */
-	public void setCycleID(long cycleID) {
+	public void setCycleID(Long cycleID) {
 		this.cycleID = cycleID;
 	}
 

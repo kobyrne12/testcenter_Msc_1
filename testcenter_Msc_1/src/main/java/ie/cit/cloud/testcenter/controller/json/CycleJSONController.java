@@ -55,7 +55,7 @@ public class CycleJSONController {
 	// Cycles
 	@RequestMapping(value = "/summary/{cycleID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody CycleSummary getCycleSummaryAt(@PathVariable("cycleID") long cycleID)
+	public @ResponseBody CycleSummary getCycleSummaryAt(@PathVariable("cycleID") Long cycleID)
 	{
 		Cycle cycle = cycleService.getCycle(cycleID);		
 		CycleSummary cycleSummary = new CycleSummary(cycle, null, projectService, cycleService, testrunService, defectService);
@@ -65,7 +65,7 @@ public class CycleJSONController {
 	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody CycleSummaryList returnCycles(
-			@PathVariable long companyID,    		
+			@PathVariable Long companyID,    		
 			@RequestParam(required = false) String projectID,		
 			@RequestParam(required = false) String cycleID,
 			@RequestParam(required = false) String testplanID,
@@ -91,7 +91,7 @@ public class CycleJSONController {
 	// Columns for project CHANGE companyID TO UserID
 	@RequestMapping(value = "/ColsAndNames/{index}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody ColModelAndNames returnColAndModels(@PathVariable("index") long companyID) {		
+	public @ResponseBody ColModelAndNames returnColAndModels(@PathVariable("index") Long companyID) {		
 		return cycleService.getColumnModelAndNames(companyID);    	
 	} 
 
@@ -100,7 +100,7 @@ public class CycleJSONController {
 	@RequestMapping(value = "/relatedObjects/{cycleID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody RelatedObjectList returnRelatedObjects(
-			@PathVariable long cycleID,    		
+			@PathVariable Long cycleID,    		
 			@RequestParam(required = false) String projectID,
 			@RequestParam(required = false) String testplanID,// +1 projects
 			@RequestParam(required = false) String testcaseID,// +1 projects    		
@@ -113,7 +113,7 @@ public class CycleJSONController {
 	{   	
 		//	@RequestMapping(value = "/relatedObjects/{cycleID}", method = RequestMethod.GET)
 		//	@ResponseStatus(HttpStatus.OK)
-		//	public @ResponseBody RelatedObjectList getProjectRelatedObjects(@PathVariable("cycleID") long cycleID) {
+		//	public @ResponseBody RelatedObjectList getProjectRelatedObjects(@PathVariable("cycleID") Long cycleID) {
 		//Cycle cycle = cycleService.getCycle(cycleID);
 		Set<RelatedObject> relatedObjectSet =  new LinkedHashSet<RelatedObject>();
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
@@ -175,7 +175,7 @@ public class CycleJSONController {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody String addNewCycleAJAX(
-			@RequestParam(value="projectID", required=true) long projectID,
+			@RequestParam(value="projectID", required=true) Long projectID,
 			@RequestParam(value="cycleName", required=true) String cycleName,
 			@RequestParam(value="cycleStartDate", required=true) String cycleStartDate,
 			@RequestParam(value="cycleEndDate", required=true) String cycleEndDate,			
@@ -216,15 +216,15 @@ public class CycleJSONController {
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST )
 	@ResponseStatus(HttpStatus.NO_CONTENT)	
-	public void deleteCycle(@RequestParam(value="id", required=true) long cycleID) {
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% long cycleID = " +cycleID);
+	public void deleteCycle(@RequestParam(value="id", required=true) Long cycleID) {
+		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% Long cycleID = " +cycleID);
 		cycleService.remove(cycleID);
 	}	 
 
 	// Projects
 	@RequestMapping(value = "/cycle/{cycleID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody Cycle getCycle(@PathVariable("cycleID") long cycleID) {
+	public @ResponseBody Cycle getCycle(@PathVariable("cycleID") Long cycleID) {
 		return cycleService.getCycle(cycleID);
 	}
 

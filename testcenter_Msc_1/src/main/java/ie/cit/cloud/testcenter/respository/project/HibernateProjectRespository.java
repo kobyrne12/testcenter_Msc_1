@@ -28,7 +28,7 @@ public class HibernateProjectRespository implements ProjectRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Project get(long projectID) {
+	public Project get(Long projectID) {
 		Query query = em.createQuery("from Project where projectID=:projectID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -69,7 +69,7 @@ public class HibernateProjectRespository implements ProjectRepository {
 		Set<Project> set = new HashSet<Project>(list);  
 		return set;		    	
 	}
-	public Project findById(long projectID) {
+	public Project findById(Long projectID) {
 		return get(projectID);
 	}
 
@@ -83,7 +83,7 @@ public class HibernateProjectRespository implements ProjectRepository {
 	//   }
 
 	@SuppressWarnings("unchecked")
-	public  Set<Project> findAllProjectsByCompanyID(long companyID)
+	public  Set<Project> findAllProjectsByCompanyID(Long companyID)
 	{
 		Query query = em.createQuery("from Project where companyID=:companyID"); 		
 		query.setParameter("companyID", companyID);
@@ -93,7 +93,7 @@ public class HibernateProjectRespository implements ProjectRepository {
 	}
 
 	@SuppressWarnings("unchecked")
-	public  Set<Project> findAllProjectsByCycleID(long cycleID)
+	public  Set<Project> findAllProjectsByCycleID(Long cycleID)
 	{
 		Query query = em.createQuery("from Project where cycleID=:cycleID"); 		
 		query.setParameter("cycleID", cycleID);

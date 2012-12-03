@@ -26,7 +26,7 @@ public class HibernateUserRespository implements UserRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public TestcenterUser get(long userID) {
+	public TestcenterUser get(Long userID) {
 		Query query = em.createQuery("from User where userID=:userID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -64,7 +64,7 @@ public class HibernateUserRespository implements UserRepository {
 		return set;
 	}
 
-	public TestcenterUser findById(long userID) {
+	public TestcenterUser findById(Long userID) {
 		return get(userID);
 	}
 

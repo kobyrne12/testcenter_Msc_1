@@ -88,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Project getProject(long projectID) {
+	public Project getProject(Long projectID) {
 		try{
 			return projectRepo.findById(projectID);			
 		}
@@ -115,12 +115,12 @@ public class ProjectServiceImpl implements ProjectService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long projectID) {
+	public void remove(Long projectID) {
 		projectRepo.delete(projectRepo.get(projectID));
 	}
 
 	//  @Secured("ROLE_ADMIN")    
-	public void updateProjectWithId(long projectID, Project project) {
+	public void updateProjectWithId(Long projectID, Project project) {
 		Project oldProject = projectRepo.findById(projectID);
 		oldProject.setProjectName(project.getProjectName());
 		oldProject.setParentID(project.getParentID());
@@ -133,19 +133,19 @@ public class ProjectServiceImpl implements ProjectService {
 		projectRepo.update(oldProject);
 	}
 	//  @Secured("ROLE_ADMIN")
-	public void updateProjectNameWithId(long projectID, Project project, String projectName) {
+	public void updateProjectNameWithId(Long projectID, Project project, String projectName) {
 		Project oldProject = projectRepo.findById(projectID);
 		oldProject.setProjectName(project.getProjectName());   
 		projectRepo.update(oldProject);
 	}
 
-	public boolean updateProject(long projectID, Project project) {
+	public boolean updateProject(Long projectID, Project project) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Set<Project> getAllProjectsByCompanyID(long companyID) {
+	public Set<Project> getAllProjectsByCompanyID(Long companyID) {
 		return projectRepo.findAllProjectsByCompanyID(companyID);
 	}
 	//////////////////////////////////////////////////////////////////
@@ -274,7 +274,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return colModelAndName;
 	}
 
-	public ProjectSummaryList getGridProjects(long companyID, String projectID,
+	public ProjectSummaryList getGridProjects(Long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
 			String environmentID, String userID,String levelName)
@@ -285,20 +285,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 		if (cycleID != null && !cycleID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
 		{			
-			if(cycleID.contains(","))
-			{
-				String[] cycleIDArray = cycleID.split(",");
-				for(String eachCycle : cycleIDArray)
-				{
-					Cycle cycle = cycleService.getCycle(Long.valueOf(eachCycle).longValue());
-					projects.add(getProject(cycle.getProjectID()));
-				}
-			}
-			else
-			{
-				Cycle cycle = cycleService.getCycle(Long.valueOf(cycleID).longValue());
-				projects.add(getProject(cycle.getProjectID()));
-			}
+			Cycle cycle = cycleService.getCycle(Long.valueOf(cycleID));
+			projects.add(getProject(cycle.getProjectID()));			
 		}
 		else
 		{
@@ -309,9 +297,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Testplan projects
 		if (testplanID != null && !testplanID.isEmpty()) 
 		{			
-			if(testplanService.getProjects(Long.valueOf(testplanID).longValue()) != null)
+			if(testplanService.getProjects(Long.valueOf(testplanID)) != null)
 			{
-				projects.retainAll(testplanService.getProjects(Long.valueOf(testplanID).longValue()));
+				projects.retainAll(testplanService.getProjects(Long.valueOf(testplanID)));
 			}			
 		}		
 		if(projects == null || projects.isEmpty()){return null;}
@@ -319,9 +307,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Testcase projects
 		if (testcaseID != null && !testcaseID.isEmpty()) 
 		{			
-			if(testcaseService.getProjects(Long.valueOf(testcaseID).longValue()) != null)
+			if(testcaseService.getProjects(Long.valueOf(testcaseID)) != null)
 			{
-				projects.retainAll(testcaseService.getProjects(Long.valueOf(testcaseID).longValue()));
+				projects.retainAll(testcaseService.getProjects(Long.valueOf(testcaseID)));
 			}			
 		}		
 		if(projects == null || projects.isEmpty()){return null;}
@@ -329,10 +317,10 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Testrun projects
 		if (testrunID != null && !testrunID.isEmpty()) 
 		{			
-			if(testrunService.getProject(Long.valueOf(testrunID).longValue()) != null)
+			if(testrunService.getProject(Long.valueOf(testrunID)) != null)
 			{
 				Set<Project> testrunProjects = new HashSet<Project>();
-				testrunProjects.add(testrunService.getProject(Long.valueOf(testrunID).longValue()));
+				testrunProjects.add(testrunService.getProject(Long.valueOf(testrunID)));
 				projects.retainAll(testrunProjects);				
 			}			
 		}
@@ -341,9 +329,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Defect projects
 		if (defectID != null && !defectID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
+			if(defectService.getCascadedProjects(Long.valueOf(defectID)) != null)
 			{
-				projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
+				projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID)));				
 			}			
 		}
 		if(projects == null || projects.isEmpty()){return null;}
@@ -351,9 +339,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Requirement projects
 		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(requirementService.getProjects(Long.valueOf(requirementID).longValue()) != null)
+			if(requirementService.getProjects(Long.valueOf(requirementID)) != null)
 			{
-				projects.retainAll(requirementService.getProjects(Long.valueOf(requirementID).longValue()));				
+				projects.retainAll(requirementService.getProjects(Long.valueOf(requirementID)));				
 			}				
 		}
 		if(projects == null || projects.isEmpty()){return null;}
@@ -361,9 +349,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain Environment projects
 		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
 		{			
-			if(environmentService.getProjects(Long.valueOf(environmentID).longValue()) != null)
+			if(environmentService.getProjects(Long.valueOf(environmentID)) != null)
 			{
-				projects.retainAll(environmentService.getProjects(Long.valueOf(environmentID).longValue()));				
+				projects.retainAll(environmentService.getProjects(Long.valueOf(environmentID)));				
 			}			
 		}
 		if(projects == null || projects.isEmpty()){return null;}
@@ -371,9 +359,9 @@ public class ProjectServiceImpl implements ProjectService {
 		// Retain User projects
 		//		if (userID != null && !userID.isEmpty()) // limit to projects that have this test plan id in it
 		//		{			
-		//			if(userService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
+		//			if(userService.getCascadedProjects(Long.valueOf(defectID)) != null)
 		//			{
-		//				projects.retainAll(userService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
+		//				projects.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
 		//			}			
 		//		}
 		//		if(projects == null || projects.isEmpty()){return null;}
@@ -444,7 +432,7 @@ public class ProjectServiceImpl implements ProjectService {
 //	}
 //	
 
-	public RelatedObjectList getRelatedObjects(long projectID, String cycleID,
+	public RelatedObjectList getRelatedObjects(Long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID) {
 		// TODO Auto-generated method stub
@@ -453,7 +441,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 	///////////////////////////////////////////////////////
-	public int getChildProjectsCount(long projectID)
+	public int getChildProjectsCount(Long projectID)
 	{	
 		if(getChildProjects(projectID) == null)
 		{
@@ -461,7 +449,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getChildProjects(projectID).size();		
 	}	
-	public Set<Project> getChildProjects(long projectID)
+	public Set<Project> getChildProjects(Long projectID)
 	{		
 		Project project = getProject(projectID);
 		if(!project.isParent())
@@ -482,7 +470,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 	} 
 
-	public Set<Project> getParentAndChildProjects(long projectID)
+	public Set<Project> getParentAndChildProjects(Long projectID)
 	{		
 		Project project = getProject(projectID);
 		Set<Project> projects = new HashSet<Project>(); 
@@ -503,7 +491,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return projects;		
 	} 
 
-	public Project getParentProject(long projectID)
+	public Project getParentProject(Long projectID)
 	{		
 		Project project = getProject(projectID);
 		if(!project.isChild())
@@ -524,7 +512,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 	}
 
-	public String getParentProjectName(long projectID)
+	public String getParentProjectName(Long projectID)
 	{		
 		Project project = getProject(projectID);
 		if(!project.isChild())
@@ -544,7 +532,7 @@ public class ProjectServiceImpl implements ProjectService {
 			return null;
 		}
 	}
-	public int getParentAndChildCyclesCount(long projectID)
+	public int getParentAndChildCyclesCount(Long projectID)
 	{	
 		if(getParentAndChildCycles(projectID) == null)
 		{
@@ -552,7 +540,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getParentAndChildCycles(projectID).size();		
 	}	
-	public Set<Cycle> getParentAndChildCycles(long projectID)
+	public Set<Cycle> getParentAndChildCycles(Long projectID)
 	{
 		Set<Project> projects = getParentAndChildProjects(projectID);
 		if(projects == null || projects.isEmpty())
@@ -569,7 +557,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}		
 		return allCycles;		
 	}
-	public int getCascadedAllTestRunsCount(long projectID)
+	public int getCascadedAllTestRunsCount(Long projectID)
 	{	
 		if(getCascadedAllTestRuns(projectID) == null)
 		{
@@ -577,7 +565,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedAllTestRuns(projectID).size();		
 	}	
-	public Set<Testrun> getCascadedAllTestRuns(long projectID)
+	public Set<Testrun> getCascadedAllTestRuns(Long projectID)
 	{		
 		Set<Testrun> allTestruns = new HashSet<Testrun>();  	
 		if(getParentAndChildCycles(projectID) != null && !getParentAndChildCycles(projectID).isEmpty())
@@ -593,7 +581,7 @@ public class ProjectServiceImpl implements ProjectService {
 		} 		
 		return allTestruns;		
 	}	
-	public int getCascadedCompulsoryTestRunsCount(long projectID)
+	public int getCascadedCompulsoryTestRunsCount(Long projectID)
 	{	
 		if(getCascadedCompulsoryTestRuns(projectID) == null)
 		{
@@ -601,7 +589,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedCompulsoryTestRuns(projectID).size();		
 	}	
-	public Set<Testrun> getCascadedCompulsoryTestRuns(long projectID)
+	public Set<Testrun> getCascadedCompulsoryTestRuns(Long projectID)
 	{
 		Set<Testrun> allTestruns = new HashSet<Testrun>();  	
 		if(getParentAndChildCycles(projectID) != null && !getParentAndChildCycles(projectID).isEmpty())
@@ -617,7 +605,7 @@ public class ProjectServiceImpl implements ProjectService {
 		} 		
 		return allTestruns;		
 	}
-	public int getCascadedOptionalTestRunsCount(long projectID)
+	public int getCascadedOptionalTestRunsCount(Long projectID)
 	{	
 		if(getCascadedOptionalTestRuns(projectID) == null)
 		{
@@ -625,7 +613,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedOptionalTestRuns(projectID).size();		
 	}	
-	public Set<Testrun> getCascadedOptionalTestRuns(long projectID)
+	public Set<Testrun> getCascadedOptionalTestRuns(Long projectID)
 	{
 		Set<Testrun> allTestruns = new HashSet<Testrun>();  	
 		if(getParentAndChildCycles(projectID) != null && !getParentAndChildCycles(projectID).isEmpty())
@@ -641,7 +629,7 @@ public class ProjectServiceImpl implements ProjectService {
 		} 		
 		return allTestruns;		
 	}
-	public int getCascadedAllTestCasesCount(long projectID)
+	public int getCascadedAllTestCasesCount(Long projectID)
 	{	
 		if(getCascadedAllTestCases(projectID) == null)
 		{
@@ -649,7 +637,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedAllTestCases(projectID).size();		
 	}	
-	public Set<Testcase> getCascadedAllTestCases(long projectID)
+	public Set<Testcase> getCascadedAllTestCases(Long projectID)
 	{	
 		Set<Project> projects = getParentAndChildProjects(projectID);
 		if(projects == null || projects.isEmpty())
@@ -666,7 +654,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return allTestcases;			
 	}
-	public int getCascadedCompulsoryTestCasesCount(long projectID)
+	public int getCascadedCompulsoryTestCasesCount(Long projectID)
 	{	
 		if(getCascadedCompulsoryTestCases(projectID) == null)
 		{
@@ -674,7 +662,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedCompulsoryTestCases(projectID).size();		
 	}	
-	public Set<Testcase> getCascadedCompulsoryTestCases(long projectID)
+	public Set<Testcase> getCascadedCompulsoryTestCases(Long projectID)
 	{
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -692,7 +680,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return compulsoryTestcases;			
 	}
-	public int getCascadedOptionalTestCasesCount(long projectID)
+	public int getCascadedOptionalTestCasesCount(Long projectID)
 	{	
 		if(getCascadedOptionalTestCases(projectID) == null)
 		{
@@ -700,7 +688,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedOptionalTestCases(projectID).size();		
 	}	
-	public Set<Testcase> getCascadedOptionalTestCases(long projectID)
+	public Set<Testcase> getCascadedOptionalTestCases(Long projectID)
 	{
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -718,7 +706,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return compulsoryTestcases;			
 	}
-	public int getCascadedAllTestPlansCount(long projectID)
+	public int getCascadedAllTestPlansCount(Long projectID)
 	{	
 		if(getCascadedAllTestPlans(projectID) == null)
 		{
@@ -726,7 +714,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedAllTestPlans(projectID).size();		
 	}	
-	public Set<Testplan> getCascadedAllTestPlans(long projectID)
+	public Set<Testplan> getCascadedAllTestPlans(Long projectID)
 	{	
 		Set<Project> projects = getParentAndChildProjects(projectID);
 		if(projects == null || projects.isEmpty())
@@ -743,7 +731,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return allTestplans;			
 	}
-	public int getCascadedCompulsoryTestPlansCount(long projectID)
+	public int getCascadedCompulsoryTestPlansCount(Long projectID)
 	{	
 		if(getCascadedCompulsoryTestPlans(projectID) == null)
 		{
@@ -751,7 +739,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedCompulsoryTestPlans(projectID).size();		
 	}		
-	public Set<Testplan> getCascadedCompulsoryTestPlans(long projectID)
+	public Set<Testplan> getCascadedCompulsoryTestPlans(Long projectID)
 	{
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -769,7 +757,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return compulsoryTestplans;			
 	}
-	public int getCascadedOptionalTestPlansCount(long projectID)
+	public int getCascadedOptionalTestPlansCount(Long projectID)
 	{	
 		if(getCascadedOptionalTestPlans(projectID) == null)
 		{
@@ -777,7 +765,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedOptionalTestPlans(projectID).size();		
 	}	
-	public Set<Testplan> getCascadedOptionalTestPlans(long projectID)
+	public Set<Testplan> getCascadedOptionalTestPlans(Long projectID)
 	{
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -795,7 +783,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return compulsoryTestplans;			
 	}	
-	public int getCascadedDefectsCount(long projectID)
+	public int getCascadedDefectsCount(Long projectID)
 	{	
 		if(getCascadedDefects(projectID) == null)
 		{
@@ -803,7 +791,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedDefects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedDefects(long projectID)
+	public Set<Defect> getCascadedDefects(Long projectID)
 	{		
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -821,7 +809,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return defects;				
 	}
-	public int getCascadedSev1DefectsCount(long projectID)
+	public int getCascadedSev1DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev1Defects(projectID) == null)
 		{
@@ -829,7 +817,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedSev1Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev1Defects(long projectID)
+	public Set<Defect> getCascadedSev1Defects(Long projectID)
 	{		
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -847,7 +835,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return defects;				
 	}
-	public int getCascadedSev2DefectsCount(long projectID)
+	public int getCascadedSev2DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev2Defects(projectID) == null)
 		{
@@ -855,7 +843,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedSev2Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev2Defects(long projectID)
+	public Set<Defect> getCascadedSev2Defects(Long projectID)
 	{		
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -873,7 +861,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return defects;				
 	}
-	public int getCascadedSev3DefectsCount(long projectID)
+	public int getCascadedSev3DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev3Defects(projectID) == null)
 		{
@@ -881,7 +869,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedSev3Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev3Defects(long projectID)
+	public Set<Defect> getCascadedSev3Defects(Long projectID)
 	{		
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -899,7 +887,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return defects;				
 	}
-	public int getCascadedSev4DefectsCount(long projectID)
+	public int getCascadedSev4DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev4Defects(projectID) == null)
 		{
@@ -907,7 +895,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedSev4Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev4Defects(long projectID)
+	public Set<Defect> getCascadedSev4Defects(Long projectID)
 	{		
 		Set<Cycle> cycles = getParentAndChildCycles(projectID);	
 		if(cycles == null || cycles.isEmpty())
@@ -925,7 +913,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}			
 		return defects;				
 	}	
-	public int getCascadedEnvironmentsCount(long projectID)
+	public int getCascadedEnvironmentsCount(Long projectID)
 	{	
 		if(getCascadedEnvironments(projectID) == null)
 		{
@@ -933,7 +921,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedEnvironments(projectID).size();		
 	}	
-	public Set<Environment> getCascadedEnvironments(long projectID)
+	public Set<Environment> getCascadedEnvironments(Long projectID)
 	{		
 		Set<Testrun> testruns = getCascadedCompulsoryTestRuns(projectID);		
 		if(testruns == null || testruns.isEmpty())
@@ -947,7 +935,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}		
 		return environments; 
 	}
-	public int getCascadedRequirementsCount(long projectID)
+	public int getCascadedRequirementsCount(Long projectID)
 	{	
 		if(getCascadedRequirements(projectID) == null)
 		{
@@ -956,7 +944,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return getCascadedRequirements(projectID).size();		
 	}	
 
-	public Set<Requirement> getCascadedRequirements(long projectID)
+	public Set<Requirement> getCascadedRequirements(Long projectID)
 	{		
 		Set<Testrun> testruns = getCascadedCompulsoryTestRuns(projectID);		
 		if(testruns == null || testruns.isEmpty())
@@ -970,7 +958,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}		
 		return requirements; 
 	}	
-	public int getCascadedTestersCount(long projectID)
+	public int getCascadedTestersCount(Long projectID)
 	{	
 		if(getCascadedTesters(projectID) == null)
 		{
@@ -978,11 +966,11 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedTesters(projectID).size();		
 	}
-	public Set<TestcenterUser> getCascadedTesters(long projectID) {
+	public Set<TestcenterUser> getCascadedTesters(Long projectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public int getCascadedSnrTestersCount(long projectID)
+	public int getCascadedSnrTestersCount(Long projectID)
 	{	
 		if(getCascadedSnrTesters(projectID) == null)
 		{
@@ -990,12 +978,12 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedSnrTesters(projectID).size();		
 	}	
-	public Set<TestcenterUser> getCascadedSnrTesters(long projectID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(Long projectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public int getCascadedDevelopersCount(long projectID)
+	public int getCascadedDevelopersCount(Long projectID)
 	{	
 		if(getCascadedDevelopers(projectID) == null)
 		{
@@ -1003,12 +991,12 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedDevelopers(projectID).size();		
 	}	
-	public Set<TestcenterUser> getCascadedDevelopers(long projectID) {
+	public Set<TestcenterUser> getCascadedDevelopers(Long projectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public int getCascadedSnrDevelopersCount(long projectID)
+	public int getCascadedSnrDevelopersCount(Long projectID)
 	{	
 		if(getCascadedSnrDevelopers(projectID) == null)
 		{
@@ -1016,7 +1004,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return getCascadedSnrDevelopers(projectID).size();		
 	}	
-	public Set<TestcenterUser> getCascadedSnrDevelopers(long projectID) {
+	public Set<TestcenterUser> getCascadedSnrDevelopers(Long projectID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

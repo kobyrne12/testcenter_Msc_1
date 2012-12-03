@@ -30,6 +30,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -40,11 +42,11 @@ public class Testcase {
 	@Id    
 	@GeneratedValue
 	@Column(name="testcaseID")
-	private long testcaseID;  
+	private Long testcaseID;  
 
 	@Basic
 	@Column(name="companyID")
-	private long companyID;
+	private Long companyID;
 	
 	@Basic
 	@Length(min = 2, max = 254, message = "Testcase name must be between 2 to 254 characters.")
@@ -53,11 +55,11 @@ public class Testcase {
 
 	@Basic
 	@Column(name="testplanID")
-	private long testplanID = 1;
+	private Long testplanID;
 	
 //	@Transient
 	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER)
-	//@Fetch(value = FetchMode.SUBSELECT)
+	@Fetch(value = FetchMode.JOIN)
     private Set<Project> projects = new HashSet<Project>();
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
@@ -66,7 +68,7 @@ public class Testcase {
 	private Set<Testrun> testruns = new HashSet<Testrun>();   
   
 	@Basic
-	private long testplanSectionID;
+	private Long testplanSectionID;
 	@Basic
 	private int testplanOrderNum;
 
@@ -85,11 +87,11 @@ public class Testcase {
 	private String testcasePreCondition;
 	@Basic
 	@Column(length=10000)
-	private String testcaseSteps ;
+	private String testcaseSteps;
 	@Basic
 	private String testcasePassCondition;
 	@Basic
-	private String tester ;
+	private String tester;
 	@Basic
 	private String seniorTester ;
 	
@@ -101,15 +103,16 @@ public class Testcase {
 	private Date lastModifiedDate = new Date();
 
 	@Basic    
-	private long createdByUserID;
+	private Long createdByUserID;
 	@Basic    
-	private long lastModifiedByUserID;
+	private Long lastModifiedByUserID;
 	
 	public Testcase() {	
 	}
 	
 	/**
 	 * @param companyID		
+	 * @param testplanID	
 	 * @param testcaseName		
 	 * @param level
 	 * @param stage	
@@ -120,11 +123,11 @@ public class Testcase {
 	 * @param tester
 	 * @param seniorTester
 	 */	
-	public Testcase(long companyID, String testcaseName,TestrunLevel level, String stage,
+	public Testcase(Long companyID,Long testplanID, String testcaseName,TestrunLevel level, String stage,
 			String testcaseSummary,	String testcasePreCondition, String testcaseSteps,
 			String testcasePassCondition,String tester, String seniorTester)
 	{
-		this(companyID, testcaseName,level,stage,0.15,
+		this(companyID,testplanID, testcaseName,level,stage,0.15,
 				testcaseSummary,testcasePreCondition,testcaseSteps,testcasePassCondition,
 				tester,seniorTester);
 	}
@@ -132,6 +135,7 @@ public class Testcase {
 	
 	/**
 	 * @param companyID
+	 * @param testplanID
 	 * @param testcaseName	
 	 * @param testruns
 	 * @param level
@@ -144,12 +148,13 @@ public class Testcase {
 	 * @param tester
 	 * @param seniorTester
 	 */
-	public Testcase(long companyID, String testcaseName, TestrunLevel testrunLevel,
+	public Testcase(Long companyID, Long testplanID, String testcaseName, TestrunLevel testrunLevel,
 			String stage, Double estimatedTime, String testcaseSummary,
 			String testcasePreCondition, String testcaseSteps,
 			String testcasePassCondition, String tester, String seniorTester) {
 	
 		this.companyID = companyID;		
+		this.testplanID= testplanID; 
 		this.testcaseName = testcaseName;		
 		this.testrunLevel = testrunLevel;
 		this.stage = stage;
@@ -179,28 +184,28 @@ public class Testcase {
 	/**
 	 * @return the testplanID
 	 */
-	public long getTestplanID() {
+	public Long getTestplanID() {
 		return testplanID;
 	}
 
 	/**
 	 * @param testplanID the testplanID to set
 	 */
-	public void setTestplanID(long testplanID) {
+	public void setTestplanID(Long testplanID) {
 		this.testplanID = testplanID;
 	}
 
 	/**
 	 * @return the companyID
 	 */
-	public long getCompanyID() {
+	public Long getCompanyID() {
 		return companyID;
 	}
 
 	/**
 	 * @param companyID the companyID to set
 	 */
-	public void setCompanyID(long companyID) {
+	public void setCompanyID(Long companyID) {
 		this.companyID = companyID;
 	}
 
@@ -277,7 +282,7 @@ public class Testcase {
 	/**
 	 * @return the testcaseID
 	 */
-	public long getTestcaseID() {
+	public Long getTestcaseID() {
 		return testcaseID;
 	}
 
@@ -352,14 +357,14 @@ public class Testcase {
 	/**
 	 * @return the testplanSectionID
 	 */
-	public long getTestplanSectionID() {
+	public Long getTestplanSectionID() {
 		return testplanSectionID;
 	}
 
 	/**
 	 * @param testplanSectionID the testplanSectionID to set
 	 */
-	public void setTestplanSectionID(long testplanSectionID) {
+	public void setTestplanSectionID(Long testplanSectionID) {
 		this.testplanSectionID = testplanSectionID;
 	}
 
@@ -422,28 +427,28 @@ public class Testcase {
 	/**
 	 * @return the createdByUserID
 	 */
-	public long getCreatedByUserID() {
+	public Long getCreatedByUserID() {
 		return createdByUserID;
 	}
 
 	/**
 	 * @param createdByUserID the createdByUserID to set
 	 */
-	public void setCreatedByUserID(long createdByUserID) {
+	public void setCreatedByUserID(Long createdByUserID) {
 		this.createdByUserID = createdByUserID;
 	}
 
 	/**
 	 * @return the lastModifiedByUserID
 	 */
-	public long getLastModifiedByUserID() {
+	public Long getLastModifiedByUserID() {
 		return lastModifiedByUserID;
 	}
 
 	/**
 	 * @param lastModifiedByUserID the lastModifiedByUserID to set
 	 */
-	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+	public void setLastModifiedByUserID(Long lastModifiedByUserID) {
 		this.lastModifiedByUserID = lastModifiedByUserID;
 	}
 

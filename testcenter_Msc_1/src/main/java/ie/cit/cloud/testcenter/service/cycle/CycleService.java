@@ -37,23 +37,23 @@ public interface CycleService {
 
     Set<Cycle> getAllCycles();
 
-    long addNewCycle(Cycle cycle);
+    Long addNewCycle(Cycle cycle);
 
-    Cycle getCycle(long cycleID);   
+    Cycle getCycle(Long cycleID);   
     
     Cycle getCycleByName(String cycleName);
     
     void update(Cycle cycle);
     
-    void remove(long cycleID);
+    void remove(Long cycleID);
    
     boolean updateCycle(Cycle cycle);
 
-	Set<Cycle> getAllCyclesByProjectID(long projectID);
+	Set<Cycle> getAllCyclesByProjectID(Long projectID);
 
-	int getMaxProjectPosNum(long projectID);
+	int getMaxProjectPosNum(Long projectID);
 
-	boolean isLatest(long cycleID);
+	boolean isLatest(Long cycleID);
 	//////////////////////////////////////////////
 
 	/**
@@ -61,152 +61,152 @@ public interface CycleService {
 	 * Set<Cycle>
 	 * @return Total collection of child Cycles including the parent
 	 */
-	 Set<Cycle> getParentAndChildCycles(long cycleID);
+	 Set<Cycle> getParentAndChildCycles(Long cycleID);
 	/**
 	 * Returns a collection of Child cycles for a cycle 
 	 * Set<Cycle>
 	 * @return collection of Child cycles for a cycle
 	 */	
-	 Set<Cycle> getChildCycles(long cycleID);
+	 Set<Cycle> getChildCycles(Long cycleID);
 	/**
 	 * Returns a Cycle Parent Cycle  
 	 * Cycle
 	 * @return a Cycle Parent Cycle, otherwise null
 	 */	
-	 Cycle getParentCycle(long cycleID);
+	 Cycle getParentCycle(Long cycleID);
 	/**
 	 * Returns a collection of All Testruns in a cycle incl all child cycles 
 	 * Set<Testrun>
 	 * @return collection of All Testruns in a cycle incl all child cycles,
 	 */	
-	 Set<Testrun> getCascadedAllTestRuns(long cycleID);
+	 Set<Testrun> getCascadedAllTestRuns(Long cycleID);
 	 /**
 	  * Returns a collection of All Testruns in a cycle incl all child cycles 
 	  * Set<Testrun>
 	  * @return collection of All Testruns in a cycle incl all child cycles,
 	  */	
-	 Set<Testrun> getCascadedAllTestRuns(long cycleID, String level);
+	 Set<Testrun> getCascadedAllTestRuns(Long cycleID, String level);
 	/**
 	 * Returns a collection of All compulsory Testruns in a cycle incl all child cycles 
 	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a cycle incl all child cycles,
 	 */	
-	 Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID);
+	 Set<Testrun> getCascadedCompulsoryTestRuns(Long cycleID);
 	 /**
 	  * Returns a collection of All compulsory Testruns in a cycle incl all child cycles 
 	  * Set<Testrun>
 	  * @return collection of All compulsory Testruns in a cycle incl all child cycles,
 	  */	
-	 Set<Testrun> getCascadedCompulsoryTestRuns(long cycleID, String level);
+	 Set<Testrun> getCascadedCompulsoryTestRuns(Long cycleID, String level);
 	/**
 	 * Returns a collection of All Optional Testruns in a cycle incl all child cycles 
 	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a cycle incl all child cycles,
 	 */	
-	 Set<Testrun> getCascadedOptionalTestRuns(long cycleID);
+	 Set<Testrun> getCascadedOptionalTestRuns(Long cycleID);
 	 /**
 	  * Returns a collection of All Optional Testruns in a cycle incl all child cycles 
 	  * Set<Testrun>
 	  * @return collection of All Optional Testruns in a cycle incl all child cycles,
 	  */	
-	 Set<Testrun> getCascadedOptionalTestRuns(long cycleID, String level);
+	 Set<Testrun> getCascadedOptionalTestRuns(Long cycleID, String level);
 	/**
 	 * Returns a collection of All Testcases in a cycle incl all child cycles 
 	 * Set<Testcase>
 	 * @return collection of All Testcases in a cycle incl all child cycles,
 	 */	
-	 Set<Testcase> getCascadedAllTestCases(long cycleID);
+	 Set<Testcase> getCascadedAllTestCases(Long cycleID);
 	/**
 	 * Returns a collection of All Compulsory Testcases in a cycle incl all child cycles 
 	 * Set<Testcase>
 	 * @return collection of All Compulsory Testcases in a cycle incl all child cycles,
 	 */	
-	 Set<Testcase> getCascadedCompulsoryTestCases(long cycleID);
+	 Set<Testcase> getCascadedCompulsoryTestCases(Long cycleID);
 	/**
 	 * Returns a collection of All Optional Testcases in a cycle incl all child cycles 
 	 * Set<Testcase>
 	 * @return collection of All Optional Testcases in a cycle incl all child cycles,
 	 */	
-	 Set<Testcase> getCascadedOptionalTestCases(long cycleID);
+	 Set<Testcase> getCascadedOptionalTestCases(Long cycleID);
 	/**
 	 * Returns a collection of All Testplans in a cycle incl all child cycles 
 	 * Set<Testplan>
 	 * @return collection of All Testplans in a cycle incl all child cycles,
 	 */	
-	 Set<Testplan> getCascadedAllTestPlans(long cycleID);
+	 Set<Testplan> getCascadedAllTestPlans(Long cycleID);
 	/**
 	 * Returns a collection of All Compulsory Testplans in a cycle incl all child cycles 
 	 * Set<Testplan>
 	 * @return collection of All Compulsory Testplans in a cycle incl all child cycles,
 	 */	
-	 Set<Testplan> getCascadedCompulsoryTestPlans(long cycleID);
+	 Set<Testplan> getCascadedCompulsoryTestPlans(Long cycleID);
 	/**
 	 * Returns a collection of All Optional Testplans in a cycle incl all child cycles 
 	 * Set<Testplan>
 	 * @return collection of All Optional Testplans in a cycle incl all child cycles,
 	 */	
-	 Set<Testplan> getCascadedOptionalTestPlans(long cycleID);
+	 Set<Testplan> getCascadedOptionalTestPlans(Long cycleID);
 	/**
 	 * Returns a collection of Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Defects in a cycle incl all child cycles,
 	 */	
-	 Set<Defect> getCascadedDefects(long cycleID);
+	 Set<Defect> getCascadedDefects(Long cycleID);
 	/**
 	 * Returns a collection of Sev1 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 1 Defects in a cycle incl all child cycles,
 	 */		
-	 Set<Defect> getCascadedSev1Defects(long cycleID) ;
+	 Set<Defect> getCascadedSev1Defects(Long cycleID) ;
 	/**
 	 * Returns a collection of Sev2 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 2 Defects in a cycle incl all child cycles,
 	 */		
-	 Set<Defect> getCascadedSev2Defects(long cycleID) ;
+	 Set<Defect> getCascadedSev2Defects(Long cycleID) ;
 	/**
 	 * Returns a collection of Sev 3 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 3 Defects in a cycle incl all child cycles,
 	 */		
-	 Set<Defect> getCascadedSev3Defects(long cycleID) ;
+	 Set<Defect> getCascadedSev3Defects(Long cycleID) ;
 	/**
 	 * Returns a collection of Sev 4 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 4 Defects in a cycle incl all child cycles,
 	 */		
-	 Set<Defect> getCascadedSev4Defects(long cycleID) ;
+	 Set<Defect> getCascadedSev4Defects(Long cycleID) ;
 	/**
 	 * Returns a collection of Environments in a cycle incl all child cycles 
 	 * Set<Environment>
 	 * @return collection of Environments in a cycle incl all child cycles,
 	 */		
-	 Set<Environment> getCascadedEnvironments(long cycleID) ;
+	 Set<Environment> getCascadedEnvironments(Long cycleID) ;
 	/**
 	 * Returns a collection of Requirements in a cycle incl all child cycles 
 	 * Set<Requirement>
 	 * @return collection of Requirements in a cycle incl all child cycles,
 	 */		
-	 Set<Requirement> getCascadedRequirements(long cycleID) ;
+	 Set<Requirement> getCascadedRequirements(Long cycleID) ;
 	
-	 Set<TestcenterUser> getCascadedTesters(long cycleID);
-	 Set<TestcenterUser> getCascadedSnrTesters(long cycleID);
-	 Set<TestcenterUser> getCascadedDevelopers(long cycleID);
-	 Set<TestcenterUser> getCascadedSnrDevelopers(long cycleID);
+	 Set<TestcenterUser> getCascadedTesters(Long cycleID);
+	 Set<TestcenterUser> getCascadedSnrTesters(Long cycleID);
+	 Set<TestcenterUser> getCascadedDevelopers(Long cycleID);
+	 Set<TestcenterUser> getCascadedSnrDevelopers(Long cycleID);
 
 	//////////////////////////////////////////////
 	 
-	Set<Cycle> getAllChildCycles(long cycleID);
+	Set<Cycle> getAllChildCycles(Long cycleID);
 	 
-	//CycleSummary getCycleSummary(long companyID, long cycleID, String level);
+	//CycleSummary getCycleSummary(Long companyID, Long cycleID, String level);
 	 
-	CycleSummaryList getGridCycles(long companyID, String projectID, String cycleID,
+	CycleSummaryList getGridCycles(Long companyID, String projectID, String cycleID,
 			String testplanID,String testcaseID, String testrunID, String defectID, 
 			String requirementID, String environmentID, String userID, String level );
 	
 	ColModelAndNames getColumnModelAndNames(Long companyID);	
 	
-	RelatedObjectList getRelatedObjects(long projectID, String cycleID,
+	RelatedObjectList getRelatedObjects(Long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID);
 

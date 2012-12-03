@@ -69,7 +69,7 @@ public class ProjectJSONController {
     @RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody ProjectSummaryList returnProjects(
-    		@PathVariable long companyID,
+    		@PathVariable Long companyID,
     		@RequestParam(required = false) String projectID,
     		@RequestParam(required = false) String cycleID,
     		@RequestParam(required = false) String testplanID,
@@ -154,7 +154,7 @@ public class ProjectJSONController {
     // Columns for project CHANGE companyID TO UserID
     @RequestMapping(value = "/ColsAndNames/{index}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody ColModelAndNames testArray(@PathVariable("index") long companyID) {		
+    public @ResponseBody ColModelAndNames testArray(@PathVariable("index") Long companyID) {		
     	return projectService.getColumnModelAndNames(companyID);    	
     }     
   
@@ -162,7 +162,7 @@ public class ProjectJSONController {
     @RequestMapping(value = "/relatedObjects/{projectID}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody RelatedObjectList returnRelatedObjects(
-    		@PathVariable long projectID,    		
+    		@PathVariable Long projectID,    		
     		@RequestParam(required = false) String cycleID,
     		@RequestParam(required = false) String testplanID,// +1 projects
     		@RequestParam(required = false) String testcaseID,// +1 projects    		
@@ -229,7 +229,7 @@ public class ProjectJSONController {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody String addNewProjectAJAX(
-			@RequestParam(value="companyID", required=true) long companyID,
+			@RequestParam(value="companyID", required=true) Long companyID,
 			@RequestParam(value="projectName", required=true) String projectName,
 			@RequestParam(value="regression", required=true) int regression,
 			@RequestParam(value="newFeature", required=true) int newFeature,
@@ -255,7 +255,7 @@ public class ProjectJSONController {
 		if(alreadyExists == false)
 		{
 			try{    					
-				projectService.addNewProject(new Project(companyID,projectName,0,regression,newFeature,minSev1,minSev2,minSev3,minSev4,GetDateNow(),getCurrentUser()));
+				projectService.addNewProject(new Project(companyID,projectName,null,regression,newFeature,minSev1,minSev2,minSev3,minSev4,GetDateNow(),getCurrentUser()));
 				return "ok";   
 
 			}
@@ -272,26 +272,26 @@ public class ProjectJSONController {
 	}
 	@RequestMapping(value = "/delete", method = RequestMethod.POST )
 	@ResponseStatus(HttpStatus.NO_CONTENT)	
-	public void deleteProject(@RequestParam(value="id", required=true) long projectID) {
+	public void deleteProject(@RequestParam(value="id", required=true) Long projectID) {
 		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE projectID = " +projectID);
 		projectService.remove(projectID);
 	}	
     // Project summary
     @RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody ProjectSummary getCompanySummaryAt(@PathVariable("index") long projectID) {
+    public @ResponseBody ProjectSummary getCompanySummaryAt(@PathVariable("index") Long projectID) {
     	//return projectService.getProjectSummary(projectID);   
     	return null;
     } 
     /* @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
-     public String jsonprojectTEST(@RequestParam(required = false)long companyID, Model model) {
+     public String jsonprojectTEST(@RequestParam(required = false)Long companyID, Model model) {
      	model.addAttribute("company", companyService.getCompany(companyID));
      	return "jsonprojectTEST";  
    }  
      // All Projects For a company
      @RequestMapping(value = "/summaryList/{companyID}/cycle/{cycleID}", method = RequestMethod.GET)
      @ResponseStatus(HttpStatus.OK)
-     public @ResponseBody ProjectSummaryList returnProjectsForCycle(@PathVariable("companyID") long companyID) {
+     public @ResponseBody ProjectSummaryList returnProjectsForCycle(@PathVariable("companyID") Long companyID) {
      	return companyService.getAllProjectSummaryForCompany(companyID);     	   	
      }  */
    

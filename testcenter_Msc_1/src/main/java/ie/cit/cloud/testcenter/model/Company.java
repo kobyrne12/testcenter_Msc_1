@@ -44,7 +44,7 @@ public class Company
 	@Id        
 	@GeneratedValue
 	@Column(name = "companyID", unique = true, nullable = false)
-	private long companyID;
+	private Long companyID;
 
 	@Length(min = 2, max = 32, message = "Company name must be between 2 to 32 characters.")
 	@NotEmpty(message = "Company Name is required.")
@@ -900,7 +900,7 @@ public class Company
 	/**
 	 * @return the companyID
 	 */
-	public long getCompanyID() {
+	public Long getCompanyID() {
 		return companyID;
 	}	
 	

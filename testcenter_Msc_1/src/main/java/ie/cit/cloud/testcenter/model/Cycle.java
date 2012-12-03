@@ -36,7 +36,7 @@ public class Cycle {
 	@Id        
 	@GeneratedValue
 	@Column(name = "cycleID")
-	private long cycleID;
+	private Long cycleID;
 
 	@Length(min = 2, max = 32, message = "Cycle name must be between 2 to 32 characters.")
 	@NotEmpty(message = "Cycle Name is required.")
@@ -44,7 +44,7 @@ public class Cycle {
 
 	@Basic
 	@Column(name="projectID")
-	private long projectID;
+	private Long projectID;
 
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "cycleID", referencedColumnName="cycleID")
@@ -52,7 +52,7 @@ public class Cycle {
 	private Set<Testrun> testruns = new HashSet<Testrun>();   
 
 	@Basic    
-	private long parentID = -1;
+	private Long parentID;
 	@Basic    
 	private boolean parent;  
 	@Basic    
@@ -111,10 +111,10 @@ public class Cycle {
 	 * @param cycleStartDate
 	 * @param cycleEndDate	
 	 */
-	public Cycle(String cycleName, long projectID, int requiredPriority, int projectPosition,
+	public Cycle(String cycleName, Long projectID, int requiredPriority, int projectPosition,
 			String cycleStartDate, String cycleEndDate)
 	{	
-		this(cycleName,projectID,null,0,false,false,requiredPriority,projectPosition,cycleStartDate,cycleEndDate,
+		this(cycleName,projectID,null,null,false,false,requiredPriority,projectPosition,cycleStartDate,cycleEndDate,
 				null,null,null,null,"DATE","USER","DATE","USER");	
 	}
 
@@ -139,8 +139,8 @@ public class Cycle {
 	 * @param lastModifiedDate
 	 * @param lastModifiedBy
 	 */
-	public Cycle(String cycleName, long projectID,
-			Set<Testrun> testruns, long parentID, boolean parent,
+	public Cycle(String cycleName, Long projectID,
+			Set<Testrun> testruns, Long parentID, boolean parent,
 			boolean child, int requiredPriority, int projectPosition,
 			String cycleStartDate, String cycleEndDate,
 			Set<ChangeImpactRule> changeImpactRules,
@@ -171,14 +171,14 @@ public class Cycle {
 	/**
 	 * @return the cycleID
 	 */
-	public long getCycleID() {
+	public Long getCycleID() {
 		return cycleID;
 	}
 
 	/**
 	 * @param cycleID the cycleID to set
 	 */
-	public void setCycleID(long cycleID) {
+	public void setCycleID(Long cycleID) {
 		this.cycleID = cycleID;
 	}
 
@@ -309,13 +309,13 @@ public class Cycle {
 	/**
 	 * @return the projectID
 	 */
-	public long getProjectID() {
+	public Long getProjectID() {
 		return projectID;
 	}	
 	/**
 	 * @param projectID the projectID to set
 	 */
-	public void setProjectID(long projectID) {
+	public void setProjectID(Long projectID) {
 		this.projectID = projectID;
 	}	
 
@@ -335,13 +335,13 @@ public class Cycle {
 	/**
 	 * @return the parentID
 	 */
-	public long getParentID() {
+	public Long getParentID() {
 		return parentID;
 	}
 	/**
 	 * @param parentID the parentID to set
 	 */
-	public void setParentID(long parentID) {
+	public void setParentID(Long parentID) {
 		this.parentID = parentID;
 	}
 	/**

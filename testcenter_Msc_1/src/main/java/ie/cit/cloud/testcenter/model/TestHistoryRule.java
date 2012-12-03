@@ -26,7 +26,7 @@ public class TestHistoryRule {
 
 	@Basic
 	@Column(name="cycleID")
-	private long cycleID;    
+	private Long cycleID;    
 
 	@Length(min = 2, max = 64, message = "Test History Rule Name must be between 2 to 64 characters.")
 	@NotEmpty(message = "Test History Rule Name is required.")
@@ -39,7 +39,7 @@ public class TestHistoryRule {
 	 * @param cycleID
 	 * @param testHistoryRuleName
 	 */
-	public TestHistoryRule(long cycleID, String testHistoryRuleName) {
+	public TestHistoryRule(Long cycleID, String testHistoryRuleName) {
 		this.cycleID = cycleID;
 		this.testHistoryRuleName = testHistoryRuleName;
 	}
@@ -47,14 +47,14 @@ public class TestHistoryRule {
 	/**
 	 * @return the cycleID
 	 */
-	public long getCycleID() {
+	public Long getCycleID() {
 		return cycleID;
 	}
 
 	/**
 	 * @param cycleID the cycleID to set
 	 */
-	public void setCycleID(long cycleID) {
+	public void setCycleID(Long cycleID) {
 		this.cycleID = cycleID;
 	}
 

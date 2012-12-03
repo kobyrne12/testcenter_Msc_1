@@ -24,7 +24,7 @@ public class HibernateCompanyRespository implements CompanyRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Company get(long companyID) {
+    public Company get(Long companyID) {
 	Query query = em.createQuery("from Company where companyID=:companyID");
 //	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 //	query.setParameter("user", getCurrentUser());
@@ -56,7 +56,7 @@ public class HibernateCompanyRespository implements CompanyRepository {
 	return companySet;
     }
 
-    public Company findById(long companyID) {
+    public Company findById(Long companyID) {
 	return get(companyID);
     }
     

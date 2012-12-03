@@ -27,23 +27,23 @@ public interface DefectService {
  
 	void addNewDefect(Defect defect);
 
-	Defect getDefect(long defectID);   
+	Defect getDefect(Long defectID);   
     
 	Defect getDefectByName(String defectName);
     
     void update(Defect defect);
     
-    void remove(long defectID);  
+    void remove(Long defectID);  
     
-    boolean isSev1(long defectID);
+    boolean isSev1(Long defectID);
 
-	boolean isSev2(long defectID);
+	boolean isSev2(Long defectID);
 
-	boolean isSev3(long defectID);
+	boolean isSev3(Long defectID);
 
-	boolean isSev4(long defectID);
+	boolean isSev4(Long defectID);
 	
-	Set<Defect> getAllChildDefects(long defectID);
+	Set<Defect> getAllChildDefects(Long defectID);
 	
 	//////////////////////////////////	
 	/**
@@ -51,100 +51,100 @@ public interface DefectService {
 	 * Set<Defect>
 	 * @return Total collection of child Defects including the parent
 	 */
-	 Set<Defect> getParentAndChildDefects(long defectID);
+	 Set<Defect> getParentAndChildDefects(Long defectID);
 	/**
 	 * Returns a collection of Child defects for a defect 
 	 * Set<Defect>
 	 * @return collection of Child defects for a defect
 	 */	
-	 Set<Defect> getChildDefects(long defectID);
+	 Set<Defect> getChildDefects(Long defectID);
 	/**
 	 * Returns a Defect Parent Defect  
 	 * Defect
 	 * @return a Defect Parent Defect, otherwise null
 	 */	
-	 Defect getParentDefect(long defectID);
+	 Defect getParentDefect(Long defectID);
 	/**
 	 * Returns a collection of All Testruns in a defect incl all child defects 
 	 * Set<Testrun>
 	 * @return collection of All Testruns in a defect incl all child defects,
 	 */	
-	 Set<Testrun> getCascadedAllTestRuns(long defectID);
+	 Set<Testrun> getCascadedAllTestRuns(Long defectID);
 	/**
 	 * Returns a collection of All compulsory Testruns in a defect incl all child defects 
 	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a defect incl all child defects,
 	 */	
-	 Set<Testrun> getCascadedCompulsoryTestRuns(long defectID);
+	 Set<Testrun> getCascadedCompulsoryTestRuns(Long defectID);
 	/**
 	 * Returns a collection of All Optional Testruns in a defect incl all child defects 
 	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a defect incl all child defects,
 	 */	
-	 Set<Testrun> getCascadedOptionalTestRuns(long defectID);
+	 Set<Testrun> getCascadedOptionalTestRuns(Long defectID);
 	/**
 	 * Returns a collection of All Testcases in a defect incl all child defects 
 	 * Set<Testcase>
 	 * @return collection of All Testcases in a defect incl all child defects,
 	 */	
-	 Set<Testcase> getCascadedAllTestCases(long defectID);
+	 Set<Testcase> getCascadedAllTestCases(Long defectID);
 	/**
 	 * Returns a collection of All Compulsory Testcases in a defect incl all child defects 
 	 * Set<Testcase>
 	 * @return collection of All Compulsory Testcases in a defect incl all child defects,
 	 */	
-	 Set<Testcase> getCascadedCompulsoryTestCases(long defectID);
+	 Set<Testcase> getCascadedCompulsoryTestCases(Long defectID);
 	/**
 	 * Returns a collection of All Optional Testcases in a defect incl all child defects 
 	 * Set<Testcase>
 	 * @return collection of All Optional Testcases in a defect incl all child defects,
 	 */	
-	 Set<Testcase> getCascadedOptionalTestCases(long defectID);
+	 Set<Testcase> getCascadedOptionalTestCases(Long defectID);
 	/**
 	 * Returns a collection of All Testplans in a defect incl all child defects 
 	 * Set<Testplan>
 	 * @return collection of All Testplans in a defect incl all child defects,
 	 */	
-	 Set<Testplan> getCascadedAllTestPlans(long defectID);
+	 Set<Testplan> getCascadedAllTestPlans(Long defectID);
 	/**
 	 * Returns a collection of All Compulsory Testplans in a defect incl all child defects 
 	 * Set<Testplan>
 	 * @return collection of All Compulsory Testplans in a defect incl all child defects,
 	 */	
-	 Set<Testplan> getCascadedCompulsoryTestPlans(long defectID);
+	 Set<Testplan> getCascadedCompulsoryTestPlans(Long defectID);
 	/**
 	 * Returns a collection of All Optional Testplans in a defect incl all child defects 
 	 * Set<Testplan>
 	 * @return collection of All Optional Testplans in a defect incl all child defects,
 	 */	
-	 Set<Testplan> getCascadedOptionalTestPlans(long defectID);
+	 Set<Testplan> getCascadedOptionalTestPlans(Long defectID);
 	 /**
 	  * Returns a collection of Projects in a defect incl all child defects 
 	  * Set<Project>
 	  * @return collection of Projects in a defect incl all child defects,
 	  */		
-	 Set<Project> getCascadedProjects(long defectID) ;
+	 Set<Project> getCascadedProjects(Long defectID) ;
 	 /**
 	  * Returns a collection of Cycles in a defect incl all child defects 
 	  * Set<Cycle>
 	  * @return collection of Cycles in a defect incl all child defects,
 	  */		
-	 Set<Cycle> getCascadedCycles(long defectID) ;
+	 Set<Cycle> getCascadedCycles(Long defectID) ;
 	/**
 	 * Returns a collection of Environments in a defect incl all child defects 
 	 * Set<Environment>
 	 * @return collection of Environments in a defect incl all child defects,
 	 */		
-	 Set<Environment> getCascadedEnvironments(long defectID) ;
+	 Set<Environment> getCascadedEnvironments(Long defectID) ;
 	/**
 	 * Returns a collection of Requirements in a defect incl all child defects 
 	 * Set<Requirement>
 	 * @return collection of Requirements in a defect incl all child defects,
 	 */		
-	 Set<Requirement> getCascadedRequirements(long defectID) ;
+	 Set<Requirement> getCascadedRequirements(Long defectID) ;
 	
-	 Set<TestcenterUser> getCascadedTesters(long defectID);
-	 Set<TestcenterUser> getCascadedSnrTesters(long defectID);
-	 Set<TestcenterUser> getCascadedDevelopers(long defectID);
-	 Set<TestcenterUser> getCascadedSnrDevelopers(long defectID);
+	 Set<TestcenterUser> getCascadedTesters(Long defectID);
+	 Set<TestcenterUser> getCascadedSnrTesters(Long defectID);
+	 Set<TestcenterUser> getCascadedDevelopers(Long defectID);
+	 Set<TestcenterUser> getCascadedSnrDevelopers(Long defectID);
 }

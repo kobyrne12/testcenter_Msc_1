@@ -27,13 +27,13 @@ public interface RequirementService {
 
 	void addNewRequirement(Requirement requirement);
 
-	Requirement getRequirement(long requirementID);   
+	Requirement getRequirement(Long requirementID);   
 
 	Requirement getRequirementByName(String requirementName);
 
 	void update(Requirement requirement);
 
-	void remove(long requirementID); 
+	void remove(Long requirementID); 
 	//////////////////////////////////
 
 	/**
@@ -41,107 +41,107 @@ public interface RequirementService {
 	 * Set<Testrun>
 	 * @return collection of All Testruns in a environment incl all child environments,
 	 */	
-	Set<Testrun> getAllTestRuns(long requirementID);
+	Set<Testrun> getAllTestRuns(Long requirementID);
 	/**
 	 * Returns a collection of All compulsory Testruns in a environment incl all child environments 
 	 * Set<Testrun>
 	 * @return collection of All compulsory Testruns in a environment incl all child environments,
 	 */	
-	Set<Testrun> getCompulsoryTestRuns(long requirementID);
+	Set<Testrun> getCompulsoryTestRuns(Long requirementID);
 	/**
 	 * Returns a collection of All Optional Testruns in a environment incl all child environments 
 	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a environment incl all child environments,
 	 */	
-	Set<Testrun> getOptionalTestRuns(long requirementID);
+	Set<Testrun> getOptionalTestRuns(Long requirementID);
 	/**
 	 * Returns a collection of All Testcases in a environment incl all child environments 
 	 * Set<Testcase>
 	 * @return collection of All Testcases in a environment incl all child environments,
 	 */	
-	Set<Testcase> getAllTestCases(long requirementID);
+	Set<Testcase> getAllTestCases(Long requirementID);
 	/**
 	 * Returns a collection of All Compulsory Testcases in a environment incl all child environments 
 	 * Set<Testcase>
 	 * @return collection of All Compulsory Testcases in a environment incl all child environments,
 	 */	
-	Set<Testcase> getCompulsoryTestCases(long requirementID);
+	Set<Testcase> getCompulsoryTestCases(Long requirementID);
 	/**
 	 * Returns a collection of All Optional Testcases in a environment incl all child environments 
 	 * Set<Testcase>
 	 * @return collection of All Optional Testcases in a environment incl all child environments,
 	 */	
-	Set<Testcase> getOptionalTestCases(long requirementID);
+	Set<Testcase> getOptionalTestCases(Long requirementID);
 	/**
 	 * Returns a collection of All Testplans in a environment incl all child environments 
 	 * Set<Testplan>
 	 * @return collection of All Testplans in a environment incl all child environments,
 	 */	
-	Set<Testplan> getAllTestPlans(long requirementID);
+	Set<Testplan> getAllTestPlans(Long requirementID);
 	/**
 	 * Returns a collection of All Compulsory Testplans in a environment incl all child environments 
 	 * Set<Testplan>
 	 * @return collection of All Compulsory Testplans in a environment incl all child environments,
 	 */	
-	Set<Testplan> getCompulsoryTestPlans(long requirementID);
+	Set<Testplan> getCompulsoryTestPlans(Long requirementID);
 	/**
 	 * Returns a collection of All Optional Testplans in a environment incl all child environments 
 	 * Set<Testplan>
 	 * @return collection of All Optional Testplans in a environment incl all child environments,
 	 */	
-	Set<Testplan> getOptionalTestPlans(long requirementID);
+	Set<Testplan> getOptionalTestPlans(Long requirementID);
 	/**
 	 * Returns a collection of Projects in a environment incl all child environments 
 	 * Set<Project>
 	 * @return collection of Projects in a environment incl all child environments,
 	 */		
-	Set<Project> getProjects(long requirementID) ;
+	Set<Project> getProjects(Long requirementID) ;
 	/**
 	 * Returns a collection of Cycles in a environment incl all child environments 
 	 * Set<Cycle>
 	 * @return collection of Cycles in a environment incl all child environments,
 	 */		
-	Set<Cycle> getCycles(long requirementID);	
+	Set<Cycle> getCycles(Long requirementID);	
 	/**
 	 * Returns a collection of Environments in a environment incl all child environments 
 	 * Set<Environment>
 	 * @return collection of Environments in a environment incl all child environments,
 	 */		
-	Set<Environment> getEnvironments(long requirementID) ;
+	Set<Environment> getEnvironments(Long requirementID) ;
 	/**
 	 * Returns a collection of All Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of All Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedAllDefects(long requirementID);
+	Set<Defect> getCascadedAllDefects(Long requirementID);
 	/**
 	 * Returns a collection of Sev1 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 1 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev1Defects(long requirementID);
+	Set<Defect> getCascadedSev1Defects(Long requirementID);
 	/**
 	 * Returns a collection of Sev2 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 2 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev2Defects(long requirementID);
+	Set<Defect> getCascadedSev2Defects(Long requirementID);
 	/**
 	 * Returns a collection of Sev 3 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 3 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev3Defects(long requirementID);
+	Set<Defect> getCascadedSev3Defects(Long requirementID);
 	/**
 	 * Returns a collection of Sev 4 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 4 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev4Defects(long requirementID);
+	Set<Defect> getCascadedSev4Defects(Long requirementID);
 
-	Set<TestcenterUser> getCascadedTesters(long environmentID);
-	Set<TestcenterUser> getCascadedSnrTesters(long environmentID);
-	Set<TestcenterUser> getCascadedDevelopers(long environmentID);
-	Set<TestcenterUser> getCascadedSnrDevelopers(long environmentID);
+	Set<TestcenterUser> getCascadedTesters(Long environmentID);
+	Set<TestcenterUser> getCascadedSnrTesters(Long environmentID);
+	Set<TestcenterUser> getCascadedDevelopers(Long environmentID);
+	Set<TestcenterUser> getCascadedSnrDevelopers(Long environmentID);
 
 }

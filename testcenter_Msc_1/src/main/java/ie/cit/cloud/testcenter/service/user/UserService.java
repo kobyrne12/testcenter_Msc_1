@@ -19,12 +19,12 @@ public interface UserService {
  
 	void addNewUser(TestcenterUser user);
 
-	TestcenterUser getUser(long userID);   
+	TestcenterUser getUser(Long userID);   
     
 	TestcenterUser getUserByName(String userName);
     
     void update(TestcenterUser user);
     
-    void remove(long userID);  
+    void remove(Long userID);  
 
 }

@@ -117,7 +117,7 @@ public class CompanyJSONController {
     // POST Company
     @RequestMapping(value = "{companyID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewCompnay(@PathVariable("companyID") long companyID) {
+    public void createNewCompnay(@PathVariable("companyID") Long companyID) {
     	companyService.addNewCompany(new Company( "New Company_"+companyID,new Date(),"KEN"));   	  
     } 
     // DELETE Company
@@ -153,8 +153,8 @@ public class CompanyJSONController {
     // POST Project
     @RequestMapping(value = "/{companyID}/project/{projectID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewProject(@PathVariable("companyID") long companyID,
-    		@PathVariable("projectID") long projectID)
+    public void createNewProject(@PathVariable("companyID") Long companyID,
+    		@PathVariable("projectID") Long projectID)
     {
     	String projectName = "Project_"+projectID;    	
     	try
@@ -169,7 +169,7 @@ public class CompanyJSONController {
     	{   					
     		//do nothing;
     	}
-    	projectService.addNewProject(new Project(companyID,projectName,0,94,97,10,20,30,40,"DATE","CURENT_USER"));			  
+    	projectService.addNewProject(new Project(companyID,projectName,null,94,97,10,20,30,40,"DATE","CURENT_USER"));			  
     } 
     // DELETE Company
     @RequestMapping(value = "/project/{projectID}", method = RequestMethod.DELETE)
@@ -187,8 +187,8 @@ public class CompanyJSONController {
     // POST Cycle
     @RequestMapping(value = "/{projectID}/cycle/{cycleID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewCycle(@PathVariable("projectID") long projectID,
-    		@PathVariable("cycleID") long cycleID)
+    public void createNewCycle(@PathVariable("projectID") Long projectID,
+    		@PathVariable("cycleID") Long cycleID)
     {
     	String cycleName = "Cycle_"+projectID+"_"+cycleID;    	
     	try
@@ -223,18 +223,22 @@ public class CompanyJSONController {
     	noProjectTestcase.setCompanyID(testcase.getCompanyID());
     	noProjectTestcase.setTestcaseName(testcase.getTestcaseName());
     	noProjectTestcase.setTestplanID(testcase.getTestcaseID());    	
+    	noProjectTestcase.setTestcaseSummary(testcase.getTestcaseSummary());
+    	noProjectTestcase.setTestcaseSteps(testcase.getTestcaseSteps());
+    	noProjectTestcase.setTestcasePreCondition(testcase.getTestcasePreCondition());
+    	noProjectTestcase.setTestcasePreCondition(testcase.getTestcasePreCondition());
     	return noProjectTestcase;    	
     }    
     // POST Test Case
     @RequestMapping(value = "/{companyID}/testcase/{testcaseID}/project/{projectID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewTestcase(@PathVariable("companyID") long companyID,
-    		@PathVariable("testcaseID") long testcaseID,
-    		@PathVariable("projectID") long projectID)
+    public void createNewTestcase(@PathVariable("companyID") Long companyID,
+    		@PathVariable("testcaseID") Long testcaseID,
+    		@PathVariable("projectID") Long projectID)
     {
     	String testcaseName = "TestCase_"+companyID+"_"+testcaseID;
     	Project project = projectService.getProject(projectID);
-    	Testcase testcase = new Testcase(companyID,testcaseName,null,"APPROVED",
+    	Testcase testcase = new Testcase(companyID,(long) 1,testcaseName,null,"APPROVED",
     			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER");	
     	testcaseService.addNewTestcase(testcase);	
     	project.getTestcases().add(testcase);     
@@ -247,9 +251,9 @@ public class CompanyJSONController {
     // Add Test Case to another project 
     @RequestMapping(value = "/{companyID}/testcase/{testcaseID}/updateproject/{projectID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void addTestcasetoAnotherProject(@PathVariable("companyID") long companyID,
-    		@PathVariable("testcaseID") long testcaseID,
-    		@PathVariable("projectID") long projectID)
+    public void addTestcasetoAnotherProject(@PathVariable("companyID") Long companyID,
+    		@PathVariable("testcaseID") Long testcaseID,
+    		@PathVariable("projectID") Long projectID)
     {
     	Project project = projectService.getProject(projectID);
     	Testcase testcase = testcaseService.getTestcase(testcaseID);
@@ -292,8 +296,8 @@ public class CompanyJSONController {
     // POST Test Run
     @RequestMapping(value = "/testrun/{cycleID}/{testcaseID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewTestrun(@PathVariable("cycleID") long cycleID,
-    		@PathVariable("testcaseID") long testcaseID)
+    public void createNewTestrun(@PathVariable("cycleID") Long cycleID,
+    		@PathVariable("testcaseID") Long testcaseID)
     {    	
     	//int testPlanPosition = testcaseService.getMaxTestPlanPosNum(projectID);	
     	Testcase testcase = testcaseService.getTestcase(testcaseID);
@@ -319,8 +323,8 @@ public class CompanyJSONController {
     // POST Test plan
     @RequestMapping(value = "{companyID}/testplan/{testplanID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewTestplan(@PathVariable("companyID") long companyID,
-    		@PathVariable("testplanID") long testplanID)
+    public void createNewTestplan(@PathVariable("companyID") Long companyID,
+    		@PathVariable("testplanID") Long testplanID)
     {    	    	
     	String testcaseName = "Testplan_"+companyID+"_"+testplanID;     	
     	testplanService.addNewTestplan(new Testplan(companyID,testcaseName));    	
@@ -341,10 +345,10 @@ public class CompanyJSONController {
     // POST Defect
     @RequestMapping(value = "{companyID}/defect/{defectID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createDefect(@PathVariable("companyID") long companyID,
-    		@PathVariable("defectID") long defectID)
+    public void createDefect(@PathVariable("companyID") Long companyID,
+    		@PathVariable("defectID") Long defectID)
     {    	    	    	    	
-    	defectService.addNewDefect(new Defect(companyID,"SUMMARY",1,"DETAILS",(long) 0,"TYPE"));    	
+    	defectService.addNewDefect(new Defect(companyID,"SUMMARY",1,"DETAILS",null,"TYPE"));    	
     } 	
     // DELETE Defect
     @RequestMapping(value = "/defect/{defectID}", method = RequestMethod.DELETE)
@@ -362,10 +366,10 @@ public class CompanyJSONController {
     // POST Requirement
     @RequestMapping(value = "{companyID}/requirement/{requirementID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createRequirement(@PathVariable("companyID") long companyID,
-    		@PathVariable("requirementID") long requirementID)
+    public void createRequirement(@PathVariable("companyID") Long companyID,
+    		@PathVariable("requirementID") Long requirementID)
     {    	    	    	    	
-    	requirementService.addNewRequirement(new Requirement(companyID,"SUMMARY","DETAILS",(long) 0));    	
+    	requirementService.addNewRequirement(new Requirement(companyID,"SUMMARY","DETAILS",null));    	
     } 	   
     // DELETE Requirement
     @RequestMapping(value = "/requirement/{requirementID}", method = RequestMethod.DELETE)
@@ -383,8 +387,8 @@ public class CompanyJSONController {
     // POST Environment
     @RequestMapping(value = "{companyID}/environment/{environmentID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEnvironment(@PathVariable("companyID") long companyID,
-    		@PathVariable("environmentID") long environmentID)
+    public void createEnvironment(@PathVariable("companyID") Long companyID,
+    		@PathVariable("environmentID") Long environmentID)
     {    	    	    	    	
     	environmentService.addNewEnvironment(new Environment(companyID,"ENV_NAME","ENV_OS","ENV_OS_VERSION"));    	
     } 	   

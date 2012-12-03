@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class ProjectMinSummary {		
 
-	private long projectID;	   
+	private Long projectID;	   
 	private String projectName;  
 	private String parentProjectName;
 	private int childProjects;
@@ -39,14 +39,14 @@ public class ProjectMinSummary {
 	/**
 	 * @return the projectID
 	 */
-	public long getProjectID() {
+	public Long getProjectID() {
 		return projectID;
 	}
 
 	/**
 	 * @param projectID the projectID to set
 	 */
-	public void setProjectID(long projectID) {
+	public void setProjectID(Long projectID) {
 		this.projectID = projectID;
 	}
 

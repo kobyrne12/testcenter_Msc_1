@@ -78,7 +78,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return testcaseRepo.findAll();
 	}
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Testcase getTestcase(long testcaseID) {
+	public Testcase getTestcase(Long testcaseID) {
 		try{
 			return testcaseRepo.findById(testcaseID);							
 		}
@@ -105,21 +105,21 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long testcaseID) {
+	public void remove(Long testcaseID) {
 		testcaseRepo.delete(getTestcase(testcaseID));
 	}
 
 	/**
 	 * Returns the ID of the latest testrun in the latest cycle for a project
-	 * long
+	 * Long
 	 * @return the ID of the latest testrun in the latest cycle for a project
 	 */	
-	public long getLastTestRunID(long testcaseID)
+	public Long getLastTestRunID(Long testcaseID)
 	{		
 		Testcase testcase = getTestcase(testcaseID);
 		if(testcase.getTestruns() == null || testcase.getTestruns().isEmpty())
 		{
-			return 0;
+			return null;
 		}
 		for(final Testrun testrun : testcase.getTestruns())
 		{
@@ -128,10 +128,10 @@ public class TestcaseServiceImpl implements TestcaseService {
 				return testrun.getTestrunID();	
 			}			
 		}
-		return 0;		
+		return null;		
 	}
 
-	public boolean isRequired(long testcaseID) 
+	public boolean isRequired(Long testcaseID) 
 	{
 		Set<Testrun> compulsoryTestruns = getRequiredTestRuns(testcaseID);
 		if(compulsoryTestruns != null && !compulsoryTestruns.isEmpty())
@@ -141,7 +141,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return false;		
 	}  
 	///////////////////////////////////
-	public int getAllTestRunsCount(long projectID)
+	public int getAllTestRunsCount(Long projectID)
 	{	
 		if(getAllTestRuns(projectID) == null)
 		{
@@ -149,7 +149,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getAllTestRuns(projectID).size();		
 	}	
-	public Set<Testrun> getAllTestRuns(long testcaseID)
+	public Set<Testrun> getAllTestRuns(Long testcaseID)
 	{
 		Testcase testcase = getTestcase(testcaseID);		
 		if(testcase == null)
@@ -162,7 +162,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}	
 		return testcase.getTestruns();		
 	}
-	public int getRequiredTestRunsCount(long projectID)
+	public int getRequiredTestRunsCount(Long projectID)
 	{	
 		if(getRequiredTestRuns(projectID) == null)
 		{
@@ -170,7 +170,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getRequiredTestRuns(projectID).size();		
 	}	
-	public Set<Testrun> getRequiredTestRuns(long testcaseID) 
+	public Set<Testrun> getRequiredTestRuns(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(testcaseID);		
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -187,7 +187,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return compulsoryTestruns;	
 	}
-	public int getOptionalTestRunsCount(long projectID)
+	public int getOptionalTestRunsCount(Long projectID)
 	{	
 		if(getOptionalTestRuns(projectID) == null)
 		{
@@ -195,7 +195,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getOptionalTestRuns(projectID).size();		
 	}	
-	public Set<Testrun> getOptionalTestRuns(long testcaseID) 
+	public Set<Testrun> getOptionalTestRuns(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(testcaseID);	
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -214,7 +214,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 	}
 
 
-	public int getCyclesCount(long projectID)
+	public int getCyclesCount(Long projectID)
 	{	
 		if(getCycles(projectID) == null)
 		{
@@ -222,7 +222,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCycles(projectID).size();		
 	}	
-	public Set<Cycle> getCycles(long testcaseID)
+	public Set<Cycle> getCycles(Long testcaseID)
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -239,7 +239,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allCycles;
 	}
-	public int getProjectsCount(long projectID)
+	public int getProjectsCount(Long projectID)
 	{	
 		if(getProjects(projectID) == null)
 		{
@@ -247,7 +247,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getProjects(projectID).size();		
 	}	
-	public Set<Project> getProjects(long testcaseID)
+	public Set<Project> getProjects(Long testcaseID)
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -264,7 +264,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allProjects;
 	}
-	public int getRequirementsCount(long projectID)
+	public int getRequirementsCount(Long projectID)
 	{	
 		if(getRequirements(projectID) == null)
 		{
@@ -272,7 +272,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getRequirements(projectID).size();		
 	}	
-	public Set<Requirement> getRequirements(long testcaseID) 
+	public Set<Requirement> getRequirements(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -289,7 +289,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allRequirements;
 	}
-	public int getEnvironmentsCount(long projectID)
+	public int getEnvironmentsCount(Long projectID)
 	{	
 		if(getEnvironments(projectID) == null)
 		{
@@ -297,7 +297,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getEnvironments(projectID).size();		
 	}	
-	public Set<Environment> getEnvironments(long testcaseID)
+	public Set<Environment> getEnvironments(Long testcaseID)
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -314,7 +314,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allEnvironments;
 	}
-	public int getCascadedAllDefectsCount(long projectID)
+	public int getCascadedAllDefectsCount(Long projectID)
 	{	
 		if(getCascadedAllDefects(projectID) == null)
 		{
@@ -322,7 +322,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedAllDefects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedAllDefects(long testcaseID) 
+	public Set<Defect> getCascadedAllDefects(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -340,7 +340,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allDefects;		
 	}
-	public int getCascadedSev1DefectsCount(long projectID)
+	public int getCascadedSev1DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev1Defects(projectID) == null)
 		{
@@ -348,7 +348,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedSev1Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev1Defects(long testcaseID) 
+	public Set<Defect> getCascadedSev1Defects(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -366,7 +366,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allDefects;	
 	}
-	public int getCascadedSev2DefectsCount(long projectID)
+	public int getCascadedSev2DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev2Defects(projectID) == null)
 		{
@@ -374,7 +374,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedSev2Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev2Defects(long testcaseID) 
+	public Set<Defect> getCascadedSev2Defects(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -392,7 +392,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allDefects;	
 	}
-	public int getCascadedSev3DefectsCount(long projectID)
+	public int getCascadedSev3DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev3Defects(projectID) == null)
 		{
@@ -400,7 +400,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedSev3Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev3Defects(long testcaseID) 
+	public Set<Defect> getCascadedSev3Defects(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -418,7 +418,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allDefects;	
 	}
-	public int getCascadedSev4DefectsCount(long projectID)
+	public int getCascadedSev4DefectsCount(Long projectID)
 	{	
 		if(getCascadedSev4Defects(projectID) == null)
 		{
@@ -426,7 +426,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedSev4Defects(projectID).size();		
 	}	
-	public Set<Defect> getCascadedSev4Defects(long testcaseID) 
+	public Set<Defect> getCascadedSev4Defects(Long testcaseID) 
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -444,7 +444,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}		
 		return allDefects;	
 	}
-	public int getCascadedTestersCount(long projectID)
+	public int getCascadedTestersCount(Long projectID)
 	{	
 		if(getCascadedTesters(projectID) == null)
 		{
@@ -452,11 +452,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedTesters(projectID).size();		
 	}	
-	public Set<TestcenterUser> getCascadedTesters(long testcaseID) {
+	public Set<TestcenterUser> getCascadedTesters(Long testcaseID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public int getCascadedSnrTestersCount(long projectID)
+	public int getCascadedSnrTestersCount(Long projectID)
 	{	
 		if(getCascadedSnrTesters(projectID) == null)
 		{
@@ -464,11 +464,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedSnrTesters(projectID).size();		
 	}	
-	public Set<TestcenterUser> getCascadedSnrTesters(long testcaseID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(Long testcaseID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public int getCascadedDevelopersCount(long projectID)
+	public int getCascadedDevelopersCount(Long projectID)
 	{	
 		if(getCascadedDevelopers(projectID) == null)
 		{
@@ -476,11 +476,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedDevelopers(projectID).size();		
 	}	
-	public Set<TestcenterUser> getCascadedDevelopers(long testcaseID) {
+	public Set<TestcenterUser> getCascadedDevelopers(Long testcaseID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public int getCascadedSnrDevelopersCount(long projectID)
+	public int getCascadedSnrDevelopersCount(Long projectID)
 	{	
 		if(getCascadedSnrDevelopers(projectID) == null)
 		{
@@ -488,10 +488,14 @@ public class TestcaseServiceImpl implements TestcaseService {
 		}
 		return getCascadedSnrDevelopers(projectID).size();		
 	}	
-	public Set<TestcenterUser> getCascadedSnrDevelopers(long testcaseID) {
+	public Set<TestcenterUser> getCascadedSnrDevelopers(Long testcaseID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	
 	public ColModelAndNames getColumnModelAndNames(Long companyID) 
 	{
 		// Constructor in order
@@ -590,7 +594,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return colModelAndName;
 	}
 
-	public TestcaseSummaryList getGridTestcases(long companyID, String projectID,
+	public TestcaseSummaryList getGridTestcases(Long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
 			String environmentID, String userID,String levelName,String stage,String required)
@@ -598,42 +602,58 @@ public class TestcaseServiceImpl implements TestcaseService {
 		// Check which testcases wil be displayed 
 		Company company = companyService.getCompany(companyID);
 		Set<Testcase> testcases = company.getTestcases();
-
+		
+		// Retain Testplan testcases
+		if (testplanID != null && !testplanID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
+		{						
+			Testplan testplan = testplanService.getTestplan(Long.valueOf(testplanID));
+			if(testplan == null)
+			{
+				return null;
+			}
+			if(testplan.getTestcases() == null || testplan.getTestcases().isEmpty())
+			{
+				return null;
+			}	
+			testcases.addAll(testplan.getTestcases());						
+		}
+		else
+		{
+			if(companyService.getAllTestCases(companyID) == null)
+			{
+				return null;
+			}
+			testcases.addAll(companyService.getAllTestCases(companyID));
+		}		
+		if(testcases == null || testcases.isEmpty()){return null;}
+		///////////////////////////////
+		
 		if (projectID != null && !projectID.isEmpty()) 
 		{			
-			if(projectService.getCascadedAllTestCases(Long.valueOf(projectID).longValue()) != null)
+			if(projectService.getCascadedAllTestCases(Long.valueOf(projectID)) != null)
 			{
-				testcases.retainAll(projectService.getCascadedAllTestCases(Long.valueOf(projectID).longValue()));
+				testcases.retainAll(projectService.getCascadedAllTestCases(Long.valueOf(projectID)));
 			}			
 		}	
 		if(testcases == null || testcases.isEmpty()){return null;}
 
 		if (cycleID != null && !cycleID.isEmpty()) 
 		{			
-			if(cycleService.getCascadedAllTestCases(Long.valueOf(cycleID).longValue()) != null)
+			if(cycleService.getCascadedAllTestCases(Long.valueOf(cycleID)) != null)
 			{
-				testcases.retainAll(cycleService.getCascadedAllTestCases(Long.valueOf(cycleID).longValue()));
+				testcases.retainAll(cycleService.getCascadedAllTestCases(Long.valueOf(cycleID)));
 			}			
 		}			
 		if(testcases == null || testcases.isEmpty()){return null;}
 
-		// Retain Testplan testcases
-		if (testplanID != null && !testplanID.isEmpty()) 
-		{			
-			if(testplanService.getAllTestCases(Long.valueOf(testplanID).longValue()) != null)
-			{
-				testcases.retainAll(testplanService.getAllTestCases(Long.valueOf(testplanID).longValue()));
-			}			
-		}		
-		if(testcases == null || testcases.isEmpty()){return null;}
-
+		
 		// Retain Testrun testcases
 		if (testrunID != null && !testrunID.isEmpty()) 
 		{			
-			if(testrunService.getProject(Long.valueOf(testrunID).longValue()) != null)
+			if(testrunService.getProject(Long.valueOf(testrunID)) != null)
 			{
 				Set<Testcase> testrunTestcases = new HashSet<Testcase>();
-				testrunTestcases.add(testrunService.getTestcase(Long.valueOf(testrunID).longValue()));
+				testrunTestcases.add(testrunService.getTestcase(Long.valueOf(testrunID)));
 				testcases.retainAll(testrunTestcases);				
 			}			
 		}
@@ -642,9 +662,9 @@ public class TestcaseServiceImpl implements TestcaseService {
 		// Retain Defect testcases
 		if (defectID != null && !defectID.isEmpty()) // limit to testcases that have this test plan id in it
 		{			
-			if(defectService.getCascadedAllTestCases(Long.valueOf(defectID).longValue()) != null)
+			if(defectService.getCascadedAllTestCases(Long.valueOf(defectID)) != null)
 			{
-				testcases.retainAll(defectService.getCascadedAllTestCases(Long.valueOf(defectID).longValue()));				
+				testcases.retainAll(defectService.getCascadedAllTestCases(Long.valueOf(defectID)));				
 			}			
 		}
 		if(testcases == null || testcases.isEmpty()){return null;}
@@ -652,9 +672,9 @@ public class TestcaseServiceImpl implements TestcaseService {
 		// Retain Requirement testcases
 		if (requirementID != null && !requirementID.isEmpty()) // limit to testcases that have this test plan id in it
 		{			
-			if(requirementService.getAllTestCases(Long.valueOf(requirementID).longValue()) != null)
+			if(requirementService.getAllTestCases(Long.valueOf(requirementID)) != null)
 			{
-				testcases.retainAll(requirementService.getAllTestCases(Long.valueOf(requirementID).longValue()));				
+				testcases.retainAll(requirementService.getAllTestCases(Long.valueOf(requirementID)));				
 			}				
 		}
 		if(testcases == null || testcases.isEmpty()){return null;}
@@ -662,9 +682,9 @@ public class TestcaseServiceImpl implements TestcaseService {
 		// Retain Environment testcases
 		if (environmentID != null && !environmentID.isEmpty()) // limit to testcases that have this test plan id in it
 		{			
-			if(environmentService.getAllTestCases(Long.valueOf(environmentID).longValue()) != null)
+			if(environmentService.getAllTestCases(Long.valueOf(environmentID)) != null)
 			{
-				testcases.retainAll(environmentService.getAllTestCases(Long.valueOf(environmentID).longValue()));				
+				testcases.retainAll(environmentService.getAllTestCases(Long.valueOf(environmentID)));				
 			}			
 		}
 		if(testcases == null || testcases.isEmpty()){return null;}
@@ -672,9 +692,9 @@ public class TestcaseServiceImpl implements TestcaseService {
 		// Retain User testcases
 		//		if (userID != null && !userID.isEmpty()) // limit to testcases that have this test plan id in it
 		//		{			
-		//			if(userService.getCascadedProjects(Long.valueOf(defectID).longValue()) != null)
+		//			if(userService.getCascadedProjects(Long.valueOf(defectID)) != null)
 		//			{
-		//				testcases.retainAll(userService.getCascadedProjects(Long.valueOf(defectID).longValue()));				
+		//				testcases.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
 		//			}			
 		//		}
 		//		if(testcases == null || testcases.isEmpty()){return null;}
@@ -695,7 +715,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return testcaseSummaryList;
 	}
 
-//	public TestcaseSummary getTestcaseSummary(long companyID,Testcase testcase, 
+//	public TestcaseSummary getTestcaseSummary(Long companyID,Testcase testcase, 
 //			String level,String stage,String required )
 //	{
 //		Long testcaseID =  testcase.getTestcaseID();

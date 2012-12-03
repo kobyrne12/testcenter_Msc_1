@@ -25,6 +25,7 @@ import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
@@ -69,7 +70,7 @@ public class CompanyController {
 	private RequirementService requirementService;
 	@Autowired
 	private EnvironmentService environmentService;
-	
+
 	private Company company;
 
 
@@ -90,7 +91,7 @@ public class CompanyController {
 
 	@RequestMapping(value = {"selectcompany"}, method = GET)
 	public String setCompany(HttpServletResponse response,
-			@RequestParam long companyID, Model model)	
+			@RequestParam Long companyID, Model model)	
 	{	
 		Cookie cookie = new Cookie("companyID",Long.toString(companyID));
 		cookie.setMaxAge(60*60); //1 hour
@@ -134,6 +135,8 @@ public class CompanyController {
 			model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
 			model.addAttribute("testLibraryDisplayName", company.getTestLibraryDisplayName());			
 			model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
+			model.addAttribute("testplansDisplayName", company.getTestplansDisplayName());	
+			model.addAttribute("testcasesDisplayName", company.getTestcasesDisplayName());	
 			if(userpath.isEmpty())			
 			{
 				System.out.println("HERE 1 :" + userpath);								
@@ -144,7 +147,9 @@ public class CompanyController {
 				System.out.println("HERE 2 :" + userpath);
 
 				boolean allCompanyProjects = true;	
+				boolean allCompanyTestplans = true;	
 				Long projectID = null;
+				Long testplanID = null;
 				//String relatedObjects = "";
 				//String gridUrl = "/summaryList/"+companyID;
 				String gridUrl = "";
@@ -306,52 +311,65 @@ public class CompanyController {
 						}
 					}
 					//   *********************************    END of Cycles     ************************************
-					//   *********************************        Testcases          ************************************
+
+					//   *********************************    Test Library          ************************************
 					// id userpath contains project or projects 
-					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestcasesDisplayName().replace(" ","")) ||
-							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestcaseDisplayName().replace(" ","")))							
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestLibraryDisplayName().replace(" ","")))
+					{								
+						breadCrumb = "<a href='?userpath=Home'>Home</a> > "+company.getTestLibraryDisplayName();							
+						model.addAttribute("breadCrumb", breadCrumb);	
+						return "testlibrary";	// straight to testlibrary.html				
+
+					}
+					//   *********************************    END of Test Library     ************************************
+					//   *********************************        Test plans          ************************************
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestplansDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestplanDisplayName().replace(" ","")))
 					{										
 						if(x < (userPathArray.length - 1))
-						{// there is a details view in the userpath i.e //Home>Tescases>"5">Cycles
-							Long testcaseID = Long.valueOf(userPathArray[x+1]);
-							try{
-								Testcase testcase = testcaseService.getTestcase(testcaseID);
+						{// there is a details view in the userpath i.e //Home>Cycles>"CD 1">Projects
+							testplanID = Long.valueOf(userPathArray[x+1]);
 
-								newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestcasesDisplayName()+"</a> >";
-								newuserpath = newuserpath + ">"+testcase.getTestcaseID();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testcase.getTestcaseName()+"</a> >";
+							Testplan testplan = testplanService.getTestplan(testplanID);
+							if(testplan != null)
+							{
+								newuserpath = newuserpath + ">"+company.getTestplansDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestplansDisplayName()+"</a> >";
 
-								gridUrl = "/summaryList/"+companyID+"?testcaseID="+testcaseID;
-								relatedObjects = "?testcaseID="+testcaseID;
-								//allCompanyProjects = false;
+								newuserpath = newuserpath + ">"+testplanID;
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testplan.getTestplanName()+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?testplanID="+testplanID;
+								relatedObjects = "?testplanID="+testplanID;							
+
+								allCompanyTestplans = false;
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl","testcase"+gridUrl);	
+									model.addAttribute("gridUrl", "testplan"+gridUrl);
 									model.addAttribute("relatedObjects", relatedObjects);	
-									return "testcaseDetails";
+									return "testplanDetails";
 								}
-							}catch(NoResultException nre)
+							}
+							else
 							{
 								model.addAttribute("userpath", userpath);
 								return "index";
 							}
 						}	
 						else
-						{// Last item i.e //Home>Projects>5>Cycles>33>testcases
+						{// Last item i.e //Home>Projects>5>Cycles>33>Projects
 							if(gridUrl.isEmpty())
 							{
 								gridUrl = "/summaryList/"+companyID;
-							}
-							newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
-							breadCrumb = breadCrumb + " "+company.getTestcasesDisplayName();
-
+							}							
+							newuserpath = newuserpath + ">"+company.getTestplansDisplayName();
+							breadCrumb = breadCrumb + " "+company.getTestplansDisplayName();
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
-							model.addAttribute("gridUrl", "testcase"+gridUrl);
+							model.addAttribute("gridUrl", "testplan"+gridUrl);
 							model.addAttribute("relatedObjects", relatedObjects);	
 							model.addAttribute("allCompanyProjects", allCompanyProjects);
 							if(allCompanyProjects == true)
@@ -363,11 +381,88 @@ public class CompanyController {
 								Project project = projectService.getProject(projectID);
 								model.addAttribute("projectID", projectID);	
 								model.addAttribute("projects", project);
-							}				
-							return "testcases";	// straight to projects.html				
+							}						
+							return "testplans";						
 						}
 					}
-					//   *********************************      END of Testcases        ************************************
+					//   *********************************    END of Test plans     ************************************
+
+					//   *********************************        Testcases          ************************************
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestcaseDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestcasesDisplayName().replace(" ","")))
+					{										
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Cycles>"CD 1">Projects
+							Long testcaseID = Long.valueOf(userPathArray[x+1]);
+
+							Testcase testcase = testcaseService.getTestcase(testcaseID);
+							if(testcase != null)
+							{
+								newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestcasesDisplayName()+"</a> >";
+
+								newuserpath = newuserpath + ">"+testcaseID;
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testcaseID+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?testcaseID="+testcaseID;
+								relatedObjects = "?testcaseID="+testcaseID;					
+
+								//allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl", "testcase"+gridUrl);
+									model.addAttribute("relatedObjects", relatedObjects);	
+									return "testcaseDetails";
+								}
+							}
+							else
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Testcases
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}							
+							newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
+							breadCrumb = breadCrumb + " "+company.getTestcasesDisplayName();
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "testcase"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);	
+							model.addAttribute("allCompanyProjects", allCompanyProjects);
+							model.addAttribute("allCompanyTestplans", allCompanyTestplans);
+							if(allCompanyProjects == true)
+							{
+								model.addAttribute("projects", company.getProjects());
+							}
+							else
+							{
+								Project project = projectService.getProject(projectID);
+								model.addAttribute("projectID", projectID);	
+								model.addAttribute("projects", project);
+							}	
+							if(allCompanyTestplans == true)
+							{
+								model.addAttribute("testplans", company.getTestplans());
+							}
+							else
+							{
+								Testplan testplan = testplanService.getTestplan(testplanID);
+								model.addAttribute("testplanID", testplanID);	
+								model.addAttribute("testplans", testplan);
+							}	
+							return "testcases";						
+						}
+					}
+					//   *********************************    END of Testcases     ************************************
+
 					//   *********************************        Testruns          ************************************
 					// id userpath contains project or projects 
 					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getTestrunsDisplayName().replace(" ","")) ||
@@ -545,13 +640,13 @@ public class CompanyController {
 	//  
 	//    
 	//    @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
-	//    public String jsonprojectTEST(@RequestParam(required = false)long companyID, Model model) {
+	//    public String jsonprojectTEST(@RequestParam(required = false)Long companyID, Model model) {
 	//    	model.addAttribute("company", companyService.getCompany(companyID));
 	//    	return "jsonprojectTEST";  
 	//  }  
 	//    
 	//    @RequestMapping(value = {"projectsListView"}, method = GET)
-	//    public String projectListView(@RequestParam(required = false)long companyID, Model model) {
+	//    public String projectListView(@RequestParam(required = false)Long companyID, Model model) {
 	//    	model.addAttribute("company", companyService.getCompany(companyID));
 	//    	return "projectsListView";  
 	//  }  

@@ -5,6 +5,7 @@ package ie.cit.cloud.testcenter.model.summary;
 
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
@@ -22,16 +23,16 @@ import javax.persistence.Basic;
  *
  */
 
-public class TestcaseSummary
+public class TestplanSummary
 {	
 
 	//private ProjectService projectService;
 	//private CycleService cycleService;
 	//private TestcaseService testcaseService;
 	private TestrunService testrunService;
-	private DefectService defectService;	
-	private TestplanService testplanService;
+	private DefectService defectService;		
 
+	private Set<Testcase> allTestcases = new LinkedHashSet<Testcase>();
 	private Set<Testrun> allTestruns = new LinkedHashSet<Testrun>();
 	private Set<Testrun> requiredTestruns = new LinkedHashSet<Testrun>();
 	//private Set<Testrun> completedTestruns = new LinkedHashSet<Testrun>();
@@ -40,13 +41,10 @@ public class TestcaseSummary
 
 	//private Project project = new Project();
 	//private Cycle cycle = new Cycle();
-	private Testcase testcase = new Testcase();
+	private Testplan testplan= new Testplan();
 	////////////////////////////////////
-	private Long testcaseID = null;    
-	private String testcaseName = null;
+	private Long testplanID = null;  	
 	private String testplanName = null;
-	private String testplanSection = null;
-	private Integer testplanOrderNum = -1;
 
 	private String levelName = null;
 	private String stage = null; // Draft/Ready For Review / Approved	
@@ -58,6 +56,7 @@ public class TestcaseSummary
 	private int totalCurrentSev3s = -1;
 	private int totalCurrentSev4s = -1; 
 
+	private int totalTestcases = -1;
 	private int totalCycles = -1;
 	private int totalProjects = -1;
 	private int totalEnvironments = -1;
@@ -85,39 +84,68 @@ public class TestcaseSummary
 	private String customObject4;
 	private String customObject5;
 
-	public TestcaseSummary() {	
+	public TestplanSummary() {	
 	}
 
-	public TestcaseSummary(Testcase testcase, String levelName, TestrunService testrunService, DefectService defectService,TestplanService testplanService )
+	public TestplanSummary(Testplan testplan, String levelName, TestrunService testrunService, DefectService defectService)
 	{
-		this.testcaseID = testcase.getTestcaseID();
+		this.testplanID = testplan.getTestplanID();
 		if(levelName != null)
 		{
 			this.levelName = levelName;
 		}		
-		this.testcase = testcase;  	
+		this.testplan = testplan;  	
 		//this.projectService = projectService; 
 		//this.cycleService = cycleService;
 		this.testrunService = testrunService;
 		this.defectService = defectService;		
-		this.testplanService = testplanService;
-		
-		this.companyID = getCompanyID();
-		
+
+		this.companyID = getCompanyID();		
 	}
 
 
 	/**
+	 * @return the allTestcases
+	 */
+	private Set<Testcase> getAllTestcases() 
+	{
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			if(testplan.getTestcases() != null || !testplan.getTestcases().isEmpty())
+			{
+				allTestcases = testplan.getTestcases();
+			}	
+		}			
+		return allTestcases;
+	}
+	/**
+	 * @param allTestcases the allTestcases to set
+	 */
+	private void setAllTestcases(Set<Testcase> allTestcases) {
+		this.allTestcases = allTestcases;
+	}
+
+	/**
 	 * @return the allTestruns
 	 */
-	private Set<Testrun> getAllTestruns()
+	private Set<Testrun> getAllTestruns() 
 	{
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
-			if(testcase.getTestruns() != null || !testcase.getTestruns().isEmpty())
+			if(allTestcases == null || allTestcases.isEmpty())
 			{
-				allTestruns = testcase.getTestruns();
-			}	
+				allTestcases = getAllTestcases();
+			}
+			if(allTestcases != null  && !allTestcases.isEmpty())
+			{
+				for(final Testcase testcase : allTestcases)
+				{
+					if(testcase.getTestruns() != null || !testcase.getTestruns().isEmpty())
+					{
+						allTestruns = testcase.getTestruns();
+					}
+				}
+			}
 		}			
 		return allTestruns;
 	}
@@ -151,7 +179,7 @@ public class TestcaseSummary
 				}	
 			}
 		}
-		return requiredTestruns;		
+		return requiredTestruns;
 	}
 
 	/**
@@ -201,51 +229,29 @@ public class TestcaseSummary
 	}
 
 	/**
-	 * @return the testcaseID
+	 * @return the testplanID
 	 */
-	public Long getTestcaseID() {
-		return testcaseID;
+	public Long getTestplanID() {
+		return testplanID;
 	}
 
 	/**
-	 * @param testcaseID the testcaseID to set
+	 * @param testplanID the testplanID to set
 	 */
-	public void setTestcaseID(Long testcaseID) {
-		this.testcaseID = testcaseID;
-	}
-
-	/**
-	 * @return the testcaseName
-	 */
-	public String getTestcaseName()
-	{
-		if(testcaseName == null)
-		{
-			if(testcase != null)
-			{
-				testcaseName = testcase.getTestcaseName();
-			}
-		}
-		return testcaseName;		
-	}
-
-	/**
-	 * @param testcaseName the testcaseName to set
-	 */
-	public void setTestcaseName(String testcaseName) {
-		this.testcaseName = testcaseName;
+	public void setTestplanID(Long testplanID) {
+		this.testplanID = testplanID;
 	}
 
 	/**
 	 * @return the testplanName
 	 */
-	public String getTestplanName()
+	public String getTestplanName() 
 	{
 		if(testplanName == null)
 		{
-			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+			if(testplan != null)
 			{
-				testplanName = testplanService.getTestplan(testcase.getTestplanID()).getTestplanName();
+				testplanName = testplan.getTestplanName();
 			}
 		}
 		return testplanName;
@@ -259,99 +265,44 @@ public class TestcaseSummary
 	}
 
 	/**
-	 * @return the testplanSection
-	 */
-	public String getTestplanSection() 
-	{
-		if(testplanSection == null)
-		{
-			if(testplanService.getTestplanSection(testcase.getTestplanSectionID()) != null)
-			{
-				testplanSection = testplanService.getTestplanSection(testcase.getTestplanSectionID()).getTestplanSectionName();
-			}
-		}
-		return testplanSection;
-	}
-
-	/**
-	 * @param testplanSection the testplanSection to set
-	 */
-	public void setTestplanSection(String testplanSection) {
-		this.testplanSection = testplanSection;
-	}
-
-	/**
-	 * @return the testplanOrderNum
-	 */
-	public int getTestplanOrderNum() 
-	{
-		if(testcaseName == null)
-		{
-			if(testcase.getTestplanOrderNum() != -1)
-			{
-				testplanOrderNum = testcase.getTestplanOrderNum();
-			}
-		}		
-		return testplanOrderNum;
-	}
-
-	/**
-	 * @param testplanOrderNum the testplanOrderNum to set
-	 */
-	public void setTestplanOrderNum(int testplanOrderNum) {
-		this.testplanOrderNum = testplanOrderNum;
-	}
-
-	/**
 	 * @return the levelName
 	 */
-	public String getLevelName()
-	{
+	private String getLevelName() {
 		return levelName;
 	}
 
 	/**
 	 * @param levelName the levelName to set
 	 */
-	public void setLevelName(String levelName) {
+	private void setLevelName(String levelName) {
 		this.levelName = levelName;
 	}
 
-	/**
-	 * @return the stage
-	 */
-	public String getStage() 
-	{
-		if(stage == null)
-		{
-			if(testcase.getStage() != null)
-			{
-				stage = testcase.getStage();
-			}
-		}			
-		return stage;
-	}
-
-	/**
-	 * @param stage the stage to set
-	 */
-	public void setStage(String stage) {
-		this.stage = stage;
-	}
-
+	
 	/**
 	 * @return the estimatedTime
 	 */
 	public Double getEstimatedTime() 
 	{
+		double count = 0;
 		if(estimatedTime == null)
 		{
-			if(testcase.getEstimatedTime() != null)
+			if(allTestcases == null || allTestcases.isEmpty())
 			{
-				estimatedTime = testcase.getEstimatedTime();
+				allTestcases = getAllTestcases();
 			}
+			if(allTestcases != null  && !allTestcases.isEmpty())
+			{
+				for(final Testcase testcase : allTestcases)
+				{
+					if(testcase.getEstimatedTime() != null)
+					{
+						count += testcase.getEstimatedTime();						
+					}
+				}
+			}			
 		}				
-		return estimatedTime;
+		return count;	
 	}
 
 	/**
@@ -519,6 +470,28 @@ public class TestcaseSummary
 	public void setTotalCurrentSev4s(int totalCurrentSev4s) {
 		this.totalCurrentSev4s = totalCurrentSev4s;
 	}
+	/**
+	 * @return the totalTestcases
+	 */
+	public int getTotalTestcases() 
+	{
+		int count = 0;
+		if (totalTestcases == -1)
+		{
+			if(testplan.getTestcases() != null || !testplan.getTestcases().isEmpty())
+			{
+				count = testplan.getTestcases().size();
+			}	
+		}
+		return count;
+	}
+
+	/**
+	 * @param totalTestcases the totalTestcases to set
+	 */
+	public void setTotalTestcases(int totalTestcases) {
+		this.totalTestcases = totalTestcases;
+	}
 
 	/**
 	 * @return the totalCycles
@@ -537,7 +510,7 @@ public class TestcaseSummary
 				count = allTestruns.size();				
 			}
 		}
-		return count;			
+		return count;	
 	}
 
 	/**
@@ -550,17 +523,17 @@ public class TestcaseSummary
 	/**
 	 * @return the totalProjects
 	 */
-	public int getTotalProjects()
+	public int getTotalProjects() 
 	{
 		int count = 0;
 		if (totalProjects == -1)
 		{
-			if(testcase.getProjects() != null && !testcase.getProjects().isEmpty())
+			if(testplan.getProjects() != null && !testplan.getProjects().isEmpty())
 			{
-				count = testcase.getProjects().size();
+				count = testplan.getProjects().size();
 			}			
 		}
-		return count;			
+		return count;		
 	}
 
 	/**
@@ -653,7 +626,7 @@ public class TestcaseSummary
 				count = allTestruns.size();
 			}
 		}
-		return count;			
+		return count;	
 	}
 
 	/**
@@ -666,7 +639,7 @@ public class TestcaseSummary
 	/**
 	 * @return the totalRequiredTestruns
 	 */
-	public int getTotalRequiredTestruns()
+	public int getTotalRequiredTestruns() 
 	{
 		int count = 0;
 		if(totalRequiredTestruns == -1)
@@ -693,7 +666,7 @@ public class TestcaseSummary
 	/**
 	 * @return the totalOptionalTestruns
 	 */
-	public int getTotalOptionalTestruns() 
+	public int getTotalOptionalTestruns()
 	{
 		int count = 0;
 		if (totalOptionalTestruns == -1)
@@ -713,7 +686,7 @@ public class TestcaseSummary
 				}			
 			}
 		}
-		return count;			
+		return count;		
 	}
 
 	/**
@@ -786,7 +759,7 @@ public class TestcaseSummary
 	{
 		if(lastModifiedBy == null)
 		{			
-			if(testcase.getLastModifiedByUserID() == null)
+			if(testplan.getLastModifiedByUserID() == null)
 			{
 				lastModifiedBy = "n/a";
 			}
@@ -798,6 +771,7 @@ public class TestcaseSummary
 		}
 		return lastModifiedBy;
 	}
+
 
 	/**
 	 * @param lastModifiedBy the lastModifiedBy to set
@@ -813,9 +787,9 @@ public class TestcaseSummary
 	{
 		if(lastModifiedDate == null)
 		{
-			if(testcase.getLastModifiedDate() != null)			
+			if(testplan.getLastModifiedDate() != null)			
 			{
-				lastModifiedDate = testcase.getLastModifiedDate();
+				lastModifiedDate = testplan.getLastModifiedDate();
 			}				
 		}
 		return lastModifiedDate;
@@ -835,13 +809,13 @@ public class TestcaseSummary
 	{
 		if(createdBy == null)
 		{			
-			if(testcase.getCreatedByUserID() == null)
+			if(testplan.getCreatedByUserID() == null)
 			{
 				createdBy = "n/a";
 			}
 			else
 			{
-				//TODO look up user name testcase.getCreatedByUserID()
+				//TODO look up user name testplan.getCreatedByUserID()
 				createdBy = "USERNAME";
 			}	
 		}
@@ -862,9 +836,9 @@ public class TestcaseSummary
 	{
 		if(creationDate == null)
 		{
-			if(testcase.getCreationDate() != null)			
+			if(testplan.getCreationDate() != null)			
 			{
-				creationDate = testcase.getCreationDate();
+				creationDate = testplan.getCreationDate();
 			}				
 		}
 		return creationDate;		
@@ -882,9 +856,9 @@ public class TestcaseSummary
 	 */
 	public Long getCompanyID() 
 	{
-		if(testcase.getCompanyID() != null)			
+		if(testplan.getCompanyID() != null)			
 		{
-			companyID = testcase.getCompanyID();
+			companyID = testplan.getCompanyID();
 		}	
 		return companyID;
 	}	
@@ -958,6 +932,7 @@ public class TestcaseSummary
 	public void setCustomObject5(String customObject5) {
 		this.customObject5 = customObject5;
 	}
+
 
 
 }

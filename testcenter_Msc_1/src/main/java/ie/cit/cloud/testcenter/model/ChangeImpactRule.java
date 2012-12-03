@@ -26,7 +26,7 @@ public class ChangeImpactRule {
 
 	@Basic
 	@Column(name = "cycleID")
-	private long cycleID;
+	private Long cycleID;
 
 	@Length(min = 2, max = 64, message = "Change Impact Rule Name must be between 2 to 64 characters.")
 	@NotEmpty(message = "Chanage impact Rule Name is required.")
@@ -39,7 +39,7 @@ public class ChangeImpactRule {
 	 * @param cycleID
 	 * @param changeImpactRuleName
 	 */
-	public ChangeImpactRule(long cycleID, String changeImpactRuleName) {
+	public ChangeImpactRule(Long cycleID, String changeImpactRuleName) {
 		this.cycleID = cycleID;
 		this.changeImpactRuleName = changeImpactRuleName;
 	}
@@ -47,14 +47,14 @@ public class ChangeImpactRule {
 	/**
 	 * @return the cycleID
 	 */
-	public long getCycleID() {
+	public Long getCycleID() {
 		return cycleID;
 	}
 
 	/**
 	 * @param cycleID the cycleID to set
 	 */
-	public void setCycleID(long cycleID) {
+	public void setCycleID(Long cycleID) {
 		this.cycleID = cycleID;
 	}
 

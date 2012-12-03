@@ -8,6 +8,7 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,8 +22,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -37,7 +43,7 @@ public class Testplan {
 
 	@Basic
 	@Column(name="companyID")
-	private long companyID;    
+	private Long companyID;    
 
 	@Length(min = 2, max = 32, message = "Testplan name must be between 2 to 32 characters.")
 	@NotEmpty(message = "TestPlan Name is required.")
@@ -47,15 +53,30 @@ public class Testplan {
 	@Fetch(value = FetchMode.SUBSELECT)
     private Set<Project> projects = new HashSet<Project>();
 	
-	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testcase.class, cascade=CascadeType.ALL)
+	@OneToMany(fetch=FetchType.EAGER, 
+			targetEntity=Testcase.class, 
+			cascade=(CascadeType.ALL))
 	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
 	@Fetch(value = FetchMode.SUBSELECT)
+	
 	private Set<Testcase> testcases;    
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=TestplanSection.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
 	@Fetch(value = FetchMode.SUBSELECT)
-	private Set<TestplanSection> testplanSections;    
+	private Set<TestplanSection> testplanSections;   
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "creationDate", nullable = false, length = 10) 
+	private Date creationDate = new Date();	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "lastModifiedDate", nullable = false, length = 10) 
+	private Date lastModifiedDate = new Date();
+
+	@Basic    
+	private Long createdByUserID;
+	@Basic    
+	private Long lastModifiedByUserID;
 
 	public Testplan() {		
 	}
@@ -94,14 +115,14 @@ public class Testplan {
 	/**
 	 * @return the companyID
 	 */
-	public long getCompanyID() {
+	public Long getCompanyID() {
 		return companyID;
 	}
 
 	/**
 	 * @param companyID the companyID to set
 	 */
-	public void setCompanyID(long companyID) {
+	public void setCompanyID(Long companyID) {
 		this.companyID = companyID;
 	}
 
@@ -162,6 +183,54 @@ public class Testplan {
 	 */
 	public void setProjects(Set<Project> projects) {
 		this.projects = projects;
+	}
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+	/**
+	 * @return the lastModifiedDate
+	 */
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+	/**
+	 * @param lastModifiedDate the lastModifiedDate to set
+	 */
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+	/**
+	 * @return the createdByUserID
+	 */
+	public Long getCreatedByUserID() {
+		return createdByUserID;
+	}
+	/**
+	 * @param createdByUserID the createdByUserID to set
+	 */
+	public void setCreatedByUserID(Long createdByUserID) {
+		this.createdByUserID = createdByUserID;
+	}
+	/**
+	 * @return the lastModifiedByUserID
+	 */
+	public Long getLastModifiedByUserID() {
+		return lastModifiedByUserID;
+	}
+	/**
+	 * @param lastModifiedByUserID the lastModifiedByUserID to set
+	 */
+	public void setLastModifiedByUserID(Long lastModifiedByUserID) {
+		this.lastModifiedByUserID = lastModifiedByUserID;
 	}
 	
 }

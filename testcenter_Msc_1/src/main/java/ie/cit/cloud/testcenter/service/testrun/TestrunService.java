@@ -29,91 +29,91 @@ public interface TestrunService {
 
 	void addNewTestrun(Testrun testrun);
 
-	Testrun getTestrun(long testrunID);   
+	Testrun getTestrun(Long testrunID);   
 
 	Testrun getTestrunByName(String testrunName);
 
 	void update(Testrun testrun);
 
-	void remove(long testrunID);  
+	void remove(Long testrunID);  
 
-	boolean isLatest(long testrunID);
+	boolean isLatest(Long testrunID);
 
-	Set<Testrun> getTestHistory(long testrunID);
+	Set<Testrun> getTestHistory(Long testrunID);
 	
 	
 	 
 	void addNewTestrunLevel(TestrunLevel testrunLevel);
-	TestrunLevel getTestrunLevel(long testrunLevelID); 
+	TestrunLevel getTestrunLevel(Long testrunLevelID); 
 	TestrunLevel getTestrunLevelByName(String testrunLevelName); 
 	void updateTestrunLevel(TestrunLevel testrunLevel);
-	void removeTestrunLevel(long testrunLevelID);  
+	void removeTestrunLevel(Long testrunLevelID);  
 
 	/**
 	 * Returns true if a testruns' priority is less than or equal to cycle priority 
 	 * boolean
 	 * @return true if a testruns' priority is less than or equal to cycle priority,otherwise false
 	 */	
-	boolean isRequired(long testrunID);	
+	boolean isRequired(Long testrunID);	
 	//////////////////////////////////////////////
 	/**
 	 * Returns a testruns Cycle
 	 * Cycle
 	 * @return a testruns Cycle
 	 */		
-	Cycle getCycle(long testrunID);
+	Cycle getCycle(Long testrunID);
 	/**
 	 * Returns a testruns Testcase
 	 * Testcase
 	 * @return a testruns Testcase
 	 */	
-	Testcase getTestcase(long testrunID);
+	Testcase getTestcase(Long testrunID);
 	/**
 	 * Returns a testruns Project
 	 * Project
 	 * @return a testruns Project
 	 */	
-	Project getProject(long testrunID);
+	Project getProject(Long testrunID);
 	/**
 	 * Returns a collection of All Testplans in a testrun incl all child testruns 
 	 * Set<Testplan>
 	 * @return collection of All Testplans in a testrun incl all child testruns,
 	 */		 
-	Testplan getTestPlan(long testrunID);	
+	Testplan getTestPlan(Long testrunID);	
 	/**
 	 * Returns a collection of All Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of All Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedAllDefects(long testrunID);
+	Set<Defect> getCascadedAllDefects(Long testrunID);
 	/**
 	 * Returns a collection of Sev1 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 1 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev1Defects(long testrunID);
+	Set<Defect> getCascadedSev1Defects(Long testrunID);
 	/**
 	 * Returns a collection of Sev2 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 2 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev2Defects(long testrunID);
+	Set<Defect> getCascadedSev2Defects(Long testrunID);
 	/**
 	 * Returns a collection of Sev 3 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 3 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev3Defects(long testrunID);
+	Set<Defect> getCascadedSev3Defects(Long testrunID);
 	/**
 	 * Returns a collection of Sev 4 Defects in a cycle incl all child cycles 
 	 * Set<Defect>
 	 * @return collection of Sev 4 Defects in a cycle incl all child cycles,
 	 */		
-	Set<Defect> getCascadedSev4Defects(long testrunID);
+	Set<Defect> getCascadedSev4Defects(Long testrunID);
 
-	Set<TestcenterUser> getCascadedTesters(long defectID);
-	Set<TestcenterUser> getCascadedSnrTesters(long defectID);
-	Set<TestcenterUser> getCascadedDevelopers(long defectID);
-	Set<TestcenterUser> getCascadedSnrDevelopers(long defectID);
+	Set<TestcenterUser> getCascadedTesters(Long defectID);
+	Set<TestcenterUser> getCascadedSnrTesters(Long defectID);
+	Set<TestcenterUser> getCascadedDevelopers(Long defectID);
+	Set<TestcenterUser> getCascadedSnrDevelopers(Long defectID);
 	///////////////////////
 }

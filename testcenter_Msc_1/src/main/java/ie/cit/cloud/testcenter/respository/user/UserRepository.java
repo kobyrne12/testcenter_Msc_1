@@ -24,7 +24,7 @@ public interface UserRepository {
      * @return User for given id, {@link EmptyResultDataAccessException} if no
      *         User was found
      */
-	TestcenterUser get(long userID);
+	TestcenterUser get(Long userID);
 
     /**
      * Adds new User into repository
@@ -63,7 +63,7 @@ public interface UserRepository {
      *            User ID
      * @return User for given id, null if test was not found
      */
-    TestcenterUser findById(long userID);
+    TestcenterUser findById(Long userID);
     /**
      * Returns User items given by its name
      * 

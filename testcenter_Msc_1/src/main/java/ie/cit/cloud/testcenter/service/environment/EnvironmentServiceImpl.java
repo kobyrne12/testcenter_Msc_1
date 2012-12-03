@@ -58,7 +58,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 	DefectService defectService;
 	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Environment getEnvironment(long environmentID) {
+	public Environment getEnvironment(Long environmentID) {
 		try{
 			return environmentRepo.findById(environmentID);								
 		}
@@ -85,11 +85,11 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long environmentID) {
+	public void remove(Long environmentID) {
 		environmentRepo.delete(getEnvironment(environmentID));
 	}
 	////////////////////////
-	public Set<Testrun> getAllTestRuns(long environmentID) 
+	public Set<Testrun> getAllTestRuns(Long environmentID) 
 	{
 		Environment environment = getEnvironment(environmentID);
 		if(environment == null)
@@ -103,7 +103,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return environment.getTestruns();			
 	} 
 	
-	public Set<Testrun> getCompulsoryTestRuns(long environmentID)
+	public Set<Testrun> getCompulsoryTestRuns(Long environmentID)
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -121,7 +121,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return compulsoryTestruns;		
 	}	
 	
-	public Set<Testrun> getOptionalTestRuns(long environmentID)
+	public Set<Testrun> getOptionalTestRuns(Long environmentID)
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -139,7 +139,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return optionalTestruns;		
 	}
 	
-	public Set<Testcase> getAllTestCases(long environmentID)
+	public Set<Testcase> getAllTestCases(Long environmentID)
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -157,7 +157,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestcases;
 	}
 	
-	public Set<Testcase> getCompulsoryTestCases(long environmentID)
+	public Set<Testcase> getCompulsoryTestCases(Long environmentID)
 	{
 		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -175,7 +175,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestcases;
 	}
 	
-	public Set<Testcase> getOptionalTestCases(long environmentID)
+	public Set<Testcase> getOptionalTestCases(Long environmentID)
 	{
 		Set<Testrun> allTestruns = getOptionalTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -193,7 +193,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestcases;
 	}
 	
-	public Set<Testplan> getAllTestPlans(long environmentID)
+	public Set<Testplan> getAllTestPlans(Long environmentID)
 	{		
 		Set<Testcase> allTestcases = getAllTestCases(environmentID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -211,7 +211,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestplans;
 	}
 	
-	public Set<Testplan> getCompulsoryTestPlans(long environmentID)
+	public Set<Testplan> getCompulsoryTestPlans(Long environmentID)
 	{		
 		Set<Testcase> allTestcases = getCompulsoryTestCases(environmentID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -229,7 +229,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestplans;
 	}
 	
-	public Set<Testplan> getOptionalTestPlans(long environmentID)
+	public Set<Testplan> getOptionalTestPlans(Long environmentID)
 	{		
 		Set<Testcase> allTestcases = getOptionalTestCases(environmentID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -247,7 +247,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return allTestplans;
 	}
 	
-	public Set<Cycle> getCycles(long environmentID) {
+	public Set<Cycle> getCycles(Long environmentID) {
 		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
@@ -264,7 +264,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return cycles;
 	}
 
-	public Set<Project> getProjects(long environmentID)
+	public Set<Project> getProjects(Long environmentID)
 	{
 		Set<Cycle> cycles =  getCycles(environmentID);
 		if(cycles == null || cycles.isEmpty())
@@ -282,7 +282,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return projects;
 	}
 
-	public Set<Requirement> getRequirements(long environmentID) 
+	public Set<Requirement> getRequirements(Long environmentID) 
 	{
 		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -305,7 +305,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return requirements;		
 	}	
 	
-	public Set<Defect> getCascadedAllDefects(long environmentID) {
+	public Set<Defect> getCascadedAllDefects(Long environmentID) {
 		Set<Testrun> allTestruns = getCompulsoryTestRuns(environmentID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
@@ -323,7 +323,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return defects;				
 	}
-	public Set<Defect> getCascadedSev1Defects(long testrunID) 
+	public Set<Defect> getCascadedSev1Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -340,7 +340,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return sev1defects;
 	}
-	public Set<Defect> getCascadedSev2Defects(long testrunID) 
+	public Set<Defect> getCascadedSev2Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -358,7 +358,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		return sev2defects;
 	}
 		
-	public Set<Defect> getCascadedSev3Defects(long testrunID) 
+	public Set<Defect> getCascadedSev3Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -375,7 +375,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return sev3defects;
 	}	
-	public Set<Defect> getCascadedSev4Defects(long testrunID) 
+	public Set<Defect> getCascadedSev4Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -392,23 +392,23 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		}	
 		return sev4defects;
 	}
-	public Set<TestcenterUser> getCascadedTesters(long environmentID) {
+	public Set<TestcenterUser> getCascadedTesters(Long environmentID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedSnrTesters(long environmentID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(Long environmentID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedDevelopers(long environmentID) {
+	public Set<TestcenterUser> getCascadedDevelopers(Long environmentID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Set<TestcenterUser> getCascadedSnrDevelopers(
-			long environmentID) {
+			Long environmentID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

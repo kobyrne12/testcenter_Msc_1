@@ -26,7 +26,7 @@ public class TestplanSection {
 
 	@Basic
 	@Column(name="testplanID")
-	private long testplanID;    
+	private Long testplanID;    
 
 	@Length(min = 2, max = 64, message = "Testplan Section name must be between 2 to 64 characters.")
 	@NotEmpty(message = "TestPlan Section Name is required.")
@@ -39,7 +39,7 @@ public class TestplanSection {
 	 * @param testplanID
 	 * @param testplanSectionName
 	 */
-	public TestplanSection(long testplanID, String testplanSectionName) {
+	public TestplanSection(Long testplanID, String testplanSectionName) {
 		this.testplanID = testplanID;
 		this.testplanSectionName = testplanSectionName;
 	}
@@ -47,14 +47,14 @@ public class TestplanSection {
 	/**
 	 * @return the testplanID
 	 */
-	public long getTestplanID() {
+	public Long getTestplanID() {
 		return testplanID;
 	}
 
 	/**
 	 * @param testplanID the testplanID to set
 	 */
-	public void setTestplanID(long testplanID) {
+	public void setTestplanID(Long testplanID) {
 		this.testplanID = testplanID;
 	}
 

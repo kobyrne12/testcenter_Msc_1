@@ -45,7 +45,7 @@ public class Defect {
 	private String defectSummary;  	   
 
 	@Basic    
-	private long parentID; 
+	private Long parentID; 
 	@Basic    
 	private boolean parent;  
 	@Basic    
@@ -83,11 +83,11 @@ public class Defect {
 	private Date lastModifiedDate;
 	
 	@Basic    
-	private long createdByUserID;	
+	private Long createdByUserID;	
 	@Basic    
-	private long lastModifiedByUserID;	
+	private Long lastModifiedByUserID;	
 	@Basic    
-	private long currentOwnerUserID;
+	private Long currentOwnerUserID;
 	
 	public Defect() {		
 	}
@@ -102,8 +102,8 @@ public class Defect {
 	public Defect(Long companyID, String defectSummary, int severity,
 			String defectDetails, Long defectSectionID, String defectType)
 	{
-		this(companyID,defectSummary,0,false,false,severity,defectDetails,defectSectionID,defectType,
-				null,null,null,new Date(),new Date(),0,0,0);
+		this(companyID,defectSummary,null,false,false,severity,defectDetails,defectSectionID,defectType,
+				null,null,null,new Date(),new Date(),null,null,null);
 	}	
 	/**
 	 * @param companyID
@@ -124,13 +124,13 @@ public class Defect {
 	 * @param lastModifiedByUserID
 	 * @param currentOwnerUserID
 	 */
-	public Defect(Long companyID, String defectSummary, long parentID,
+	public Defect(Long companyID, String defectSummary, Long parentID,
 			boolean parent, boolean child, int severity, String defectDetails,
 			Long defectSectionID, String defectType,
 			Set<Testrun> testruns, Set<Requirement> requirements,
 			Set<TestcenterUser> users, Date creationDate,
-			Date lastModifiedDate, long createdByUserID,
-			long lastModifiedByUserID, long currentOwnerUserID) {
+			Date lastModifiedDate, Long createdByUserID,
+			Long lastModifiedByUserID, Long currentOwnerUserID) {
 		this.companyID = companyID;
 		this.defectSummary = defectSummary;
 		this.parentID = parentID;
@@ -266,13 +266,13 @@ public class Defect {
 	/**
 	 * @return the parentID
 	 */
-	public long getParentID() {
+	public Long getParentID() {
 		return parentID;
 	}
 	/**
 	 * @param parentID the parentID to set
 	 */
-	public void setParentID(long parentID) {
+	public void setParentID(Long parentID) {
 		this.parentID = parentID;
 	}
 	/**
@@ -326,37 +326,37 @@ public class Defect {
 	/**
 	 * @return the createdByUserID
 	 */
-	public long getCreatedByUserID() {
+	public Long getCreatedByUserID() {
 		return createdByUserID;
 	}
 	/**
 	 * @param createdByUserID the createdByUserID to set
 	 */
-	public void setCreatedByUserID(long createdByUserID) {
+	public void setCreatedByUserID(Long createdByUserID) {
 		this.createdByUserID = createdByUserID;
 	}
 	/**
 	 * @return the lastModifiedByUserID
 	 */
-	public long getLastModifiedByUserID() {
+	public Long getLastModifiedByUserID() {
 		return lastModifiedByUserID;
 	}
 	/**
 	 * @param lastModifiedByUserID the lastModifiedByUserID to set
 	 */
-	public void setLastModifiedByUserID(long lastModifiedByUserID) {
+	public void setLastModifiedByUserID(Long lastModifiedByUserID) {
 		this.lastModifiedByUserID = lastModifiedByUserID;
 	}
 	/**
 	 * @return the currentOwnerUserID
 	 */
-	public long getCurrentOwnerUserID() {
+	public Long getCurrentOwnerUserID() {
 		return currentOwnerUserID;
 	}
 	/**
 	 * @param currentOwnerUserID the currentOwnerUserID to set
 	 */
-	public void setCurrentOwnerUserID(long currentOwnerUserID) {
+	public void setCurrentOwnerUserID(Long currentOwnerUserID) {
 		this.currentOwnerUserID = currentOwnerUserID;
 	}	
 	

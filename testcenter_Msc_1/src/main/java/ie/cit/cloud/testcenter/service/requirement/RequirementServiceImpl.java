@@ -57,7 +57,7 @@ public class RequirementServiceImpl implements RequirementService {
 	DefectService defectService;
 
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
-	public Requirement getRequirement(long requirementID) {
+	public Requirement getRequirement(Long requirementID) {
 		try{
 			return requirementRepo.findById(requirementID);						
 		}
@@ -84,11 +84,11 @@ public class RequirementServiceImpl implements RequirementService {
 	}  
 
 	//  @Secured("ROLE_ADMIN")
-	public void remove(long requirementID) {
+	public void remove(Long requirementID) {
 		requirementRepo.delete(getRequirement(requirementID));
 	}
 	////////////////////////
-	public Set<Testrun> getAllTestRuns(long requirementID) 
+	public Set<Testrun> getAllTestRuns(Long requirementID) 
 	{
 		Requirement requirement = getRequirement(requirementID);
 		if(requirement == null)
@@ -102,7 +102,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirement.getTestruns();			
 	} 
 
-	public Set<Testrun> getCompulsoryTestRuns(long requirementID)
+	public Set<Testrun> getCompulsoryTestRuns(Long requirementID)
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(requirementID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -120,7 +120,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return compulsoryTestruns;		
 	}	
 
-	public Set<Testrun> getOptionalTestRuns(long requirementID)
+	public Set<Testrun> getOptionalTestRuns(Long requirementID)
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(requirementID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -138,7 +138,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return optionalTestruns;		
 	}
 
-	public Set<Testcase> getAllTestCases(long requirementID)
+	public Set<Testcase> getAllTestCases(Long requirementID)
 	{
 		Set<Testrun> allTestruns = getAllTestRuns(requirementID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -156,7 +156,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return allTestcases;
 	}
 
-	public Set<Testcase> getCompulsoryTestCases(long requirementID)
+	public Set<Testcase> getCompulsoryTestCases(Long requirementID)
 	{
 		Set<Testrun> allTestruns = getCompulsoryTestRuns(requirementID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -174,7 +174,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return allTestcases;
 	}
 
-	public Set<Testcase> getOptionalTestCases(long requirementID)
+	public Set<Testcase> getOptionalTestCases(Long requirementID)
 	{
 		Set<Testrun> allTestruns = getOptionalTestRuns(requirementID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -192,7 +192,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return allTestcases;
 	}
 
-	public Set<Testplan> getAllTestPlans(long requirementID)
+	public Set<Testplan> getAllTestPlans(Long requirementID)
 	{		
 		Set<Testcase> allTestcases = getAllTestCases(requirementID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -210,7 +210,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return allTestplans;
 	}
 
-	public Set<Testplan> getCompulsoryTestPlans(long requirementID)
+	public Set<Testplan> getCompulsoryTestPlans(Long requirementID)
 	{		
 		Set<Testcase> allTestcases = getCompulsoryTestCases(requirementID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -228,7 +228,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return allTestplans;
 	}
 
-	public Set<Testplan> getOptionalTestPlans(long requirementID)
+	public Set<Testplan> getOptionalTestPlans(Long requirementID)
 	{		
 		Set<Testcase> allTestcases = getOptionalTestCases(requirementID);
 		if(allTestcases == null || allTestcases.isEmpty())
@@ -246,7 +246,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return allTestplans;
 	}
 
-	public Set<Cycle> getCycles(long requirementID) {
+	public Set<Cycle> getCycles(Long requirementID) {
 		Set<Testrun> allTestruns = getCompulsoryTestRuns(requirementID);
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
@@ -263,7 +263,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return cycles;
 	}
 
-	public Set<Project> getProjects(long requirementID)
+	public Set<Project> getProjects(Long requirementID)
 	{
 		Set<Cycle> cycles =  getCycles(requirementID);
 		if(cycles == null || cycles.isEmpty())
@@ -281,7 +281,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return projects;
 	}
 
-	public Set<Environment> getEnvironments(long requirementID) 
+	public Set<Environment> getEnvironments(Long requirementID) 
 	{
 		Set<Testrun> allTestruns = getCompulsoryTestRuns(requirementID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -299,7 +299,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return environments;
 	}	
 
-	public Set<Defect> getCascadedAllDefects(long requirementID)
+	public Set<Defect> getCascadedAllDefects(Long requirementID)
 	{
 		Requirement requirement = getRequirement(requirementID);
 		if(requirement == null)
@@ -325,7 +325,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}		
 		return defects;				
 	}
-	public Set<Defect> getCascadedSev1Defects(long testrunID) 
+	public Set<Defect> getCascadedSev1Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -342,7 +342,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}	
 		return sev1defects;
 	}
-	public Set<Defect> getCascadedSev2Defects(long testrunID) 
+	public Set<Defect> getCascadedSev2Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -360,7 +360,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return sev2defects;
 	}
 		
-	public Set<Defect> getCascadedSev3Defects(long testrunID) 
+	public Set<Defect> getCascadedSev3Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -377,7 +377,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}	
 		return sev3defects;
 	}	
-	public Set<Defect> getCascadedSev4Defects(long testrunID) 
+	public Set<Defect> getCascadedSev4Defects(Long testrunID) 
 	{		
 		Set<Defect> allDefects = getCascadedAllDefects(testrunID);		
 		if(allDefects == null || allDefects.isEmpty())
@@ -394,23 +394,23 @@ public class RequirementServiceImpl implements RequirementService {
 		}	
 		return sev4defects;
 	}
-	public Set<TestcenterUser> getCascadedTesters(long requirementID) {
+	public Set<TestcenterUser> getCascadedTesters(Long requirementID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedSnrTesters(long requirementID) {
+	public Set<TestcenterUser> getCascadedSnrTesters(Long requirementID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<TestcenterUser> getCascadedDevelopers(long requirementID) {
+	public Set<TestcenterUser> getCascadedDevelopers(Long requirementID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Set<TestcenterUser> getCascadedSnrDevelopers(
-			long requirementID) {
+			Long requirementID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

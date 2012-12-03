@@ -26,7 +26,7 @@ public class DefectRule {
 
 	@Basic
 	@Column(name="cycleID")
-	private long cycleID;    
+	private Long cycleID;    
 
 	@Length(min = 2, max = 64, message = "Defect Rule Name must be between 2 to 64 characters.")
 	@NotEmpty(message = "Defect Rule Name is required.")
@@ -39,7 +39,7 @@ public class DefectRule {
 	 * @param cycleID
 	 * @param defectRuleName
 	 */
-	public DefectRule(long cycleID, String defectRuleName) {
+	public DefectRule(Long cycleID, String defectRuleName) {
 		this.cycleID = cycleID;
 		this.defectRuleName = defectRuleName;
 	}
@@ -47,14 +47,14 @@ public class DefectRule {
 	/**
 	 * @return the cycleID
 	 */
-	public long getCycleID() {
+	public Long getCycleID() {
 		return cycleID;
 	}
 
 	/**
 	 * @param cycleID the cycleID to set
 	 */
-	public void setCycleID(long cycleID) {
+	public void setCycleID(Long cycleID) {
 		this.cycleID = cycleID;
 	}
 

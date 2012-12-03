@@ -38,7 +38,7 @@ public interface ProjectService {
 
 	void addNewProject(Project project);
 
-	Project getProject(long projectID);   
+	Project getProject(Long projectID);   
 
 	Project getProjectByName(String projectName);
 
@@ -46,152 +46,152 @@ public interface ProjectService {
 
 	void update(Project project);
 
-	void remove(long projectID);
+	void remove(Long projectID);
 
-	void updateProjectWithId(long projectID, Project project);
+	void updateProjectWithId(Long projectID, Project project);
 
-	void updateProjectNameWithId(long projectID, Project project,String projectName);
+	void updateProjectNameWithId(Long projectID, Project project,String projectName);
 
-	boolean updateProject(long projectID, Project project);
+	boolean updateProject(Long projectID, Project project);
 
-	Set<Project> getAllProjectsByCompanyID(long companyID);
+	Set<Project> getAllProjectsByCompanyID(Long companyID);
 	///////////////////////////////////
 	/**
 	 * Returns a collection of ChildProject for a project 
 	 * Set<Project>
 	 * @return collection of ChildProject for a project
 	 */
-	Set<Project> getChildProjects(long projectID);
+	Set<Project> getChildProjects(Long projectID);
 	/**
 	 * Returns a collection of All projects including the parent 
 	 * Set<Project>
 	 * @return collection of All projects including the parent 
 	 */
-	Set<Project> getParentAndChildProjects(long projectID);
+	Set<Project> getParentAndChildProjects(Long projectID);
 	/**
 	 * Returns a Projects Parent Project  
 	 * Project
 	 * @return a Projects Parent Project, otherwise null
 	 */	
-	Project getParentProject(long projectID);	
+	Project getParentProject(Long projectID);	
 	/**
 	 * Returns a collection of All Cycles in a project incl all child project cycles 
 	 * Set<Cycle>
 	 * @return collection of All  Cycles in a project incl all child project cycles,
 	 */	
-	Set<Cycle> getParentAndChildCycles(long projectID);
+	Set<Cycle> getParentAndChildCycles(Long projectID);
 	/**
 	 * Returns a collection of All Testruns in a project incl all child project cycles 
 	 * Set<Testrun>
 	 * @return collection of All Testruns in a project incl all child project cycles,
 	 */	
-	Set<Testrun> getCascadedAllTestRuns(long projectID);
+	Set<Testrun> getCascadedAllTestRuns(Long projectID);
 	/**
 	 * Returns a collection of Compulsory Testruns in a project incl all child project cycles 
 	 * Set<Testrun>
 	 * @return collection of Compulsory Testruns in a project incl all child project cycles,
 	 */	
-	Set<Testrun> getCascadedCompulsoryTestRuns(long projectID);
+	Set<Testrun> getCascadedCompulsoryTestRuns(Long projectID);
 	/**
 	 * Returns a collection of Optional Testruns in a project incl all child project cycles 
 	 * Set<Testrun>
 	 * @return collection of Optional Testruns in a project incl all child project cycles,
 	 */	
-	Set<Testrun> getCascadedOptionalTestRuns(long projectID);
+	Set<Testrun> getCascadedOptionalTestRuns(Long projectID);
 	/**
 	 * Returns a collection of Testcases in a project incl all child project cycles 
 	 * Set<Testcase>
 	 * @return collection of Testcases in a project incl all child project cycles,
 	 */	
-	Set<Testcase> getCascadedAllTestCases(long projectID);
+	Set<Testcase> getCascadedAllTestCases(Long projectID);
 	/**
 	 * Returns a collection of Compulsory Testcases in a project incl all child project cycles 
 	 * Set<Testcase>
 	 * @return collection of Compulsory Testcases in a project incl all child project cycles,
 	 */	
-	Set<Testcase> getCascadedCompulsoryTestCases(long projectID);
+	Set<Testcase> getCascadedCompulsoryTestCases(Long projectID);
 	/**
 	 * Returns a collection of Optional Testcases in a project incl all child project cycles 
 	 * Set<Testcase>
 	 * @return collection of Optional Testcases in a project incl all child project cycles,
 	 */	
-	Set<Testcase> getCascadedOptionalTestCases(long projectID);
+	Set<Testcase> getCascadedOptionalTestCases(Long projectID);
 	/**
 	 * Returns a collection of Testplans in a project incl all child project cycles 
 	 * Set<Testcase>
 	 * @return collection of Testplans in a project incl all child project cycles,
 	 */	
-	Set<Testplan> getCascadedAllTestPlans(long projectID);
+	Set<Testplan> getCascadedAllTestPlans(Long projectID);
 	/**
 	 * Returns a collection of Compulsory Testplans in a project incl all child project cycles 
 	 * Set<Testcase>
 	 * @return collection of Compulsory Testplans in a project incl all child project cycles,
 	 */		
-	Set<Testplan> getCascadedCompulsoryTestPlans(long projectID);
+	Set<Testplan> getCascadedCompulsoryTestPlans(Long projectID);
 	/**
 	 * Returns a collection of Optional Testplans in a project incl all child project cycles 
 	 * Set<Testcase>
 	 * @return collection of Optional Testplans in a project incl all child project cycles,
 	 */	
-	Set<Testplan> getCascadedOptionalTestPlans(long projectID);
+	Set<Testplan> getCascadedOptionalTestPlans(Long projectID);
 	/**
 	 * Returns a collection of Defects in a project incl all child project cycles 
 	 * Set<Tesplan>
 	 * @return collection of Defects in a project incl all child project cycles,
 	 */	
-	Set<Defect> getCascadedDefects(long projectID);
+	Set<Defect> getCascadedDefects(Long projectID);
 	/**
 	 * Returns a collection of Sev1 Defects in a project incl all child project cycles 
 	 * Set<Tesplan>
 	 * @return collection of Sev1 Defects in a project incl all child project cycles,
 	 */	
-	Set<Defect> getCascadedSev1Defects(long projectID);
+	Set<Defect> getCascadedSev1Defects(Long projectID);
 	/**
 	 * Returns a collection of Sev2 Defects in a project incl all child project cycles 
 	 * Set<Tesplan>
 	 * @return collection of Sev2 defects in a project incl all child project cycles,
 	 */	
-	Set<Defect> getCascadedSev2Defects(long projectID);
+	Set<Defect> getCascadedSev2Defects(Long projectID);
 	/**
 	 * Returns a collection of Sev3 Defects in a project incl all child project cycles 
 	 * Set<Tesplan>
 	 * @return collection of Sev3 Defects in a project incl all child project cycles,
 	 */	
-	Set<Defect> getCascadedSev3Defects(long projectID);
+	Set<Defect> getCascadedSev3Defects(Long projectID);
 	/**
 	 * Returns a collection of Sev4 Defects in a project incl all child project cycles 
 	 * Set<Tesplan>
 	 * @return collection of Sev4 Defects in a project incl all child project cycles,
 	 */	
-	Set<Defect> getCascadedSev4Defects(long projectID);
+	Set<Defect> getCascadedSev4Defects(Long projectID);
 	/**
 	 * Returns a collection of Environments in a project incl all child project cycles 
 	 * Set<Tesplan>
 	 * @return collection of Environments in a project incl all child project cycles,
 	 */	
-	Set<Environment> getCascadedEnvironments(long projectID);
+	Set<Environment> getCascadedEnvironments(Long projectID);
 	/**
 	 * Returns a collection of Requirements in a project incl all child project cycles 
 	 * Set<Tesplan>
 	 * @return collection of Requirements in a project incl all child project cycles,
 	 */	
-	Set<Requirement> getCascadedRequirements(long projectID);
+	Set<Requirement> getCascadedRequirements(Long projectID);
 
-	Set<TestcenterUser> getCascadedTesters(long projectID);
-	Set<TestcenterUser> getCascadedSnrTesters(long projectID);
-	Set<TestcenterUser> getCascadedDevelopers(long projectID);
-	Set<TestcenterUser> getCascadedSnrDevelopers(long projectID);
+	Set<TestcenterUser> getCascadedTesters(Long projectID);
+	Set<TestcenterUser> getCascadedSnrTesters(Long projectID);
+	Set<TestcenterUser> getCascadedDevelopers(Long projectID);
+	Set<TestcenterUser> getCascadedSnrDevelopers(Long projectID);
 	//////////////////////////////////
 	
-	//ProjectSummary getProjectSummary(long companyID, long projectID, String level  );
+	//ProjectSummary getProjectSummary(Long companyID, Long projectID, String level  );
 
 	ColModelAndNames getColumnModelAndNames(Long companyID);
 
-	ProjectSummaryList getGridProjects(long companyID, String projectID, String cycleID,
+	ProjectSummaryList getGridProjects(Long companyID, String projectID, String cycleID,
 			String testplanID,String testcaseID, String testrunID, String defectID, 
 			String requirementID, String environmentID, String userID, String levelName);
 
-	RelatedObjectList getRelatedObjects(long projectID, String cycleID,
+	RelatedObjectList getRelatedObjects(Long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID);
 

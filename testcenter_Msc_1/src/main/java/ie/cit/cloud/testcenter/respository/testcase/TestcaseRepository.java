@@ -24,7 +24,7 @@ public interface TestcaseRepository {
      * @return Testcase for given id, {@link EmptyResultDataAccessException} if no
      *         Testcase was found
      */
-	Testcase get(long testcaseID);
+	Testcase get(Long testcaseID);
 
     /**
      * Adds new Testcase into repository
@@ -55,7 +55,7 @@ public interface TestcaseRepository {
      *            Testcase ID
      * @return Testcase for given id, null if test was not found
      */
-    Testcase findById(long testcaseID);
+    Testcase findById(Long testcaseID);
     /**
      * Returns Testcase items given by its name
      * 

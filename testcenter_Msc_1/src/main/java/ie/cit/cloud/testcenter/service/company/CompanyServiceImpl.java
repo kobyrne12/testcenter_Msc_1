@@ -59,7 +59,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
-    public Company getCompany(long companyID) {
+    public Company getCompany(Long companyID) {
 	return repo.findById(companyID);
     }
     
@@ -80,12 +80,12 @@ public class CompanyServiceImpl implements CompanyService {
     }  
     
   //  @Secured("ROLE_ADMIN")
-    public void remove(long companyID) {
+    public void remove(Long companyID) {
 	repo.delete(repo.get(companyID));
     }
        
   //  @Secured("ROLE_ADMIN")    
-    public void updateCompanyWithId(long companyID, Company company) {
+    public void updateCompanyWithId(Long companyID, Company company) {
     	Company oldCompany = repo.findById(companyID);
     	oldCompany.setCompanyName(company.getCompanyName());
     	// TODO Finish update for all values
@@ -93,14 +93,14 @@ public class CompanyServiceImpl implements CompanyService {
     	repo.update(oldCompany);
     }
  //   @Secured("ROLE_ADMIN")
-    public void updateCompanyNameWithId(long companyID, Company company, String companyName) {
+    public void updateCompanyNameWithId(Long companyID, Company company, String companyName) {
     	Company oldCompany = repo.findById(companyID);
     	oldCompany.setCompanyName(company.getCompanyName());
     	// TODO Finish update for all values
     	repo.update(oldCompany);
     }
 
-	public boolean updateCompany(long companyID, Company company) {
+	public boolean updateCompany(Long companyID, Company company) {
 		// TODO Auto-generated method stub
 		return false;
 	}	
@@ -111,7 +111,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Cycle>
 	 * @return collection of cycles in a company,
 	 */	
-	public Set<Cycle> getAllCycles(long companyID)
+	public Set<Cycle> getAllCycles(Long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
@@ -134,7 +134,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * @return collection of All Testruns in a company,
 	 */
 
-	public Set<Testrun> getAllTestRuns(long companyID)
+	public Set<Testrun> getAllTestRuns(Long companyID)
 	{		
 		Set<Cycle> cycles = getAllCycles(companyID);		
 		if(cycles == null || cycles.isEmpty())
@@ -156,7 +156,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testrun>
 	 * @return collection of All Compulsory Testruns in a company,
 	 */	
-	public Set<Testrun> getCompulsoryTestRuns(long companyID)
+	public Set<Testrun> getCompulsoryTestRuns(Long companyID)
 	{
 		Set<Cycle> cycles = getAllCycles(companyID);
 		if(cycles == null || cycles.isEmpty())
@@ -179,7 +179,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testrun>
 	 * @return collection of All Optional Testruns in a company,
 	 */	
-	public Set<Testrun> getOptionalTestRuns(long companyID)
+	public Set<Testrun> getOptionalTestRuns(Long companyID)
 	{
 		Set<Cycle> cycles = getAllCycles(companyID);
 		if(cycles == null || cycles.isEmpty())
@@ -204,7 +204,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testcase>
 	 * @return collection of Testcases in a company
 	 */	
-	public Set<Testcase> getAllTestCases(long companyID)
+	public Set<Testcase> getAllTestCases(Long companyID)
 	{	
 		Company company = getCompany(companyID);
 		if(company.getTestcases() == null || company.getTestcases().isEmpty())
@@ -218,7 +218,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testcase>
 	 * @return collection of Compulsory Testcases in a company,
 	 */	
-	public Set<Testcase> getCompulsoryTestCases(long companyID)
+	public Set<Testcase> getCompulsoryTestCases(Long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
@@ -241,7 +241,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testcase>
 	 * @return collection of Optional Testcases in a company,
 	 */	
-	public Set<Testcase> getOptionalTestCases(long companyID)
+	public Set<Testcase> getOptionalTestCases(Long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
@@ -264,7 +264,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testplan>
 	 * @return collection of Testplans in a company
 	 */	
-	public Set<Testplan> getAllTestPlans(long companyID)
+	public Set<Testplan> getAllTestPlans(Long companyID)
 	{	
 		Company company = getCompany(companyID);
 		if(company.getTestplans() == null || company.getTestplans().isEmpty())
@@ -278,7 +278,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testplan>
 	 * @return collection of Compulsory Testplans in a company,
 	 */	
-	public Set<Testplan> getCompulsoryTestPlans(long companyID)
+	public Set<Testplan> getCompulsoryTestPlans(Long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
@@ -301,7 +301,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Testcase>
 	 * @return collection of Optional Testplans in a company,
 	 */	
-	public Set<Testplan> getOptionalTestPlans(long companyID)
+	public Set<Testplan> getOptionalTestPlans(Long companyID)
 	{
 		Company company = getCompany(companyID);
 		if(company.getProjects() == null || company.getProjects().isEmpty())
@@ -324,7 +324,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Defect>
 	 * @return collection of All Sev1 Defects in a company,
 	 */	
-	public Set<Defect> getAllSev1Defects(long companyID)
+	public Set<Defect> getAllSev1Defects(Long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
@@ -346,7 +346,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Defect>
 	 * @return collection of All Sev2 Defects in a company,
 	 */	
-	public Set<Defect> getAllSev2Defects(long companyID)
+	public Set<Defect> getAllSev2Defects(Long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
@@ -368,7 +368,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * Set<Defect>
 	 * @return collection of All Sev3 Defects in a company,
 	 */	
-	public Set<Defect> getAllSev3Defects(long companyID)
+	public Set<Defect> getAllSev3Defects(Long companyID)
 	{	
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
@@ -391,7 +391,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * @return collection of All Sev4 Defects in a company,
 	 */
 
-	public Set<Defect> getAllSev4Defects(long companyID)
+	public Set<Defect> getAllSev4Defects(Long companyID)
 	{		
 		Company company = getCompany(companyID);
 		if(company.getDefects() == null || company.getDefects().isEmpty())
@@ -408,7 +408,7 @@ public class CompanyServiceImpl implements CompanyService {
 		}
 		return sev4Defects;
 	}	
-	public Set<TestcenterUser> getAllTesters(long companyID) {
+	public Set<TestcenterUser> getAllTesters(Long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{
@@ -425,7 +425,7 @@ public class CompanyServiceImpl implements CompanyService {
 		//		return testers;
 		return null;
 	}
-	public Set<TestcenterUser> getAllSeniorTesters(long companyID) {
+	public Set<TestcenterUser> getAllSeniorTesters(Long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{
@@ -442,7 +442,7 @@ public class CompanyServiceImpl implements CompanyService {
 		//		return testers;
 		return null;
 	}
-	public Set<TestcenterUser> getAllDevelopers(long companyID) {
+	public Set<TestcenterUser> getAllDevelopers(Long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{
@@ -459,7 +459,7 @@ public class CompanyServiceImpl implements CompanyService {
 		//		return testers;	
 		return null;
 	}
-	public Set<TestcenterUser> getAllSeniorDevelopers(long companyID) {
+	public Set<TestcenterUser> getAllSeniorDevelopers(Long companyID) {
 		//		Company company = getCompany(companyID);
 		//		if(company.getUsers() == null || company.getUsers().isEmpty())
 		//		{

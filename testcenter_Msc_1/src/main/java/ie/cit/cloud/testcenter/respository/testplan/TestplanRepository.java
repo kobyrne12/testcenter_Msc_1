@@ -23,7 +23,7 @@ public interface TestplanRepository {
      * @return Testplan for given id, {@link EmptyResultDataAccessException} if no
      *         Testplan was found
      */
-	Testplan get(long testplanID);
+	Testplan get(Long testplanID);
 
     /**
      * Adds new Testplan into repository
@@ -54,7 +54,7 @@ public interface TestplanRepository {
      *            Testplan ID
      * @return Testplan for given id, null if test was not found
      */
-    Testplan findById(long testplanID);
+    Testplan findById(Long testplanID);
     /**
      * Returns Testplan items given by its name
      * 
@@ -71,7 +71,7 @@ public interface TestplanRepository {
      * @return Testplan for given name, null if Testplan was not found
      */
 
-	TestplanSection findTestplanSectionById(long testplanSectionID);
+	TestplanSection findTestplanSectionById(Long testplanSectionID);
 
 	void createTestplanSection(TestplanSection testplanSection);
 

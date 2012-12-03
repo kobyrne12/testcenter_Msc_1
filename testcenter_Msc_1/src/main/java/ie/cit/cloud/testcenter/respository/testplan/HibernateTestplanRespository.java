@@ -30,7 +30,7 @@ public class HibernateTestplanRespository implements TestplanRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Testplan get(long testplanID) {
+	public Testplan get(Long testplanID) {
 		Query query = em.createQuery("from Testplan where testplanID=:testplanID");
 		//	Query query = em.createQuery("from TestPlan where user=:user and id=:id");
 		//	query.setParameter("user", getCurrentUser());
@@ -62,7 +62,7 @@ public class HibernateTestplanRespository implements TestplanRepository {
 		return set;	
 	}
 
-	public Testplan findById(long testplanID) {
+	public Testplan findById(Long testplanID) {
 		return get(testplanID);
 	}
 
@@ -72,7 +72,7 @@ public class HibernateTestplanRespository implements TestplanRepository {
 		return (Testplan) query.getSingleResult();
 	}
 
-	public TestplanSection findTestplanSectionById(long testplanSectionID) {
+	public TestplanSection findTestplanSectionById(Long testplanSectionID) {
 		Query query = em.createQuery("from TestplanSection where testplanSectionID=:testplanSectionID");
 		query.setParameter("testplanSectionID", testplanSectionID);
 		return (TestplanSection) query.getSingleResult();	
