@@ -60,7 +60,13 @@ public class CompanyServiceImpl implements CompanyService {
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)
     public Company getCompany(Long companyID) {
-	return repo.findById(companyID);
+    	try{
+    		return repo.findById(companyID);		
+		}
+		catch(NoResultException nre)			
+		{	
+			return null;
+		}		
     }
     
     @Transactional(rollbackFor=NoResultException.class,readOnly=true)

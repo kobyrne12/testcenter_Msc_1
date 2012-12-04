@@ -257,8 +257,9 @@ public class TestcaseJSONController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody String addNewTestcase(
 			@RequestParam(value="companyID", required=true) Long companyID,
-			@RequestParam(value="testcaseName", required=true) String testcaseName,
-			@RequestParam(value="projectID", defaultValue="") String projectID,	
+			@RequestParam(value="testplanID", required=true) Long testplanID,
+			@RequestParam(value="projectID", defaultValue="") String projectID,					
+			@RequestParam(value="testcaseName", required=true) String testcaseName,			
 			@RequestParam(value="testcaseSummary", defaultValue="") String testcaseSummary,	
 			@RequestParam(value="testcasePreCondition", defaultValue="") String testcasePreCondition,	
 			@RequestParam(value="testcaseSteps", defaultValue="") String testcaseSteps,	
@@ -285,7 +286,7 @@ public class TestcaseJSONController {
 			try{    	
 				if(companyID != null)
 				{
-					Testcase testcase = new Testcase(companyID,(long) 1,testcaseName,null,"DRAFT",
+					Testcase testcase = new Testcase(companyID,testplanID,testcaseName,null,"DRAFT",
 							testcaseSummary,testcasePreCondition,testcaseSteps,testcasePassCondition,"TESTER","SENIOR TESTER");
 
 					try
@@ -301,23 +302,24 @@ public class TestcaseJSONController {
 					//		    		System.out.println(e);
 					//		    		return "ERROR :: Could not add Test Case :"+testcaseName; 
 					//		    	}
-					if(!projectID.isEmpty())
-					{
-						Project project = projectService.getProject(Long.valueOf(projectID));
-						if(project == null)
-						{
-							return "ERROR :: Could not find project :"+ projectID; 
-						}				    	
-						try
-						{
-							project.getTestcases().add(testcase);     
-							projectService.update(project);  	
-						}
-						catch(Exception e)
-						{
-							return "ERROR :: Could not add Test Case :"+testcaseName+" To project :"+ projectID; 
-						}					
-					}
+//					if(!projectID.isEmpty())
+//					{
+//						Project project = projectService.getProject(Long.valueOf(projectID));
+//						if(project == null)
+//						{
+//							return "ERROR :: Could not find project :"+ projectID; 
+//						}				    	
+//						try
+//						{
+//							project.getTestplans().
+//							project.getTestcases().add(testcase);     
+//							projectService.update(project);  	
+//						}
+//						catch(Exception e)
+//						{
+//							return "ERROR :: Could not add Test Case :"+testcaseName+" To project :"+ projectID; 
+//						}					
+//					}
 					return "ok";  
 				}
 				else

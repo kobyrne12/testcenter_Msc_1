@@ -141,6 +141,7 @@ public interface TestplanService {
 	 */		
 	Set<Defect> getCascadedSev4Defects(Long testplanID);
 	
+	Set<TestcenterUser> getCascadedUsers(Long testplanID);
 	Set<TestcenterUser> getCascadedTesters(Long testplanID);
 	Set<TestcenterUser> getCascadedSnrTesters(Long testplanID);
 	Set<TestcenterUser> getCascadedDevelopers(Long testplanID);
@@ -152,5 +153,14 @@ public interface TestplanService {
 				String cycleID, String testplanID, String testcaseID,
 				String testrunID, String defectID, String requirementID,
 				String environmentID, String userID,String levelName,String stage,String required);
+	
+	Set<Testplan> getFilteredTestplans(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required);
+	
+	Set<Testplan> getExistingTestplans(Long companyID,String relatedItem, String ID);
+
+	Set<Testplan> getAvailableTestplans(Long companyID, String relatedItem, String iD);
 
 }

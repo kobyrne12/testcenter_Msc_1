@@ -11,6 +11,7 @@ package ie.cit.cloud.testcenter.service.testplan;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
@@ -26,6 +27,7 @@ import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.TestplanSection;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.ProjectSummaryList;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
 import ie.cit.cloud.testcenter.model.summary.TestplanSummary;
@@ -55,7 +57,7 @@ public class TestplanServiceImpl implements TestplanService {
 	@Autowired
 	@Qualifier("hibernateTestplanRespository")
 	TestplanRepository testplanRepo;      
-		
+
 	@Autowired
 	CompanyService companyService;
 	@Autowired
@@ -72,8 +74,8 @@ public class TestplanServiceImpl implements TestplanService {
 	RequirementService requirementService;
 	@Autowired
 	EnvironmentService environmentService;
-	
-	
+
+
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Testplan getTestplan(Long testplanID) {
 		try{
@@ -105,7 +107,7 @@ public class TestplanServiceImpl implements TestplanService {
 	public void remove(Long testplanID) {
 		testplanRepo.delete(getTestplan(testplanID));
 	}
-	
+
 	public TestplanSection getTestplanSection(Long testplanSectionID) {
 		try{
 			return testplanRepo.findTestplanSectionById(testplanSectionID);						
@@ -118,17 +120,17 @@ public class TestplanServiceImpl implements TestplanService {
 
 	public void addNewTestplanSection(TestplanSection testplanSection) {
 		testplanRepo.createTestplanSection(testplanSection);	
-		
+
 	}
 
 	public void updateTestplanSection(TestplanSection testplanSection) {
 		testplanRepo.updateTestplanSection(testplanSection);
-		
+
 	}
 
 	public void removeTestplanSection(Long testplanSectionID) {
 		testplanRepo.deleteTestplanSection(getTestplanSection(testplanSectionID));
-		
+
 	}
 	////////////////
 
@@ -181,7 +183,7 @@ public class TestplanServiceImpl implements TestplanService {
 		}		
 		return optionalTestcases;
 	}
-	
+
 	public Set<Testrun> getAllTestRuns(Long testplanID) 
 	{
 		Set<Testcase> allTestcases = getAllTestCases(testplanID);
@@ -264,20 +266,12 @@ public class TestplanServiceImpl implements TestplanService {
 
 	public Set<Project> getProjects(Long testplanID)
 	{
-		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		
-		if(compulsoryTestruns == null)
+		Testplan testplan = getTestplan(testplanID);
+		if(testplan.getProjects() == null || testplan.getProjects().isEmpty() )
 		{
 			return null;
-		}	
-		Set<Project> projects = new HashSet<Project>();
-		for(final Testrun testrun : compulsoryTestruns)
-		{
-			if(testrunService.getProject(testrun.getTestrunID()) != null )
-			{
-				projects.add(testrunService.getProject(testrun.getTestrunID()));
-			}			
-		}	
-		return projects;
+		}
+		return testplan.getProjects();		
 	}
 
 	public Set<Requirement> getRequirements(Long testplanID)
@@ -410,6 +404,11 @@ public class TestplanServiceImpl implements TestplanService {
 		}	
 		return defects;
 	}
+	
+	public Set<TestcenterUser> getCascadedUsers(Long testplanID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public Set<TestcenterUser> getCascadedTesters(Long testplanID) {
 		// TODO Auto-generated method stub
@@ -473,8 +472,8 @@ public class TestplanServiceImpl implements TestplanService {
 		columnModelSet.add(new GridAttributes("totalCycles",true));
 		colNames.add(company.getProjectsDisplayName());
 		columnModelSet.add(new GridAttributes("totalProjects",true));
-		
-		
+
+
 		colNames.add(company.getEnvironmentsDisplayName());
 		columnModelSet.add(new GridAttributes("totalEnvironments",true));
 		colNames.add(company.getRequirementsDisplayName());
@@ -521,14 +520,14 @@ public class TestplanServiceImpl implements TestplanService {
 		return colModelAndName;
 	}
 
-	public TestplanSummaryList getGridTestplans(Long companyID, String projectID,
+	public Set<Testplan> getFilteredTestplans(Long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
 			String environmentID, String userID,String levelName,String stage,String required)
-	{
+			{
 		// Check which testplans wil be displayed 
 		Company company = companyService.getCompany(companyID);
-		Set<Testplan> testplans = company.getTestplans();
+		Set<Testplan> testplans = new LinkedHashSet<Testplan>();
 
 		if (testcaseID != null && !testcaseID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
 		{			
@@ -559,7 +558,7 @@ public class TestplanServiceImpl implements TestplanService {
 		}			
 		if(testplans == null || testplans.isEmpty()){return null;}
 
-			// Retain Testrun testplans
+		// Retain Testrun testplans
 		if (testrunID != null && !testrunID.isEmpty()) 
 		{			
 			if(testrunService.getProject(Long.valueOf(testrunID)) != null)
@@ -610,21 +609,141 @@ public class TestplanServiceImpl implements TestplanService {
 		//			}			
 		//		}
 		//		if(testplans == null || testplans.isEmpty()){return null;}
+		return testplans;
+			}
+	public TestplanSummaryList getGridTestplans(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required)
+	{
+		Set<Testplan> testplans = getFilteredTestplans(companyID, projectID,
+				cycleID, testplanID, testcaseID,
+				testrunID, defectID, requirementID,
+				environmentID, userID,levelName, stage, required);
 
 		Set<TestplanSummary> testplanSummarySet = new HashSet<TestplanSummary>();
 		TestplanSummaryList testplanSummaryList = new TestplanSummaryList();
-
+		if(testplans == null || testplans.isEmpty())
+		{
+			return null;
+		}
 		for(final Testplan testplan : testplans)
-		{				
-			//TestplanSummary testplanSummary = getTestplanSummary(companyID, testplan,
-			//		level,stage,required);	
-			//testplanSummarySet.add(testplanSummary);			
+		{						
 			testplanSummarySet.add(new TestplanSummary(testplan, levelName, testrunService, defectService));
-			
 		}
 
 		testplanSummaryList.setTestplans(testplanSummarySet);
 		return testplanSummaryList;
 	}
+	public Set<Testplan> getExistingTestplans(Long companyID,String relatedItem, String ID)
+	{
+		Set<Testplan> existingTestplans = new LinkedHashSet<Testplan>();
+		if(relatedItem.equalsIgnoreCase("project"))
+		{
+			existingTestplans = getFilteredTestplans(companyID,ID,
+				null, null, null,null, null, null,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			existingTestplans = getFilteredTestplans(companyID,null,ID,
+				null, null,null, null, null,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			existingTestplans = getFilteredTestplans(companyID,null,null,
+				null, null,null, ID, null,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			existingTestplans = getFilteredTestplans(companyID,null,null,
+				null, null,null, null, ID,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			existingTestplans = getFilteredTestplans(companyID,null,null,
+				null, null,null, null, null, ID, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			existingTestplans = getFilteredTestplans(companyID,null,null,
+				null, null,null, null, null, null, ID,null,null,null);
+		}		
+		return existingTestplans;		
+	}
 
+	public Set<Testplan> getAvailableTestplans(Long companyID, String relatedItem,String iD)
+	{
+		Set<Testplan> allTestplans = companyService.getAllTestPlans(companyID);
+		if(allTestplans == null || allTestplans.isEmpty())
+		{
+			return null;
+		}
+		Set<Testplan> availableTestplans = new LinkedHashSet<Testplan>();
+		if(relatedItem.equalsIgnoreCase("project"))
+		{
+			for(final Testplan testplan : allTestplans)
+			{
+				if(testplan.getProjects() == null || testplan.getProjects().isEmpty())
+				{
+					availableTestplans.add(testplan);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			for(final Testplan testplan : allTestplans)
+			{
+				if(getCycles(testplan.getTestplanID()) == null || 
+						getCycles(testplan.getTestplanID()).isEmpty())
+				{
+					availableTestplans.add(testplan);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			for(final Testplan testplan : allTestplans)
+			{
+				if(getCascadedAllDefects(testplan.getTestplanID()) == null || 
+						(getCascadedAllDefects(testplan.getTestplanID()).isEmpty()))
+				{
+					availableTestplans.add(testplan);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			for(final Testplan testplan : allTestplans)
+			{
+				if(getRequirements(testplan.getTestplanID())  == null || 
+						(getRequirements(testplan.getTestplanID()).isEmpty()))
+				{
+					availableTestplans.add(testplan);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			for(final Testplan testplan : allTestplans)
+			{
+				if(getEnvironments(testplan.getTestplanID())  == null || 
+						(getEnvironments(testplan.getTestplanID()).isEmpty()))
+				{
+					availableTestplans.add(testplan);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			for(final Testplan testplan : allTestplans)
+			{
+				if(getCascadedUsers(testplan.getTestplanID())  == null || 
+						(getCascadedUsers(testplan.getTestplanID()).isEmpty()))
+				{
+					availableTestplans.add(testplan);
+				}
+			}			
+		}
+		return availableTestplans;
+	}
 }

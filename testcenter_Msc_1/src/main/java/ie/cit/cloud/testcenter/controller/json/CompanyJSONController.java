@@ -133,23 +133,7 @@ public class CompanyJSONController {
     public @ResponseBody Project getProjectAt(@PathVariable("projectID") Long projectID) {
     	return projectService.getProject(projectID);    	
     }
- // GET project testcases
-    @RequestMapping(value = "/projecttestcases/{projectID}", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody List<Long> getprojectTestcaseIds(@PathVariable("projectID") Long projectID) {
-    	Project project = projectService.getProject(projectID);  
-    	List<Long> testcaseIDs = new ArrayList<Long>();    
-    	try{
-    		for(final Testcase testcase :project.getTestcases())
-    		{
-    			testcaseIDs.add(testcase.getTestcaseID());
-    		}
-    		return testcaseIDs;  	
-    	}catch(NoResultException nre)
-    	{
-    		return null;
-    	}    	
-    } 
+ 
     // POST Project
     @RequestMapping(value = "/{companyID}/project/{projectID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
@@ -241,8 +225,8 @@ public class CompanyJSONController {
     	Testcase testcase = new Testcase(companyID,(long) 1,testcaseName,null,"APPROVED",
     			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER");	
     	testcaseService.addNewTestcase(testcase);	
-    	project.getTestcases().add(testcase);     
-    	projectService.update(project);     	
+    	//project.getTestcases().add(testcase);     
+    	//projectService.update(project);     	
     //	testcaseService.addNewTestcase(new Testcase(companyID,testcaseName,"REGRESSION","APPROVED",
     //			"SUMMARY","PRE_CONDITION","STEPS","PASS_CONDITION","TESTER","SENIOR TESTER"));	
     	
@@ -257,29 +241,29 @@ public class CompanyJSONController {
     {
     	Project project = projectService.getProject(projectID);
     	Testcase testcase = testcaseService.getTestcase(testcaseID);
-    	project.getTestcases().add(testcase);     
-    	projectService.update(project);     	
+//    	project.getTestcases().add(testcase);     
+//    	projectService.update(project);     	
     } 
     
-    // GET Testcase projects 
-    @RequestMapping(value = "/testcaseprojects/{testcaseID}", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody List<Long> getTestcaseProjects(@PathVariable("testcaseID") Long testcaseID) 
-    {    	
-    	List<Long> projectIDs = new ArrayList<Long>();    
-    	try{
-    		Testcase testcase = testcaseService.getTestcase(testcaseID); 
-    		for(final Project project :testcase.getProjects())
-    		{
-    			projectIDs.add(project.getProjectID());
-    		}
-    		return projectIDs;  	
-    	}catch(NoResultException nre)
-    	{
-    		return null;
-    	}    	
-    }    
-   
+//    // GET Testcase projects 
+//    @RequestMapping(value = "/testcaseprojects/{testcaseID}", method = RequestMethod.GET)
+//    @ResponseStatus(HttpStatus.OK)
+//    public @ResponseBody List<Long> getTestcaseProjects(@PathVariable("testcaseID") Long testcaseID) 
+//    {    	
+//    	List<Long> projectIDs = new ArrayList<Long>();    
+//    	try{
+//    		Testcase testcase = testcaseService.getTestcase(testcaseID); 
+//    		for(final Project project :testcase.getProjects())
+//    		{
+//    			projectIDs.add(project.getProjectID());
+//    		}
+//    		return projectIDs;  	
+//    	}catch(NoResultException nre)
+//    	{
+//    		return null;
+//    	}    	
+//    }    
+//   
     // DELETE TestCase 
     @RequestMapping(value = "/testcase/{testcaseID}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)

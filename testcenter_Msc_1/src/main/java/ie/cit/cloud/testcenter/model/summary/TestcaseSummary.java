@@ -555,10 +555,14 @@ public class TestcaseSummary
 		int count = 0;
 		if (totalProjects == -1)
 		{
-			if(testcase.getProjects() != null && !testcase.getProjects().isEmpty())
+			if(testplanService.getTestplan(testcase.getTestplanID()) != null)
 			{
-				count = testcase.getProjects().size();
-			}			
+				if(testplanService.getTestplan(testcase.getTestplanID()).getProjects() != null &&
+						!testplanService.getTestplan(testcase.getTestplanID()).getProjects().isEmpty())
+				{
+					count = testplanService.getTestplan(testcase.getTestplanID()).getProjects().size();
+				}
+			}					
 		}
 		return count;			
 	}

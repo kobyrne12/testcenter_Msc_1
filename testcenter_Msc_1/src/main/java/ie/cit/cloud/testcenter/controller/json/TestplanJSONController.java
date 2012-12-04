@@ -94,10 +94,10 @@ public class TestplanJSONController {
 			{    	
 		if (search == true) 
 		{   	
-			
+
 			ObjectMapper mapper = new ObjectMapper();    	
 			JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class); 
-			
+
 			TestplanSummaryList testplanSummaryList = testplanService.getGridTestplans(companyID, projectID,cycleID, testplanID, testcaseID,
 					testrunID, defectID, requirementID,
 					environmentID, userID,level,stage,required);
@@ -197,7 +197,7 @@ public class TestplanJSONController {
 					Integer.toString(testplanSummary.getTotalProjects()), 
 					testplanID, 
 					company.getProjectsDisplayName().replace(" ","")));
-			
+
 			relatedObjectSet.add(new RelatedObject(2,
 					company.getCyclesDisplayName(),
 					Integer.toString(testplanSummary.getTotalCycles()),
@@ -335,6 +335,133 @@ public class TestplanJSONController {
 	public void deleteCycle(@RequestParam(value="id", required=true) Long testplanID) {
 		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE testplanID = " + testplanID);
 		testplanService.remove(testplanID);
+	}
+	/**
+	 * Handles request for create a new Testplan 
+	 */
+	@RequestMapping(value = "/addto", method = RequestMethod.POST)
+	public @ResponseBody String addTestplanTo(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testplanID", required=true) Long testplanID,
+			@RequestParam(value="relatedItem",  required=true) String relatedItem,	
+			@RequestParam(value="relatedItemID",  required=true) String relatedItemID,	
+			Model model) 
+	{
+		if(relatedItem.equalsIgnoreCase("project"))
+		{
+			Testplan testplan = testplanService.getTestplan(testplanID);
+			Project project = projectService.getProject(Long.valueOf(relatedItemID));
+			if(project == null)
+			{
+				return "ERROR :: Could not find project :"+ relatedItemID; 
+			}				    	
+			try
+			{
+				project.getTestplans().add(testplan);     
+				projectService.update(project);  	
+			}
+			catch(Exception e)
+			{
+				return "ERROR :: Could not add Test plan :"+testplan.getTestplanName()+" To project :"+relatedItemID ; 
+			}				
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			// Add Testplan to cycle : all testcases 
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			// Add Testplan to defect : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			// Add Testplan to requirement : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			// Add Testplan to environment : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			// Add Testplan to user : all testcase test runs
+			return "ok";  
+		}
+		return "Could Not Add to " + relatedItem;  
+
+	}
+	/**
+	 * Handles request for create a new Testplan 
+	 */
+	@RequestMapping(value = "/remove", method = RequestMethod.POST)
+	public @ResponseBody String removeTestplanFrom(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testplanID", required=true) Long testplanID,
+			@RequestParam(value="relatedItem",  required=true) String relatedItem,	
+			@RequestParam(value="relatedItemID",  required=true) String relatedItemID,	
+			Model model) 
+	{
+		if(relatedItem.equalsIgnoreCase("project"))
+		{
+			Testplan testplan = testplanService.getTestplan(testplanID);
+			Project project = projectService.getProject(Long.valueOf(relatedItemID));
+			if(project == null)
+			{
+				return "ERROR :: Could not find project :"+ relatedItemID; 
+			}				    	
+			try
+			{	
+				Set<Testplan> newProjectTestplans = new LinkedHashSet<Testplan>();
+				for(Testplan projectTestplan :project.getTestplans())
+				{
+					System.out.println("COMPARE : "+projectTestplan.getTestplanID()+" TO "+testplan.getTestplanID());
+					if(projectTestplan.getTestplanID() != testplan.getTestplanID())
+					{
+						newProjectTestplans.add(projectTestplan);
+						System.out.println("NOT FOUND");
+					}
+				}
+				project.getTestplans().clear();   
+				project.getTestplans().addAll(newProjectTestplans);   
+				projectService.update(project);  	
+			}
+			catch(Exception e)
+			{
+				return "ERROR :: Could not remove Test plan :"+testplan.getTestplanName()+" To project :"+relatedItemID ; 
+			}				
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			// Add Testplan to cycle : all testcases 
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			// Add Testplan to defect : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			// Add Testplan to requirement : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			// Add Testplan to environment : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			// Add Testplan to user : all testcase test runs
+			return "ok";  
+		}
+		return "Could Not Add to " + relatedItem;  
+
 	}
 	// Testplan summary
 	@RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)

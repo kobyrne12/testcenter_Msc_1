@@ -56,12 +56,12 @@ public class Project {
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Set<Testplan> testplans  = new HashSet<Testplan>();    	
 
-	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "PROJECT_JOIN_TESTCASES",
-	joinColumns = { @JoinColumn(name = "projectID") },
-	inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
-	@Fetch(value = FetchMode.SUBSELECT)
-	private Set<Testcase> testcases  = new HashSet<Testcase>();    	
+//	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+//	@JoinTable(name = "PROJECT_JOIN_TESTCASES",
+//	joinColumns = { @JoinColumn(name = "projectID") },
+//	inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
+//	@Fetch(value = FetchMode.SUBSELECT)
+//	private Set<Testcase> testcases  = new HashSet<Testcase>();    	
 
 
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
@@ -120,7 +120,7 @@ public class Project {
 		this.projectName = projectName;    	
 		this.cycles = cycles;
 		this.testplans = tesplans;
-		this.testcases = testcases;
+		//this.testcases = testcases;
 		this.parentID = parentID;		
 		this.regressionRequiredPercent = regressionRequiredPercent;
 		this.newFeatureRequiredPercent = newFeatureRequiredPercent;
@@ -342,18 +342,18 @@ public class Project {
 	public void setTestplans(Set<Testplan> testplans) {
 		this.testplans = testplans;
 	}
-	/**
-	 * @return the testcases
-	 */
-	public Set<Testcase> getTestcases() {
-		return testcases;
-	}
-	/**
-	 * @param testcases the testcases to set
-	 */
-	public void setTestcases(Set<Testcase> testcases) {
-		this.testcases = testcases;
-	}
+//	/**
+//	 * @return the testcases
+//	 */
+//	public Set<Testcase> getTestcases() {
+//		return testcases;
+//	}
+//	/**
+//	 * @param testcases the testcases to set
+//	 */
+//	public void setTestcases(Set<Testcase> testcases) {
+//		this.testcases = testcases;
+//	}
 
 	/**
 	 * @return the testrunLevels

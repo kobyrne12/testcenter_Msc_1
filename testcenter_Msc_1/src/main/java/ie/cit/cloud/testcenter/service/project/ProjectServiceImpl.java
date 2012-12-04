@@ -274,7 +274,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return colModelAndName;
 	}
 
-	public ProjectSummaryList getGridProjects(Long companyID, String projectID,
+	public Set<Project> getFilteredProjects(Long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
 			String environmentID, String userID,String levelName)
@@ -355,7 +355,6 @@ public class ProjectServiceImpl implements ProjectService {
 			}			
 		}
 		if(projects == null || projects.isEmpty()){return null;}
-
 		// Retain User projects
 		//		if (userID != null && !userID.isEmpty()) // limit to projects that have this test plan id in it
 		//		{			
@@ -364,11 +363,25 @@ public class ProjectServiceImpl implements ProjectService {
 		//				projects.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
 		//			}			
 		//		}
-		//		if(projects == null || projects.isEmpty()){return null;}
-
+		//		if(projects == null || projects.isEmpty()){return null;
+		
+		return projects;
+	}
+	public ProjectSummaryList getGridProjects(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName)
+	{
+		Set<Project> projects = getFilteredProjects(companyID, projectID,
+				cycleID, testplanID, testcaseID,
+				testrunID, defectID, requirementID,
+				environmentID, userID, levelName);
 		Set<ProjectSummary> projectSummarySet = new HashSet<ProjectSummary>();
 		ProjectSummaryList projectSummaryList = new ProjectSummaryList();
-
+		if(projects == null || projects.isEmpty())
+		{
+			return null;
+		}
 		for(final Project project : projects)
 		{						
 			//projectSummarySet.add(getProjectSummary(new ProjectSummary(project, levelName)));
@@ -647,10 +660,16 @@ public class ProjectServiceImpl implements ProjectService {
 		Set<Testcase> allTestcases = new HashSet<Testcase>();  
 		for(final Project project : projects)
 		{
-			if(project.getTestcases() != null && !project.getTestcases().isEmpty())
+			if(project.getTestplans() != null && !project.getTestplans().isEmpty())
 			{
-				allTestcases.addAll(project.getTestcases());	
-			}				
+				for(final Testplan testplan : project.getTestplans())
+				{
+					if(testplan.getTestcases() != null && !testplan.getTestcases().isEmpty())
+					{
+						allTestcases.addAll(testplan.getTestcases());	
+					}	
+				}
+			}
 		}			
 		return allTestcases;			
 	}

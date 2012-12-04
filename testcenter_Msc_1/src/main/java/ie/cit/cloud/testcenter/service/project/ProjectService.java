@@ -190,6 +190,10 @@ public interface ProjectService {
 	ProjectSummaryList getGridProjects(Long companyID, String projectID, String cycleID,
 			String testplanID,String testcaseID, String testrunID, String defectID, 
 			String requirementID, String environmentID, String userID, String levelName);
+	
+	Set<Project> getFilteredProjects(Long companyID, String projectID, String cycleID,
+			String testplanID,String testcaseID, String testrunID, String defectID, 
+			String requirementID, String environmentID, String userID, String levelName);
 
 	RelatedObjectList getRelatedObjects(Long projectID, String cycleID,
 			String testplanID, String userID, String environmentID,

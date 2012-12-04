@@ -57,10 +57,10 @@ public class Testcase {
 	@Column(name="testplanID")
 	private Long testplanID;
 	
-//	@Transient
-	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER)
-	@Fetch(value = FetchMode.JOIN)
-    private Set<Project> projects = new HashSet<Project>();
+////	@Transient
+//	@ManyToMany(mappedBy="testcases", fetch=FetchType.EAGER)
+//	@Fetch(value = FetchMode.JOIN)
+//    private Set<Project> projects = new HashSet<Project>();
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=Testrun.class, cascade=CascadeType.ALL)
 	@JoinColumn(name = "testcaseID", referencedColumnName="testcaseID")
@@ -382,19 +382,19 @@ public class Testcase {
 		this.estimatedTime = estimatedTime;
 	}
 
-	/**
-	 * @return the projects
-	 */
-	public Set<Project> getProjects() {
-		return projects;
-	}
-
-	/**
-	 * @param projects the projects to set
-	 */
-	public void setProjects(Set<Project> projects) {
-		this.projects = projects;
-	}
+//	/**
+//	 * @return the projects
+//	 */
+//	public Set<Project> getProjects() {
+//		return projects;
+//	}
+//
+//	/**
+//	 * @param projects the projects to set
+//	 */
+//	public void setProjects(Set<Project> projects) {
+//		this.projects = projects;
+//	}
 
 	/**
 	 * @return the creationDate

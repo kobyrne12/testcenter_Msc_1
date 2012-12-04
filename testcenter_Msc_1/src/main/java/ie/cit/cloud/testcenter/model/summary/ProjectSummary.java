@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
@@ -908,10 +909,16 @@ public class ProjectSummary
 		int count = 0;
 		if(totalTestcases == -1)
 		{
-			if(project.getTestcases() != null && !project.getTestcases().isEmpty())
+			if(project.getTestplans() != null && !project.getTestplans().isEmpty())
 			{
-				count = project.getTestcases().size();
-			}		
+				for(final Testplan testplan : project.getTestplans())
+				{
+					if(testplan.getTestcases() != null && !testplan.getTestcases().isEmpty())
+					{
+						count += testplan.getTestcases().size();
+					}
+				}
+			}			
 		}
 		return count;
 	}

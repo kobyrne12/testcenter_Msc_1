@@ -13,6 +13,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Date;
 
@@ -102,7 +103,8 @@ public class CompanyController {
 
 	//HttpServletResponse response
 	@RequestMapping(value = {"index",""}, method = GET)
-	public String openView( @CookieValue(value="companyID",defaultValue="") String companyID_String,			
+	public String openView( HttpServletResponse response,
+			@CookieValue(value="companyID",defaultValue="") String companyID_String,			
 			@RequestParam(value="userpath",defaultValue="") String userpath,
 			@RequestParam(required = false) String displaymessage, Model model)	
 	{		
@@ -122,8 +124,19 @@ public class CompanyController {
 		}
 		else
 		{						
-			Long companyID = Long.valueOf(companyID_String);
+			Long companyID = Long.valueOf(companyID_String);			
 			company = companyService.getCompany(companyID);
+			
+			if(company == null)
+			{
+				Cookie cookie = new Cookie("companyID", null); // Not necessary, but saves bandwidth.				
+				cookie.setMaxAge(0); // Don't set to -1 or it will become a session cookie!
+				response.addCookie(cookie);
+				model.addAttribute("companyList", companyService.getAllCompanies());
+				model.addAttribute("displaymessage", "Company does not exist");
+				return "companies";
+			}
+		
 			model.addAttribute("companyID", companyID);	
 			model.addAttribute("companyName", company.getCompanyName());	
 			model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
@@ -137,6 +150,9 @@ public class CompanyController {
 			model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());	
 			model.addAttribute("testplansDisplayName", company.getTestplansDisplayName());	
 			model.addAttribute("testcasesDisplayName", company.getTestcasesDisplayName());	
+			model.addAttribute("testplanDisplayName", company.getTestplanDisplayName());	
+			model.addAttribute("testcaseDisplayName", company.getTestcaseDisplayName());
+			
 			if(userpath.isEmpty())			
 			{
 				System.out.println("HERE 1 :" + userpath);								
@@ -144,8 +160,6 @@ public class CompanyController {
 			}
 			else
 			{
-				System.out.println("HERE 2 :" + userpath);
-
 				boolean allCompanyProjects = true;	
 				boolean allCompanyTestplans = true;	
 				Long projectID = null;
@@ -360,7 +374,7 @@ public class CompanyController {
 							}
 						}	
 						else
-						{// Last item i.e //Home>Projects>5>Cycles>33>Projects
+						{// Last item i.e //Home>Projects>5>Cycles>33>Testplans
 							if(gridUrl.isEmpty())
 							{
 								gridUrl = "/summaryList/"+companyID;
@@ -372,6 +386,24 @@ public class CompanyController {
 							model.addAttribute("gridUrl", "testplan"+gridUrl);
 							model.addAttribute("relatedObjects", relatedObjects);	
 							model.addAttribute("allCompanyProjects", allCompanyProjects);
+							if(!relatedObjects.isEmpty())
+							{
+								String relatedItem = relatedObjects.substring(relatedObjects.indexOf("?")+1,relatedObjects.indexOf("ID"));
+								String relatedItemID = relatedObjects.substring(relatedObjects.indexOf("=")+1,relatedObjects.length());
+								model.addAttribute("relatedItem", relatedItem);
+								model.addAttribute("relatedItemID", relatedItemID);
+								Set<Testplan> existingTestplans = testplanService.getExistingTestplans(companyID,relatedItem,relatedItemID);								
+								if(existingTestplans != null && !existingTestplans.isEmpty())
+								{									
+									model.addAttribute("existingTestplans", existingTestplans);
+								}								
+								Set<Testplan> newTestplans = testplanService.getAvailableTestplans(companyID,relatedItem,relatedItemID);								
+								if(newTestplans != null && !newTestplans.isEmpty())
+								{
+									model.addAttribute("newTestplans",newTestplans);
+								}
+								
+							}		
 							if(allCompanyProjects == true)
 							{
 								model.addAttribute("projects", company.getProjects());
@@ -727,5 +759,5 @@ public class CompanyController {
 	public void emptyResult() {
 		// no code needed
 	}
-
+	
 }
