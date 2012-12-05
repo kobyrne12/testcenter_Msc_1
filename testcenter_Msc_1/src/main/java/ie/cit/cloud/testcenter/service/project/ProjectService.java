@@ -195,8 +195,5 @@ public interface ProjectService {
 			String testplanID,String testcaseID, String testrunID, String defectID, 
 			String requirementID, String environmentID, String userID, String levelName);
 
-	RelatedObjectList getRelatedObjects(Long projectID, String cycleID,
-			String testplanID, String userID, String environmentID,
-			String requirementID, String defectID, String testrunID);
-
+	
 }

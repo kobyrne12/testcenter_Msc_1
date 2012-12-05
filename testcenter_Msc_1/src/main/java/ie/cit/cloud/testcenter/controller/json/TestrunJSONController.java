@@ -1,0 +1,372 @@
+package ie.cit.cloud.testcenter.controller.json;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.HashSet;
+import javax.persistence.NoResultException;
+import javax.validation.ConstraintViolationException;
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.GridAttributes;
+import ie.cit.cloud.testcenter.display.RelatedObject;
+import ie.cit.cloud.testcenter.display.RelatedObjectList;
+import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.JqgridFilter;
+import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
+import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testplan;
+import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.CycleSummary;
+import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
+import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
+import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
+import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestplanSummary;
+import ie.cit.cloud.testcenter.model.summary.TestplanSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestrunSummary;
+import ie.cit.cloud.testcenter.service.company.CompanyService;
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
+import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
+import ie.cit.cloud.testcenter.service.testplan.TestplanService;
+import ie.cit.cloud.testcenter.service.testrun.TestrunService;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@Controller
+@RequestMapping("testrun")
+public class TestrunJSONController {    
+	@Autowired
+	private CompanyService companyService; 
+	@Autowired
+	private ProjectService projectService;  
+	@Autowired
+	private CycleService cycleService;    
+	@Autowired
+	private TestplanService testplanService;
+	@Autowired
+	private TestcaseService testcaseService;   
+	@Autowired
+	private TestrunService testrunService;
+	@Autowired
+	private DefectService defectService;
+
+
+	// All Testplans For a company
+	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody TestplanSummaryList returnTestplans(
+			@PathVariable Long companyID,
+			@RequestParam(required = false) String projectID,
+			@RequestParam(required = false) String cycleID,
+			@RequestParam(required = false) String testplanID,
+			@RequestParam(required = false) String testcaseID, 
+			@RequestParam(required = false) String testrunID,   
+			@RequestParam(required = false) String defectID,       		
+			@RequestParam(required = false) String requirementID,
+			@RequestParam(required = false) String environmentID,    		
+			@RequestParam(required = false) String userID,
+			@RequestParam(required = false) String level,
+			@RequestParam(required = false) String stage,
+			@RequestParam(required = false) String required,
+			@RequestParam("_search") boolean search,
+			@RequestParam(value="filters", required=false) String filters,
+			@RequestParam(value="page", required=false) Integer page,
+			@RequestParam(value="rows", required=false) Integer rows,
+			@RequestParam(value="sidx", required=false) String sidx,
+			@RequestParam(value="sord", required=false) String sord) throws JsonParseException, JsonMappingException, IOException    		
+			{    	
+		if (search == true) 
+		{   	
+
+			ObjectMapper mapper = new ObjectMapper();    	
+			JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class); 
+
+			TestplanSummaryList testplanSummaryList = testplanService.getGridTestplans(companyID, projectID,cycleID, testplanID, testcaseID,
+					testrunID, defectID, requirementID,
+					environmentID, userID,level,stage,required);
+
+			Set<TestplanSummary> oldTestplanSummarySet = testplanSummaryList.getTestplans();
+			Set<TestplanSummary> newTestplanSummarySet = new LinkedHashSet<TestplanSummary>();
+
+			for(TestplanSummary oldTestplanSummary : oldTestplanSummarySet)
+			{
+				boolean testplanNameFound = false; 
+				boolean testplanIDFound = false; 
+				//System.out.println(" ^^^^^^ 3 : " + oldTestplanSummary.getTestplanName());
+				for(Rule rule : jqgridFilter.getRules())
+				{        			
+					//System.out.println(" ^^^^^^ 4 : " + rule.getField());
+					if(rule.getField().equalsIgnoreCase("testplanName"))
+					{
+						//System.out.println(" ^^^^^^ 5 a : " +oldTestplanSummary.getTestplanName());
+						if(oldTestplanSummary.getTestplanName().toLowerCase().contains(rule.getData().toLowerCase()))
+						{
+							testplanNameFound = true;      					
+						}
+					}
+					else
+					{
+						testplanNameFound = true;   
+					}
+					if(rule.getField().equalsIgnoreCase("testplanID"))
+					{
+						System.out.println(" ^^^^^^ 5 a : " +oldTestplanSummary.getTestplanID());
+						if(String.valueOf(oldTestplanSummary.getTestplanID()).toLowerCase().contains(rule.getData().toLowerCase()))
+						{        		
+							System.out.println(" ^^^^^^ 5 b : " +oldTestplanSummary.getTestplanID());
+							testplanIDFound = true; 
+						}
+					}
+					else
+					{
+						System.out.println(" ^^^^^^ 5 c : " +oldTestplanSummary.getTestplanID());
+						testplanIDFound = true; 
+					}
+				}
+				if(testplanNameFound == true && testplanIDFound == true)
+				{
+					newTestplanSummarySet.add(oldTestplanSummary);
+				}
+			}
+
+			testplanSummaryList.setTestplans(newTestplanSummarySet);    		
+			return testplanSummaryList;
+		}
+		else
+		{
+			return testplanService.getGridTestplans(companyID, projectID,
+					cycleID, testplanID, testcaseID,
+					testrunID, defectID, requirementID,
+					environmentID, userID,level,stage,required);
+		}
+
+			}     
+
+	// Columns for testplan CHANGE companyID TO UserID
+	@RequestMapping(value = "/ColsAndNames/{index}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody ColModelAndNames testArray(@PathVariable("index") Long companyID) {		
+		return testplanService.getColumnModelAndNames(companyID);    	
+	}     
+
+	// Testplan Related Items
+	@RequestMapping(value = "/relatedObjects/{testplanID}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody RelatedObjectList returnRelatedObjects(
+			@PathVariable Long testrunID,    		
+			@RequestParam(required = false) String cycleID,
+			@RequestParam(required = false) String testcaseID,// +1 testcases
+			@RequestParam(required = false) String projectID,// +1 testcases    		
+			@RequestParam(required = false) String userID, // +1 testcases
+			@RequestParam(required = false) String environmentID,
+			@RequestParam(required = false) String requirementID,
+			@RequestParam(required = false) String defectID,    		
+			@RequestParam(required = false) String testplanID,
+			@RequestParam(required = false) String levelName,
+			@RequestParam(required = false) String stage,
+			@RequestParam(required = false) String required
+			) 
+	{   	
+		Set<RelatedObject> relatedObjectSet =  new LinkedHashSet<RelatedObject>();
+		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
+		try{
+			Testrun testrun = testrunService.getTestrun(testrunID); 			
+			TestrunSummary testrunSummary = new TestrunSummary(testrun, levelName,testcaseService, defectService,testrunService);
+
+			Company company = companyService.getCompany(testrunSummary.getCompanyID());
+
+			relatedObjectSet.add(new RelatedObject(1,
+					company.getProjectDisplayName(),
+					testrunSummary.getProjectName(), 
+					testrunID, 
+					company.getProjectDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(2,
+					company.getCycleDisplayName(),
+					testrunSummary.getCycleName(),
+					testrunID,
+					company.getCycleDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(3,
+					company.getTestplanDisplayName(),
+					testrunSummary.getTestplanName(),
+					testrunID,
+					company.getTestplanDisplayName().replace(" ","")));			
+			relatedObjectSet.add(new RelatedObject(4,
+					company.getTestcaseDisplayName(),
+					testrunSummary.getTestcaseName(),
+					testrunID,
+					company.getTestcaseDisplayName().replace(" ","")));				
+
+			relatedObjectSet.add(new RelatedObject(5,company.getDefectsDisplayName()+"-Total",Integer.toString(testrunSummary.getTotalDefects()), testrunID, company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(6,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testrunSummary.getTotalCurrentSev1s()), testrunID,"sev1"));
+			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testrunSummary.getTotalCurrentSev2s()), testrunID,"sev2"));
+			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testrunSummary.getTotalCurrentSev3s()), testrunID,"sev3"));
+			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testrunSummary.getTotalCurrentSev4s()), testrunID,"sev4"));
+
+			relatedObjectSet.add(new RelatedObject(10,company.getEnvironmentsDisplayName(),Integer.toString(testrunSummary.getTotalEnvironments()), testrunID, company.getEnvironmentsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(11,company.getRequirementsDisplayName(),Integer.toString(testrunSummary.getTotalRequirements()), testrunID, company.getRequirementsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(12,company.getTestersDisplayName(),Integer.toString(testrunSummary.getTotalTesters()), testrunID, company.getTestersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(13,company.getSeniorTestersDisplayName(),Integer.toString(testrunSummary.getTotalSeniorTesters()), testrunID, company.getSeniorTestersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(14,company.getDevelopersDisplayName(),Integer.toString(testrunSummary.getTotalDevelopers()), testrunID, company.getDevelopersDisplayName().replace(" ",""))); 	
+			relatedObjectSet.add(new RelatedObject(15,company.getSeniordevelopersDisplayName(),Integer.toString(testrunSummary.getTotalSeniorDevelopers()), testrunID, company.getSeniordevelopersDisplayName().replace(" ","")));
+
+			relatedObjectList.setRelatedObjects(relatedObjectSet);
+			return relatedObjectList;
+
+		}catch(NoResultException e)
+		{
+			relatedObjectSet.add(new RelatedObject(1,"Select a Row to View Details","", testrunID, null));  
+			relatedObjectList.setRelatedObjects(relatedObjectSet);
+			return relatedObjectList;
+		}    	
+	} 
+
+	/**
+	 * Handles request for create a new Testrun 
+	 */
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public @ResponseBody String addNewTestrun(
+			@RequestParam(value="cycleID", required=true) Long companyID,
+			@RequestParam(value="testcaseID", required=true) Long testcaseID,					
+			Model model) 
+	{
+
+		return null;
+	}
+
+	@RequestMapping(value = "/delete", method = RequestMethod.POST )
+	@ResponseStatus(HttpStatus.NO_CONTENT)	
+	public void deleteCycle(@RequestParam(value="id", required=true) Long testrunID) {
+		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE testrunID = " + testrunID);
+		testrunService.remove(testrunID);
+	}
+	/**
+	 * Handles request for create a new Testrun 
+	 */
+	@RequestMapping(value = "/addto", method = RequestMethod.POST)
+	public @ResponseBody String addTestrunTo(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testrunID", required=true) Long testrunID,
+			@RequestParam(value="relatedItem",  required=true) String relatedItem,	
+			@RequestParam(value="relatedItemID",  required=true) String relatedItemID,	
+			Model model) 
+	{
+		if(relatedItem.equalsIgnoreCase("project"))
+		{						
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			// Add Testrun to cycle : all testcases 
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			// Add Testrun to defect : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			// Add Testrun to requirement : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			// Add Testrun to environment : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			// Add Testrun to user : all testcase test runs
+			return "ok";  
+		}
+		return "Could Not Add to " + relatedItem;  
+
+	}
+	/**
+	 * Handles request for create a new Testrun 
+	 */
+	@RequestMapping(value = "/remove", method = RequestMethod.POST)
+	public @ResponseBody String removeTestrunFrom(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testrunID", required=true) Long testrunID,
+			@RequestParam(value="relatedItem",  required=true) String relatedItem,	
+			@RequestParam(value="relatedItemID",  required=true) String relatedItemID,	
+			Model model) 
+	{
+		if(relatedItem.equalsIgnoreCase("project"))
+		{						
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			// Add Testrun to cycle : all testcases 
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			// Add Testrun to defect : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			// Add Testrun to requirement : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			// Add Testrun to environment : all testcase test runs
+			return "ok";  
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			// Add Testrun to user : all testcase test runs
+			return "ok";  
+		}
+		return "Could Not Add to " + relatedItem;  
+
+	}
+	// Testrun summary
+	@RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody TestrunSummary getCompanySummaryAt(@PathVariable("index") Long testrunID) {
+		//return testrunService.getTestrunSummary(testrunID);   
+		return null;
+	} 
+	/* @RequestMapping(value = {"jsontestrunTEST"}, method = GET)
+     public String jsontestrunTEST(@RequestParam(required = false)Long companyID, Model model) {
+     	model.addAttribute("company", companyService.getCompany(companyID));
+     	return "jsontestrunTEST";  
+   }  
+     // All Testruns For a company
+     @RequestMapping(value = "/summaryList/{companyID}/cycle/{cycleID}", method = RequestMethod.GET)
+     @ResponseStatus(HttpStatus.OK)
+     public @ResponseBody TestrunSummaryList returnTestrunsForCycle(@PathVariable("companyID") Long companyID) {
+     	return companyService.getAllTestcaseSummaryForCompany(companyID);     	   	
+     }  */
+
+
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public void emptyResult() {
+		// no code needed
+	}
+}

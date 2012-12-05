@@ -545,7 +545,11 @@ public class TestplanServiceImpl implements TestplanService {
 			if(projectService.getCascadedAllTestPlans(Long.valueOf(projectID)) != null)
 			{
 				testplans.retainAll(projectService.getCascadedAllTestPlans(Long.valueOf(projectID)));
-			}			
+			}	
+			else
+			{
+				testplans.clear();
+			}
 		}	
 		if(testplans == null || testplans.isEmpty()){return null;}
 
@@ -554,7 +558,11 @@ public class TestplanServiceImpl implements TestplanService {
 			if(cycleService.getCascadedAllTestPlans(Long.valueOf(cycleID)) != null)
 			{
 				testplans.retainAll(cycleService.getCascadedAllTestPlans(Long.valueOf(cycleID)));
-			}			
+			}	
+			else
+			{
+				testplans.clear();
+			}
 		}			
 		if(testplans == null || testplans.isEmpty()){return null;}
 
@@ -566,7 +574,11 @@ public class TestplanServiceImpl implements TestplanService {
 				Set<Testplan> testrunTestplans = new HashSet<Testplan>();
 				testrunTestplans.add(testrunService.getTestPlan(Long.valueOf(testrunID)));
 				testplans.retainAll(testrunTestplans);				
-			}			
+			}
+			else
+			{
+				testplans.clear();
+			}
 		}
 		if(testplans == null || testplans.isEmpty()){return null;}
 
@@ -576,7 +588,11 @@ public class TestplanServiceImpl implements TestplanService {
 			if(defectService.getCascadedAllTestPlans(Long.valueOf(defectID)) != null)
 			{
 				testplans.retainAll(defectService.getCascadedAllTestPlans(Long.valueOf(defectID)));				
-			}			
+			}	
+			else
+			{
+				testplans.clear();
+			}
 		}
 		if(testplans == null || testplans.isEmpty()){return null;}
 
@@ -586,7 +602,11 @@ public class TestplanServiceImpl implements TestplanService {
 			if(requirementService.getAllTestPlans(Long.valueOf(requirementID)) != null)
 			{
 				testplans.retainAll(requirementService.getAllTestPlans(Long.valueOf(requirementID)));				
-			}				
+			}
+			else
+			{
+				testplans.clear();
+			}
 		}
 		if(testplans == null || testplans.isEmpty()){return null;}
 
@@ -596,7 +616,11 @@ public class TestplanServiceImpl implements TestplanService {
 			if(environmentService.getAllTestPlans(Long.valueOf(environmentID)) != null)
 			{
 				testplans.retainAll(environmentService.getAllTestPlans(Long.valueOf(environmentID)));				
-			}			
+			}	
+			else
+			{
+				testplans.clear();
+			}
 		}
 		if(testplans == null || testplans.isEmpty()){return null;}
 
@@ -606,16 +630,22 @@ public class TestplanServiceImpl implements TestplanService {
 		//			if(userService.getCascadedProjects(Long.valueOf(defectID)) != null)
 		//			{
 		//				testplans.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
-		//			}			
+		//			}	
+//		else
+//		{
+//			testplans.clear();
+//		}
 		//		}
 		//		if(testplans == null || testplans.isEmpty()){return null;}
 		return testplans;
 			}
+	
 	public TestplanSummaryList getGridTestplans(Long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
 			String environmentID, String userID,String levelName,String stage,String required)
 	{
+		
 		Set<Testplan> testplans = getFilteredTestplans(companyID, projectID,
 				cycleID, testplanID, testcaseID,
 				testrunID, defectID, requirementID,
@@ -635,6 +665,8 @@ public class TestplanServiceImpl implements TestplanService {
 		testplanSummaryList.setTestplans(testplanSummarySet);
 		return testplanSummaryList;
 	}
+	
+	
 	public Set<Testplan> getExistingTestplans(Long companyID,String relatedItem, String ID)
 	{
 		Set<Testplan> existingTestplans = new LinkedHashSet<Testplan>();
@@ -705,7 +737,7 @@ public class TestplanServiceImpl implements TestplanService {
 			for(final Testplan testplan : allTestplans)
 			{
 				if(getCascadedAllDefects(testplan.getTestplanID()) == null || 
-						(getCascadedAllDefects(testplan.getTestplanID()).isEmpty()))
+						!getCascadedAllDefects(testplan.getTestplanID()).isEmpty())
 				{
 					availableTestplans.add(testplan);
 				}
@@ -716,7 +748,7 @@ public class TestplanServiceImpl implements TestplanService {
 			for(final Testplan testplan : allTestplans)
 			{
 				if(getRequirements(testplan.getTestplanID())  == null || 
-						(getRequirements(testplan.getTestplanID()).isEmpty()))
+						!getRequirements(testplan.getTestplanID()).isEmpty())
 				{
 					availableTestplans.add(testplan);
 				}
@@ -727,7 +759,7 @@ public class TestplanServiceImpl implements TestplanService {
 			for(final Testplan testplan : allTestplans)
 			{
 				if(getEnvironments(testplan.getTestplanID())  == null || 
-						(getEnvironments(testplan.getTestplanID()).isEmpty()))
+						!getEnvironments(testplan.getTestplanID()).isEmpty())
 				{
 					availableTestplans.add(testplan);
 				}
@@ -738,7 +770,7 @@ public class TestplanServiceImpl implements TestplanService {
 			for(final Testplan testplan : allTestplans)
 			{
 				if(getCascadedUsers(testplan.getTestplanID())  == null || 
-						(getCascadedUsers(testplan.getTestplanID()).isEmpty()))
+						!getCascadedUsers(testplan.getTestplanID()).isEmpty())
 				{
 					availableTestplans.add(testplan);
 				}

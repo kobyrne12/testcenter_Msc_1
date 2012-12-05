@@ -18,6 +18,7 @@ import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
+import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
@@ -134,6 +135,10 @@ public interface TestcaseService {
 				String testrunID, String defectID, String requirementID,
 				String environmentID, String userID,String levelName,String stage,String required);
 
+	Testplan getTestcaseTestplan(Long testcaseID);
+	String getTestcaseTestplanName(Long testcaseID);
+
+	
 	//TestcaseSummary getTestcaseSummary(Long companyID, Testcase testcase,
 	//		String level,String stage,String required);
 

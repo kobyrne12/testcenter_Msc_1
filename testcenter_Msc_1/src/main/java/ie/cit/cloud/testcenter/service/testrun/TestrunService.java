@@ -39,9 +39,7 @@ public interface TestrunService {
 
 	boolean isLatest(Long testrunID);
 
-	Set<Testrun> getTestHistory(Long testrunID);
-	
-	
+	Set<Testrun> getTestHistory(Long testrunID);	
 	 
 	void addNewTestrunLevel(TestrunLevel testrunLevel);
 	TestrunLevel getTestrunLevel(Long testrunLevelID); 
@@ -116,4 +114,10 @@ public interface TestrunService {
 	Set<TestcenterUser> getCascadedDevelopers(Long defectID);
 	Set<TestcenterUser> getCascadedSnrDevelopers(Long defectID);
 	///////////////////////
+
+	Set<Testrun> getAvailableTestruns(Long companyID, String relatedItem,
+			String relatedItemID, String required);
+
+	Set<Testrun> getExistingTestruns(Long companyID, String relatedItem,
+			String relatedItemID, String required);
 }

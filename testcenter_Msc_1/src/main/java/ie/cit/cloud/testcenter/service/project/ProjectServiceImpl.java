@@ -151,307 +151,6 @@ public class ProjectServiceImpl implements ProjectService {
 	//////////////////////////////////////////////////////////////////
 
 
-	public ColModelAndNames getColumnModelAndNames(Long companyID) 
-	{
-		// Constructor in order
-		// name;index;hidden;width;align;
-		// sortable;resizable;search;sorttype;jsonmap;key;
-		Company company = companyService.getCompany(companyID);
-		Collection<String> colNames = new ArrayList<String>();
-		ColModelAndNames colModelAndName = new ColModelAndNames();
-		Collection<GridAttributes> columnModelSet =  new ArrayList<GridAttributes>();	
-
-		colNames.add("ID");	 
-		columnModelSet.add(new GridAttributes("projectID",10));	
-		
-		colNames.add(company.getProjectDisplayName()+ " Name");
-		columnModelSet.add(new GridAttributes("projectName",40));
-
-		colNames.add("State");
-		columnModelSet.add(new GridAttributes("overAllState","setOverallBarChart","unSetBarChart", 80));
-		
-		colNames.add("Parent");
-		columnModelSet.add(new GridAttributes("parentProject",25));
-		
-		colNames.add("Child "+ company.getProjectsDisplayName());
-		columnModelSet.add(new GridAttributes("totalChildProjects",15));		
-
-		colNames.add("Level");
-		columnModelSet.add(new GridAttributes("levelName",15));
-		
-		colNames.add(company.getCyclesDisplayName());
-		columnModelSet.add(new GridAttributes("totalCycles",true));
-
-		//for each level
-		//{
-		colNames.add("Min %");
-		columnModelSet.add(new GridAttributes("requiredPercent","percentFmatter","unformatPercent",15));
-		
-		colNames.add("Current %");
-		columnModelSet.add(new GridAttributes("currentPercent","percentFmatter","unformatPercent",15));
-		//}
-		
-		colNames.add("Total "+ company.getDefectsDisplayName());
-		columnModelSet.add(new GridAttributes("totalDefects"));		
-		
-		colNames.add("Current Sev 1s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));		
-		colNames.add("Current Sev 2s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));		
-		colNames.add("Current Sev 3s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));		
-		colNames.add("Current Sev 4s");
-		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));		
-		
-		colNames.add("All "+company.getTestrunsDisplayName());
-		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
-		colNames.add("Compulsory "+company.getTestrunsDisplayName());
-		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
-		colNames.add("Optional "+company.getTestrunsDisplayName());
-		columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));	
-
-		colNames.add(company.getTestplansDisplayName());
-		columnModelSet.add(new GridAttributes("totalTestplans",true));
-		colNames.add(company.getTestcasesDisplayName());
-		columnModelSet.add(new GridAttributes("totalTestcases",true));	 
-
-		colNames.add(company.getEnvironmentsDisplayName());
-		columnModelSet.add(new GridAttributes("totalEnvironments",true));
-		colNames.add(company.getRequirementsDisplayName());
-		columnModelSet.add(new GridAttributes("totalRequirements",true));
-
-		colNames.add(company.getTestersDisplayName());
-		columnModelSet.add(new GridAttributes("totalTesters",true));
-		colNames.add(company.getSeniorTestersDisplayName());
-		columnModelSet.add(new GridAttributes("totalSeniorTesters",true));
-		colNames.add(company.getDevelopersDisplayName());
-		columnModelSet.add(new GridAttributes("totalDevelopers",true));
-		colNames.add(company.getSeniordevelopersDisplayName());
-		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
-
-		colNames.add("Max Sev 1s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
-		colNames.add("Max Sev 2s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
-		colNames.add("Max Sev 3s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
-		colNames.add("Max Sev 4s");
-		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
-		
-		colNames.add("LastModifiedDate");
-		columnModelSet.add(new GridAttributes("lastModifiedDate",true));
-		colNames.add("LastModifiedBy");
-		columnModelSet.add(new GridAttributes("lastModifiedBy",true));	 
-		colNames.add("CreatedBy");
-		columnModelSet.add(new GridAttributes("createdBy",true));
-		colNames.add("CreationDate");
-		columnModelSet.add(new GridAttributes("creationDate",true));
-		
-		colNames.add("Company ID");
-		columnModelSet.add(new GridAttributes("companyID",true));
-
-		colNames.add("Position");
-		columnModelSet.add(new GridAttributes("companyPosition",true));	
-
-		// if customValue1 set then 	
-		//colNames.add("customValue1");
-		//columnModelSet.add(new GridAttributes("customColumn1",true));	 
-		// if customValue2 set then 
-		//colNames.add("customValue1");
-		//columnModelSet.add(new GridAttributes("customColumn2",true));		
-		// if customValue3 set then 
-		//colNames.add("customValue3");
-		//columnModelSet.add(new GridAttributes("customColumn3",true));		
-		// if customValue4 set then 
-		//colNames.add("customValue4");	
-		//columnModelSet.add(new GridAttributes("customColumn4",true));		
-		// if customValue5 set then 
-		//colNames.add("customValue5");	
-		//columnModelSet.add(new GridAttributes("customColumn5",true));	
-
-		colModelAndName.setColName(colNames);    	
-		colModelAndName.setColModel(columnModelSet);
-		return colModelAndName;
-	}
-
-	public Set<Project> getFilteredProjects(Long companyID, String projectID,
-			String cycleID, String testplanID, String testcaseID,
-			String testrunID, String defectID, String requirementID,
-			String environmentID, String userID,String levelName)
-	{
-		// Check which projects wil be displayed 
-		Company company = companyService.getCompany(companyID);
-		Set<Project> projects = new HashSet<Project>();
-
-		if (cycleID != null && !cycleID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
-		{			
-			Cycle cycle = cycleService.getCycle(Long.valueOf(cycleID));
-			projects.add(getProject(cycle.getProjectID()));			
-		}
-		else
-		{
-			projects.addAll(company.getProjects());
-		}		
-		if(projects == null || projects.isEmpty()){return null;}
-
-		// Retain Testplan projects
-		if (testplanID != null && !testplanID.isEmpty()) 
-		{			
-			if(testplanService.getProjects(Long.valueOf(testplanID)) != null)
-			{
-				projects.retainAll(testplanService.getProjects(Long.valueOf(testplanID)));
-			}			
-		}		
-		if(projects == null || projects.isEmpty()){return null;}
-
-		// Retain Testcase projects
-		if (testcaseID != null && !testcaseID.isEmpty()) 
-		{			
-			if(testcaseService.getProjects(Long.valueOf(testcaseID)) != null)
-			{
-				projects.retainAll(testcaseService.getProjects(Long.valueOf(testcaseID)));
-			}			
-		}		
-		if(projects == null || projects.isEmpty()){return null;}
-
-		// Retain Testrun projects
-		if (testrunID != null && !testrunID.isEmpty()) 
-		{			
-			if(testrunService.getProject(Long.valueOf(testrunID)) != null)
-			{
-				Set<Project> testrunProjects = new HashSet<Project>();
-				testrunProjects.add(testrunService.getProject(Long.valueOf(testrunID)));
-				projects.retainAll(testrunProjects);				
-			}			
-		}
-		if(projects == null || projects.isEmpty()){return null;}
-
-		// Retain Defect projects
-		if (defectID != null && !defectID.isEmpty()) // limit to projects that have this test plan id in it
-		{			
-			if(defectService.getCascadedProjects(Long.valueOf(defectID)) != null)
-			{
-				projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID)));				
-			}			
-		}
-		if(projects == null || projects.isEmpty()){return null;}
-
-		// Retain Requirement projects
-		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
-		{			
-			if(requirementService.getProjects(Long.valueOf(requirementID)) != null)
-			{
-				projects.retainAll(requirementService.getProjects(Long.valueOf(requirementID)));				
-			}				
-		}
-		if(projects == null || projects.isEmpty()){return null;}
-
-		// Retain Environment projects
-		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
-		{			
-			if(environmentService.getProjects(Long.valueOf(environmentID)) != null)
-			{
-				projects.retainAll(environmentService.getProjects(Long.valueOf(environmentID)));				
-			}			
-		}
-		if(projects == null || projects.isEmpty()){return null;}
-		// Retain User projects
-		//		if (userID != null && !userID.isEmpty()) // limit to projects that have this test plan id in it
-		//		{			
-		//			if(userService.getCascadedProjects(Long.valueOf(defectID)) != null)
-		//			{
-		//				projects.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
-		//			}			
-		//		}
-		//		if(projects == null || projects.isEmpty()){return null;
-		
-		return projects;
-	}
-	public ProjectSummaryList getGridProjects(Long companyID, String projectID,
-			String cycleID, String testplanID, String testcaseID,
-			String testrunID, String defectID, String requirementID,
-			String environmentID, String userID,String levelName)
-	{
-		Set<Project> projects = getFilteredProjects(companyID, projectID,
-				cycleID, testplanID, testcaseID,
-				testrunID, defectID, requirementID,
-				environmentID, userID, levelName);
-		Set<ProjectSummary> projectSummarySet = new HashSet<ProjectSummary>();
-		ProjectSummaryList projectSummaryList = new ProjectSummaryList();
-		if(projects == null || projects.isEmpty())
-		{
-			return null;
-		}
-		for(final Project project : projects)
-		{						
-			//projectSummarySet.add(getProjectSummary(new ProjectSummary(project, levelName)));
-			projectSummarySet.add(new ProjectSummary(project, levelName, this, testrunService, defectService));
-		}
-
-		projectSummaryList.setProjects(projectSummarySet);
-		return projectSummaryList;
-	}
-
-//	public ProjectSummary getProjectSummary(ProjectSummary oldProjectSummary )
-//	{
-//
-//		ProjectSummary newProjectSummary = new ProjectSummary();
-//
-//		newProjectSummary.setProjectID(oldProjectSummary.getProjectID());
-//		newProjectSummary.setCompanyID(oldProjectSummary.getCompanyID());
-//		newProjectSummary.setProjectName(oldProjectSummary.getProjectName());	
-//		newProjectSummary.setParentProjectName(oldProjectSummary.getParentProjectName());
-//
-//		newProjectSummary.setTotalChildProjects(oldProjectSummary.getTotalChildProjects());
-//
-//		newProjectSummary.setCurrentPercent(oldProjectSummary.getCurrentPercent());
-//		newProjectSummary.setRequiredPercent(oldProjectSummary.getRequiredPercent());
-//
-//		newProjectSummary.setTotalCycles(oldProjectSummary.getTotalCycles());
-//		newProjectSummary.setTotalEnvironments(oldProjectSummary.getTotalEnvironments());
-//		newProjectSummary.setTotalRequirements(oldProjectSummary.getTotalRequirements());
-//
-//		newProjectSummary.setTotalAllTestruns(oldProjectSummary.getTotalAllTestruns());
-//		newProjectSummary.setTotalRequiredTestruns(oldProjectSummary.getTotalRequiredTestruns());
-//		newProjectSummary.setTotalOptionalTestruns(oldProjectSummary.getTotalOptionalTestruns());
-//
-//		newProjectSummary.setTotalTestplans(oldProjectSummary.getTotalTestplans());
-//
-//		newProjectSummary.setTotalTestcases(oldProjectSummary.getTotalTestcases());
-//
-//		newProjectSummary.setTotalDefects(oldProjectSummary.getTotalDefects());
-//
-//		newProjectSummary.setTotalCurrentSev1s(oldProjectSummary.getTotalCurrentSev1s());
-//		newProjectSummary.setTotalCurrentSev2s(oldProjectSummary.getTotalCurrentSev2s());
-//		newProjectSummary.setTotalCurrentSev3s(oldProjectSummary.getTotalCurrentSev3s());
-//		newProjectSummary.setTotalCurrentSev4s(oldProjectSummary.getTotalCurrentSev4s());
-//
-//		newProjectSummary.setTotalAllowedSev1s(oldProjectSummary.getTotalAllowedSev1s());
-//		newProjectSummary.setTotalAllowedSev2s(oldProjectSummary.getTotalAllowedSev2s());
-//		newProjectSummary.setTotalAllowedSev3s(oldProjectSummary.getTotalAllowedSev3s());
-//		newProjectSummary.setTotalAllowedSev4s(oldProjectSummary.getTotalAllowedSev4s());
-//
-//		newProjectSummary.setTotalTesters(oldProjectSummary.getTotalTesters());
-//		newProjectSummary.setTotalSeniorTesters(oldProjectSummary.getTotalSeniorTesters());
-//		newProjectSummary.setTotalDevelopers(oldProjectSummary.getTotalDevelopers());
-//		newProjectSummary.setTotalSeniorDevelopers(oldProjectSummary.getTotalSeniorDevelopers());
-//
-//		newProjectSummary.setLastModifiedBy(oldProjectSummary.getLastModifiedBy());
-//		newProjectSummary.setLastModifiedDate(oldProjectSummary.getLastModifiedDate());
-//		newProjectSummary.setCreatedBy(oldProjectSummary.getCreatedBy());
-//		newProjectSummary.setCreationDate(oldProjectSummary.getCreationDate());	
-//
-//		return newProjectSummary;
-//	}
-//	
-
-	public RelatedObjectList getRelatedObjects(Long projectID, String cycleID,
-			String testplanID, String userID, String environmentID,
-			String requirementID, String defectID, String testrunID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	///////////////////////////////////////////////////////
 	public int getChildProjectsCount(Long projectID)
@@ -1026,6 +725,272 @@ public class ProjectServiceImpl implements ProjectService {
 	public Set<TestcenterUser> getCascadedSnrDevelopers(Long projectID) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+/////////////////////////////////////////////////////////////////////////////////
+
+	public ColModelAndNames getColumnModelAndNames(Long companyID) 
+	{
+		// Constructor in order
+		// name;index;hidden;width;align;
+		// sortable;resizable;search;sorttype;jsonmap;key;
+		Company company = companyService.getCompany(companyID);
+		Collection<String> colNames = new ArrayList<String>();
+		ColModelAndNames colModelAndName = new ColModelAndNames();
+		Collection<GridAttributes> columnModelSet =  new ArrayList<GridAttributes>();	
+
+		colNames.add("ID");	 
+		columnModelSet.add(new GridAttributes("projectID",10));	
+
+		colNames.add(company.getProjectDisplayName()+ " Name");
+		columnModelSet.add(new GridAttributes("projectName",40));
+
+		colNames.add("State");
+		columnModelSet.add(new GridAttributes("overAllState","setOverallBarChart","unSetBarChart", 80));
+
+		colNames.add("Parent");
+		columnModelSet.add(new GridAttributes("parentProject",25));
+
+		colNames.add("Child "+ company.getProjectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalChildProjects",15));		
+
+		colNames.add("Level");
+		columnModelSet.add(new GridAttributes("levelName",15));
+
+		colNames.add(company.getCyclesDisplayName());
+		columnModelSet.add(new GridAttributes("totalCycles",true));
+
+		//for each level
+		//{
+		colNames.add("Min %");
+		columnModelSet.add(new GridAttributes("requiredPercent","percentFmatter","unformatPercent",15));
+
+		colNames.add("Current %");
+		columnModelSet.add(new GridAttributes("currentPercent","percentFmatter","unformatPercent",15));
+		//}
+
+		colNames.add("Total "+ company.getDefectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalDefects"));		
+
+		colNames.add("Current Sev 1s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev1s"));		
+		colNames.add("Current Sev 2s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev2s"));		
+		colNames.add("Current Sev 3s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev3s"));		
+		colNames.add("Current Sev 4s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev4s"));		
+
+		colNames.add("All "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
+		colNames.add("Compulsory "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
+		colNames.add("Optional "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));	
+
+		colNames.add(company.getTestplansDisplayName());
+		columnModelSet.add(new GridAttributes("totalTestplans",true));
+		colNames.add(company.getTestcasesDisplayName());
+		columnModelSet.add(new GridAttributes("totalTestcases",true));	 
+
+		colNames.add(company.getEnvironmentsDisplayName());
+		columnModelSet.add(new GridAttributes("totalEnvironments",true));
+		colNames.add(company.getRequirementsDisplayName());
+		columnModelSet.add(new GridAttributes("totalRequirements",true));
+
+		colNames.add(company.getTestersDisplayName());
+		columnModelSet.add(new GridAttributes("totalTesters",true));
+		colNames.add(company.getSeniorTestersDisplayName());
+		columnModelSet.add(new GridAttributes("totalSeniorTesters",true));
+		colNames.add(company.getDevelopersDisplayName());
+		columnModelSet.add(new GridAttributes("totalDevelopers",true));
+		colNames.add(company.getSeniordevelopersDisplayName());
+		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
+
+		colNames.add("Max Sev 1s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev1s",true));
+		colNames.add("Max Sev 2s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev2s",true));
+		colNames.add("Max Sev 3s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev3s",true));
+		colNames.add("Max Sev 4s");
+		columnModelSet.add(new GridAttributes("totalAllowedSev4s",true));
+
+		colNames.add("LastModifiedDate");
+		columnModelSet.add(new GridAttributes("lastModifiedDate",true));
+		colNames.add("LastModifiedBy");
+		columnModelSet.add(new GridAttributes("lastModifiedBy",true));	 
+		colNames.add("CreatedBy");
+		columnModelSet.add(new GridAttributes("createdBy",true));
+		colNames.add("CreationDate");
+		columnModelSet.add(new GridAttributes("creationDate",true));
+
+		colNames.add("Company ID");
+		columnModelSet.add(new GridAttributes("companyID",true));
+
+		colNames.add("Position");
+		columnModelSet.add(new GridAttributes("companyPosition",true));	
+
+		// if customValue1 set then 	
+		//colNames.add("customValue1");
+		//columnModelSet.add(new GridAttributes("customColumn1",true));	 
+		// if customValue2 set then 
+		//colNames.add("customValue1");
+		//columnModelSet.add(new GridAttributes("customColumn2",true));		
+		// if customValue3 set then 
+		//colNames.add("customValue3");
+		//columnModelSet.add(new GridAttributes("customColumn3",true));		
+		// if customValue4 set then 
+		//colNames.add("customValue4");	
+		//columnModelSet.add(new GridAttributes("customColumn4",true));		
+		// if customValue5 set then 
+		//colNames.add("customValue5");	
+		//columnModelSet.add(new GridAttributes("customColumn5",true));	
+
+		colModelAndName.setColName(colNames);    	
+		colModelAndName.setColModel(columnModelSet);
+		return colModelAndName;
+	}
+
+	public Set<Project> getFilteredProjects(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName)
+			{
+		// Check which projects wil be displayed 
+		Company company = companyService.getCompany(companyID);
+		Set<Project> projects = new HashSet<Project>();
+
+		if (cycleID != null && !cycleID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
+		{			
+			Cycle cycle = cycleService.getCycle(Long.valueOf(cycleID));
+			projects.add(getProject(cycle.getProjectID()));			
+		}
+		else
+		{
+			projects.addAll(company.getProjects());
+		}		
+		if(projects == null || projects.isEmpty()){return null;}
+
+		// Retain Testplan projects
+		if (testplanID != null && !testplanID.isEmpty()) 
+		{			
+			if(testplanService.getProjects(Long.valueOf(testplanID)) != null)
+			{
+				projects.retainAll(testplanService.getProjects(Long.valueOf(testplanID)));
+			}
+			else
+			{
+				projects.clear();
+			}
+		}		
+		if(projects == null || projects.isEmpty()){return null;}
+
+		// Retain Testcase projects
+		if (testcaseID != null && !testcaseID.isEmpty()) 
+		{			
+			if(testcaseService.getProjects(Long.valueOf(testcaseID)) != null)
+			{
+				projects.retainAll(testcaseService.getProjects(Long.valueOf(testcaseID)));
+			}
+			else
+			{
+				projects.clear();
+			}
+		}		
+		if(projects == null || projects.isEmpty()){return null;}
+
+		// Retain Testrun projects
+		if (testrunID != null && !testrunID.isEmpty()) 
+		{			
+			if(testrunService.getProject(Long.valueOf(testrunID)) != null)
+			{
+				Set<Project> testrunProjects = new HashSet<Project>();
+				testrunProjects.add(testrunService.getProject(Long.valueOf(testrunID)));
+				projects.retainAll(testrunProjects);				
+			}	
+			else
+			{
+				projects.clear();
+			}
+		}
+		if(projects == null || projects.isEmpty()){return null;}
+
+		// Retain Defect projects
+		if (defectID != null && !defectID.isEmpty()) // limit to projects that have this test plan id in it
+		{			
+			if(defectService.getCascadedProjects(Long.valueOf(defectID)) != null)
+			{
+				projects.retainAll(defectService.getCascadedProjects(Long.valueOf(defectID)));				
+			}
+			else
+			{
+				projects.clear();
+			}
+		}
+		if(projects == null || projects.isEmpty()){return null;}
+
+		// Retain Requirement projects
+		if (requirementID != null && !requirementID.isEmpty()) // limit to projects that have this test plan id in it
+		{			
+			if(requirementService.getProjects(Long.valueOf(requirementID)) != null)
+			{
+				projects.retainAll(requirementService.getProjects(Long.valueOf(requirementID)));				
+			}	
+			else
+			{
+				projects.clear();
+			}
+		}
+		if(projects == null || projects.isEmpty()){return null;}
+
+		// Retain Environment projects
+		if (environmentID != null && !environmentID.isEmpty()) // limit to projects that have this test plan id in it
+		{			
+			if(environmentService.getProjects(Long.valueOf(environmentID)) != null)
+			{
+				projects.retainAll(environmentService.getProjects(Long.valueOf(environmentID)));				
+			}
+			else
+			{
+				projects.clear();
+			}
+		}
+		if(projects == null || projects.isEmpty()){return null;}
+		// Retain User projects
+		//		if (userID != null && !userID.isEmpty()) // limit to projects that have this test plan id in it
+		//		{			
+		//			if(userService.getCascadedProjects(Long.valueOf(defectID)) != null)
+		//			{
+		//				projects.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
+		//			}			
+		//		}
+		//		if(projects == null || projects.isEmpty()){return null;
+
+		return projects;
+			}
+	public ProjectSummaryList getGridProjects(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName)
+	{
+		Set<Project> projects = getFilteredProjects(companyID, projectID,
+				cycleID, testplanID, testcaseID,
+				testrunID, defectID, requirementID,
+				environmentID, userID, levelName);
+		Set<ProjectSummary> projectSummarySet = new HashSet<ProjectSummary>();
+		ProjectSummaryList projectSummaryList = new ProjectSummaryList();
+		if(projects == null || projects.isEmpty())
+		{
+			return null;
+		}
+		for(final Project project : projects)
+		{						
+			//projectSummarySet.add(getProjectSummary(new ProjectSummary(project, levelName)));
+			projectSummarySet.add(new ProjectSummary(project, levelName, this, testrunService, defectService));
+		}
+
+		projectSummaryList.setProjects(projectSummarySet);
+		return projectSummaryList;
 	}
 
 

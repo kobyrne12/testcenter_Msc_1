@@ -8,6 +8,7 @@ package ie.cit.cloud.testcenter.model;
  *
  */
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -97,15 +100,18 @@ public class Testrun {
     
     @Basic
     private Long previousTestrunID; 
-    
-    @Basic    
-    private String creationDate;
-    @Basic    
-    private String createdBy;
-    @Basic    
-    private String lastModifiedDate;
-    @Basic    
-    private String lastModifiedBy;
+    	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "creationDate", nullable = false, length = 10) 
+	private Date creationDate = new Date();	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "lastModifiedDate", nullable = false, length = 10) 
+	private Date lastModifiedDate = new Date();
+
+	@Basic    
+	private Long createdByUserID;
+	@Basic    
+	private Long lastModifiedByUserID;
     
     @Basic
     private String tester;
@@ -135,12 +141,10 @@ public class Testrun {
    			Double estimatedTime,TestrunLevel level,Long previousTestrunID, String tester,String seniorTester)   
    	{
    		this(testrunName,testcaseID,cycleID,
-   				false,false,false,false,false,false,1,1,
-   				estimatedTime, level, previousTestrunID,
-   				"CURRENT_DATE", "CURRENT_USER", "CURRENT_DATE","CURRENT_USER",
-   				tester,seniorTester   		
-   				);
-   	}
+   				true,false,false,false,false,false,1,1,
+   				estimatedTime, level, previousTestrunID,null,new Date(),null,
+   				tester,seniorTester);
+   	}   
    
     /**
    	 * @param testrunName
@@ -168,9 +172,9 @@ public class Testrun {
    			boolean notrun, boolean passed, boolean failed, boolean inprogress,
    			boolean deferred, boolean blocked, int priority,
    			int recommendedPriority, Double estimatedTime, TestrunLevel testrunLevel,
-   			Long previousTestrunID,String creationDate, String createdBy,
-   			String lastModifiedDate, String lastModifiedBy, String tester,
-   			String seniorTester) 
+   			Long previousTestrunID,Long createdByUserID,Date lastModifiedDate,
+   			Long lastModifiedByUserID,
+   			String tester,	String seniorTester) 
    	{
    		
    		this.TestrunName = testrunName;
@@ -186,11 +190,10 @@ public class Testrun {
    		this.recommendedPriority = recommendedPriority;
    		this.estimatedTime = estimatedTime;
    		this.testrunLevel = testrunLevel;
-   		this.previousTestrunID = previousTestrunID;   		
-   		this.creationDate = creationDate;
-   		this.createdBy = createdBy;
+   		this.previousTestrunID = previousTestrunID;     		
+   		this.createdByUserID = createdByUserID;   	
    		this.lastModifiedDate = lastModifiedDate;
-   		this.lastModifiedBy = lastModifiedBy;
+   		this.lastModifiedByUserID = lastModifiedByUserID;
    		this.tester = tester;
    		this.seniorTester = seniorTester;
    	}
@@ -394,57 +397,57 @@ public class Testrun {
 	/**
 	 * @return the creationDate
 	 */
-	public String getCreationDate() {
+	public Date getCreationDate() {
 		return creationDate;
 	}
 
 	/**
 	 * @param creationDate the creationDate to set
 	 */
-	public void setCreationDate(String creationDate) {
+	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
 	/**
 	 * @return the createdBy
 	 */
-	public String getCreatedBy() {
-		return createdBy;
+	public Long getCreatedByUserID() {
+		return createdByUserID;
 	}
 
 	/**
 	 * @param createdBy the createdBy to set
 	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+	public void setCreatedByUserID(Long createdByUserID) {
+		this.createdByUserID = createdByUserID;
 	}
 
 	/**
 	 * @return the lastModifiedDate
 	 */
-	public String getLastModifiedDate() {
+	public Date getLastModifiedDate() {
 		return lastModifiedDate;
 	}
 
 	/**
 	 * @param lastModifiedDate the lastModifiedDate to set
 	 */
-	public void setLastModifiedDate(String lastModifiedDate) {
+	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
 	/**
 	 * @return the lastModifiedBy
 	 */
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
+	public Long getLastModifiedByUserID() {
+		return lastModifiedByUserID;
 	}
 
 	/**
 	 * @param lastModifiedBy the lastModifiedBy to set
 	 */
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
+	public void setLastModifiedByUserID(Long lastModifiedByUserID) {
+		this.lastModifiedByUserID = lastModifiedByUserID;
 	}
 
 	/**

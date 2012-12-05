@@ -24,6 +24,7 @@ import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestplanSummaryList;
 
 import ie.cit.cloud.testcenter.respository.testcase.TestcaseRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
@@ -38,6 +39,7 @@ import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
@@ -141,6 +143,24 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return false;		
 	}  
 	///////////////////////////////////
+	public Testplan getTestcaseTestplan(Long testcaseID)
+	{
+		Testcase testcase = getTestcase(testcaseID);
+		if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+		{
+			return testplanService.getTestplan(testcase.getTestplanID());
+		}		
+		return null;
+	}
+	public String getTestcaseTestplanName(Long testcaseID)
+	{
+		Testcase testcase = getTestcase(testcaseID);
+		if(testplanService.getTestplan(testcase.getTestplanID()) != null)
+		{
+			return testplanService.getTestplan(testcase.getTestplanID()).getTestplanName();
+		}		
+		return null;
+	}
 	public int getAllTestRunsCount(Long projectID)
 	{	
 		if(getAllTestRuns(projectID) == null)
@@ -493,6 +513,12 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return null;
 	}
 	
+	public Set<TestcenterUser> getCascadedUsers(Long testcaseID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -594,14 +620,14 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return colModelAndName;
 	}
 
-	public TestcaseSummaryList getGridTestcases(Long companyID, String projectID,
+	public Set<Testcase> getFilteredTestcases(Long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
 			String environmentID, String userID,String levelName,String stage,String required)
 	{
 		// Check which testcases wil be displayed 
 		Company company = companyService.getCompany(companyID);
-		Set<Testcase> testcases = company.getTestcases();
+		Set<Testcase> testcases = new LinkedHashSet<Testcase>();
 		
 		// Retain Testplan testcases
 		if (testplanID != null && !testplanID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
@@ -633,7 +659,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 			if(projectService.getCascadedAllTestCases(Long.valueOf(projectID)) != null)
 			{
 				testcases.retainAll(projectService.getCascadedAllTestCases(Long.valueOf(projectID)));
-			}			
+			}		
+			else
+			{
+				testcases.clear();
+			}
 		}	
 		if(testcases == null || testcases.isEmpty()){return null;}
 
@@ -642,7 +672,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 			if(cycleService.getCascadedAllTestCases(Long.valueOf(cycleID)) != null)
 			{
 				testcases.retainAll(cycleService.getCascadedAllTestCases(Long.valueOf(cycleID)));
-			}			
+			}
+			else
+			{
+				testcases.clear();
+			}
 		}			
 		if(testcases == null || testcases.isEmpty()){return null;}
 
@@ -655,7 +689,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 				Set<Testcase> testrunTestcases = new HashSet<Testcase>();
 				testrunTestcases.add(testrunService.getTestcase(Long.valueOf(testrunID)));
 				testcases.retainAll(testrunTestcases);				
-			}			
+			}
+			else
+			{
+				testcases.clear();
+			}
 		}
 		if(testcases == null || testcases.isEmpty()){return null;}
 
@@ -665,7 +703,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 			if(defectService.getCascadedAllTestCases(Long.valueOf(defectID)) != null)
 			{
 				testcases.retainAll(defectService.getCascadedAllTestCases(Long.valueOf(defectID)));				
-			}			
+			}
+			else
+			{
+				testcases.clear();
+			}
 		}
 		if(testcases == null || testcases.isEmpty()){return null;}
 
@@ -675,7 +717,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 			if(requirementService.getAllTestCases(Long.valueOf(requirementID)) != null)
 			{
 				testcases.retainAll(requirementService.getAllTestCases(Long.valueOf(requirementID)));				
-			}				
+			}	
+			else
+			{
+				testcases.clear();
+			}
 		}
 		if(testcases == null || testcases.isEmpty()){return null;}
 
@@ -685,7 +731,11 @@ public class TestcaseServiceImpl implements TestcaseService {
 			if(environmentService.getAllTestCases(Long.valueOf(environmentID)) != null)
 			{
 				testcases.retainAll(environmentService.getAllTestCases(Long.valueOf(environmentID)));				
-			}			
+			}	
+			else
+			{
+				testcases.clear();
+			}
 		}
 		if(testcases == null || testcases.isEmpty()){return null;}
 
@@ -698,79 +748,149 @@ public class TestcaseServiceImpl implements TestcaseService {
 		//			}			
 		//		}
 		//		if(testcases == null || testcases.isEmpty()){return null;}
-
+		return testcases;
+	}
+	public TestcaseSummaryList getGridTestcases(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required)	
+	{
+		Set<Testcase> testcases = getFilteredTestcases(companyID, projectID,
+				cycleID, testplanID, testcaseID,
+				testrunID, defectID, requirementID,
+				environmentID, userID,levelName,stage,required);
+		
 		Set<TestcaseSummary> testcaseSummarySet = new HashSet<TestcaseSummary>();
 		TestcaseSummaryList testcaseSummaryList = new TestcaseSummaryList();
-
+		
+		if(testcases == null || testcases.isEmpty()){return null;}
+		
 		for(final Testcase testcase : testcases)
 		{				
-			//TestcaseSummary testcaseSummary = getTestcaseSummary(companyID, testcase,
-			//		level,stage,required);	
-			//testcaseSummarySet.add(testcaseSummary);			
-			testcaseSummarySet.add(new TestcaseSummary(testcase, levelName, testrunService, defectService, testplanService));
-			
+			testcaseSummarySet.add(new TestcaseSummary(testcase, levelName, testrunService, defectService, testplanService));			
 		}
 
 		testcaseSummaryList.setTestcases(testcaseSummarySet);
 		return testcaseSummaryList;
 	}
 
-//	public TestcaseSummary getTestcaseSummary(Long companyID,Testcase testcase, 
-//			String level,String stage,String required )
-//	{
-//		Long testcaseID =  testcase.getTestcaseID();
-//		TestcaseSummary testcaseSummary = new TestcaseSummary();
-//
-//		testcaseSummary.setTestcaseID(testcase.getTestcaseID());
-//		testcaseSummary.setCompanyID(companyID);
-//		testcaseSummary.setTestcaseName(testcase.getTestcaseName());
-//		Testplan testplan = testplanService.getTestplan(testcase.getTestplanID());
-//		if(testplan != null)
-//		{
-//			testcaseSummary.setTestplanName(testplan.getTestplanName());
-//			testcaseSummary.setTestplanSection(
-//					testplanService.getTestplanSection(testcase.getTestplanSectionID()).getTestplanSectionName());
-//			testcaseSummary.setTestplanOrderNum(testcase.getTestplanOrderNum());
-//		}
-//		else
-//		{
-//			testcaseSummary.setTestplanSection("NONE");
-//			testcaseSummary.setTestplanOrderNum(0);
-//			testcaseSummary.setTestplanName("NONE");
-//		}
-//		testcaseSummary.setTotalProjects(getProjectsCount(testcaseID));
-//		testcaseSummary.setLevel(testcase.getLevel().getTestrunLevelName());
-//		testcaseSummary.setStage(testcase.getStage());
-//		testcaseSummary.setEstimatedTime(testcase.getEstimatedTime());
-//		
-//		testcaseSummary.setTotalAllTestruns(getAllTestRunsCount(testcaseID));
-//		testcaseSummary.setTotalRequiredTestruns(getRequiredTestRunsCount(testcaseID));
-//		testcaseSummary.setTotalOptionalTestruns(getOptionalTestRunsCount(testcaseID));
-//
-//		testcaseSummary.setTotalCycles(getCyclesCount(testcaseID));
-//		testcaseSummary.setTotalEnvironments(getEnvironmentsCount(testcaseID));
-//		testcaseSummary.setTotalRequirements(getCascadedTestersCount(testcaseID));
-//		testcaseSummary.setTotalDefects(getCascadedAllDefectsCount(testcaseID));
-//
-//		testcaseSummary.setTotalCurrentSev1s(getCascadedSev1DefectsCount(testcaseID));
-//		testcaseSummary.setTotalCurrentSev2s(getCascadedSev2DefectsCount(testcaseID));
-//		testcaseSummary.setTotalCurrentSev3s(getCascadedSev3DefectsCount(testcaseID));
-//		testcaseSummary.setTotalCurrentSev4s(getCascadedSev4DefectsCount(testcaseID));
-//
-//		testcaseSummary.setTotalTesters(getCascadedTestersCount(testcaseID));
-//		testcaseSummary.setTotalSeniorTesters(getCascadedSnrDevelopersCount(testcaseID));
-//		testcaseSummary.setTotalDevelopers(getCascadedDevelopersCount(testcaseID));
-//		testcaseSummary.setTotalSeniorDevelopers(getCascadedSnrDevelopersCount(testcaseID));
-//
-//		// get User name from ID testcase.getLastModifiedBy()
-//		testcaseSummary.setLastModifiedBy("USER");
-//		testcaseSummary.setLastModifiedDate(testcase.getLastModifiedDate());
-//		// get User name from ID testcase.getCreatedByUserID()
-//		testcaseSummary.setCreatedBy("USER");
-//		testcaseSummary.setCreationDate(testcase.getCreationDate());	
-//
-//
-//		return testcaseSummary;
-//	}
-
+	public Set<Testcase> getExistingTestcases(Long companyID,String relatedItem, String ID)
+	{
+		Set<Testcase> existingTestcases = new LinkedHashSet<Testcase>();
+		if(relatedItem.equalsIgnoreCase("testplan"))
+		{
+			existingTestcases = testplanService.getTestplan(Long.valueOf(ID)).getTestcases();
+		}
+		else if(relatedItem.equalsIgnoreCase("project"))
+		{
+			existingTestcases = getFilteredTestcases(companyID,ID,
+				null, null, null,null, null, null,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			existingTestcases = getFilteredTestcases(companyID,null,ID,
+				null, null,null, null, null,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			existingTestcases = getFilteredTestcases(companyID,null,null,
+				null, null,null, ID, null,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			existingTestcases = getFilteredTestcases(companyID,null,null,
+				null, null,null, null, ID,null, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			existingTestcases = getFilteredTestcases(companyID,null,null,
+				null, null,null, null, null, ID, null,null,null,null);
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			existingTestcases = getFilteredTestcases(companyID,null,null,
+				null, null,null, null, null, null, ID,null,null,null);
+		}		
+		return existingTestcases;		
+	}
+	public Set<Testcase> getAvailableTestcases(Long companyID, String relatedItem,String ID)
+	{
+		Set<Testcase> allTestcases = companyService.getAllTestCases(companyID);
+		if(allTestcases == null || allTestcases.isEmpty())
+		{
+			return null;
+		}
+		Set<Testcase> availableTestcases = new LinkedHashSet<Testcase>();
+		if(relatedItem.equalsIgnoreCase("testplan"))
+		{
+			return null;	
+		}
+		else if(relatedItem.equalsIgnoreCase("project"))
+		{
+			for(final Testcase testcase : allTestcases)
+			{
+				if(getProjects(testcase.getTestcaseID()) == null || getProjects(testcase.getTestcaseID()).isEmpty())
+				{
+					availableTestcases.add(testcase);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("cycle"))
+		{
+			for(final Testcase testcase : allTestcases)
+			{
+				if(getCycles(testcase.getTestcaseID()) == null || 
+						getCycles(testcase.getTestcaseID()).isEmpty())
+				{
+					availableTestcases.add(testcase);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("defect"))
+		{
+			for(final Testcase testcase : allTestcases)
+			{
+				if(getCascadedAllDefects(testcase.getTestcaseID()) == null || 
+						(getCascadedAllDefects(testcase.getTestcaseID()).isEmpty()))
+				{
+					availableTestcases.add(testcase);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("requirement"))
+		{
+			for(final Testcase testcase : allTestcases)
+			{
+				if(getRequirements(testcase.getTestcaseID())  == null || 
+						(getRequirements(testcase.getTestcaseID()).isEmpty()))
+				{
+					availableTestcases.add(testcase);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("environment"))
+		{
+			for(final Testcase testcase : allTestcases)
+			{
+				if(getEnvironments(testcase.getTestcaseID())  == null || 
+						(getEnvironments(testcase.getTestcaseID()).isEmpty()))
+				{
+					availableTestcases.add(testcase);
+				}
+			}			
+		}
+		else if(relatedItem.equalsIgnoreCase("user"))
+		{
+			for(final Testcase testcase : allTestcases)
+			{
+				if(getCascadedUsers(testcase.getTestcaseID())  == null || 
+						(getCascadedUsers(testcase.getTestcaseID()).isEmpty()))
+				{
+					availableTestcases.add(testcase);
+				}
+			}			
+		}
+		return availableTestcases;
+	}
+	
 }

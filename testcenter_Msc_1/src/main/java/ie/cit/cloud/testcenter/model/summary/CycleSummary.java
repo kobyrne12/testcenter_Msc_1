@@ -1528,13 +1528,13 @@ public class CycleSummary
 	 */
 	public Long getCompanyID() 
 	{
-		if(companyID == -1)
+		if(companyID == null)
 		{
-			if(projectID == -1)
+			if(projectID == null)
 			{
 				projectID = getProjectID();
 			}
-			if(projectID != -1)
+			if(projectID != null)
 			{
 				if(projectService.getProject(projectID) != null)
 				{
@@ -1574,11 +1574,11 @@ public class CycleSummary
 	{
 		if(projectName == null)
 		{
-			if(projectID == -1)
+			if(projectID == null)
 			{
 				projectID = getProjectID();
 			}
-			if(projectID != -1)
+			if(projectID != null)
 			{
 				if(projectService.getProject(projectID) != null)
 				{
@@ -1601,11 +1601,11 @@ public class CycleSummary
 	{
 		if(project == null)
 		{
-			if(projectID == -1)
+			if(projectID == null)
 			{
 				projectID = getProjectID();
 			}
-			if(projectID != -1)
+			if(projectID != null)
 			{
 				if(projectService.getParentProject(projectID) != null)
 				{
@@ -1629,7 +1629,7 @@ public class CycleSummary
 	{
 		if(parentCycleName == null)
 		{
-			if(cycle.getParentID() != -1)
+			if(cycle.getParentID() != null)
 			{
 				if(cycleService.getCycle(cycle.getParentID()) != null)
 				{
