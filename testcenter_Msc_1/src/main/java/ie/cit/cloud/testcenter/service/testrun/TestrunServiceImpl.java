@@ -512,15 +512,28 @@ public class TestrunServiceImpl implements TestrunService {
 		{
 			if(required.equalsIgnoreCase("required"))
 			{
-				testruns.addAll(companyService.getCompulsoryTestRuns(companyID));
+				Set<Testrun> requiredTestruns = companyService.getCompulsoryTestRuns(companyID);
+				if(requiredTestruns != null && !requiredTestruns.isEmpty())
+				{
+					testruns.addAll(requiredTestruns);
+				}	
+				testruns.addAll(requiredTestruns);
 			}
 			else if(required.equalsIgnoreCase("optional"))
 			{
-				testruns.addAll(companyService.getOptionalTestRuns(companyID));
+				Set<Testrun> optionalTestruns = companyService.getOptionalTestRuns(companyID);
+				if(optionalTestruns != null && !optionalTestruns.isEmpty())
+				{
+					testruns.addAll(optionalTestruns);
+				}			
 			}
 			else
-			{
-				testruns.addAll(companyService.getAllTestRuns(companyID));
+			{	
+				Set<Testrun> companyTestruns = companyService.getAllTestRuns(companyID);
+				if(companyTestruns != null && !companyTestruns.isEmpty())
+				{
+					testruns.addAll(companyTestruns);
+				}
 			}			
 		}		
 		if(testruns == null || testruns.isEmpty()){return null;}

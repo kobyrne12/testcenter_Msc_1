@@ -20,6 +20,7 @@ import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Project;
@@ -276,13 +277,23 @@ public class ProjectJSONController {
 		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE projectID = " +projectID);
 		projectService.remove(projectID);
 	}	
-    // Project summary
+    
+	
+	 
     @RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody ProjectSummary getCompanySummaryAt(@PathVariable("index") Long projectID) {
     	//return projectService.getProjectSummary(projectID);   
     	return null;
     } 
+    
+    @RequestMapping(value = "/getcycles/{projectID}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody Set<Cycle> getCycles(@PathVariable("projectID") Long projectID) 
+	{		        
+    	return projectService.getParentAndChildCycles(projectID);	  
+	}  
+  
     /* @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
      public String jsonprojectTEST(@RequestParam(required = false)Long companyID, Model model) {
      	model.addAttribute("company", companyService.getCompany(companyID));

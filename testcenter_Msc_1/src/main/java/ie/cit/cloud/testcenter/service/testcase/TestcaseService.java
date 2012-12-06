@@ -73,7 +73,8 @@ public interface TestcaseService {
 	 * Cycle
 	 * @return a testcases Cycles
 	 */		
-	Set<Cycle> getCycles(Long testcaseID);	
+	Set<Cycle> getAllCycles(Long testcaseID);	
+	Set<Cycle> getRequiredCycles(Long testcaseID);
 	/**
 	 * Returns a testcases Projects
 	 * Project

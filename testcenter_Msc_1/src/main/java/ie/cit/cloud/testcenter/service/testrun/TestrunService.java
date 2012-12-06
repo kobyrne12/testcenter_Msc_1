@@ -10,6 +10,7 @@ package ie.cit.cloud.testcenter.service.testrun;
 
 import java.util.Set;
 
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testrun;
@@ -21,6 +22,7 @@ import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.TestrunLevel;
+import ie.cit.cloud.testcenter.model.summary.TestrunSummaryList;
 
 /**
  * Peforms business operation on Test run 
@@ -114,7 +116,18 @@ public interface TestrunService {
 	Set<TestcenterUser> getCascadedDevelopers(Long defectID);
 	Set<TestcenterUser> getCascadedSnrDevelopers(Long defectID);
 	///////////////////////
-
+	ColModelAndNames getColumnModelAndNames(Long companyID);
+	 
+	Set<Testrun> getFilteredTestruns(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required);
+	
+	TestrunSummaryList getGridTestruns(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required);
+	
 	Set<Testrun> getAvailableTestruns(Long companyID, String relatedItem,
 			String relatedItemID, String required);
 

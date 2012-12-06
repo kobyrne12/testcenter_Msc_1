@@ -210,5 +210,7 @@ public interface CycleService {
 			String testplanID, String userID, String environmentID,
 			String requirementID, String defectID, String testrunID);
 
+	Set<Testcase> getAvailTestcases(Long cycleID);
+
 
 }

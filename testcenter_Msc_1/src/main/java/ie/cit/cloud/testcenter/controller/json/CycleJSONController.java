@@ -14,9 +14,11 @@ import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
+import ie.cit.cloud.testcenter.model.summary.TestcaseList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
@@ -227,7 +229,21 @@ public class CycleJSONController {
 	public @ResponseBody Cycle getCycle(@PathVariable("cycleID") Long cycleID) {
 		return cycleService.getCycle(cycleID);
 	}
+	
+	@RequestMapping(value = "/getavailtestcases/{cycleID}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody TestcaseList getAvailTestcases(@PathVariable("cycleID") Long cycleID) 
+	{	
+		// Get Testcases that have no testruns in the selected cycle
+		TestcaseList testcaseList = new TestcaseList();
+		testcaseList.setTestcases(cycleService.getAvailTestcases(cycleID));
+		return testcaseList; 
+		//Cycle 
+		
+		//return 
+	}  
 
+	
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public void emptyResult() {

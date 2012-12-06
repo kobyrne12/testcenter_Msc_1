@@ -28,6 +28,7 @@ import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
 import ie.cit.cloud.testcenter.model.summary.TestplanSummary;
 import ie.cit.cloud.testcenter.model.summary.TestplanSummaryList;
 import ie.cit.cloud.testcenter.model.summary.TestrunSummary;
+import ie.cit.cloud.testcenter.model.summary.TestrunSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
@@ -73,7 +74,7 @@ public class TestrunJSONController {
 	// All Testplans For a company
 	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody TestplanSummaryList returnTestplans(
+	public @ResponseBody TestrunSummaryList returnTestruns(
 			@PathVariable Long companyID,
 			@RequestParam(required = false) String projectID,
 			@RequestParam(required = false) String cycleID,
@@ -100,60 +101,60 @@ public class TestrunJSONController {
 			ObjectMapper mapper = new ObjectMapper();    	
 			JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class); 
 
-			TestplanSummaryList testplanSummaryList = testplanService.getGridTestplans(companyID, projectID,cycleID, testplanID, testcaseID,
+			TestrunSummaryList testrunSummaryList = testrunService.getGridTestruns(companyID, projectID,cycleID, testrunID, testcaseID,
 					testrunID, defectID, requirementID,
 					environmentID, userID,level,stage,required);
 
-			Set<TestplanSummary> oldTestplanSummarySet = testplanSummaryList.getTestplans();
-			Set<TestplanSummary> newTestplanSummarySet = new LinkedHashSet<TestplanSummary>();
+			Set<TestrunSummary> oldTestrunSummarySet = testrunSummaryList.getTestruns();
+			Set<TestrunSummary> newTestrunSummarySet = new LinkedHashSet<TestrunSummary>();
 
-			for(TestplanSummary oldTestplanSummary : oldTestplanSummarySet)
+			for(TestrunSummary oldTestrunSummary : oldTestrunSummarySet)
 			{
-				boolean testplanNameFound = false; 
-				boolean testplanIDFound = false; 
-				//System.out.println(" ^^^^^^ 3 : " + oldTestplanSummary.getTestplanName());
+				boolean testrunNameFound = false; 
+				boolean testrunIDFound = false; 
+				//System.out.println(" ^^^^^^ 3 : " + oldTestrunSummary.getTestrunName());
 				for(Rule rule : jqgridFilter.getRules())
 				{        			
 					//System.out.println(" ^^^^^^ 4 : " + rule.getField());
-					if(rule.getField().equalsIgnoreCase("testplanName"))
+					if(rule.getField().equalsIgnoreCase("testrunName"))
 					{
-						//System.out.println(" ^^^^^^ 5 a : " +oldTestplanSummary.getTestplanName());
-						if(oldTestplanSummary.getTestplanName().toLowerCase().contains(rule.getData().toLowerCase()))
+						//System.out.println(" ^^^^^^ 5 a : " +oldTestrunSummary.getTestrunName());
+						if(oldTestrunSummary.getTestrunName().toLowerCase().contains(rule.getData().toLowerCase()))
 						{
-							testplanNameFound = true;      					
+							testrunNameFound = true;      					
 						}
 					}
 					else
 					{
-						testplanNameFound = true;   
+						testrunNameFound = true;   
 					}
-					if(rule.getField().equalsIgnoreCase("testplanID"))
+					if(rule.getField().equalsIgnoreCase("testrunID"))
 					{
-						System.out.println(" ^^^^^^ 5 a : " +oldTestplanSummary.getTestplanID());
-						if(String.valueOf(oldTestplanSummary.getTestplanID()).toLowerCase().contains(rule.getData().toLowerCase()))
+						System.out.println(" ^^^^^^ 5 a : " +oldTestrunSummary.getTestrunID());
+						if(String.valueOf(oldTestrunSummary.getTestrunID()).toLowerCase().contains(rule.getData().toLowerCase()))
 						{        		
-							System.out.println(" ^^^^^^ 5 b : " +oldTestplanSummary.getTestplanID());
-							testplanIDFound = true; 
+							System.out.println(" ^^^^^^ 5 b : " +oldTestrunSummary.getTestrunID());
+							testrunIDFound = true; 
 						}
 					}
 					else
 					{
-						System.out.println(" ^^^^^^ 5 c : " +oldTestplanSummary.getTestplanID());
-						testplanIDFound = true; 
+						System.out.println(" ^^^^^^ 5 c : " +oldTestrunSummary.getTestrunID());
+						testrunIDFound = true; 
 					}
 				}
-				if(testplanNameFound == true && testplanIDFound == true)
+				if(testrunNameFound == true && testrunIDFound == true)
 				{
-					newTestplanSummarySet.add(oldTestplanSummary);
+					newTestrunSummarySet.add(oldTestrunSummary);
 				}
 			}
 
-			testplanSummaryList.setTestplans(newTestplanSummarySet);    		
-			return testplanSummaryList;
+			testrunSummaryList.setTestruns(newTestrunSummarySet);    		
+			return testrunSummaryList;
 		}
 		else
 		{
-			return testplanService.getGridTestplans(companyID, projectID,
+			return testrunService.getGridTestruns(companyID, projectID,
 					cycleID, testplanID, testcaseID,
 					testrunID, defectID, requirementID,
 					environmentID, userID,level,stage,required);
@@ -161,15 +162,15 @@ public class TestrunJSONController {
 
 			}     
 
-	// Columns for testplan CHANGE companyID TO UserID
+	// Columns for testrun CHANGE companyID TO UserID
 	@RequestMapping(value = "/ColsAndNames/{index}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody ColModelAndNames testArray(@PathVariable("index") Long companyID) {		
-		return testplanService.getColumnModelAndNames(companyID);    	
+		return testrunService.getColumnModelAndNames(companyID);    	
 	}     
 
-	// Testplan Related Items
-	@RequestMapping(value = "/relatedObjects/{testplanID}", method = RequestMethod.GET)
+	// Testrun Related Items
+	@RequestMapping(value = "/relatedObjects/{testrunID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody RelatedObjectList returnRelatedObjects(
 			@PathVariable Long testrunID,    		

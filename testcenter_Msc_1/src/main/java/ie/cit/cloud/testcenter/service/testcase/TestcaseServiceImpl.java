@@ -233,16 +233,25 @@ public class TestcaseServiceImpl implements TestcaseService {
 		return optionalTestruns;	
 	}
 
-
-	public int getCyclesCount(Long projectID)
-	{	
-		if(getCycles(projectID) == null)
+	
+	public Set<Cycle> getAllCycles(Long testcaseID)
+	{
+		Set<Testrun> allTestruns = getAllTestRuns(testcaseID);
+		if(allTestruns == null || allTestruns.isEmpty())
 		{
-			return 0;	
-		}
-		return getCycles(projectID).size();		
-	}	
-	public Set<Cycle> getCycles(Long testcaseID)
+			return null;
+		}	
+		Set<Cycle> allCycles = new HashSet<Cycle>();
+		for(final Testrun testrun : allTestruns)
+		{	
+			if(testrunService.getCycle(testrun.getTestrunID()) != null)
+			{
+				allCycles.add(testrunService.getCycle(testrun.getCycleID()));				
+			}
+		}		
+		return allCycles;
+	}
+	public Set<Cycle> getRequiredCycles(Long testcaseID)
 	{
 		Set<Testrun> allTestruns = getRequiredTestRuns(testcaseID);
 		if(allTestruns == null || allTestruns.isEmpty())
@@ -839,8 +848,8 @@ public class TestcaseServiceImpl implements TestcaseService {
 		{
 			for(final Testcase testcase : allTestcases)
 			{
-				if(getCycles(testcase.getTestcaseID()) == null || 
-						getCycles(testcase.getTestcaseID()).isEmpty())
+				if(getRequiredCycles(testcase.getTestcaseID()) == null || 
+						getRequiredCycles(testcase.getTestcaseID()).isEmpty())
 				{
 					availableTestcases.add(testcase);
 				}
