@@ -197,6 +197,7 @@ public interface CycleService {
 	//////////////////////////////////////////////
 	 
 	Set<Cycle> getAllChildCycles(Long cycleID);
+	
 	 
 	//CycleSummary getCycleSummary(Long companyID, Long cycleID, String level);
 	 
@@ -211,6 +212,8 @@ public interface CycleService {
 			String requirementID, String defectID, String testrunID);
 
 	Set<Testcase> getAvailTestcases(Long cycleID);
+	Set<Testcase> getAvailTestcases(Long cycleID, Long testplanID) ;
+	Set<Testplan> getAvailTestplans(Long cycleID);
 
 
 }

@@ -23,6 +23,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.cloudfoundry.org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
@@ -51,6 +53,7 @@ public class Project {
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Set<Cycle> cycles = new HashSet<Cycle>();   
 
+	
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinTable(name = "PROJECT_JOIN_TESTPLANS", joinColumns = { @JoinColumn(name = "projectID") }, inverseJoinColumns = { @JoinColumn(name = "testplanID") })
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -62,7 +65,6 @@ public class Project {
 //	inverseJoinColumns = { @JoinColumn(name = "testcaseID") })
 //	@Fetch(value = FetchMode.SUBSELECT)
 //	private Set<Testcase> testcases  = new HashSet<Testcase>();    	
-
 
 	@ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "PROJECT_JOIN_TESTRUNLEVELS",

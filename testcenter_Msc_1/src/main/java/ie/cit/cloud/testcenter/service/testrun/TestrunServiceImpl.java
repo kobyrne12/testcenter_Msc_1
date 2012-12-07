@@ -372,22 +372,22 @@ public class TestrunServiceImpl implements TestrunService {
 
 		colNames.add("ID");	 
 		columnModelSet.add(new GridAttributes("testrunID",10));	
-		
+
 		colNames.add(company.getTestrunDisplayName()+ " Name");		
 		columnModelSet.add(new GridAttributes("testrunName",40));
-		
+
 		colNames.add(company.getTestcaseDisplayName()+ " Name");
 		columnModelSet.add(new GridAttributes("testcaseName",40,true));
 
 		colNames.add(company.getTestplanDisplayName());
 		columnModelSet.add(new GridAttributes("testplanName",true));
-		
+
 		colNames.add("State");
 		columnModelSet.add(new GridAttributes("state"));
 
 		colNames.add("Level");
 		columnModelSet.add(new GridAttributes("levelName"));
-		
+
 		colNames.add("Est. Time");
 		columnModelSet.add(new GridAttributes("estimatedTime",true));
 
@@ -432,7 +432,7 @@ public class TestrunServiceImpl implements TestrunService {
 
 		colNames.add("Company ID");
 		columnModelSet.add(new GridAttributes("companyID",true));
-		
+
 
 		colModelAndName.setColName(colNames);    	
 		colModelAndName.setColModel(columnModelSet);
@@ -448,52 +448,66 @@ public class TestrunServiceImpl implements TestrunService {
 		Company company = companyService.getCompany(companyID);
 		Set<Testrun> testruns = new LinkedHashSet<Testrun>();
 		boolean getAllCompanyTestruns = false;
-		
+
 		if (testcaseID != null && !testcaseID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
 		{	
 			Set<Testrun> testcaseTestruns = new LinkedHashSet<Testrun>();
-			if(required.equalsIgnoreCase("required"))
-			{
-				testcaseTestruns = testcaseService.getRequiredTestRuns(Long.valueOf(testcaseID));
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				testcaseTestruns = testcaseService.getOptionalTestRuns(Long.valueOf(testcaseID));
-			}
-			else
-			{
-				testcaseTestruns = testcaseService.getAllTestRuns(Long.valueOf(testcaseID));
-			}
-			if(testcaseTestruns == null || testcaseTestruns.isEmpty())
-			{
-				return null;
-			}
-			else
+			if(required == null)
 			{
 				testruns.addAll(testcaseTestruns);	
-			}			
+			}
+			else
+			{
+				if(required.equalsIgnoreCase("required"))
+				{
+					testcaseTestruns = testcaseService.getRequiredTestRuns(Long.valueOf(testcaseID));
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					testcaseTestruns = testcaseService.getOptionalTestRuns(Long.valueOf(testcaseID));
+				}
+				else
+				{
+					testcaseTestruns = testcaseService.getAllTestRuns(Long.valueOf(testcaseID));
+				}
+				if(testcaseTestruns == null || testcaseTestruns.isEmpty())
+				{
+					return null;
+				}
+				else
+				{
+					testruns.addAll(testcaseTestruns);	
+				}	
+			}
 		}
 		else
 		{
 			getAllCompanyTestruns = true;
 		}
-		
+
 		if (cycleID != null && !cycleID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
 		{		
 			Set<Testrun> cycleTestruns = new LinkedHashSet<Testrun>();
-			if(required.equalsIgnoreCase("required"))
-			{
-				cycleTestruns = cycleService.getCascadedCompulsoryTestRuns(Long.valueOf(cycleID));
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				cycleTestruns = cycleService.getCascadedOptionalTestRuns(Long.valueOf(cycleID));
-			}
-			else
+			if(required == null)
 			{
 				cycleTestruns = cycleService.getCascadedAllTestRuns(Long.valueOf(cycleID));
 			}
-			
+			else
+			{
+				if(required.equalsIgnoreCase("required"))
+				{
+					cycleTestruns = cycleService.getCascadedCompulsoryTestRuns(Long.valueOf(cycleID));
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					cycleTestruns = cycleService.getCascadedOptionalTestRuns(Long.valueOf(cycleID));
+				}
+				else
+				{
+					cycleTestruns = cycleService.getCascadedAllTestRuns(Long.valueOf(cycleID));
+				}
+			}
+
 			if(cycleTestruns == null || cycleTestruns.isEmpty())
 			{
 				return null;
@@ -507,59 +521,76 @@ public class TestrunServiceImpl implements TestrunService {
 		{
 			getAllCompanyTestruns = true;
 		}
-		
+
 		if(getAllCompanyTestruns)
 		{
-			if(required.equalsIgnoreCase("required"))
+			if(required == null)
 			{
-				Set<Testrun> requiredTestruns = companyService.getCompulsoryTestRuns(companyID);
-				if(requiredTestruns != null && !requiredTestruns.isEmpty())
-				{
-					testruns.addAll(requiredTestruns);
-				}	
-				testruns.addAll(requiredTestruns);
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				Set<Testrun> optionalTestruns = companyService.getOptionalTestRuns(companyID);
-				if(optionalTestruns != null && !optionalTestruns.isEmpty())
-				{
-					testruns.addAll(optionalTestruns);
-				}			
-			}
-			else
-			{	
 				Set<Testrun> companyTestruns = companyService.getAllTestRuns(companyID);
 				if(companyTestruns != null && !companyTestruns.isEmpty())
 				{
 					testruns.addAll(companyTestruns);
 				}
-			}			
+			}
+			else
+			{
+				if(required.equalsIgnoreCase("required"))
+				{
+					Set<Testrun> requiredTestruns = companyService.getCompulsoryTestRuns(companyID);
+					if(requiredTestruns != null && !requiredTestruns.isEmpty())
+					{
+						testruns.addAll(requiredTestruns);
+					}					
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					Set<Testrun> optionalTestruns = companyService.getOptionalTestRuns(companyID);
+					if(optionalTestruns != null && !optionalTestruns.isEmpty())
+					{
+						testruns.addAll(optionalTestruns);
+					}			
+				}
+				else
+				{	
+					Set<Testrun> companyTestruns = companyService.getAllTestRuns(companyID);
+					if(companyTestruns != null && !companyTestruns.isEmpty())
+					{
+						testruns.addAll(companyTestruns);
+					}
+				}
+			}
 		}		
 		if(testruns == null || testruns.isEmpty()){return null;}
-		
+
 		if (testplanID != null && !testplanID.isEmpty()) // limit to testruns that have this test run id in it
 		{	
 			Set<Testrun> testplanTestruns = new LinkedHashSet<Testrun>();
-			if(required.equalsIgnoreCase("required"))
-			{
-				testplanTestruns = testplanService.getCompulsoryTestRuns(Long.valueOf(testplanID));
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				testplanTestruns = testplanService.getOptionalTestRuns(Long.valueOf(testplanID));
-			}
-			else
+			if(required == null)
 			{
 				testplanTestruns = testplanService.getAllTestRuns(Long.valueOf(testplanID));
-			}			
-			if(testplanTestruns != null)
-			{
-				testruns.retainAll(testplanTestruns);				
 			}
 			else
 			{
-				testruns.clear();
+				if(required.equalsIgnoreCase("required"))
+				{
+					testplanTestruns = testplanService.getCompulsoryTestRuns(Long.valueOf(testplanID));
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					testplanTestruns = testplanService.getOptionalTestRuns(Long.valueOf(testplanID));
+				}
+				else
+				{
+					testplanTestruns = testplanService.getAllTestRuns(Long.valueOf(testplanID));
+				}			
+				if(testplanTestruns != null)
+				{
+					testruns.retainAll(testplanTestruns);				
+				}
+				else
+				{
+					testruns.clear();
+				}
 			}
 		}
 		if(testruns == null || testruns.isEmpty()){return null;}
@@ -567,19 +598,26 @@ public class TestrunServiceImpl implements TestrunService {
 		if (projectID != null && !projectID.isEmpty()) 
 		{		
 			Set<Testrun> projectTestruns = new LinkedHashSet<Testrun>();
-			if(required.equalsIgnoreCase("required"))
+			if(required == null)
 			{
-				projectTestruns = projectService.getCascadedCompulsoryTestRuns(Long.valueOf(projectID));
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				projectTestruns = projectService.getCascadedOptionalTestRuns(Long.valueOf(projectID));
+				projectTestruns = projectService.getCascadedAllTestRuns(Long.valueOf(projectID));
 			}
 			else
 			{
-				projectTestruns = projectService.getCascadedAllTestRuns(Long.valueOf(projectID));
-			}			
-			
+				if(required.equalsIgnoreCase("required"))
+				{
+					projectTestruns = projectService.getCascadedCompulsoryTestRuns(Long.valueOf(projectID));
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					projectTestruns = projectService.getCascadedOptionalTestRuns(Long.valueOf(projectID));
+				}
+				else
+				{
+					projectTestruns = projectService.getCascadedAllTestRuns(Long.valueOf(projectID));
+				}	
+			}
+
 			if(projectTestruns != null)
 			{
 				testruns.retainAll(projectTestruns);
@@ -591,23 +629,30 @@ public class TestrunServiceImpl implements TestrunService {
 		}	
 		if(testruns == null || testruns.isEmpty()){return null;}		
 
-		
+
 		// Retain Defect testruns
 		if (defectID != null && !defectID.isEmpty()) // limit to testruns that have this test run id in it
 		{			
 			Set<Testrun> defectTestruns = new LinkedHashSet<Testrun>();
-			if(required.equalsIgnoreCase("required"))
+			if(required == null)
 			{
-				defectTestruns = defectService.getCascadedCompulsoryTestRuns(Long.valueOf(defectID));
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				defectTestruns = defectService.getCascadedOptionalTestRuns(Long.valueOf(defectID));
+				defectTestruns = defectService.getCascadedAllTestRuns(Long.valueOf(defectID));
 			}
 			else
 			{
-				defectTestruns = defectService.getCascadedAllTestRuns(Long.valueOf(defectID));
-			}	
+				if(required.equalsIgnoreCase("required"))
+				{
+					defectTestruns = defectService.getCascadedCompulsoryTestRuns(Long.valueOf(defectID));
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					defectTestruns = defectService.getCascadedOptionalTestRuns(Long.valueOf(defectID));
+				}
+				else
+				{
+					defectTestruns = defectService.getCascadedAllTestRuns(Long.valueOf(defectID));
+				}
+			}
 			if(defectTestruns != null)
 			{
 				testruns.retainAll(defectTestruns);				
@@ -623,18 +668,25 @@ public class TestrunServiceImpl implements TestrunService {
 		if (requirementID != null && !requirementID.isEmpty()) // limit to testruns that have this test run id in it
 		{	
 			Set<Testrun> requirementTestruns = new LinkedHashSet<Testrun>();
-			if(required.equalsIgnoreCase("required"))
+			if(required == null)
 			{
-				requirementTestruns = requirementService.getCompulsoryTestRuns(Long.valueOf(requirementID));
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				requirementTestruns = requirementService.getOptionalTestRuns(Long.valueOf(requirementID));
+				requirementTestruns = requirementService.getAllTestRuns(Long.valueOf(requirementID));
 			}
 			else
 			{
-				requirementTestruns = requirementService.getAllTestRuns(Long.valueOf(requirementID));
-			}			
+				if(required.equalsIgnoreCase("required"))
+				{
+					requirementTestruns = requirementService.getCompulsoryTestRuns(Long.valueOf(requirementID));
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					requirementTestruns = requirementService.getOptionalTestRuns(Long.valueOf(requirementID));
+				}
+				else
+				{
+					requirementTestruns = requirementService.getAllTestRuns(Long.valueOf(requirementID));
+				}	
+			}
 			if(requirementTestruns != null)
 			{
 				testruns.retainAll(requirementTestruns);				
@@ -650,18 +702,25 @@ public class TestrunServiceImpl implements TestrunService {
 		if (environmentID != null && !environmentID.isEmpty()) // limit to testruns that have this test run id in it
 		{		
 			Set<Testrun> environmentTestruns = new LinkedHashSet<Testrun>();
-			if(required.equalsIgnoreCase("required"))
+			if(required == null)
 			{
-				environmentTestruns = environmentService.getCompulsoryTestRuns(Long.valueOf(environmentID));
-			}
-			else if(required.equalsIgnoreCase("optional"))
-			{
-				environmentTestruns = environmentService.getOptionalTestRuns(Long.valueOf(environmentID));
+				environmentTestruns = environmentService.getAllTestRuns(Long.valueOf(environmentID));
 			}
 			else
 			{
-				environmentTestruns = environmentService.getAllTestRuns(Long.valueOf(environmentID));
-			}			
+				if(required.equalsIgnoreCase("required"))
+				{
+					environmentTestruns = environmentService.getCompulsoryTestRuns(Long.valueOf(environmentID));
+				}
+				else if(required.equalsIgnoreCase("optional"))
+				{
+					environmentTestruns = environmentService.getOptionalTestRuns(Long.valueOf(environmentID));
+				}
+				else
+				{
+					environmentTestruns = environmentService.getAllTestRuns(Long.valueOf(environmentID));
+				}	
+			}
 			if(environmentTestruns != null)
 			{
 				testruns.retainAll(environmentTestruns);				
@@ -680,21 +739,21 @@ public class TestrunServiceImpl implements TestrunService {
 		//			{
 		//				testruns.retainAll(userService.getCascadedProjects(Long.valueOf(defectID)));				
 		//			}	
-//		else
-//		{
-//			testruns.clear();
-//		}
+		//		else
+		//		{
+		//			testruns.clear();
+		//		}
 		//		}
 		//		if(testruns == null || testruns.isEmpty()){return null;}
 		return testruns;
 			}
-	
+
 	public TestrunSummaryList getGridTestruns(Long companyID, String projectID,
 			String cycleID, String testplanID, String testcaseID,
 			String testrunID, String defectID, String requirementID,
 			String environmentID, String userID,String levelName,String stage,String required)
 	{
-		
+
 		Set<Testrun> testruns = getFilteredTestruns(companyID, projectID,
 				cycleID, testrunID, testcaseID,
 				testrunID, defectID, requirementID,
@@ -713,52 +772,52 @@ public class TestrunServiceImpl implements TestrunService {
 		testrunSummaryList.setTestruns(testrunSummarySet);
 		return testrunSummaryList;
 	}
-	
-	
+
+
 	public Set<Testrun> getExistingTestruns(Long companyID,String relatedItem, String ID, String required)
 	{
 		Set<Testrun> existingTestruns = new LinkedHashSet<Testrun>();
 		if(relatedItem.equalsIgnoreCase("project"))
 		{
 			existingTestruns = getFilteredTestruns(companyID,ID,
-				null, null, null,null, null, null,null, null,null,null,required);
+					null, null, null,null, null, null,null, null,null,null,required);
 		}
 		else if(relatedItem.equalsIgnoreCase("cycle"))
 		{
 			existingTestruns = getFilteredTestruns(companyID,null,ID,
-				null, null,null, null, null,null, null,null,null,required);
+					null, null,null, null, null,null, null,null,null,required);
 		}
 		else if(relatedItem.equalsIgnoreCase("testcase"))
 		{
 			existingTestruns = getFilteredTestruns(companyID,null,null,
-				null, ID,null, null, null,null, null,null,null,required);
+					null, ID,null, null, null,null, null,null,null,required);
 		}
 		else if(relatedItem.equalsIgnoreCase("defect"))
 		{
 			existingTestruns = getFilteredTestruns(companyID,null,null,
-				null, null,null, ID, null,null, null,null,null,required);
+					null, null,null, ID, null,null, null,null,null,required);
 		}
 		else if(relatedItem.equalsIgnoreCase("requirement"))
 		{
 			existingTestruns = getFilteredTestruns(companyID,null,null,
-				null, null,null, null, ID,null, null,null,null,required);
+					null, null,null, null, ID,null, null,null,null,required);
 		}
 		else if(relatedItem.equalsIgnoreCase("environment"))
 		{
 			existingTestruns = getFilteredTestruns(companyID,null,null,
-				null, null,null, null, null, ID, null,null,null,required);
+					null, null,null, null, null, ID, null,null,null,required);
 		}
 		else if(relatedItem.equalsIgnoreCase("user"))
 		{
 			existingTestruns = getFilteredTestruns(companyID,null,null,
-				null, null,null, null, null, null, ID,null,null,required);
+					null, null,null, null, null, null, ID,null,null,required);
 		}		
 		return existingTestruns;		
 	}
 
 	public Set<Testrun> getAvailableTestruns(Long companyID, String relatedItem,String ID, String required)
 	{
-		
+
 		Set<Testrun> allTestruns = new LinkedHashSet<Testrun>();
 		if(required.equalsIgnoreCase("required"))
 		{
@@ -772,16 +831,16 @@ public class TestrunServiceImpl implements TestrunService {
 		{
 			allTestruns = companyService.getAllTestRuns(companyID);
 		}			
-		
+
 		if(allTestruns == null || allTestruns.isEmpty())
 		{
 			return null;
 		}
 		Set<Testrun> availableTestruns = new LinkedHashSet<Testrun>();
-		
+
 		if(relatedItem.equalsIgnoreCase("defect"))
 		{// return testruns the dfect is not already apart of
-			
+
 			Defect defect = defectService.getDefect(Long.valueOf(ID));
 			for(final Testrun testrun : allTestruns)
 			{
@@ -860,10 +919,10 @@ public class TestrunServiceImpl implements TestrunService {
 				{
 					for(final TestcenterUser testrunTestcenterUser : testrunTestcenterUsers )
 					{
-//						if(testrunTestcenterUser.getUserID() == testcenterUser.getUserID())
-//						{
-//							testcenterUserFound = true;
-//						}
+						//						if(testrunTestcenterUser.getUserID() == testcenterUser.getUserID())
+						//						{
+						//							testcenterUserFound = true;
+						//						}
 					}
 				}					
 				if(!testcenterUserFound)

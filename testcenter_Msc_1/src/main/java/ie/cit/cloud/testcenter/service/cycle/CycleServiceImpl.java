@@ -38,6 +38,7 @@ import ie.cit.cloud.testcenter.service.testrun.TestrunService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Iterator;
@@ -470,6 +471,58 @@ public class CycleServiceImpl implements CycleService {
 			}
 		}
 		return availTestcases;		
+	}
+	public Set<Testcase> getAvailTestcases(Long cycleID, Long testplanID) 
+	{
+		Cycle cycle = getCycle(cycleID);
+		Set<Testcase> projectTestcases = projectService.getCascadedAllTestCases(cycle.getProjectID());
+		Set<Testcase> availTestcases = new LinkedHashSet<Testcase>();
+		if(projectTestcases == null || projectTestcases.isEmpty())
+		{
+			return null;
+		}		
+		for(final Testcase testcase : projectTestcases)
+		{
+			if(testcase.getTestplanID() == testplanID)
+			{
+				boolean testcaseHasATestRun = false;
+				Set<Cycle> testcaseCycles = testcaseService.getAllCycles(testcase.getTestcaseID());
+				if(testcaseCycles != null && !testcaseCycles.isEmpty())
+				{
+					for(final Cycle testcasecycle : testcaseCycles)
+					{
+						if(testcasecycle.getCycleID() == cycleID)
+						{
+							testcaseHasATestRun = true;
+						}
+					}
+				}
+				if(!testcaseHasATestRun)
+				{
+					availTestcases.add(testcase);
+				}
+			}
+		}
+		return availTestcases;		
+	}
+	
+	public Set<Testplan> getAvailTestplans(Long cycleID) 
+	{
+		Set<Testcase> availableTestcases = getAvailTestcases(cycleID);
+		if(availableTestcases == null || availableTestcases.isEmpty())
+		{
+			return null;
+		}	
+		Set<Testplan> availTestplans = new LinkedHashSet<Testplan>();
+		for(final Testcase testcase : availableTestcases)
+		{
+			Testplan testcaseTestplan = testcaseService.getTestcaseTestplan(testcase.getTestcaseID());
+			if(testcaseTestplan != null)
+			{
+				availTestplans.add(testcaseTestplan);
+			}
+		}		
+		return availTestplans;
 	}
 
 	public int getCascadedAllTestCasesCount(Long cycleID, String level)
@@ -1351,6 +1404,8 @@ public class CycleServiceImpl implements CycleService {
 		return cycleSummaryList;	
 
 	}
+
+	
 
 
 }

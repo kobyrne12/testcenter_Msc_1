@@ -3,6 +3,7 @@ package ie.cit.cloud.testcenter.controller.json;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.HashMap;
@@ -14,15 +15,19 @@ import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.TestrunLevel;
 import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.CycleList;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
+import ie.cit.cloud.testcenter.model.summary.TestcaseList;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
 import ie.cit.cloud.testcenter.model.summary.TestplanSummary;
@@ -245,125 +250,62 @@ public class TestrunJSONController {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody String addNewTestrun(
-			@RequestParam(value="cycleID", required=true) Long companyID,
+			@RequestParam(value="cycleID", required=true) Long cycleID,
 			@RequestParam(value="testcaseID", required=true) Long testcaseID,					
 			Model model) 
 	{
-
-		return null;
-	}
-
+		Testcase testcase = testcaseService.getTestcase(testcaseID);		
+		if(testcase == null)
+		{
+			return "Could not find test Object with ID : " + cycleID ;
+		}	
+		Company company = companyService.getCompany(testcase.getCompanyID());
+		Cycle cycle = cycleService.getCycle(cycleID);
+		if(cycle == null)
+		{
+			return "Could not find  "+company.getCycleDisplayName()+" with ID  : " + cycleID ;
+		}			
+		
+		Long lastrunID = testcaseService.getLastTestRunID(testcaseID);
+		
+		Testrun testrun = new Testrun(testcase.getTestcaseName(), testcaseID, cycleID,
+				testcase.getEstimatedTime(), testcase.getTestrunLevel(),
+				lastrunID,"CURRENT_TESTER","TESTCASE_SENIOR_TESTER");
+		try{    					
+			testrunService.addNewTestrun(testrun);				
+		}
+		catch(ConstraintViolationException CVE)
+		{   			
+			System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
+			return CVE.getConstraintViolations().toString();
+		}	
+		
+		try{    					
+			cycle.getTestruns().add(testrun);
+			cycleService.update(cycle);			
+		}
+		catch(ConstraintViolationException CVE)
+		{   					
+			return "Error Adding "+company.getTestrunDisplayName()+" to "+company.getCycleDisplayName();
+		}	
+		try{    					
+			testcase.getTestruns().add(testrun);
+			testcaseService.update(testcase);			
+		}
+		catch(ConstraintViolationException CVE)
+		{   					
+			return "Error Adding "+company.getTestrunDisplayName()+" to "+company.getTestcaseDisplayName();
+		}	
+		return "ok";   
+	}	
+   
 	@RequestMapping(value = "/delete", method = RequestMethod.POST )
 	@ResponseStatus(HttpStatus.NO_CONTENT)	
-	public void deleteCycle(@RequestParam(value="id", required=true) Long testrunID) {
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE testrunID = " + testrunID);
+	public void deleteTestrun(@RequestParam(value="id", required=true) Long testrunID) 
+	{		
 		testrunService.remove(testrunID);
-	}
-	/**
-	 * Handles request for create a new Testrun 
-	 */
-	@RequestMapping(value = "/addto", method = RequestMethod.POST)
-	public @ResponseBody String addTestrunTo(
-			@RequestParam(value="companyID", required=true) Long companyID,
-			@RequestParam(value="testrunID", required=true) Long testrunID,
-			@RequestParam(value="relatedItem",  required=true) String relatedItem,	
-			@RequestParam(value="relatedItemID",  required=true) String relatedItemID,	
-			Model model) 
-	{
-		if(relatedItem.equalsIgnoreCase("project"))
-		{						
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("cycle"))
-		{
-			// Add Testrun to cycle : all testcases 
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("defect"))
-		{
-			// Add Testrun to defect : all testcase test runs
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("requirement"))
-		{
-			// Add Testrun to requirement : all testcase test runs
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("environment"))
-		{
-			// Add Testrun to environment : all testcase test runs
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("user"))
-		{
-			// Add Testrun to user : all testcase test runs
-			return "ok";  
-		}
-		return "Could Not Add to " + relatedItem;  
-
-	}
-	/**
-	 * Handles request for create a new Testrun 
-	 */
-	@RequestMapping(value = "/remove", method = RequestMethod.POST)
-	public @ResponseBody String removeTestrunFrom(
-			@RequestParam(value="companyID", required=true) Long companyID,
-			@RequestParam(value="testrunID", required=true) Long testrunID,
-			@RequestParam(value="relatedItem",  required=true) String relatedItem,	
-			@RequestParam(value="relatedItemID",  required=true) String relatedItemID,	
-			Model model) 
-	{
-		if(relatedItem.equalsIgnoreCase("project"))
-		{						
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("cycle"))
-		{
-			// Add Testrun to cycle : all testcases 
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("defect"))
-		{
-			// Add Testrun to defect : all testcase test runs
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("requirement"))
-		{
-			// Add Testrun to requirement : all testcase test runs
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("environment"))
-		{
-			// Add Testrun to environment : all testcase test runs
-			return "ok";  
-		}
-		else if(relatedItem.equalsIgnoreCase("user"))
-		{
-			// Add Testrun to user : all testcase test runs
-			return "ok";  
-		}
-		return "Could Not Add to " + relatedItem;  
-
-	}
-	// Testrun summary
-	@RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody TestrunSummary getCompanySummaryAt(@PathVariable("index") Long testrunID) {
-		//return testrunService.getTestrunSummary(testrunID);   
-		return null;
-	} 
-	/* @RequestMapping(value = {"jsontestrunTEST"}, method = GET)
-     public String jsontestrunTEST(@RequestParam(required = false)Long companyID, Model model) {
-     	model.addAttribute("company", companyService.getCompany(companyID));
-     	return "jsontestrunTEST";  
-   }  
-     // All Testruns For a company
-     @RequestMapping(value = "/summaryList/{companyID}/cycle/{cycleID}", method = RequestMethod.GET)
-     @ResponseStatus(HttpStatus.OK)
-     public @ResponseBody TestrunSummaryList returnTestrunsForCycle(@PathVariable("companyID") Long companyID) {
-     	return companyService.getAllTestcaseSummaryForCompany(companyID);     	   	
-     }  */
-
+	}	
+	
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)

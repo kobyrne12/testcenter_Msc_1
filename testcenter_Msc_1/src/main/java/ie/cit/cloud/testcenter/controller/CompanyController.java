@@ -575,6 +575,7 @@ public class CompanyController {
 								{
 									model.addAttribute("newTestruns",newTestruns);
 								}
+								relatedObjects = relatedObjects + "&required="+required;
 
 							}		
 							else
@@ -586,7 +587,7 @@ public class CompanyController {
 							breadCrumb = breadCrumb + " "+required+" "+company.getTestrunsDisplayName();
 							Set<Project> companyProjects = company.getProjects();
 							model.addAttribute("projects", companyProjects);
-							
+							model.addAttribute("required", required);
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "testrun"+gridUrl);

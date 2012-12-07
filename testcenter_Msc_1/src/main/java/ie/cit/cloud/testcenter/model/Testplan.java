@@ -25,6 +25,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -32,7 +35,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-
+@JsonIgnoreProperties({ "projects" })
 @Entity(name = "Testplan")
 public class Testplan {
 
@@ -48,17 +51,16 @@ public class Testplan {
 	@Length(min = 2, max = 32, message = "Testplan name must be between 2 to 32 characters.")
 	@NotEmpty(message = "TestPlan Name is required.")
 	private String testplanName;  
-	
+		
 	@ManyToMany(mappedBy="testplans", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
-    private Set<Project> projects = new HashSet<Project>();
+    private Set<Project> projects = new HashSet<Project>();	
 	
 	@OneToMany(fetch=FetchType.EAGER, 
 			targetEntity=Testcase.class, 
 			cascade=(CascadeType.ALL))
 	@JoinColumn(name = "testplanID", referencedColumnName="testplanID")		
-	@Fetch(value = FetchMode.SUBSELECT)
-	
+	@Fetch(value = FetchMode.SUBSELECT)	
 	private Set<Testcase> testcases;    
 	
 	@OneToMany(fetch=FetchType.EAGER, targetEntity=TestplanSection.class, cascade=CascadeType.ALL)

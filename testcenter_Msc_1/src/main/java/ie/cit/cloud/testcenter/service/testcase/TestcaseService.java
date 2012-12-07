@@ -139,7 +139,6 @@ public interface TestcaseService {
 	Testplan getTestcaseTestplan(Long testcaseID);
 	String getTestcaseTestplanName(Long testcaseID);
 
-	
 	//TestcaseSummary getTestcaseSummary(Long companyID, Testcase testcase,
 	//		String level,String stage,String required);
 

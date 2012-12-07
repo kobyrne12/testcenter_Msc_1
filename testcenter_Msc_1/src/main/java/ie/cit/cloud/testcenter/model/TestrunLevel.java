@@ -14,9 +14,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+@JsonIgnoreProperties({ "projects" })
 @Entity
 @Table(name = "TestrunLevel")
 public class TestrunLevel 
