@@ -97,6 +97,8 @@ public class CompanyController {
 		Cookie cookie = new Cookie("companyID",Long.toString(companyID));
 		cookie.setMaxAge(60*60); //1 hour
 		response.addCookie(cookie);
+		Company company = companyService.getCompany(companyID);
+		model.addAttribute("company", company);
 		return "redirect:index.html"; 			
 	}
 
@@ -136,8 +138,9 @@ public class CompanyController {
 				model.addAttribute("displaymessage", "Company does not exist");
 				return "companies";
 			}
-
+			
 			model.addAttribute("companyID", companyID);	
+			model.addAttribute("company", company);	
 			model.addAttribute("companyName", company.getCompanyName());	
 			model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
 			model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
@@ -156,7 +159,7 @@ public class CompanyController {
 
 			if(userpath.isEmpty())			
 			{
-				System.out.println("HERE 1 :" + userpath);								
+				System.out.println("HERE 1 :" + userpath);					
 				return "index"; 	
 			}
 			else
@@ -204,27 +207,8 @@ public class CompanyController {
 								newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getProjectsDisplayName()+"</a> >";
 								newuserpath = newuserpath + ">"+project.getProjectID();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> >";
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> > "+projectID;
 
-								//								if(gridUrl.contains("?"))
-								//								{
-								//									gridUrl = gridUrl +  "&";
-								//								}
-								//								else
-								//								{
-								//									gridUrl = gridUrl +  "?";
-								//								}
-								//								gridUrl = gridUrl +  "projectID="+projectID;
-
-								//								if(relatedObjects.contains("?"))
-								//								{
-								//									relatedObjects = relatedObjects +  "&";
-								//								}
-								//								else
-								//								{
-								//									relatedObjects = relatedObjects +  "?";
-								//								}
-								//								relatedObjects = relatedObjects +  "projectID="+projectID;								
 								gridUrl = "/summaryList/"+companyID+"?projectID="+projectID;
 								relatedObjects = "?projectID="+projectID;
 								allCompanyProjects = false;
@@ -235,6 +219,7 @@ public class CompanyController {
 									model.addAttribute("breadCrumb", breadCrumb);
 									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("project", project);	
 									return "projectDetails";
 								}
 							}catch(NoResultException nre)
