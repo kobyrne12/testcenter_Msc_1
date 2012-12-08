@@ -4,6 +4,7 @@
 package ie.cit.cloud.testcenter.model.summary;
 
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Set;
 public class TestrunSummaryList {	
 	
    
-    private Set<TestrunSummary> testruns; 
+    private Set<TestrunSummary> testruns = new LinkedHashSet<TestrunSummary>(); 
     
    
     /**

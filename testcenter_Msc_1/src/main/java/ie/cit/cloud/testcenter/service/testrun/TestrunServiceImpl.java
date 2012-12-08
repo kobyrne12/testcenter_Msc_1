@@ -447,14 +447,15 @@ public class TestrunServiceImpl implements TestrunService {
 		// Check which testplans wil be displayed 
 		Company company = companyService.getCompany(companyID);
 		Set<Testrun> testruns = new LinkedHashSet<Testrun>();
-		boolean getAllCompanyTestruns = false;
+		boolean filterByTestcase = true;
+		boolean filterByCycle = true;
 
 		if (testcaseID != null && !testcaseID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
 		{	
 			Set<Testrun> testcaseTestruns = new LinkedHashSet<Testrun>();
 			if(required == null)
 			{
-				testruns.addAll(testcaseTestruns);	
+				testcaseTestruns = testcaseService.getAllTestRuns(Long.valueOf(testcaseID));
 			}
 			else
 			{
@@ -469,20 +470,20 @@ public class TestrunServiceImpl implements TestrunService {
 				else
 				{
 					testcaseTestruns = testcaseService.getAllTestRuns(Long.valueOf(testcaseID));
-				}
-				if(testcaseTestruns == null || testcaseTestruns.isEmpty())
-				{
-					return null;
-				}
-				else
-				{
-					testruns.addAll(testcaseTestruns);	
-				}	
+				}				
 			}
+			if(testcaseTestruns == null || testcaseTestruns.isEmpty())
+			{
+				return null;
+			}
+			else
+			{
+				testruns.addAll(testcaseTestruns);
+			}	
 		}
 		else
 		{
-			getAllCompanyTestruns = true;
+			filterByTestcase = false;
 		}
 
 		if (cycleID != null && !cycleID.isEmpty()) // A cycle can only have one project hence we only need to add 1 project
@@ -518,11 +519,11 @@ public class TestrunServiceImpl implements TestrunService {
 			}			
 		}
 		else
-		{
-			getAllCompanyTestruns = true;
+		{			
+			filterByCycle = false;
 		}
 
-		if(getAllCompanyTestruns)
+		if(!filterByTestcase && !filterByCycle)
 		{
 			if(required == null)
 			{
@@ -582,15 +583,15 @@ public class TestrunServiceImpl implements TestrunService {
 				else
 				{
 					testplanTestruns = testplanService.getAllTestRuns(Long.valueOf(testplanID));
-				}			
-				if(testplanTestruns != null)
-				{
-					testruns.retainAll(testplanTestruns);				
-				}
-				else
-				{
-					testruns.clear();
-				}
+				}					
+			}
+			if(testplanTestruns != null)
+			{
+				testruns.retainAll(testplanTestruns);				
+			}
+			else
+			{
+				testruns.clear();
 			}
 		}
 		if(testruns == null || testruns.isEmpty()){return null;}

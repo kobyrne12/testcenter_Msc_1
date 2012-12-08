@@ -241,8 +241,7 @@ public class CycleJSONController {
 		if(availableTestplans != null && !availableTestplans.isEmpty())
 		{
 			testplanList.setTestplans(availableTestplans);
-		}
-		testplanList.setTestplans(availableTestplans);		
+		}		
 		return testplanList; 		
 	}  
 
