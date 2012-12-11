@@ -505,7 +505,15 @@ public class CycleServiceImpl implements CycleService {
 		}
 		return availTestcases;		
 	}
-	
+	public Set<Testplan> getAllTestplans(Long cycleID) 
+	{		
+		Project project = projectService.getProject(getCycle(cycleID).getProjectID());
+		if(project == null)
+		{
+			return null;
+		}
+		return project.getTestplans();
+	}
 	public Set<Testplan> getAvailTestplans(Long cycleID) 
 	{
 		Set<Testcase> availableTestcases = getAvailTestcases(cycleID);
@@ -1404,6 +1412,8 @@ public class CycleServiceImpl implements CycleService {
 		return cycleSummaryList;	
 
 	}
+
+
 
 	
 

@@ -260,6 +260,20 @@ public class CycleJSONController {
 		return testcaseList; 	
 	}  
 
+	@RequestMapping(value = "/getcycletestplans/{cycleID}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody TestplanList getCycleTestplans(@PathVariable("cycleID") Long cycleID) 
+	{	
+		// Get Testcases that have no testruns in the selected cycle
+		TestplanList testplanList = new TestplanList();
+		Set<Testplan> availableTestplans = cycleService.getAllTestplans(cycleID);
+		if(availableTestplans != null && !availableTestplans.isEmpty())
+		{
+			testplanList.setTestplans(availableTestplans);
+		}
+		return testplanList; 	
+	}  
+
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)

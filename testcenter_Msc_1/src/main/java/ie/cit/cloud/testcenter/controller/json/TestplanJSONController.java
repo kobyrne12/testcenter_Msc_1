@@ -22,8 +22,10 @@ import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
+import ie.cit.cloud.testcenter.model.summary.TestcaseList;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestplanList;
 import ie.cit.cloud.testcenter.model.summary.TestplanSummary;
 import ie.cit.cloud.testcenter.model.summary.TestplanSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
@@ -463,24 +465,20 @@ public class TestplanJSONController {
 		return "Could Not Add to " + relatedItem;  
 
 	}
-	// Testplan summary
-	@RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/gettestplantestcases/{testplanID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody TestplanSummary getCompanySummaryAt(@PathVariable("index") Long testplanID) {
-		//return testplanService.getTestplanSummary(testplanID);   
-		return null;
-	} 
-	/* @RequestMapping(value = {"jsontestplanTEST"}, method = GET)
-     public String jsontestplanTEST(@RequestParam(required = false)Long companyID, Model model) {
-     	model.addAttribute("company", companyService.getCompany(companyID));
-     	return "jsontestplanTEST";  
-   }  
-     // All Testplans For a company
-     @RequestMapping(value = "/summaryList/{companyID}/cycle/{cycleID}", method = RequestMethod.GET)
-     @ResponseStatus(HttpStatus.OK)
-     public @ResponseBody TestplanSummaryList returnTestplansForCycle(@PathVariable("companyID") Long companyID) {
-     	return companyService.getAllTestcaseSummaryForCompany(companyID);     	   	
-     }  */
+	public @ResponseBody TestcaseList getCycleTestplans(@PathVariable("testplanID") Long testplanID) 
+	{	
+		// Get Testcases that have no testruns in the selected cycle
+		TestcaseList testcaseList = new TestcaseList();
+		Set<Testcase> allTestcases = testplanService.getAllTestCases(testplanID);
+		if(allTestcases != null && !allTestcases.isEmpty())
+		{
+			testcaseList.setTestcases(allTestcases);
+		}
+		return testcaseList; 	
+	}  
 
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)

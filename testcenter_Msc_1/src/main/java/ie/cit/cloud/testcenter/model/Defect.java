@@ -73,6 +73,11 @@ public class Defect {
 	@Fetch(value = FetchMode.SUBSELECT)
     private Set<Requirement> requirements = new HashSet<Requirement>();
 	
+	@Basic    
+	private int testrunsCount;
+	@Basic    
+	private int requirementCount;
+	
 	@ManyToMany(mappedBy="defects", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SUBSELECT)
     private Set<TestcenterUser> users = new HashSet<TestcenterUser>();
@@ -360,6 +365,42 @@ public class Defect {
 	 */
 	public void setCurrentOwnerUserID(Long currentOwnerUserID) {
 		this.currentOwnerUserID = currentOwnerUserID;
+	}
+	/**
+	 * @return the requirementCount
+	 */
+	public int getRequirementCount() 
+	{
+		int count = 0;
+		if(this.requirements != null && !this.requirements.isEmpty())
+		{
+			count = this.requirements.size();
+		}
+		return count;		
+	}
+	/**
+	 * @param requirementCount the requirementCount to set
+	 */
+	public void setRequirementCount(int requirementCount) {
+		this.requirementCount = requirementCount;
+	}
+	/**
+	 * @return the testrunsCount
+	 */
+	public int getTestrunsCount() 
+	{
+		int count = 0;
+		if(getTestruns() != null && !getTestruns().isEmpty())
+		{
+			count = this.getTestruns().size();
+		}		
+		return count;
+	}
+	/**
+	 * @param testrunsCount the testrunsCount to set
+	 */
+	public void setTestrunsCount(int testrunsCount) {
+		this.testrunsCount = testrunsCount;
 	}	
 	
 }

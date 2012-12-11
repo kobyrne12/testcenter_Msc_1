@@ -10,6 +10,7 @@ package ie.cit.cloud.testcenter.service.defect;
 
 import java.util.Set;
 
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
@@ -19,6 +20,8 @@ import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.DefectSummaryList;
+import ie.cit.cloud.testcenter.model.summary.RequirementSummaryList;
 
 /**
  * Peforms business operation on defect 
@@ -147,4 +150,16 @@ public interface DefectService {
 	 Set<TestcenterUser> getCascadedSnrTesters(Long defectID);
 	 Set<TestcenterUser> getCascadedDevelopers(Long defectID);
 	 Set<TestcenterUser> getCascadedSnrDevelopers(Long defectID);
+	 
+	 ColModelAndNames getColumnModelAndNames(Long companyID);
+	 
+	Set<Defect> getFilteredDefects(Long companyID, String projectID,
+				String cycleID, String testplanID, String testcaseID,
+				String testrunID, String defectID, String requirementID,
+				String environmentID, String userID,String levelName,String stage,String required);
+		
+	DefectSummaryList getGridDefects(Long companyID, String projectID,
+				String cycleID, String testplanID, String testcaseID,
+				String testrunID, String defectID, String requirementID,
+				String environmentID, String userID,String levelName,String stage,String required);
 }

@@ -148,41 +148,6 @@ public class TestplanServiceImpl implements TestplanService {
 		return testplan.getTestcases();			
 	}
 
-	public Set<Testcase> getCompulsoryTestCases(Long testplanID) 
-	{
-		Set<Testcase> allTestcases = getAllTestCases(testplanID);
-		if(allTestcases == null)
-		{
-			return null;
-		}	
-		Set<Testcase> compulsoryTestcases= new HashSet<Testcase>();
-		for(final Testcase testcase : allTestcases)
-		{
-			if(isRequired(testcase.getTestcaseID()))
-			{
-				compulsoryTestcases.add(testcase);
-			}
-		}		
-		return compulsoryTestcases;
-	}
-
-	public Set<Testcase> getOptionalTestCases(Long testplanID)
-	{
-		Set<Testcase> allTestcases = getAllTestCases(testplanID);
-		if(allTestcases == null)
-		{
-			return null;
-		}	
-		Set<Testcase> optionalTestcases= new HashSet<Testcase>();
-		for(final Testcase testcase : allTestcases)
-		{
-			if(!isRequired(testcase.getTestcaseID()))
-			{
-				optionalTestcases.add(testcase);
-			}
-		}		
-		return optionalTestcases;
-	}
 
 	public Set<Testrun> getAllTestRuns(Long testplanID) 
 	{
@@ -204,17 +169,21 @@ public class TestplanServiceImpl implements TestplanService {
 
 	public Set<Testrun> getCompulsoryTestRuns(Long testplanID)
 	{
-		Set<Testcase> compulsoryTestcases = getCompulsoryTestCases(testplanID);
-		if(compulsoryTestcases == null)
+		Set<Testcase> allTestcases = getAllTestCases(testplanID);
+		if(allTestcases == null)
 		{
 			return null;
 		}	
 		Set<Testrun> compulsoryTestruns = new HashSet<Testrun>();
-		for(final Testcase compulsoryTestcase : compulsoryTestcases)
+		for(final Testcase compulsoryTestcase : allTestcases)
 		{
 			if(compulsoryTestcase.getTestruns() != null && !compulsoryTestcase.getTestruns().isEmpty())
 			{
-				compulsoryTestruns.addAll(compulsoryTestcase.getTestruns());
+				Set<Testrun> testcaseTestruns = testcaseService.getRequiredTestRuns(compulsoryTestcase.getTestcaseID());
+				if(testcaseTestruns!= null && !testcaseTestruns.isEmpty())
+				{
+					compulsoryTestruns.addAll(testcaseTestruns);
+				}
 			}			
 		}	
 		return compulsoryTestruns;
@@ -222,30 +191,26 @@ public class TestplanServiceImpl implements TestplanService {
 
 	public Set<Testrun> getOptionalTestRuns(Long testplanID)
 	{
-		Set<Testcase> optionalTestcases = getOptionalTestCases(testplanID);
-		if(optionalTestcases == null)
+		Set<Testcase> allTestcases = getAllTestCases(testplanID);
+		if(allTestcases == null)
 		{
 			return null;
 		}	
 		Set<Testrun> optionalTestruns = new HashSet<Testrun>();
-		for(final Testcase optionalTestcase : optionalTestcases)
+		for(final Testcase compulsoryTestcase : allTestcases)
 		{
-			if(optionalTestcase.getTestruns() != null && !optionalTestcase.getTestruns().isEmpty())
+			if(compulsoryTestcase.getTestruns() != null && !compulsoryTestcase.getTestruns().isEmpty())
 			{
-				optionalTestruns.addAll(optionalTestcase.getTestruns());
+				Set<Testrun> testcaseTestruns = testcaseService.getOptionalTestRuns(compulsoryTestcase.getTestcaseID());
+				if(testcaseTestruns!= null && !testcaseTestruns.isEmpty())
+				{
+					optionalTestruns.addAll(testcaseTestruns);
+				}
 			}			
 		}	
-		return optionalTestruns;		
+		return optionalTestruns;			
 	}
-	public boolean isRequired(Long testcaseID) 
-	{
-		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testcaseID);
-		if(compulsoryTestruns != null && !compulsoryTestruns.isEmpty())
-		{
-			return true;
-		}
-		return false;		
-	}   
+	
 	public Set<Cycle> getCycles(Long testplanID) 
 	{
 		Set<Testrun> compulsoryTestruns = getCompulsoryTestRuns(testplanID);		

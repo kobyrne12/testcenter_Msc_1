@@ -18,6 +18,7 @@ import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.TestrunLevel;
 import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Testcase;
@@ -38,6 +39,7 @@ import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testplan.TestplanService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
@@ -67,7 +69,7 @@ public class TestrunJSONController {
 	@Autowired
 	private CycleService cycleService;    
 	@Autowired
-	private TestplanService testplanService;
+	private RequirementService requirementService;
 	@Autowired
 	private TestcaseService testcaseService;   
 	@Autowired
@@ -306,6 +308,19 @@ public class TestrunJSONController {
 		testrunService.remove(testrunID);
 	}	
 	
+	@RequestMapping(value = "/addRequirement ", method = RequestMethod.POST)
+	public @ResponseBody String addReqToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testrunID", required=true) Long testrunID,
+			@RequestParam(value="requirementID", required=true) Long requirementID,					
+			Model model) 
+	{
+		Testrun testrun = testrunService.getTestrun(testrunID);
+		Requirement requirement = requirementService.getRequirement(requirementID);
+		testrun.getRequirements().add(requirement);
+		testrunService.update(testrun);
+		return "ok"; 		
+	}
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)

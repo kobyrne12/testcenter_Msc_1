@@ -50,18 +50,7 @@ public interface TestplanService {
 	 * @return collection of All Testcases for a test plan
 	 */	
 	 Set<Testcase> getAllTestCases(Long testplanID);
-	/**
-	 * Returns a collection of All Compulsory Testcases for a test plan
-	 * Set<Testplan>
-	 * @return collection of All Compulsory Testcases for a test plan
-	 */	
-	 Set<Testcase> getCompulsoryTestCases(Long testplanID);
-	/**
-	 * Returns a collection of All Optional Testcases for a test plan
-	 * Set<Testcase>
-	 * @return collection of All OptionalTestcases for a test plan
-	 */	
-	 Set<Testcase> getOptionalTestCases(Long testplanID);
+	
     /**
 	 * Returns a collection of All Testruns in a Testplan 
 	 * Set<Testrun>
@@ -80,12 +69,7 @@ public interface TestplanService {
 	 * @return collection of All Optional Testruns in a Testplan,
 	 */	
 	Set<Testrun> getOptionalTestRuns(Long testplanID);
-	/**
-	 * Returns true if any of a testcase testruns' in a tesplan priority is less than or equal to cycle priority 
-	 * boolean
-	 * @return true if any of a testcase testruns' in a tesplanpriority is less than or equal to cycle priority,otherwise false
-	 */	
-	boolean isRequired(Long testcaseID);
+
 	/**
 	 * Returns a testplans Cycles
 	 * Cycle

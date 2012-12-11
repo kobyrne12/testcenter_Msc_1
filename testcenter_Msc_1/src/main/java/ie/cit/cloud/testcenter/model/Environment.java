@@ -49,9 +49,6 @@ public class Environment {
 	@NotEmpty(message = "Environment Operating System is required.")
 	private String environmentOs;   		
 
-	@NotEmpty(message = "Environment Operating System Version is required.")
-	private String  environmentOsVersion; 
-
 	@Temporal(TemporalType.DATE)
 	@Column(name = "creationDate", nullable = false, length = 10) 
 	private Date creationDate;	
@@ -81,12 +78,11 @@ public class Environment {
 	 * @param companyID
 	 * @param environmentName
 	 * @param environmentOs
-	 * @param environmentOsVersion
 	 */
 	public Environment(Long companyID, String environmentName,
-			String environmentOs, String environmentOsVersion) 
+			String environmentOs) 
 	{
-		this(companyID, environmentName, environmentOs, environmentOsVersion,
+		this(companyID, environmentName, environmentOs,
 				new Date(),new Date(),null,null,null,null,null);		
 	}
 	
@@ -94,7 +90,6 @@ public class Environment {
 	 * @param companyID
 	 * @param environmentName
 	 * @param environmentOs
-	 * @param environmentOsVersion
 	 * @param creationDate
 	 * @param lastModifiedDate
 	 * @param createdByUserID
@@ -104,14 +99,12 @@ public class Environment {
 	 * @param users
 	 */
 	public Environment(Long companyID, String environmentName,
-			String environmentOs, String environmentOsVersion,
-			Date creationDate, Date lastModifiedDate, Long createdByUserID,
+			String environmentOs, Date creationDate, Date lastModifiedDate, Long createdByUserID,
 			Long lastModifiedByUserID, Long currentOwnerUserID,
 			Set<Testrun> testruns, Set<TestcenterUser> users) {
 		this.companyID = companyID;
 		this.environmentName = environmentName;
-		this.environmentOs = environmentOs;
-		this.environmentOsVersion = environmentOsVersion;
+		this.environmentOs = environmentOs;		
 		this.creationDate = creationDate;
 		this.lastModifiedDate = lastModifiedDate;
 		this.createdByUserID = createdByUserID;
@@ -161,20 +154,6 @@ public class Environment {
 	 */
 	public void setEnvironmentOs(String environmentOs) {
 		this.environmentOs = environmentOs;
-	}
-
-	/**
-	 * @return the environmentOsVersion
-	 */
-	public String getEnvironmentOsVersion() {
-		return environmentOsVersion;
-	}
-
-	/**
-	 * @param environmentOsVersion the environmentOsVersion to set
-	 */
-	public void setEnvironmentOsVersion(String environmentOsVersion) {
-		this.environmentOsVersion = environmentOsVersion;
 	}
 
 	/**

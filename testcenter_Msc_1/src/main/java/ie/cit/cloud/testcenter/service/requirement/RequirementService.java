@@ -10,6 +10,7 @@ package ie.cit.cloud.testcenter.service.requirement;
 
 import java.util.Set;
 
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
@@ -19,6 +20,8 @@ import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.RequirementSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestrunSummaryList;
 
 /**
  * Peforms business operation on requirement 
@@ -143,5 +146,17 @@ public interface RequirementService {
 	Set<TestcenterUser> getCascadedSnrTesters(Long environmentID);
 	Set<TestcenterUser> getCascadedDevelopers(Long environmentID);
 	Set<TestcenterUser> getCascadedSnrDevelopers(Long environmentID);
+	
+	ColModelAndNames getColumnModelAndNames(Long companyID);
+	 
+	Set<Requirement> getFilteredRequirements(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required);
+	
+	RequirementSummaryList getGridRequirments(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required);
 
 }

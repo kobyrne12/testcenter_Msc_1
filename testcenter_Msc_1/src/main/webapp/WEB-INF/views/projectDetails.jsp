@@ -458,7 +458,7 @@ $(function()
 			<div class="ui-layout-content ui-widget-content" style="background:#fff;">		
 				<div class="inner-inner-center" >				
 					<div class="inner-inner-inner-center" >	
-						<div class="inner-inner-inner-inner-center" >								
+						<div class="inner-inner-inner-inner-center" >											
 							<table width="100%" style="min-width='500px';">
 								<tr>
 									<th width="50%" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" >

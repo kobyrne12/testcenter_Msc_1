@@ -6,6 +6,7 @@ package ie.cit.cloud.testcenter.model.summary;
 
 import ie.cit.cloud.testcenter.model.Testcase;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Set;
 public class TestcaseList {	
 	
    
-    private Set<Testcase> testcases; 
+    private Set<Testcase> testcases = new LinkedHashSet<Testcase>();  
     
    
     /**

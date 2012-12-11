@@ -24,7 +24,10 @@ import javax.validation.ConstraintViolationException;
 
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
@@ -47,6 +50,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -248,14 +252,20 @@ public class CompanyController {
 								gridUrl = "/summaryList/"+companyID+"?cycleID="+cycleID;
 								relatedObjects = "?cycleID="+cycleID;	
 
-								x++;
+								x++;								
 								if(x == (userPathArray.length - 1))
-								{// there is a details view in the userpath i.e //Home>Projects>5								
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+cycle.getCycleName();								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
 									model.addAttribute("gridUrl", "cycle"+gridUrl);
 									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("cycle", cycle);
 									return "cycleDetails";
+								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+cycle.getCycleName()+"</a> >";
 								}
 							}
 							else
@@ -327,13 +337,19 @@ public class CompanyController {
 								allCompanyTestplans = false;
 								x++;
 								if(x == (userPathArray.length - 1))
-								{// there is a details view in the userpath i.e //Home>Projects>5								
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+testplan.getTestplanName();								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
 									model.addAttribute("gridUrl", "testplan"+gridUrl);
 									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("testplan", testplan);
 									return "testplanDetails";
 								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testplan.getTestplanName()+"</a> >";
+								}								
 							}
 							else
 							{
@@ -410,13 +426,19 @@ public class CompanyController {
 								//allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
-								{// there is a details view in the userpath i.e //Home>Projects>5								
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+testcaseID;								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
 									model.addAttribute("gridUrl", "testcase"+gridUrl);
 									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("testcase", testcase);
 									return "testcaseDetails";
 								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testcaseID+"</a> >";
+								}								
 							}
 							else
 							{
@@ -506,13 +528,19 @@ public class CompanyController {
 								allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
-								{// there is a details view in the userpath i.e //Home>Projects>5								
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+testrunID;								
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl","testrun"+gridUrl);	
+									model.addAttribute("gridUrl", "testrun"+gridUrl);
 									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("testrun", testrun);
 									return "testrunDetails";
 								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testrunID+"</a> >";
+								}								
 							}catch(NoResultException nre)
 							{
 								model.addAttribute("userpath", userpath);
@@ -564,6 +592,184 @@ public class CompanyController {
 					}
 					//   *********************************      END of Testruns        ************************************
 
+					//   *********************************        Requirement          ************************************
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getRequirementDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getRequirementsDisplayName().replace(" ","")))
+					{										
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Cycles>"CD 1">Projects
+							Long requirementID = Long.valueOf(userPathArray[x+1]);
+
+							Requirement requirement = requirementService.getRequirement(requirementID);
+							if(requirement != null)
+							{
+								newuserpath = newuserpath + ">"+company.getRequirementsDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getRequirementsDisplayName()+"</a> >";
+
+								newuserpath = newuserpath + ">"+requirementID;
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+requirementID+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?requirementID="+requirementID;
+								relatedObjects = "?requirementID="+requirementID;					
+
+								//allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+requirementID;								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl", "requirement"+gridUrl);
+									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("requirement", requirement);
+									return "requirementDetails";
+								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+requirementID+"</a> >";
+								}								
+							}
+							else
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Requirements
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}							
+							newuserpath = newuserpath + ">"+company.getRequirementsDisplayName();
+							breadCrumb = breadCrumb + " "+company.getRequirementsDisplayName();
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "requirement"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);	
+							model.addAttribute("projects", company.getProjects());								
+							return "requirements";						
+						}
+					}
+					//   *********************************    END of Requirements     ************************************
+					//   *********************************        Defect          ************************************
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getDefectDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getDefectsDisplayName().replace(" ","")))
+					{										
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Cycles>"CD 1">Projects
+							Long defectID = Long.valueOf(userPathArray[x+1]);
+
+							Defect defect = defectService.getDefect(defectID);
+							if(defect != null)
+							{
+								newuserpath = newuserpath + ">"+company.getDefectsDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getDefectsDisplayName()+"</a> >";
+
+								newuserpath = newuserpath + ">"+defectID;
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+defectID+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?defectID="+defectID;
+								relatedObjects = "?defectID="+defectID;					
+
+								//allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+defectID;								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl", "defect"+gridUrl);
+									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("defect", defect);
+									return "defectDetails";
+								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+defectID+"</a> >";
+								}								
+							}
+							else
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Defects
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}							
+							newuserpath = newuserpath + ">"+company.getDefectsDisplayName();
+							breadCrumb = breadCrumb + " "+company.getDefectsDisplayName();
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "defect"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);													
+							return "defects";						
+						}
+					}
+					//   *********************************    END of Defects     ************************************
+					//   *********************************        Environment          ************************************
+					if(userPathArray[x].replace(" ","").equalsIgnoreCase(company.getEnvironmentDisplayName().replace(" ","")) ||
+							userPathArray[x].replace(" ","").equalsIgnoreCase(company.getEnvironmentsDisplayName().replace(" ","")))
+					{										
+						if(x < (userPathArray.length - 1))
+						{// there is a details view in the userpath i.e //Home>Cycles>"CD 1">Projects
+							Long environmentID = Long.valueOf(userPathArray[x+1]);
+
+							Environment environment = environmentService.getEnvironment(environmentID);
+							if(environment != null)
+							{
+								newuserpath = newuserpath + ">"+company.getEnvironmentsDisplayName();
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getEnvironmentsDisplayName()+"</a> >";
+
+								newuserpath = newuserpath + ">"+environmentID;
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+environmentID+"</a> >";
+
+								gridUrl = "/summaryList/"+companyID+"?environmentID="+environmentID;
+								relatedObjects = "?environmentID="+environmentID;					
+
+								//allCompanyProjects = false;
+								x++;
+								if(x == (userPathArray.length - 1))
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+environmentID;								
+									model.addAttribute("userpath", newuserpath);
+									model.addAttribute("breadCrumb", breadCrumb);
+									model.addAttribute("gridUrl", "environment"+gridUrl);
+									model.addAttribute("relatedObjects", relatedObjects);	
+									model.addAttribute("environment", environment);
+									return "environmentDetails";
+								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+environmentID+"</a> >";
+								}								
+							}
+							else
+							{
+								model.addAttribute("userpath", userpath);
+								return "index";
+							}
+						}	
+						else
+						{// Last item i.e //Home>Projects>5>Environments
+							if(gridUrl.isEmpty())
+							{
+								gridUrl = "/summaryList/"+companyID;
+							}							
+							newuserpath = newuserpath + ">"+company.getEnvironmentsDisplayName();
+							breadCrumb = breadCrumb + " "+company.getEnvironmentsDisplayName();
+							model.addAttribute("userpath", newuserpath);
+							model.addAttribute("breadCrumb", breadCrumb);
+							model.addAttribute("gridUrl", "environment"+gridUrl);
+							model.addAttribute("relatedObjects", relatedObjects);													
+							return "environments";						
+						}
+					}
+					//   *********************************    END of Environments     ************************************
 
 					// TODO : complete rest  of related objects				
 				}
@@ -804,51 +1010,17 @@ public class CompanyController {
 
 	}  
 
+	@RequestMapping(value = {"deletecompany"}, method = GET)
+	public String deleteTestrun(HttpServletResponse response,
+			@RequestParam(value="companyID", required=true) Long companyID) 
+	{		
+		companyService.remove(companyID);
+		Cookie cookie = new Cookie("companyID", null); 			
+		cookie.setMaxAge(0); 
+		response.addCookie(cookie);
+		return "redirect:companies.html"; 
+	}
 
-	//
-	//    @RequestMapping(value = {"newcompany"}, method = POST)   
-	//    public String createNewCompany(@RequestParam String companyName, Model model) {      	
-	//    	try{
-	//    		// Company already exists    	
-	//    		Company company = companyService.getCompanyByName(companyName); 
-	//    		model.addAttribute("errormessage", companyName+" already exists");      	
-	//    		return "redirect:newcompany.html";	 
-	//    	}
-	//    	catch(NoResultException nre)
-	//    	{
-	//    		// No Company of this name Exist    		
-	//    		try{        			
-	//    			companyService.addNewCompany(new Company(companyName,new Date(),getCurrentUser()));   		
-	//    			model.addAttribute("successmessage", companyName+" Created");      	    	
-	//    			return "redirect:viewcompanies.html";   	    		 
-	//    		}
-	//    		catch(ConstraintViolationException CVE)
-	//    		{   			
-	//    			model.addAttribute("errormessage", CVE.getMessage());   	    
-	//    			return "redirect:newcompany.html";	
-	//    		}
-	//    	}    
-	//    }       
-
-	//    @RequestMapping(value = {"viewcompanies"}, method = GET)
-	//    public String viewAllCompanies(@RequestParam(required = false) String errormessage,String successmessage,Model model) {
-	//    	
-	//    	Set<Company> allCompanies = companyService.getAllCompanies();    	
-	//    	if (allCompanies.isEmpty())
-	//    	{
-	//    		// No Company Exist  
-	//    		model.addAttribute("errormessage", "No Companies exist");     	
-	//    		return "redirect:newcompany.html";        	
-	//    	}
-	//    	else
-	//    	{    		
-	//    		model.addAttribute("errormessage", errormessage);
-	//    		model.addAttribute("successmessage", successmessage);
-	//	    	model.addAttribute("companies", allCompanies);    	
-	//	    	return "viewcompanies";
-	//    	}
-	//    }      
-	//    
 	public Calendar GetCurentDate()
 	{ 	     	
 		Calendar currentDate = Calendar.getInstance();    	

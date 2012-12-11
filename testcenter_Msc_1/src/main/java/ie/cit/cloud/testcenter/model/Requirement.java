@@ -53,7 +53,10 @@ public class Requirement {
 	@Basic 
 	@Column(name = "requirementSectionID")
 	private Long requirementSectionID;	
-
+	
+	@Basic    
+	private int requirementPriority;
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "creationDate", nullable = false, length = 10) 
 	private Date creationDate;		
@@ -65,6 +68,9 @@ public class Requirement {
 	private Long createdByUserID;
 	@Basic    
 	private Long lastModifiedByUserID;
+	
+	@Basic    
+	private int testrunCount = -1;
 
 	@ManyToMany(mappedBy="requirements", fetch=FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -90,9 +96,9 @@ public class Requirement {
 	 * @param requirementSectionID	
 	 */
 	public Requirement(Long companyID, String requirementSummary,
-			String requirementDetails, Long requirementSectionID) {
+			String requirementDetails, Long requirementSectionID,int requirementPriority) {
 		this(companyID,requirementSummary,requirementDetails,requirementSectionID,
-				new Date(),new Date(),null,null,null,null,null);	
+				new Date(),new Date(),null,null,null,null,null,requirementPriority);	
 	}
 
 	/**
@@ -112,7 +118,7 @@ public class Requirement {
 			String requirementDetails, Long requirementSectionID,
 			Date creationDate, Date lastModifiedDate, Long createdByUserID,
 			Long lastModifiedByUserID, Set<Testrun> testruns,
-			Set<TestcenterUser> users, Set<Defect> defects) {
+			Set<TestcenterUser> users, Set<Defect> defects, int requirementPriority) {
 		this.companyID = companyID;
 		this.requirementSummary = requirementSummary;
 		this.requirementDetails = requirementDetails;
@@ -124,6 +130,7 @@ public class Requirement {
 		this.testruns = testruns;
 		this.users = users;
 		this.defects = defects;
+		this.requirementPriority = requirementPriority;
 	}
 
 	/**
@@ -285,6 +292,40 @@ public class Requirement {
 	 */
 	public Long getRequirementID() {
 		return requirementID;
+	}
+
+	/**
+	 * @return the testrunCount
+	 */
+	public int getTestrunCount() 
+	{
+		int count = 0;
+		if(getTestruns() != null && !getTestruns().isEmpty())
+		{
+			count = this.getTestruns().size();
+		}
+		return count;
+	}
+
+	/**
+	 * @param testrunCount the testrunCount to set
+	 */
+	public void setTestrunCount(int testrunCount) {
+		this.testrunCount = testrunCount;
+	}
+
+	/**
+	 * @return the requirementPriority
+	 */
+	public int getRequirementPriority() {
+		return requirementPriority;
+	}
+
+	/**
+	 * @param requirementPriority the requirementPriority to set
+	 */
+	public void setRequirementPriority(int requirementPriority) {
+		this.requirementPriority = requirementPriority;
 	}
 	
 	

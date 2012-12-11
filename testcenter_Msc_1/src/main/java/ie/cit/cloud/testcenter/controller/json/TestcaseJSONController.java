@@ -20,13 +20,17 @@ import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Testcase;
+import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
+import ie.cit.cloud.testcenter.model.summary.TestcaseList;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummary;
 import ie.cit.cloud.testcenter.model.summary.TestcaseSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestrunList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
@@ -302,24 +306,24 @@ public class TestcaseJSONController {
 					//		    		System.out.println(e);
 					//		    		return "ERROR :: Could not add Test Case :"+testcaseName; 
 					//		    	}
-//					if(!projectID.isEmpty())
-//					{
-//						Project project = projectService.getProject(Long.valueOf(projectID));
-//						if(project == null)
-//						{
-//							return "ERROR :: Could not find project :"+ projectID; 
-//						}				    	
-//						try
-//						{
-//							project.getTestplans().
-//							project.getTestcases().add(testcase);     
-//							projectService.update(project);  	
-//						}
-//						catch(Exception e)
-//						{
-//							return "ERROR :: Could not add Test Case :"+testcaseName+" To project :"+ projectID; 
-//						}					
-//					}
+					//					if(!projectID.isEmpty())
+					//					{
+					//						Project project = projectService.getProject(Long.valueOf(projectID));
+					//						if(project == null)
+					//						{
+					//							return "ERROR :: Could not find project :"+ projectID; 
+					//						}				    	
+					//						try
+					//						{
+					//							project.getTestplans().
+					//							project.getTestcases().add(testcase);     
+					//							projectService.update(project);  	
+					//						}
+					//						catch(Exception e)
+					//						{
+					//							return "ERROR :: Could not add Test Case :"+testcaseName+" To project :"+ projectID; 
+					//						}					
+					//					}
 					return "ok";  
 				}
 				else
@@ -345,25 +349,20 @@ public class TestcaseJSONController {
 		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%% DELETE testcaseID = " + testcaseID);
 		testcaseService.remove(testcaseID);
 	}
-	// Testcase summary
-	@RequestMapping(value = "/summary/{index}", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody TestcaseSummary getCompanySummaryAt(@PathVariable("index") Long testcaseID) {
-		//return testcaseService.getTestcaseSummary(testcaseID);   
-		return null;
-	} 
-	/* @RequestMapping(value = {"jsontestcaseTEST"}, method = GET)
-     public String jsontestcaseTEST(@RequestParam(required = false)Long companyID, Model model) {
-     	model.addAttribute("company", companyService.getCompany(companyID));
-     	return "jsontestcaseTEST";  
-   }  
-     // All Testcases For a company
-     @RequestMapping(value = "/summaryList/{companyID}/cycle/{cycleID}", method = RequestMethod.GET)
-     @ResponseStatus(HttpStatus.OK)
-     public @ResponseBody TestcaseSummaryList returnTestcasesForCycle(@PathVariable("companyID") Long companyID) {
-     	return companyService.getAllTestcaseSummaryForCompany(companyID);     	   	
-     }  */
 
+	@RequestMapping(value = "/gettestcasetestruns/{testcaseID}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody TestrunList getTestcaseTestruns(@PathVariable("testcaseID") Long testcaseID) 
+	{		
+		// Get Testcases that have no testruns in the selected cycle
+		TestrunList testrunList = new TestrunList();
+		Set<Testrun> testruns = testcaseService.getTestcase(testcaseID).getTestruns();
+		if(testruns != null && !testruns.isEmpty())
+		{
+			testrunList.setTestruns(testruns);
+		}
+		return testrunList; 		
+	}  
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)

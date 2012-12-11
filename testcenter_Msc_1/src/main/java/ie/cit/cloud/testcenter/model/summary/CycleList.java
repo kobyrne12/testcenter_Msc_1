@@ -5,7 +5,9 @@ package ie.cit.cloud.testcenter.model.summary;
 
 
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Environment;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -16,7 +18,7 @@ import java.util.Set;
 public class CycleList {	
 	
    
-    private Set<Cycle> cycles; 
+    private Set<Cycle> cycles = new LinkedHashSet<Cycle>();  
     
    
     /**

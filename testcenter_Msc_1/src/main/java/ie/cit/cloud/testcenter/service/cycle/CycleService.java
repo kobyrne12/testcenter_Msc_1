@@ -215,5 +215,7 @@ public interface CycleService {
 	Set<Testcase> getAvailTestcases(Long cycleID, Long testplanID) ;
 	Set<Testplan> getAvailTestplans(Long cycleID);
 
+	Set<Testplan> getAllTestplans(Long cycleID);
+
 
 }

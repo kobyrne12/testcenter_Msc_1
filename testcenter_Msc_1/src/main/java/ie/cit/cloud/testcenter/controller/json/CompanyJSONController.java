@@ -353,7 +353,7 @@ public class CompanyJSONController {
     public void createRequirement(@PathVariable("companyID") Long companyID,
     		@PathVariable("requirementID") Long requirementID)
     {    	    	    	    	
-    	requirementService.addNewRequirement(new Requirement(companyID,"SUMMARY","DETAILS",null));    	
+    	requirementService.addNewRequirement(new Requirement(companyID,"SUMMARY","DETAILS",null,1));    	
     } 	   
     // DELETE Requirement
     @RequestMapping(value = "/requirement/{requirementID}", method = RequestMethod.DELETE)
@@ -374,7 +374,7 @@ public class CompanyJSONController {
     public void createEnvironment(@PathVariable("companyID") Long companyID,
     		@PathVariable("environmentID") Long environmentID)
     {    	    	    	    	
-    	environmentService.addNewEnvironment(new Environment(companyID,"ENV_NAME","ENV_OS","ENV_OS_VERSION"));    	
+    	environmentService.addNewEnvironment(new Environment(companyID,"ENV_NAME","ENV_OS"));    	
     } 	   
     // DELETE Environment
     @RequestMapping(value = "/environment/{environmentID}", method = RequestMethod.DELETE)

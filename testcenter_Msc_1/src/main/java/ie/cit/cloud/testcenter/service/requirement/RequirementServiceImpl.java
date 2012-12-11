@@ -8,9 +8,15 @@ package ie.cit.cloud.testcenter.service.requirement;
  *
  */
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+import ie.cit.cloud.testcenter.display.ColModelAndNames;
+import ie.cit.cloud.testcenter.display.GridAttributes;
+import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
@@ -20,9 +26,15 @@ import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.TestcenterUser;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.model.summary.RequirementSummary;
+import ie.cit.cloud.testcenter.model.summary.RequirementSummaryList;
+import ie.cit.cloud.testcenter.model.summary.TestrunSummary;
+import ie.cit.cloud.testcenter.model.summary.TestrunSummaryList;
 import ie.cit.cloud.testcenter.respository.requirement.RequirementRepository;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.environment.EnvironmentService;
 import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testplan.TestplanService;
@@ -42,20 +54,24 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	@Qualifier("hibernateRequirementRespository")
 	RequirementRepository requirementRepo;      
-
-	@Autowired
-	CompanyService companyService;	
-	@Autowired
-	ProjectService projectService;
-	@Autowired
-	TestplanService testplanService;	
-	@Autowired
-	TestcaseService testcaseService;
+	
 	@Autowired
 	TestrunService testrunService;
 	@Autowired
-	DefectService defectService;
-
+	CompanyService companyService;
+	@Autowired
+	ProjectService projectService;
+	@Autowired
+	CycleService cycleService;
+	@Autowired
+	TestcaseService testcaseService;	
+	@Autowired
+	TestplanService testplanService;
+	@Autowired
+	DefectService defectService;	
+	@Autowired
+	EnvironmentService environmentService;
+	
 	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
 	public Requirement getRequirement(Long requirementID) {
 		try{
@@ -413,6 +429,210 @@ public class RequirementServiceImpl implements RequirementService {
 			Long requirementID) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	public ColModelAndNames getColumnModelAndNames(Long companyID) 
+	{
+		// Constructor in order
+		// name;index;hidden;width;align;
+		// sortable;resizable;search;sorttype;jsonmap;key;
+		Company company = companyService.getCompany(companyID);
+		Collection<String> colNames = new ArrayList<String>();
+		ColModelAndNames colModelAndName = new ColModelAndNames();
+		Collection<GridAttributes> columnModelSet =  new ArrayList<GridAttributes>();	
+
+		colNames.add("ID");	 
+		columnModelSet.add(new GridAttributes("requirementID",10));	
+
+		colNames.add("Summary");		
+		columnModelSet.add(new GridAttributes("requirementSummary",40));
+
+		colNames.add("Priority");
+		columnModelSet.add(new GridAttributes("requirementPriority",40));
+		
+		colNames.add("Section");
+		columnModelSet.add(new GridAttributes("requirementSection",40,true));
+
+		colNames.add("Details");
+		columnModelSet.add(new GridAttributes("requirementDetails",true));
+		
+		colNames.add("All "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
+		colNames.add("Required "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalRequiredTestruns",10,true));	
+		colNames.add("Optional "+company.getTestrunsDisplayName());
+		columnModelSet.add(new GridAttributes("totalOptionalTestruns",10,true));
+		
+		colNames.add(company.getCyclesDisplayName());
+		columnModelSet.add(new GridAttributes("totalCycles",true));
+		colNames.add(company.getProjectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalProjects",true));
+		colNames.add(company.getTestplansDisplayName());
+		columnModelSet.add(new GridAttributes("totalTestplans",true));
+		colNames.add(company.getTestcasesDisplayName());
+		columnModelSet.add(new GridAttributes("totalTestcases",true));		
+		
+		colNames.add(company.getDefectsDisplayName());
+		columnModelSet.add(new GridAttributes("totalDefects"));		
+		colNames.add("Sev 1s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev1s",true));	
+		colNames.add("Sev 2s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev2s",true));	
+		colNames.add("Sev 3s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev3s",true));	
+		colNames.add("Sev 4s");
+		columnModelSet.add(new GridAttributes("totalCurrentSev4s",true));
+		
+		colNames.add(company.getEnvironmentsDisplayName());
+		columnModelSet.add(new GridAttributes("totalEnvironments",true));	
+		
+		colNames.add(company.getTestersDisplayName());
+		columnModelSet.add(new GridAttributes("totalTesters",true));
+		colNames.add(company.getSeniorTestersDisplayName());
+		columnModelSet.add(new GridAttributes("totalSeniorTesters",true));
+		colNames.add(company.getDevelopersDisplayName());
+		columnModelSet.add(new GridAttributes("totalDevelopers",true));
+		colNames.add(company.getSeniorDevelopersDisplayName());
+		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
+
+		colNames.add("LastModifiedDate");
+		columnModelSet.add(new GridAttributes("lastModifiedDate",true));
+		colNames.add("LastModifiedBy");
+		columnModelSet.add(new GridAttributes("lastModifiedBy",true));	 
+		colNames.add("CreatedBy");
+		columnModelSet.add(new GridAttributes("createdBy",true));
+		colNames.add("CreationDate");
+		columnModelSet.add(new GridAttributes("creationDate",true));
+
+		colNames.add("Company ID");
+		columnModelSet.add(new GridAttributes("companyID",true));
+
+
+		colModelAndName.setColName(colNames);    	
+		colModelAndName.setColModel(columnModelSet);
+		return colModelAndName;
+	}
+
+	public Set<Requirement> getFilteredRequirements(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required)
+	{
+	
+		Company company = companyService.getCompany(companyID);
+		Set<Requirement> requirements = new LinkedHashSet<Requirement>();
+		boolean filteredByTestrun = false;
+		boolean filteredByDefect = false;
+		if (testrunID != null && !testrunID.isEmpty()) 
+		{	
+			Set<Requirement> testrunRequirements = testrunService.getTestrun(Long.valueOf(testrunID)).getRequirements();
+			if(testrunRequirements == null || testrunRequirements.isEmpty())
+			{
+				return null;
+			}
+			requirements.addAll(testrunRequirements);
+			filteredByTestrun = true;
+		}
+		if (defectID != null && !defectID.isEmpty()) 
+		{	
+			Set<Requirement> defectRequirements = defectService.getDefect(Long.valueOf(defectID)).getRequirements();
+			if(defectRequirements == null || defectRequirements.isEmpty())
+			{
+				return null;
+			}
+			requirements.addAll(defectRequirements);
+			filteredByDefect = true;
+		}
+		if(!filteredByDefect && !filteredByTestrun)
+		{
+			Set<Requirement> companyRequirements = company.getRequirements();
+			if(companyRequirements == null || companyRequirements.isEmpty())
+			{
+				return null;
+			}
+			requirements.addAll(companyRequirements);
+		}
+		if(requirements == null || requirements.isEmpty()){return null;}
+		
+
+		if (projectID != null && !projectID.isEmpty()) 
+		{	
+			Set<Requirement> projectRequirements = projectService.getCascadedRequirements(Long.valueOf(projectID));
+			if(projectRequirements != null && !projectRequirements.isEmpty())
+			{
+				requirements.retainAll(projectRequirements);
+			}					
+		}
+		if(requirements == null || requirements.isEmpty()){return null;}
+		
+		if (cycleID != null && !cycleID.isEmpty()) 
+		{	
+			Set<Requirement> cycleRequirements = cycleService.getCascadedRequirements(Long.valueOf(cycleID));
+			if(cycleRequirements != null && !cycleRequirements.isEmpty())
+			{
+				requirements.retainAll(cycleRequirements);
+			}					
+		}
+		if(requirements == null || requirements.isEmpty()){return null;}
+		
+		if (testplanID != null && !testplanID.isEmpty()) 
+		{	
+			Set<Requirement> testplanRequirements = testplanService.getRequirements(Long.valueOf(testplanID));
+			if(testplanRequirements != null && !testplanRequirements.isEmpty())
+			{
+				requirements.retainAll(testplanRequirements);
+			}					
+		}
+		if(requirements == null || requirements.isEmpty()){return null;}
+		
+		if (testcaseID != null && !testcaseID.isEmpty()) 
+		{	
+			Set<Requirement> testcaseRequirements = testcaseService.getRequirements(Long.valueOf(testcaseID));
+			if(testcaseRequirements != null && !testcaseRequirements.isEmpty())
+			{
+				requirements.retainAll(testcaseRequirements);
+			}					
+		}
+		if(requirements == null || requirements.isEmpty()){return null;}
+		
+		if (environmentID != null && !environmentID.isEmpty()) 
+		{	
+			Set<Requirement> environmentRequirements = environmentService.getRequirements(Long.valueOf(environmentID));
+			if(environmentRequirements != null && !environmentRequirements.isEmpty())
+			{
+				requirements.retainAll(environmentRequirements);
+			}					
+		}
+		if(requirements == null || requirements.isEmpty()){return null;}		
+
+		return requirements;
+	}
+
+	public RequirementSummaryList getGridRequirments(Long companyID, String projectID,
+			String cycleID, String testplanID, String testcaseID,
+			String testrunID, String defectID, String requirementID,
+			String environmentID, String userID,String levelName,String stage,String required)
+	{
+
+		Set<Requirement> requirements = getFilteredRequirements(companyID, projectID,
+				cycleID, testrunID, testcaseID,
+				testrunID, defectID, requirementID,
+				environmentID, userID,levelName, stage, required);
+
+		Set<RequirementSummary> requirementSummarySet = new HashSet<RequirementSummary>();
+		RequirementSummaryList requirementSummaryList = new RequirementSummaryList();
+		if(requirements == null || requirements.isEmpty())
+		{
+			return null;
+		}
+		for(final Requirement requirement : requirements)
+		{		
+			requirementSummarySet.add(new RequirementSummary(requirement, testrunService,
+					defectService,testplanService));
+		}
+		requirementSummaryList.setRequirements(requirementSummarySet);
+		return requirementSummaryList;
 	}
 
 }
