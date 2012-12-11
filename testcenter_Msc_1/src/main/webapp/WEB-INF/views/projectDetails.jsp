@@ -458,9 +458,7 @@ $(function()
 			<div class="ui-layout-content ui-widget-content" style="background:#fff;">		
 				<div class="inner-inner-center" >				
 					<div class="inner-inner-inner-center" >	
-						<div class="inner-inner-inner-inner-center" >	
-							${company.projectDisplayName} Details : 				
-							
+						<div class="inner-inner-inner-inner-center" >								
 							<table width="100%" style="min-width='500px';">
 								<tr>
 									<th width="50%" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" >
@@ -868,41 +866,66 @@ $(function()
 		<h3 style="height: 30px; font-size:12px; padding-top: 4px;"><a href="#">Quick Tasks</a></h3>
 			<div>	
 				<fieldset style="width:90%;">
-					<legend>Test libray:</legend>
+				  <legend>${company.testLibraryDisplayName}:</legend>
 					<div id="fieldS" >
-					    Execute Teat Run <BR/>
-						Execute Test Plan<BR/>
+						<a href="#">Create ${company.testplanDisplayName} </a><br/>
+						<a href="#">Execute ${company.testplanDisplayName} </a><br/>
+						<a href="#">Edit ${company.testplanDisplayName}</a> <br/>
+						<a href="#">Delete ${company.testplanDisplayName} </a><br/><br/>
+						
+						<a href="#">Create ${company.testcaseDisplayName} </a><br/>
+						<a href="#">Execute ${company.testcaseDisplayName} </a><br/>
+						<a href="#">Edit ${company.testcaseDisplayName}</a> <br/>
+						<a href="#">Delete ${company.testcaseDisplayName} </a><br/><br/>
+					
+						<a href="#">Create ${company.testrunDisplayName} </a><br/>
+						<a href="#">Execute ${company.testrunDisplayName} </a><br/>
+						<a href="#">Edit ${company.testrunDisplayName}</a> <br/>
+						<a href="#">Delete ${company.testrunDisplayName} </a><br/>
+						
 					</div>
 				</fieldset>
 				<fieldset style="width:90%;">
-					<legend>Defect:</legend>
+				  <legend>${company.defectDisplayName}:</legend>
 					<div id="fieldS" >
-						Create Defect <BR />
-						Update Defect<BR />
+						<a href="#">Create ${company.defectDisplayName} </a><br/>
+						<a href="#">Edit ${company.defectDisplayName}</a> <br/>
+						<a href="#">Delete ${company.defectDisplayName} </a><br/>
 					</div>
 				</fieldset>
-					<fieldset style="width:90%;">
-					  <legend>Requirement:</legend>
-						<div id="fieldS" >
-							Execute Teat Run <BR />
-							Execute Test Plan<BR />
-						</div>
-					</fieldset>
-					<fieldset style="width:90%;">
-					  <legend>Users:</legend>
-					<div style="margin-left:10%;">
-						Execute Teat Run <BR />
-						Execute Test Plan<BR />
-					  </div>
-					</fieldset>
-					<fieldset style="width:90%;">
-					  <legend>Cycles:</legend>
-						<div id="fieldS" >
-							Execute Teat Run <BR />
-							Execute Test Plan<BR />
-						</div>
-					</fieldset>
-				</div>
+				<fieldset style="width:90%;">
+				  <legend>${company.requirementDisplayName}:</legend>
+					<div id="fieldS" >
+						<a href="#">Create ${company.requirementDisplayName} </a><br/>
+						<a href="#">Edit ${company.requirementDisplayName}</a> <br/>
+						<a href="#">Delete ${company.requirementDisplayName} </a><br/>
+					</div>
+				</fieldset>
+				<fieldset style="width:90%;">
+				  <legend>${company.environmentsDisplayName}:</legend>
+					<div id="fieldS" >
+						<a href="#">Create ${company.environmentDisplayName} </a><br/>
+						<a href="#">Edit ${company.environmentDisplayName}</a> <br/>
+						<a href="#">Delete ${company.environmentDisplayName} </a><br/>
+					</div>
+				</fieldset>
+				<fieldset style="width:90%;">
+				  	<legend>${company.usersDisplayName}:</legend>
+				  	<div id="fieldS" >
+						<a href="#">Create ${company.userDisplayName}</a><br/>
+						<a href="#">Edit ${company.userDisplayName} </a><br/>
+						<a href="#">Delete ${company.userDisplayName} </a><br/>
+					</div>
+				</fieldset>
+				<fieldset style="width:90%;">
+					<legend>${company.cyclesDisplayName}:</legend>
+					<div id="fieldS" >
+						<a href="#">Create ${company.cycleDisplayName}</a> <br/>
+						<a href="#">Edit ${company.cycleDisplayName}</a> <br/>
+						<a href="#">Delete ${company.cycleDisplayName}</a> <br/>
+					</div>
+				</fieldset>
+			</div>	
 
 			<h3 style="height: 30px; font-size:12px; padding-top: 4px;"><a href="#">Reports</a></h3>
 			<div>				
@@ -923,11 +946,14 @@ $(function()
 <table style="width:100%;">
 	<tr>
 		<td align="left" style="width:50%;color:#456e8c;">
-			<img style="height:25px;" src ="images/title.png" />			
-						
+			<a href="index.html"><img style="height:25px;" src ="images/title.png" /></a>		
 		</td>
 		<td align="right" style="width:50%;color:#456e8c;" valign="middle">
-			${companyName}	&nbsp; <a href="editcompany.html"><img height="25" width="25" src="images/settings.png" /></a>
+			${companyName}	
+			&nbsp; <a href="editcompany.html?companyID=${company.companyID}"><img height="15" width="15" src="images/settings.png" title="Edit Company Settings" /></a>
+			&nbsp; <a href="viewbill.html?companyID=${company.companyID}"><img height="15" width="15" src="images/money.png" title="View Resource Bill"/></a>
+			&nbsp; <a href="logout.html"><img height="15" width="15" src="images/exit.png" title="Logout"/></a>
+			&nbsp; &nbsp; 
 		</td>
 	</tr>
 	<tr>
@@ -938,10 +964,10 @@ $(function()
 			 ******************************************************************************************************************
 		-->
 			<ul id="menu">
-			    <li style="padding-left:30px"><a href="index.html" ><img src="images/home.jpg" height="15px" /> Home </a><!-- Begin Home Item --></li><!-- End Home Item --> 
+			    <li style="padding-left:30px"><a href="index.html" >Home</a><!-- Begin Home Item --></li><!-- End Home Item --> 
 			    <li><a href="?userpath=${fn:replace(projectsDisplayName,' ', '')}" class="drop">${projectsDisplayName}</a><!-- Begin 4 columns Item --></li><!-- End 5 columns Item -->    	
-			    <li><a href="reports.html" class="drop">${reportsDisplayName}</a><!-- Begin 4 columns Item --> </li><!-- End 4 columns Item -->				
-				<li><a href="defects.html" class="drop">${defectsDisplayName}</a><!-- Begin 4 columns Item --></li><!-- End 4 columns Item -->
+			    <li><a href="?userpath=${fn:replace(reportsDisplayName,' ', '')}" class="drop">${reportsDisplayName}</a><!-- Begin 4 columns Item --> </li><!-- End 4 columns Item -->				
+				<li><a href="?userpath=${fn:replace(defectsDisplayName,' ', '')}" class="drop">${defectsDisplayName}</a><!-- Begin 4 columns Item --></li><!-- End 4 columns Item -->
 			    <li><a href="?userpath=${fn:replace(cyclesDisplayName,' ', '')}" class="drop">${cyclesDisplayName}</a><!-- Begin 4 columns Item --></li><!-- End 4 columns Item -->
 			   	<li><a href="?userpath=${fn:replace(testLibraryDisplayName,' ', '')}" class="drop">${testLibraryDisplayName}</a>
 			   	 <div class="dropdown_3columns align_right">  
@@ -1006,9 +1032,9 @@ $(function()
 			            </div>			        
 			        </div>
 			   	</li><!-- End 4 columns Item -->		
-				<li><a href="requirements.html" class="drop">${requirementsDisplayName}</a></li><!-- End 4 columns Item -->   
-				<li><a href="users.html" class="drop">${usersDisplayName}</a> </li><!-- End 4 columns Item -->    
-				<li><a href="environments.html" class="drop">${environmentsDisplayName}</a></li>   
+				<li><a href="?userpath=${fn:replace(requirementsDisplayName,' ', '')}" class="drop">${requirementsDisplayName}</a></li><!-- End 4 columns Item -->   
+				<li><a href="?userpath=${fn:replace(usersDisplayName,' ', '')}" class="drop">${usersDisplayName}</a> </li><!-- End 4 columns Item -->    
+				<li><a  href="?userpath=${fn:replace(environmentsDisplayName,' ', '')}" class="drop">${environmentsDisplayName}</a></li>   
 			</ul>
 		</td>
 	</tr>

@@ -213,7 +213,7 @@ public class ProjectJSONController {
 	    	relatedObjectSet.add(new RelatedObject(16,company.getTestersDisplayName(),Integer.toString(projectSummary.getTotalTesters()), projectID, company.getTestersDisplayName().replace(" ","")));
 	    	relatedObjectSet.add(new RelatedObject(17,company.getSeniorTestersDisplayName(),Integer.toString(projectSummary.getTotalSeniorTesters()), projectID, company.getSeniorTestersDisplayName().replace(" ","")));
 	    	relatedObjectSet.add(new RelatedObject(18,company.getDevelopersDisplayName(),Integer.toString(projectSummary.getTotalDevelopers()), projectID, company.getDevelopersDisplayName().replace(" ",""))); 	
-	    	relatedObjectSet.add(new RelatedObject(19,company.getSeniordevelopersDisplayName(),Integer.toString(projectSummary.getTotalSeniorDevelopers()), projectID, company.getSeniordevelopersDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(19,company.getSeniorDevelopersDisplayName(),Integer.toString(projectSummary.getTotalSeniorDevelopers()), projectID, company.getSeniorDevelopersDisplayName().replace(" ","")));
 	    				
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;

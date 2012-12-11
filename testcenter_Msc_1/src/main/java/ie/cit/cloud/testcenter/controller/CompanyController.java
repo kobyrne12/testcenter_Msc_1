@@ -75,33 +75,6 @@ public class CompanyController {
 	private Company company;
 
 
-	@RequestMapping(value = {"companies"}, method = GET)
-	public String openCompanySelection(	@RequestParam(required = false) String displaymessage, Model model)	
-	{	
-		try{			
-			model.addAttribute("companyList", companyService.getAllCompanies());			
-			model.addAttribute("displaymessage", displaymessage);
-			return "companies";
-
-		}catch(NoResultException nre)
-		{			
-			model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
-			return "newcompany";
-		}		
-	}
-
-	@RequestMapping(value = {"selectcompany"}, method = GET)
-	public String setCompany(HttpServletResponse response,
-			@RequestParam Long companyID, Model model)	
-	{	
-		Cookie cookie = new Cookie("companyID",Long.toString(companyID));
-		cookie.setMaxAge(60*60); //1 hour
-		response.addCookie(cookie);
-		Company company = companyService.getCompany(companyID);
-		model.addAttribute("company", company);
-		return "redirect:index.html"; 			
-	}
-
 
 	//HttpServletResponse response
 	@RequestMapping(value = {"index",""}, method = GET)
@@ -138,7 +111,7 @@ public class CompanyController {
 				model.addAttribute("displaymessage", "Company does not exist");
 				return "companies";
 			}
-			
+
 			model.addAttribute("companyID", companyID);	
 			model.addAttribute("company", company);	
 			model.addAttribute("companyName", company.getCompanyName());	
@@ -156,11 +129,15 @@ public class CompanyController {
 			model.addAttribute("testcasesDisplayName", company.getTestcasesDisplayName());	
 			model.addAttribute("testplanDisplayName", company.getTestplanDisplayName());	
 			model.addAttribute("testcaseDisplayName", company.getTestcaseDisplayName());
-
+			if(company.getProjects() == null || company.getProjects().isEmpty())
+			{
+				userpath = "Home>"+company.getProjectsDisplayName();
+				model.addAttribute("userpath",userpath);
+			}
 			if(userpath.isEmpty())			
 			{
 				System.out.println("HERE 1 :" + userpath);					
-				return "index"; 	
+				return "index"; 
 			}
 			else
 			{
@@ -168,8 +145,7 @@ public class CompanyController {
 				boolean allCompanyTestplans = true;	
 				Long projectID = null;
 				Long testplanID = null;
-				//String relatedObjects = "";
-				//String gridUrl = "/summaryList/"+companyID;
+
 				String gridUrl = "";
 				String relatedObjects = "";
 				String breadCrumb = "";			
@@ -207,20 +183,25 @@ public class CompanyController {
 								newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
 								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getProjectsDisplayName()+"</a> >";
 								newuserpath = newuserpath + ">"+project.getProjectID();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> > "+projectID;
+
 
 								gridUrl = "/summaryList/"+companyID+"?projectID="+projectID;
 								relatedObjects = "?projectID="+projectID;
 								allCompanyProjects = false;
 								x++;
 								if(x == (userPathArray.length - 1))
-								{// there is a details view in the userpath i.e //Home>Projects>5								
+								{// there is a details view in the userpath i.e //Home>Projects>5	
+									breadCrumb = breadCrumb + " "+project.getProjectName();
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
 									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("project", project);	
 									return "projectDetails";
+								}
+								else
+								{
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> >";
 								}
 							}catch(NoResultException nre)
 							{
@@ -266,7 +247,7 @@ public class CompanyController {
 
 								gridUrl = "/summaryList/"+companyID+"?cycleID="+cycleID;
 								relatedObjects = "?cycleID="+cycleID;	
-							
+
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5								
@@ -289,10 +270,10 @@ public class CompanyController {
 							{
 								gridUrl = "/summaryList/"+companyID;
 							}							
-							
+
 							newuserpath = newuserpath + ">"+company.getCyclesDisplayName();
 							breadCrumb = breadCrumb + " "+company.getCyclesDisplayName();
-							
+
 							if(allCompanyProjects == true)
 							{
 								model.addAttribute("projects", company.getProjects());
@@ -596,26 +577,234 @@ public class CompanyController {
 	public String returnLogin(Model model) {   
 		return "login";  
 	}  
+	@RequestMapping(value = {"companies"}, method = GET)
+	public String openCompanySelection(	@RequestParam(required = false) String displaymessage, Model model)	
+	{	
+		try{			
+			model.addAttribute("companyList", companyService.getAllCompanies());			
+			model.addAttribute("displaymessage", displaymessage);
+			return "companies";
 
-	//  
-	//    
-	//    @RequestMapping(value = {"jsonprojectTEST"}, method = GET)
-	//    public String jsonprojectTEST(@RequestParam(required = false)Long companyID, Model model) {
-	//    	model.addAttribute("company", companyService.getCompany(companyID));
-	//    	return "jsonprojectTEST";  
-	//  }  
-	//    
-	//    @RequestMapping(value = {"projectsListView"}, method = GET)
-	//    public String projectListView(@RequestParam(required = false)Long companyID, Model model) {
-	//    	model.addAttribute("company", companyService.getCompany(companyID));
-	//    	return "projectsListView";  
-	//  }  
-	//    
-	//    @RequestMapping(value = {"newcompany"}, method = GET)
-	//    public String newCompany(@RequestParam(required = false) String errormessage,String successmessage,Model model) {	
-	//    	model.addAttribute("errormessage", errormessage);
-	//    	return "newcompany";
-	//    }   
+		}catch(NoResultException nre)
+		{			
+			model.addAttribute("displaymessage", "NO COMPANIES FOUND");	
+			return "newcompany";
+		}		
+	}
+
+	@RequestMapping(value = {"selectcompany"}, method = GET)
+	public String setCompany(HttpServletResponse response,
+			@RequestParam Long companyID, Model model)	
+	{	
+		Cookie cookie = new Cookie("companyID",Long.toString(companyID));
+		cookie.setMaxAge(60*60); //1 hour
+		response.addCookie(cookie);
+		Company company = companyService.getCompany(companyID);
+		model.addAttribute("company", company);
+		return "redirect:index.html"; 			
+	}
+
+	@RequestMapping(value = {"logout"}, method = GET)
+	public String logout( HttpServletResponse response,
+			@CookieValue(value="companyID",defaultValue="") String companyID_String,			
+			@RequestParam(value="userpath",defaultValue="") String userpath,
+			@RequestParam(required = false) String displaymessage, Model model)	
+	{	
+		model.addAttribute("companyList", companyService.getAllCompanies());
+		model.addAttribute("displaymessage", displaymessage);
+		Cookie cookie = new Cookie("companyID", null); // Not necessary, but saves bandwidth.				
+		cookie.setMaxAge(0); // Don't set to -1 or it will become a session cookie!
+		response.addCookie(cookie);
+		return "companies";
+	}
+
+	@RequestMapping(value = {"viewbill"}, method = GET)
+	public String viewCompanyBill(@RequestParam(required = true) Long companyID,
+			@RequestParam(required = false) String errormessage,
+			String successmessage,Model model) 
+	{	
+		Company company = companyService.getCompany(companyID);		
+		model.addAttribute("company", company);			
+		return "viewbill";
+	} 
+
+	@RequestMapping(value = {"newcompany"}, method = GET)
+	public String newCompany(@RequestParam(required = false) String errormessage,String successmessage,Model model) {	
+		model.addAttribute("errormessage", errormessage);
+		return "newcompany";
+	} 
+
+	@RequestMapping(value = {"editcompany"}, method = GET)
+	public String editCompany(@RequestParam(required = true) Long companyID,
+			@RequestParam(required = false) String errormessage,
+			String successmessage,Model model) 
+	{	
+		model.addAttribute("company", companyService.getCompany(companyID));
+		model.addAttribute("errormessage", errormessage);
+		return "editcompany";
+	} 
+
+	@RequestMapping(value = {"addnewcompany"}, method = GET)
+	public String addNewCompany(HttpServletResponse response,
+			@RequestParam(required = true) String companyName,
+			@RequestParam(required = true) String projectDisplayName,
+			@RequestParam(required = true) String projectsDisplayName,
+			@RequestParam(required = true) String cycleDisplayName,
+			@RequestParam(required = true) String cyclesDisplayName,
+			@RequestParam(required = true) String reportDisplayName,
+			@RequestParam(required = true) String reportsDisplayName,
+			@RequestParam(required = true) String defectDisplayName,
+			@RequestParam(required = true) String defectsDisplayName,			
+			@RequestParam(required = true) String requirementDisplayName,											 
+			@RequestParam(required = true) String requirementsDisplayName,			
+			@RequestParam(required = true) String environmentDisplayName,
+			@RequestParam(required = true) String environmentsDisplayName,			
+			@RequestParam(required = true) String userDisplayName,
+			@RequestParam(required = true) String usersDisplayName,
+			@RequestParam(required = true) String testLibraryDisplayName,			
+			@RequestParam(required = true) String testplanDisplayName,
+			@RequestParam(required = true) String testplansDisplayName,
+			@RequestParam(required = true) String testcaseDisplayName,
+			@RequestParam(required = true) String testcasesDisplayName,	    		
+			@RequestParam(required = true) String testrunDisplayName,
+			@RequestParam(required = true) String testrunsDisplayName,
+			@RequestParam(required = true) String testerDisplayName,
+			@RequestParam(required = true) String testersDisplayName,
+			@RequestParam(required = true) String seniorTesterDisplayName,
+			@RequestParam(required = true) String seniorTestersDisplayName,			
+			@RequestParam(required = true) String developerDisplayName,
+			@RequestParam(required = true) String developersDisplayName,			
+			@RequestParam(required = true) String seniorDeveloperDisplayName,
+			@RequestParam(required = true) String seniorDevelopersDisplayName,				    	
+			Model model) 
+	{	
+		Company company =  new Company(companyName,
+				projectDisplayName, projectsDisplayName,
+				reportDisplayName,reportsDisplayName,
+				defectDisplayName,defectsDisplayName,
+				requirementDisplayName,requirementsDisplayName,
+				cycleDisplayName,cyclesDisplayName,
+				userDisplayName,usersDisplayName,
+				environmentDisplayName,environmentsDisplayName,
+				testplanDisplayName,testplansDisplayName,
+				testcaseDisplayName,testcasesDisplayName,	
+				testrunDisplayName,testrunsDisplayName,
+				testerDisplayName,testersDisplayName,
+				developerDisplayName,developersDisplayName,
+				seniorTesterDisplayName,seniorTestersDisplayName,
+				seniorDeveloperDisplayName,seniorDevelopersDisplayName,										
+				testLibraryDisplayName);  
+
+		companyService.addNewCompany(company);
+
+		Cookie cookie = new Cookie("companyID",Long.toString(company.getCompanyID()));
+		cookie.setMaxAge(60*60); //1 hour
+		response.addCookie(cookie);
+
+		model.addAttribute("company", company);
+		return "redirect:index.html"; 		
+
+	}
+
+	@RequestMapping(value = {"editexistingcompany"}, method = GET)
+	public String editExistingCompany(HttpServletResponse response,
+			@RequestParam(required = true) Long companyID,
+			@RequestParam(required = true) String companyName,
+			@RequestParam(required = true) String projectDisplayName,
+			@RequestParam(required = true) String projectsDisplayName,
+			@RequestParam(required = true) String cycleDisplayName,
+			@RequestParam(required = true) String cyclesDisplayName,
+			@RequestParam(required = true) String reportDisplayName,
+			@RequestParam(required = true) String reportsDisplayName,
+			@RequestParam(required = true) String defectDisplayName,
+			@RequestParam(required = true) String defectsDisplayName,			
+			@RequestParam(required = true) String requirementDisplayName,											 
+			@RequestParam(required = true) String requirementsDisplayName,			
+			@RequestParam(required = true) String environmentDisplayName,
+			@RequestParam(required = true) String environmentsDisplayName,			
+			@RequestParam(required = true) String userDisplayName,
+			@RequestParam(required = true) String usersDisplayName,
+			@RequestParam(required = true) String testLibraryDisplayName,			
+			@RequestParam(required = true) String testplanDisplayName,
+			@RequestParam(required = true) String testplansDisplayName,
+			@RequestParam(required = true) String testcaseDisplayName,
+			@RequestParam(required = true) String testcasesDisplayName,	    		
+			@RequestParam(required = true) String testrunDisplayName,
+			@RequestParam(required = true) String testrunsDisplayName,
+			@RequestParam(required = true) String testerDisplayName,
+			@RequestParam(required = true) String testersDisplayName,
+			@RequestParam(required = true) String seniorTesterDisplayName,
+			@RequestParam(required = true) String seniorTestersDisplayName,			
+			@RequestParam(required = true) String developerDisplayName,
+			@RequestParam(required = true) String developersDisplayName,			
+			@RequestParam(required = true) String seniorDeveloperDisplayName,
+			@RequestParam(required = true) String seniorDevelopersDisplayName,		    	
+			Model model) 
+	{	
+
+		Company company = companyService.getCompany(companyID);
+
+		company.setCompanyName(companyName);
+		company.setProjectDisplayName(projectDisplayName);
+		company.setProjectsDisplayName(projectsDisplayName);
+		company.setCycleDisplayName(cycleDisplayName);
+		company.setCyclesDisplayName(cyclesDisplayName);
+		company.setReportDisplayName(reportDisplayName);
+		company.setReportsDisplayName(reportsDisplayName);
+		company.setDefectDisplayName(defectDisplayName);
+		company.setDefectsDisplayName(defectsDisplayName);
+		company.setRequirementDisplayName(requirementDisplayName);
+		company.setRequirementsDisplayName(requirementsDisplayName);
+		company.setEnvironmentDisplayName(environmentDisplayName);
+		company.setEnvironmentsDisplayName(environmentsDisplayName);
+		company.setUserDisplayName(userDisplayName);
+		company.setUsersDisplayName(usersDisplayName);
+		company.setTestcaseDisplayName(testcaseDisplayName);
+		company.setTestcasesDisplayName(testcasesDisplayName);
+		company.setTestplanDisplayName(testplanDisplayName);
+		company.setTestplansDisplayName(testplansDisplayName);
+		company.setTestrunDisplayName(testrunDisplayName);
+		company.setTestrunsDisplayName(testrunsDisplayName);
+		company.setTesterDisplayName(testerDisplayName);
+		company.setTestersDisplayName(testersDisplayName);
+		company.setSeniorTesterDisplayName(seniorTesterDisplayName);
+		company.setSeniorTestersDisplayName(seniorTestersDisplayName);
+		company.setDeveloperDisplayName(developerDisplayName);
+		company.setDevelopersDisplayName(developersDisplayName);
+		company.setSeniorDeveloperDisplayName(seniorDeveloperDisplayName);
+		company.setSeniorDevelopersDisplayName(seniorDevelopersDisplayName);
+		company.setTestLibraryDisplayName(testLibraryDisplayName);
+
+		companyService.update(company);	     		  
+
+		model.addAttribute("companyID", company.getCompanyID());	
+		model.addAttribute("company", company);	
+		model.addAttribute("companyName", company.getCompanyName());	
+		model.addAttribute("projectsDisplayName", company.getProjectsDisplayName());
+		model.addAttribute("reportsDisplayName", company.getReportsDisplayName());
+		model.addAttribute("defectsDisplayName", company.getDefectsDisplayName());
+		model.addAttribute("requirementsDisplayName", company.getRequirementsDisplayName());
+		model.addAttribute("cyclesDisplayName", company.getCyclesDisplayName());
+		model.addAttribute("usersDisplayName", company.getUsersDisplayName());
+		model.addAttribute("environmentsDisplayName", company.getEnvironmentsDisplayName());
+		model.addAttribute("testLibraryDisplayName", company.getTestLibraryDisplayName());			
+		model.addAttribute("testrunsDisplayName", company.getTestrunsDisplayName());
+		model.addAttribute("testrunDisplayName", company.getTestrunDisplayName());
+		model.addAttribute("testplansDisplayName", company.getTestplansDisplayName());	
+		model.addAttribute("testcasesDisplayName", company.getTestcasesDisplayName());	
+		model.addAttribute("testplanDisplayName", company.getTestplanDisplayName());	
+		model.addAttribute("testcaseDisplayName", company.getTestcaseDisplayName());		
+		model.addAttribute("company", company);
+
+		Cookie cookie = new Cookie("companyID",Long.toString(company.getCompanyID()));
+		cookie.setMaxAge(60*60); //1 hour
+		response.addCookie(cookie);		
+
+		return "redirect:index.html"; 		
+
+	}  
+
+
 	//
 	//    @RequestMapping(value = {"newcompany"}, method = POST)   
 	//    public String createNewCompany(@RequestParam String companyName, Model model) {      	

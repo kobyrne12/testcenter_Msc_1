@@ -592,7 +592,7 @@ public class TestcaseServiceImpl implements TestcaseService {
 		columnModelSet.add(new GridAttributes("totalSeniorTesters",true));
 		colNames.add(company.getDevelopersDisplayName());
 		columnModelSet.add(new GridAttributes("totalDevelopers",true));
-		colNames.add(company.getSeniordevelopersDisplayName());
+		colNames.add(company.getSeniorDevelopersDisplayName());
 		columnModelSet.add(new GridAttributes("totalSeniorDevelopers",true));	 
 
 		colNames.add("LastModifiedDate");

@@ -1,17 +1,6 @@
 @CHARSET "ISO-8859-1";
-.grid .ui-jqgrid-htable th,
-	.grid .ui-jqgrid-btable .jqgrow td {
-	    height: 10em !important;
-	}
-	.ui-priority-secondary{background: #E8E8E8;}
-	.innerAccordian .ui-accordion-header  a
-	{
-	display: block;
-	font-size: 1em;
-	padding: .2em .5em .5em 2.2em;
-	}
-	#fieldS{
-		margin-left:10%;
+#fieldS{
+		margin-left:18%;
 		color:#606060;
 		}
 	
@@ -146,17 +135,72 @@
 		padding:		7px 10px;
 		margin:			0;
 	}
-	.progressBarDiv
-		{ 
-			
-			-moz-box-shadow: 0px 0px 4px #333; 
-			-webkit-box-shadow: 0px 0px 4px #333; 
-            box-shadow: 1px 1px 3px #333; 
-		}
-		.progressBarDiv:hover {
-			//zoom: 200%;		
-			//.redBar.background-color:#333;
-		}
+	A:link 
+{
+	text-decoration: none;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color:	#2554C7 ;
+}
+A:visited 
+{
+	text-decoration: none;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color:	#2554C7 ;
+}
+A:active 
+{
+	text-decoration: none;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color:	#2554C7 ;
+}
+A:hover 
+{
+	text-decoration: underline; 
+	color: blue;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color:	#2554C7;
+}
+.progressBarDiv
+{ 
+	-webkit-box-shadow: #999 1px 5px 10px;
+	-moz-box-shadow: #999 1px 1px 10px;
+	//-moz-box-shadow: 0px 0px 4px #333; 
+	//-webkit-box-shadow: 0px 0px 4px #333; 
+   // box-shadow: 1px 1px 2px #333; 
+	overflow: hidden;
+	cursor:pointer;
+}
+.completeBar 
+{			
+	background-color:#6eaf37; 
+	height:30px;
+	float: left;
+	display:inline-block; 
+	overflow: hidden;
+}
+.completeBar:hover 
+{
+	opacity:0.7;
+	filter:alpha(opacity=70); /* For IE8 and earlier */
+	//background-color:#5dad58; 
+	//-moz-transform: scale(2);
+	//background-color:#89a54e; 
+}
+.notCompleteBar 
+{					
+	background-color:#456e8c;
+ 	height:30px;
+	float: right;
+	display:inline-block; 	
+	overflow: hidden;
+}
+.notCompleteBar:hover 
+{
+	opacity:0.7;
+	filter:alpha(opacity=70); /* For IE8 and earlier */
+	//background-color:#4573a7; 
+}
+
 		.blueBar
 		{ 
 			
@@ -198,3 +242,4 @@
 			color: #4573a7;
 			font-weight:bold;
 			display:inline-block;'
+		}

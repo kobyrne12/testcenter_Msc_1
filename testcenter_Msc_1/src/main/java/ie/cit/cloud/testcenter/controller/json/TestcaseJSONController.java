@@ -238,7 +238,7 @@ public class TestcaseJSONController {
 			relatedObjectSet.add(new RelatedObject(14,company.getTestersDisplayName(),Integer.toString(testcaseSummary.getTotalTesters()), testcaseID, company.getTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(15,company.getSeniorTestersDisplayName(),Integer.toString(testcaseSummary.getTotalSeniorTesters()), testcaseID, company.getSeniorTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(16,company.getDevelopersDisplayName(),Integer.toString(testcaseSummary.getTotalDevelopers()), testcaseID, company.getDevelopersDisplayName().replace(" ",""))); 	
-			relatedObjectSet.add(new RelatedObject(17,company.getSeniordevelopersDisplayName(),Integer.toString(testcaseSummary.getTotalSeniorDevelopers()), testcaseID, company.getSeniordevelopersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(17,company.getSeniorDevelopersDisplayName(),Integer.toString(testcaseSummary.getTotalSeniorDevelopers()), testcaseID, company.getSeniorDevelopersDisplayName().replace(" ","")));
 
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;

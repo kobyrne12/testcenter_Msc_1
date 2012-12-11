@@ -79,7 +79,7 @@ public class Company
 	@JoinColumn(name = "companyID", referencedColumnName="companyID")	
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Set<Requirement> requirements;  
-
+	
 	@Basic    
 	private String projectDisplayName;
 	@Basic    
@@ -133,9 +133,9 @@ public class Company
 	@Basic    
 	private String seniorTestersDisplayName;
 	@Basic    
-	private String seniordeveloperDisplayName;
+	private String seniorDeveloperDisplayName;
 	@Basic    
-	private String seniordevelopersDisplayName;
+	private String seniorDevelopersDisplayName;
 	@Basic    
 	private String testLibraryDisplayName;  
 	@Basic    
@@ -160,7 +160,7 @@ public class Company
 	public Company() {	
 	}
 
-	public Company(String companyName,Date creationDate,String createdBy) 
+	public Company(String companyName) 
 	{
 		this(companyName,null,null, null, null, null, null, 
 				"Project","Projects",
@@ -181,9 +181,83 @@ public class Company
 				"Regression",
 				"New Feature",
 				"Sanity",
-				creationDate, creationDate, createdBy,createdBy);    	
+				new Date(), new Date(), "USER","USER");    	
 	}
-
+	/**
+	 * @param companyName
+	 * @param projects
+	 * @param testplans
+	 * @param testcases
+	 * @param defects
+	 * @param environments
+	 * @param requirements
+	 * @param projectDisplayName
+	 * @param projectsDisplayName
+	 * @param reportDisplayName
+	 * @param reportsDisplayName
+	 * @param defectDisplayName
+	 * @param defectsDisplayName
+	 * @param requirementDisplayName
+	 * @param requirementsDisplayName
+	 * @param cycleDisplayName
+	 * @param cyclesDisplayName
+	 * @param userDisplayName
+	 * @param usersDisplayName
+	 * @param environmentDisplayName
+	 * @param environmentsDisplayName
+	 * @param testplanDisplayName
+	 * @param testplansDisplayName
+	 * @param testcaseDisplayName
+	 * @param testcasesDisplayName
+	 * @param testrunDisplayName
+	 * @param testrunsDisplayName
+	 * @param testerDisplayName
+	 * @param testersDisplayName
+	 * @param developerDisplayName
+	 * @param developersDisplayName
+	 * @param seniorTesterDisplayName
+	 * @param seniorTestersDisplayName
+	 * @param seniordeveloperDisplayName
+	 * @param seniordevelopersDisplayName
+	 * @param testLibraryDisplayName
+	 * @param regressionDisplayName
+	 * @param newFeatureDisplayName
+	 * @param sanityDisplayName
+	 * @param creationDate
+	 * @param lastModifiedDate
+	 * @param createdBy
+	 * @param lastModifiedBy
+	 */
+	public Company(String companyName, String projectDisplayName,
+			String projectsDisplayName, String reportDisplayName,
+			String reportsDisplayName, String defectDisplayName,
+			String defectsDisplayName, String requirementDisplayName,
+			String requirementsDisplayName, String cycleDisplayName,
+			String cyclesDisplayName, String userDisplayName,
+			String usersDisplayName, String environmentDisplayName,
+			String environmentsDisplayName, String testplanDisplayName,
+			String testplansDisplayName, String testcaseDisplayName,
+			String testcasesDisplayName, String testrunDisplayName,
+			String testrunsDisplayName, String testerDisplayName,
+			String testersDisplayName, String developerDisplayName,
+			String developersDisplayName, String seniorTesterDisplayName,
+			String seniorTestersDisplayName, String seniordeveloperDisplayName,
+			String seniordevelopersDisplayName, String testLibraryDisplayName) 
+	{
+		this(companyName,null,null, null, null, null, null, 
+				projectDisplayName,projectsDisplayName, reportDisplayName,reportsDisplayName,
+				defectDisplayName, defectsDisplayName,requirementDisplayName,requirementsDisplayName,
+				cycleDisplayName, cyclesDisplayName,userDisplayName,usersDisplayName,
+				environmentDisplayName,environmentsDisplayName,testplanDisplayName,testplansDisplayName,
+				testcaseDisplayName,testcasesDisplayName,testrunDisplayName,testrunsDisplayName,
+				testerDisplayName,testersDisplayName,developerDisplayName,developersDisplayName,
+				seniorTesterDisplayName,seniorTestersDisplayName,seniordeveloperDisplayName,
+				seniordevelopersDisplayName,testLibraryDisplayName,
+				"Regression",
+				"New Feature",
+				"Sanity",
+				new Date(), new Date(), "USER","USER");
+	}
 	/**
 	 * @param companyName
 	 * @param projects
@@ -245,8 +319,8 @@ public class Company
 			String testrunsDisplayName, String testerDisplayName,
 			String testersDisplayName, String developerDisplayName,
 			String developersDisplayName, String seniorTesterDisplayName,
-			String seniorTestersDisplayName, String seniordeveloperDisplayName,
-			String seniordevelopersDisplayName, String testLibraryDisplayName,
+			String seniorTestersDisplayName, String seniorDeveloperDisplayName,
+			String seniorDevelopersDisplayName, String testLibraryDisplayName,
 			String regressionDisplayName, String newFeatureDisplayName,
 			String sanityDisplayName, Date creationDate, Date lastModifiedDate,
 			String createdBy, String lastModifiedBy) {
@@ -283,8 +357,8 @@ public class Company
 		this.developersDisplayName = developersDisplayName;
 		this.seniorTesterDisplayName = seniorTesterDisplayName;
 		this.seniorTestersDisplayName = seniorTestersDisplayName;
-		this.seniordeveloperDisplayName = seniordeveloperDisplayName;
-		this.seniordevelopersDisplayName = seniordevelopersDisplayName;
+		this.seniorDeveloperDisplayName = seniorDeveloperDisplayName;
+		this.seniorDevelopersDisplayName = seniorDevelopersDisplayName;
 		this.testLibraryDisplayName = testLibraryDisplayName;
 		this.regressionDisplayName = regressionDisplayName;
 		this.newFeatureDisplayName = newFeatureDisplayName;
@@ -758,31 +832,31 @@ public class Company
 	}
 
 	/**
-	 * @return the seniordeveloperDisplayName
+	 * @return the seniorDeveloperDisplayName
 	 */
-	public String getSeniordeveloperDisplayName() {
-		return seniordeveloperDisplayName;
+	public String getSeniorDeveloperDisplayName() {
+		return seniorDeveloperDisplayName;
 	}
 
 	/**
-	 * @param seniordeveloperDisplayName the seniordeveloperDisplayName to set
+	 * @param seniorDeveloperDisplayName the seniorDeveloperDisplayName to set
 	 */
-	public void setSeniordeveloperDisplayName(String seniordeveloperDisplayName) {
-		this.seniordeveloperDisplayName = seniordeveloperDisplayName;
+	public void setSeniorDeveloperDisplayName(String seniorDeveloperDisplayName) {
+		this.seniorDeveloperDisplayName = seniorDeveloperDisplayName;
 	}
 
 	/**
-	 * @return the seniordevelopersDisplayName
+	 * @return the seniorDevelopersDisplayName
 	 */
-	public String getSeniordevelopersDisplayName() {
-		return seniordevelopersDisplayName;
+	public String getSeniorDevelopersDisplayName() {
+		return seniorDevelopersDisplayName;
 	}
 
 	/**
-	 * @param seniordevelopersDisplayName the seniordevelopersDisplayName to set
+	 * @param seniorDevelopersDisplayName the seniorDevelopersDisplayName to set
 	 */
-	public void setSeniordevelopersDisplayName(String seniordevelopersDisplayName) {
-		this.seniordevelopersDisplayName = seniordevelopersDisplayName;
+	public void setSeniorDevelopersDisplayName(String seniorDevelopersDisplayName) {
+		this.seniorDevelopersDisplayName = seniorDevelopersDisplayName;
 	}
 
 	/**

@@ -118,7 +118,7 @@ public class CompanyJSONController {
     @RequestMapping(value = "{companyID}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void createNewCompnay(@PathVariable("companyID") Long companyID) {
-    	companyService.addNewCompany(new Company( "New Company_"+companyID,new Date(),"KEN"));   	  
+    	companyService.addNewCompany(new Company( "New Company_"+companyID));   	  
     } 
     // DELETE Company
     @RequestMapping(value = "{companyID}", method = RequestMethod.DELETE)

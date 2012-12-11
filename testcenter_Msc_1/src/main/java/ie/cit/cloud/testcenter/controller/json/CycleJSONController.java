@@ -156,7 +156,7 @@ public class CycleJSONController {
 			relatedObjectSet.add(new RelatedObject(16,company.getTestersDisplayName(),String.valueOf(cycleSummary.getTotalTesters()), cycleID, company.getTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(17,company.getSeniorTestersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorTesters()), cycleID,company.getSeniorTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(18,company.getDevelopersDisplayName(),String.valueOf(cycleSummary.getTotalDevelopers()), cycleID,company.getDevelopersDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(19,company.getSeniordevelopersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorDevelopers()), cycleID, company.getSeniordevelopersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(19,company.getSeniorDevelopersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorDevelopers()), cycleID, company.getSeniorDevelopersDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(20,company.getDefectDisplayName()+" Rules",String.valueOf(cycleSummary.getTotalDefectRules()), cycleID, company.getDefectsDisplayName().replace(" ","")+"Rules"));  
 			relatedObjectSet.add(new RelatedObject(21,"Test History Rules",String.valueOf(cycleSummary.getTotalTestHistoryRules()), cycleID, "testHistoryRules"));  

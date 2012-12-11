@@ -232,7 +232,7 @@ public class TestrunJSONController {
 			relatedObjectSet.add(new RelatedObject(12,company.getTestersDisplayName(),Integer.toString(testrunSummary.getTotalTesters()), testrunID, company.getTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(13,company.getSeniorTestersDisplayName(),Integer.toString(testrunSummary.getTotalSeniorTesters()), testrunID, company.getSeniorTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(14,company.getDevelopersDisplayName(),Integer.toString(testrunSummary.getTotalDevelopers()), testrunID, company.getDevelopersDisplayName().replace(" ",""))); 	
-			relatedObjectSet.add(new RelatedObject(15,company.getSeniordevelopersDisplayName(),Integer.toString(testrunSummary.getTotalSeniorDevelopers()), testrunID, company.getSeniordevelopersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(15,company.getSeniorDevelopersDisplayName(),Integer.toString(testrunSummary.getTotalSeniorDevelopers()), testrunID, company.getSeniorDevelopersDisplayName().replace(" ","")));
 
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
