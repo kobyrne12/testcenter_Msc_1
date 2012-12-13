@@ -363,13 +363,20 @@ public class TestrunServiceImpl implements TestrunService {
 
 		colNames.add(company.getTestrunDisplayName()+ " Name");		
 		columnModelSet.add(new GridAttributes("testrunName",40));
-
+		
+		colNames.add("Priority");		
+		columnModelSet.add(new GridAttributes("testrunRequiredPriority",20));
+		
+		colNames.add("Rec. Priority");		
+		columnModelSet.add(new GridAttributes("testrunRecommendedPriority",20));
+		 
 		colNames.add(company.getTestcaseDisplayName()+ " Name");
 		columnModelSet.add(new GridAttributes("testcaseName",40,true));
 
 		colNames.add(company.getTestplanDisplayName());
 		columnModelSet.add(new GridAttributes("testplanName",true));
 
+		
 		colNames.add("State");
 		columnModelSet.add(new GridAttributes("state"));
 

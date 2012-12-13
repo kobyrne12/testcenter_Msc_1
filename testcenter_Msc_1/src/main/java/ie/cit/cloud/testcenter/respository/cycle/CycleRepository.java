@@ -8,6 +8,7 @@ package ie.cit.cloud.testcenter.respository.cycle;
  *
  */
 
+import ie.cit.cloud.testcenter.model.ChangeImpactRule;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Cycle;
@@ -96,5 +97,15 @@ public interface CycleRepository {
 	int getMaxProjectPosNum(Long projectID);
 
 	Set<Cycle> findAllCyclesByParentID(Long cycleID);
+
+	ChangeImpactRule findCodeChangeRuleById(Long changeImpactRuleID);
+
+	void updateChangeImpactRule(ChangeImpactRule changeImpactRule);
+
+	void createChangeImpactRule(ChangeImpactRule changeImpactRule);
+
+	ChangeImpactRule getChangeImpactRule(Long changeImpactRuleID);
+
+	void deleteChangeImpactRule(ChangeImpactRule changeImpactRule);
 	
 }

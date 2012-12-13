@@ -153,6 +153,38 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 	///////////////////////////////////////////////////////
+	public String getCurrentCycleName(Long projectID)
+	{
+		Set<Cycle> projectCycles = getProject(projectID).getCycles();
+		if(projectCycles != null && !projectCycles.isEmpty()) 
+		{
+			for(final Cycle cycle : projectCycles)
+			{
+				if(cycle.isLatest())
+				{
+					return cycle.getCycleName();
+				}
+			}			
+		}
+		return "n/a";
+	}
+	public Cycle getCurrentCycle(Long projectID)
+	{
+		Set<Cycle> projectCycles = getProject(projectID).getCycles();
+		if(projectCycles == null || projectCycles.isEmpty()) 
+		{
+			return null;
+		}
+		for(final Cycle cycle : projectCycles)
+		{
+			if(cycle.isLatest())
+			{
+				return cycle;
+			}
+		}	
+		return null;
+	}
+
 	public int getChildProjectsCount(Long projectID)
 	{	
 		if(getChildProjects(projectID) == null)
@@ -726,7 +758,7 @@ public class ProjectServiceImpl implements ProjectService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
 
 	public ColModelAndNames getColumnModelAndNames(Long companyID) 
 	{
@@ -744,30 +776,44 @@ public class ProjectServiceImpl implements ProjectService {
 		colNames.add(company.getProjectDisplayName()+ " Name");
 		columnModelSet.add(new GridAttributes("projectName",40));
 
+		colNames.add("Current "+company.getCycleDisplayName());
+		columnModelSet.add(new GridAttributes("currentCycleName"));
+
 		colNames.add("State");
-		columnModelSet.add(new GridAttributes("overAllState","setOverallBarChart","unSetBarChart", 80));
+		columnModelSet.add(new GridAttributes("cycleState","setCycleStateBarChart","unSetBarChart", 60));
 
 		colNames.add("Parent");
-		columnModelSet.add(new GridAttributes("parentProject",25));
+		columnModelSet.add(new GridAttributes("parentProject",25,true));
 
 		colNames.add("Child "+ company.getProjectsDisplayName());
-		columnModelSet.add(new GridAttributes("totalChildProjects",15));		
+		columnModelSet.add(new GridAttributes("totalChildProjects",15,true));		
 
 		colNames.add("Level");
-		columnModelSet.add(new GridAttributes("levelName",15));
+		columnModelSet.add(new GridAttributes("levelName",15,true));
 
+		colNames.add("Cycle company.getTestrunsDisplayName()");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsTotal",true));
+		colNames.add("Complete");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsComplete",true));
+		colNames.add("Passed");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsPassed",true));
+		colNames.add("Failed");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsFailed",true));
+		colNames.add("Deferred");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsDeferred",true));
+		colNames.add("Blocked");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsBlocked",true));
+		colNames.add("Incomplete");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsInComplete",true));
+		colNames.add("Not Run");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsNotrun",true));
+		colNames.add("In Progress");
+		columnModelSet.add(new GridAttributes("currentCycleTestrunsInprogress",true));
+		
 		colNames.add(company.getCyclesDisplayName());
-		columnModelSet.add(new GridAttributes("totalCycles",true));
-
-		//for each level
-		//{
-		colNames.add("Min %");
-		columnModelSet.add(new GridAttributes("requiredPercent","percentFmatter","unformatPercent",15));
-
-		colNames.add("Current %");
-		columnModelSet.add(new GridAttributes("currentPercent","percentFmatter","unformatPercent",15));
-		//}
-
+		columnModelSet.add(new GridAttributes("totalCycles"));
+		
+		
 		colNames.add("Total "+ company.getDefectsDisplayName());
 		columnModelSet.add(new GridAttributes("totalDefects"));		
 
@@ -986,12 +1032,14 @@ public class ProjectServiceImpl implements ProjectService {
 		for(final Project project : projects)
 		{						
 			//projectSummarySet.add(getProjectSummary(new ProjectSummary(project, levelName)));
-			projectSummarySet.add(new ProjectSummary(project, levelName, this, testrunService, defectService));
+			projectSummarySet.add(new ProjectSummary(project, levelName, this, testrunService, defectService
+					,cycleService));
 		}
 
 		projectSummaryList.setProjects(projectSummarySet);
 		return projectSummaryList;
 	}
+
 
 
 }

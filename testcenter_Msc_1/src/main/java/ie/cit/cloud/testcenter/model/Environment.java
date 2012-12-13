@@ -57,6 +57,9 @@ public class Environment {
 	private Date lastModifiedDate;
 	
 	@Basic    
+	private int testrunCount = -1;
+	
+	@Basic    
 	private Long createdByUserID;	
 	@Basic    
 	private Long lastModifiedByUserID;	
@@ -259,6 +262,26 @@ public class Environment {
 	 */
 	public Long getEnvironmentID() {
 		return environmentID;
+	}
+
+	/**
+	 * @return the testrunCount
+	 */
+	public int getTestrunCount() 
+	{
+		int count = 0;
+		if(getTestruns() != null && !getTestruns().isEmpty())
+		{
+			count = this.getTestruns().size();
+		}
+		return count;		
+	}
+
+	/**
+	 * @param testrunCount the testrunCount to set
+	 */
+	public void setTestrunCount(int testrunCount) {
+		this.testrunCount = testrunCount;
 	}	
 
 }

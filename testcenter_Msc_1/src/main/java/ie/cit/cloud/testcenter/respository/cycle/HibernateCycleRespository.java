@@ -7,6 +7,7 @@ package ie.cit.cloud.testcenter.respository.cycle;
  * @author byrnek1
  *
  */
+import ie.cit.cloud.testcenter.model.ChangeImpactRule;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Testcase;
@@ -96,5 +97,31 @@ public class HibernateCycleRespository implements CycleRepository {
     	query.setParameter("projectID", projectID);
     	return (query.getSingleResult()) != null ? (Integer)query.getSingleResult() : 0 ;    	
     }
+
+	public ChangeImpactRule findCodeChangeRuleById(Long changeImpactRuleID) {
+		return getChangeImpactRule(changeImpactRuleID);
+	}
+
+	public void updateChangeImpactRule(ChangeImpactRule changeImpactRule) {
+		em.merge(changeImpactRule);
+		
+	}
+
+	public void createChangeImpactRule(ChangeImpactRule changeImpactRule) 
+	{
+		em.persist(changeImpactRule);		
+	}
+
+	public ChangeImpactRule getChangeImpactRule(Long changeImpactRuleID)
+	{
+		Query query = em.createQuery("from ChangeImpactRule where changeImpactRuleID=:changeImpactRuleID");
+		query.setParameter("changeImpactRuleID", changeImpactRuleID);
+		return (ChangeImpactRule) query.getSingleResult();		   
+	}
+
+	public void deleteChangeImpactRule(ChangeImpactRule changeImpactRule) {
+		em.remove(changeImpactRule);
+		
+	}
 
 }

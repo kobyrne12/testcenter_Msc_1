@@ -13,6 +13,7 @@ import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testplan;
 import ie.cit.cloud.testcenter.model.Testrun;
+import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
@@ -27,7 +28,9 @@ public class ProjectSummary
 
 	private ProjectService projectService;
 	private TestrunService testrunService;
-	private DefectService defectService;	
+	private DefectService defectService;
+	private CycleService cycleService;
+
 
 	private Set<Project> cascadedProjects = new LinkedHashSet<Project>();
 	private Set<Cycle> cascadedCycles = new LinkedHashSet<Cycle>();	
@@ -62,6 +65,24 @@ public class ProjectSummary
 	private int totalAllowedSev4s = -1; 
 	private int totalCurrentSev4s = -1;   
 	private int totalDefects = -1;
+
+	private String currentCycleName = null; 
+	private Cycle currentCycle = null; 
+
+	private Set<Testrun> cycleRequiredTestruns = new LinkedHashSet<Testrun>();
+	private Set<Testrun> cycleCompleteTestruns = new LinkedHashSet<Testrun>();
+	private Set<Testrun> cycleInCompleteTestruns = new LinkedHashSet<Testrun>();
+
+
+	private int currentCycleTestrunsTotal = -1;
+	private int currentCycleTestrunsComplete = -1;
+	private int currentCycleTestrunsInComplete = -1;
+	private int currentCycleTestrunsPassed = -1;
+	private int currentCycleTestrunsFailed = -1;
+	private int currentCycleTestrunsDeferred = -1;
+	private int currentCycleTestrunsBlocked = -1;
+	private int currentCycleTestrunsNotrun = -1;
+	private int currentCycleTestrunsInprogress = -1;
 
 	private int totalCycles = -1;
 	private int totalEnvironments = -1;
@@ -105,7 +126,8 @@ public class ProjectSummary
 	//    	this.project = project;     	
 	//    }
 
-	public ProjectSummary(Project project, String levelName, ProjectService projectService,TestrunService testrunService, DefectService defectService )
+	public ProjectSummary(Project project, String levelName, ProjectService projectService,
+			TestrunService testrunService, DefectService defectService, CycleService cycleService )
 	{
 		this.projectID = project.getProjectID();
 		if(levelName != null)
@@ -116,6 +138,7 @@ public class ProjectSummary
 		this.projectService = projectService;
 		this.testrunService = testrunService;
 		this.defectService = defectService;
+		this.cycleService = cycleService;
 		//setCascadedProjects();
 	}
 	/**
@@ -726,16 +749,19 @@ public class ProjectSummary
 	 */
 	public int getTotalCycles() 
 	{
-		int totalCycles = 0;
-		if(cascadedCycles == null || cascadedCycles.isEmpty())	
+		int count = 0;
+		if(totalCycles == -1)
 		{
-			cascadedCycles = getCascadedCycles();
+			if(cascadedCycles == null || cascadedCycles.isEmpty())	
+			{
+				cascadedCycles = getCascadedCycles();
+			}
+			if(cascadedCycles != null && !cascadedCycles.isEmpty())
+			{
+				count = cascadedCycles.size();
+			}		
 		}
-		if(cascadedCycles != null && !cascadedCycles.isEmpty())
-		{
-			totalCycles = cascadedCycles.size();
-		}		
-		return totalCycles;
+		return count;
 	}
 
 	/**
@@ -1235,10 +1261,13 @@ public class ProjectSummary
 	public int getCompanyPosition()
 	{		
 		int count = 0;
-		if(totalTestplans == -1)
+		if(companyPosition == -1)
 		{
-			// TODO : handle project position
-			count = 555;
+			if(totalTestplans == -1)
+			{
+				// TODO : handle project position
+				count = 555;
+			}
 		}
 		return count;
 	}
@@ -1274,6 +1303,414 @@ public class ProjectSummary
 	public void setParentProjectName(String parentProjectName) {
 		this.parentProjectName = parentProjectName;
 	}
+	/**
+	 * @return the currentCycle
+	 */
+	public Cycle getCurrentCycle() 
+	{
+		if(currentCycle == null)
+		{
+			currentCycle = projectService.getCurrentCycle(projectID);
+		}
+		return currentCycle;		
+	}
+
+	/**
+	 * @param currentCycle the currentCycle to set
+	 */
+	public void setCurrentCycle(Cycle currentCycle) {
+		this.currentCycle = currentCycle;
+	}
+	/**
+	 * @return the currentCycleName
+	 */
+	public String getCurrentCycleName() 
+	{
+		if(currentCycleName == null)
+		{
+			currentCycleName = projectService.getCurrentCycleName(projectID);
+		}
+		return currentCycleName;
+	}
+
+	/**
+	 * @param currentCycleName the currentCycleName to set
+	 */
+	public void setCurrentCycleName(String currentCycleName) {
+		this.currentCycleName = currentCycleName;
+	}
+
+	/**
+	 * @return the cycleRequiredTestruns
+	 */
+	private Set<Testrun> getCycleRequiredTestruns() 
+	{
+		if(cycleRequiredTestruns == null || cycleRequiredTestruns.isEmpty())
+		{
+			if(currentCycle == null)
+			{
+				currentCycle = getCurrentCycle();
+			}
+			if(currentCycle != null)
+			{
+				Long cycleID = currentCycle.getCycleID();
+				Set<Testrun> cycleRequiredTestrunsTemp = cycleService.getCascadedCompulsoryTestRuns(cycleID);
+				if(cycleRequiredTestrunsTemp == null)
+				{
+					return null;
+				}
+				cycleRequiredTestruns = cycleRequiredTestrunsTemp;
+			}
+		}
+		return cycleRequiredTestruns;
+	}
+
+
+	/**
+	 * @return the currentCycleTestrunsTotal
+	 */
+	public int getCurrentCycleTestrunsTotal() 
+	{
+		int count = 0;
+		if(currentCycleTestrunsTotal == -1)
+		{
+			if(cycleRequiredTestruns == null)
+			{
+				cycleRequiredTestruns = getCycleRequiredTestruns();
+			}
+			if(cycleRequiredTestruns != null)
+			{
+				count = cycleRequiredTestruns.size();
+			}			
+		}
+		return count;
+	}
+
+	/**
+	 * @param currentCycleTestrunsTotal the currentCycleTestrunsTotal to set
+	 */
+	public void setCurrentCycleTestrunsTotal(int currentCycleTestrunsTotal) {
+		this.currentCycleTestrunsTotal = currentCycleTestrunsTotal;
+	}
+
+
+	/**
+	 * @return the cycleCompleteTestruns
+	 */
+	private Set<Testrun> getCycleCompleteTestruns()
+	{
+		if(cycleCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+		{
+			if(cycleRequiredTestruns == null || cycleRequiredTestruns.isEmpty())
+			{
+				cycleRequiredTestruns = getCycleRequiredTestruns();
+			}
+			if(cycleRequiredTestruns != null && !cycleRequiredTestruns.isEmpty())
+			{				
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isPassed() || cycleTestrun.isDeferred() || cycleTestrun.isFailed()
+							|| cycleTestrun.isBlocked())
+					{
+						cycleCompleteTestruns.add(cycleTestrun);
+					}
+				}
+			}			
+		}
+		return cycleCompleteTestruns;
+	}
+
+	/**
+	 * @param cycleCompleteTestruns the cycleCompleteTestruns to set
+	 */
+	private void setCycleCompleteTestruns(Set<Testrun> cycleCompleteTestruns) {
+		this.cycleCompleteTestruns = cycleCompleteTestruns;
+	}
+
+	/**
+	 * @return the cycleInCompleteTestruns
+	 */
+	private Set<Testrun> getCycleInCompleteTestruns() 
+	{
+		if(cycleInCompleteTestruns == null || cycleInCompleteTestruns.isEmpty())
+		{
+			if(cycleRequiredTestruns == null || cycleRequiredTestruns.isEmpty())
+			{
+				cycleRequiredTestruns = getCycleRequiredTestruns();
+			}
+			if(cycleRequiredTestruns != null && !cycleRequiredTestruns.isEmpty())			
+			{				
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isNotrun() || cycleTestrun.isInprogress())
+					{
+						cycleInCompleteTestruns.add(cycleTestrun);
+					}
+				}
+			}			
+		}
+		return cycleInCompleteTestruns;	
+	}
+
+	/**
+	 * @param cycleInCompleteTestruns the cycleInCompleteTestruns to set
+	 */
+	private void setCycleInCompleteTestruns(Set<Testrun> cycleInCompleteTestruns) {
+		this.cycleInCompleteTestruns = cycleInCompleteTestruns;
+	}
+	/**
+	 * @return the currentCycleTestrunsComplete
+	 */
+	public int getCurrentCycleTestrunsComplete()
+	{
+		int count = 0;
+		if(currentCycleTestrunsComplete  == -1)
+		{
+			if(cycleCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+			{
+				cycleCompleteTestruns = getCycleCompleteTestruns();
+			}
+			if(cycleCompleteTestruns != null && !cycleCompleteTestruns.isEmpty())
+				
+			{
+				count = cycleCompleteTestruns.size();				
+			}			
+		}
+		return count;
+
+	}
+	/**
+	 * @param currentCycleTestrunsComplete the currentCycleTestrunsComplete to set
+	 */
+	public void setCurrentCycleTestrunsComplete(int currentCycleTestrunsComplete) {
+		this.currentCycleTestrunsComplete = currentCycleTestrunsComplete;
+	}
+	/**
+	 * @return the currentCycleTestrunsInComplete
+	 */
+	public int getCurrentCycleTestrunsInComplete() 
+	{
+		int count = 0;
+		if(currentCycleTestrunsInComplete == -1)
+		{
+			if(cycleInCompleteTestruns == null || cycleInCompleteTestruns.isEmpty())
+			{
+				cycleInCompleteTestruns = getCycleInCompleteTestruns();
+			}
+			if(cycleInCompleteTestruns != null && !cycleInCompleteTestruns.isEmpty())
+			{
+				count = cycleInCompleteTestruns.size();				
+			}			
+		}
+		return count;		
+	}
+
+	/**
+	 * @param currentCycleTestrunsInComplete the currentCycleTestrunsInComplete to set
+	 */
+	public void setCurrentCycleTestrunsInComplete(int currentCycleTestrunsInComplete) {
+		this.currentCycleTestrunsInComplete = currentCycleTestrunsInComplete;
+	}
+
+	/**
+	 * @return the currentCycleTestrunsPassed
+	 */
+	public int getCurrentCycleTestrunsPassed()
+	{
+		int count = 0;
+		if(currentCycleTestrunsPassed == -1)
+		{
+			if(cycleCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+			{
+				cycleCompleteTestruns = getCycleCompleteTestruns();
+			}
+			if(cycleCompleteTestruns != null && !cycleCompleteTestruns.isEmpty())
+				
+			{
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isPassed())
+					{
+						count++;;	
+					}
+				}						
+			}			
+		}
+		return count;		
+	}
+
+	/**
+	 * @param currentCycleTestrunsPassed the currentCycleTestrunsPassed to set
+	 */
+	public void setCurrentCycleTestrunsPassed(int currentCycleTestrunsPassed) {
+		this.currentCycleTestrunsPassed = currentCycleTestrunsPassed;
+	}
+
+	/**
+	 * @return the currentCycleTestrunsFailed
+	 */
+	public int getCurrentCycleTestrunsFailed() 
+	{
+		int count = 0;
+		if(currentCycleTestrunsFailed == -1)
+		{
+			if(cycleCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+			{
+				cycleCompleteTestruns = getCycleCompleteTestruns();
+			}
+			if(cycleCompleteTestruns != null && !cycleCompleteTestruns.isEmpty())
+			{
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isFailed())
+					{
+						count++;;	
+					}
+				}						
+			}			
+		}
+		return count;	
+	}
+
+	/**
+	 * @param currentCycleTestrunsFailed the currentCycleTestrunsFailed to set
+	 */
+	public void setCurrentCycleTestrunsFailed(int currentCycleTestrunsFailed) {
+		this.currentCycleTestrunsFailed = currentCycleTestrunsFailed;
+	}
+
+	/**
+	 * @return the currentCycleTestrunsDeferred
+	 */
+	public int getCurrentCycleTestrunsDeferred()
+	{
+		int count = 0;
+		if(currentCycleTestrunsDeferred == -1)
+		{
+			if(cycleCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+			{
+				cycleCompleteTestruns = getCycleCompleteTestruns();
+			}
+			if(cycleCompleteTestruns != null && !cycleCompleteTestruns.isEmpty())
+			{
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isDeferred())
+					{
+						count++;;	
+					}
+				}						
+			}			
+		}
+		return count;	
+	}
+
+	/**
+	 * @param currentCycleTestrunsDeferred the currentCycleTestrunsDeferred to set
+	 */
+	public void setCurrentCycleTestrunsDeferred(int currentCycleTestrunsDeferred) {
+		this.currentCycleTestrunsDeferred = currentCycleTestrunsDeferred;
+	}
+
+	/**
+	 * @return the currentCycleTestrunsBlocked
+	 */
+	public int getCurrentCycleTestrunsBlocked() 
+	{
+		int count = 0;
+		if(currentCycleTestrunsBlocked == -1)
+		{
+			if(cycleCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+			{
+				cycleCompleteTestruns = getCycleCompleteTestruns();
+			}
+			if(cycleCompleteTestruns != null && !cycleCompleteTestruns.isEmpty())
+			{
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isBlocked())
+					{
+						count++;;	
+					}
+				}						
+			}			
+		}
+		return count;	
+	}
+
+	/**
+	 * @param currentCycleTestrunsBlocked the currentCycleTestrunsBlocked to set
+	 */
+	public void setCurrentCycleTestrunsBlocked(int currentCycleTestrunsBlocked) {
+		this.currentCycleTestrunsBlocked = currentCycleTestrunsBlocked;
+	}
+
+	/**
+	 * @return the currentCycleTestrunsNotrun
+	 */
+	public int getCurrentCycleTestrunsNotrun() 
+	{
+		int count = 0;
+		if(currentCycleTestrunsNotrun == -1)
+		{
+			if(cycleInCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+			{
+				cycleInCompleteTestruns = getCycleInCompleteTestruns();
+			}
+			if(cycleInCompleteTestruns != null && !cycleInCompleteTestruns.isEmpty())
+			{
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isNotrun())
+					{
+						count++;;	
+					}
+				}						
+			}			
+		}
+		return count;	
+	}
+
+	/**
+	 * @param currentCycleTestrunsNotrun the currentCycleTestrunsNotrun to set
+	 */
+	public void setCurrentCycleTestrunsNotrun(int currentCycleTestrunsNotrun) {
+		this.currentCycleTestrunsNotrun = currentCycleTestrunsNotrun;
+	}
+
+	/**
+	 * @return the currentCycleTestrunsInprogress
+	 */
+	public int getCurrentCycleTestrunsInprogress() 
+	{
+		int count = 0;
+		if(currentCycleTestrunsInprogress == -1)
+		{
+			if(cycleInCompleteTestruns == null || cycleCompleteTestruns.isEmpty())
+			{
+				cycleInCompleteTestruns = getCycleInCompleteTestruns();
+			}
+			if(cycleInCompleteTestruns != null && !cycleInCompleteTestruns.isEmpty())
+			{
+				for(final Testrun cycleTestrun : cycleRequiredTestruns)
+				{
+					if(cycleTestrun.isInprogress())
+					{
+						count++;;	
+					}
+				}						
+			}			
+		}
+		return count;	
+	}
+
+	/**
+	 * @param currentCycleTestrunsInprogress the currentCycleTestrunsInprogress to set
+	 */
+	public void setCurrentCycleTestrunsInprogress(int currentCycleTestrunsInprogress) {
+		this.currentCycleTestrunsInprogress = currentCycleTestrunsInprogress;
+	}
+
 
 
 }

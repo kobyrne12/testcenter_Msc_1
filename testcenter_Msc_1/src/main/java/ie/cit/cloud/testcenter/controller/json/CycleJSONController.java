@@ -11,6 +11,7 @@ import javax.validation.ConstraintViolationException;
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
+import ie.cit.cloud.testcenter.model.ChangeImpactRule;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Project;
@@ -143,7 +144,7 @@ public class CycleJSONController {
 			relatedObjectSet.add(new RelatedObject(6,"All "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalAllTestruns()), cycleID, "all"+company.getTestrunsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(7,"Required "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalRequiredTestruns()), cycleID, "required"+company.getTestrunsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(8,"Optional "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalOptionalTestruns()), cycleID, "optional"+company.getTestrunsDisplayName().replace(" ","")));
-			
+
 			relatedObjectSet.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Total",Long.toString(cycleSummary.getTotalDefects()), cycleID, company.getDefectsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 1",Long.toString(cycleSummary.getTotalCurrentSev1s()), cycleID,company.getDefectsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 2",Long.toString(cycleSummary.getTotalCurrentSev2s()), cycleID, company.getDefectsDisplayName().replace(" ","")));
@@ -152,7 +153,7 @@ public class CycleJSONController {
 
 			relatedObjectSet.add(new RelatedObject(13,company.getEnvironmentsDisplayName(),String.valueOf(cycleSummary.getTotalEnvironments()), cycleID, company.getEnvironmentsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(14,company.getRequirementsDisplayName(),String.valueOf(cycleSummary.getTotalRequirements()), cycleID,company.getRequirementsDisplayName().replace(" ","")));
-			
+
 			relatedObjectSet.add(new RelatedObject(16,company.getTestersDisplayName(),String.valueOf(cycleSummary.getTotalTesters()), cycleID, company.getTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(17,company.getSeniorTestersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorTesters()), cycleID,company.getSeniorTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(18,company.getDevelopersDisplayName(),String.valueOf(cycleSummary.getTotalDevelopers()), cycleID,company.getDevelopersDisplayName().replace(" ","")));
@@ -289,7 +290,37 @@ public class CycleJSONController {
 		return testplanList; 	
 	}  
 
-
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public @ResponseBody String updateProject(
+			@RequestParam(value="cycleID", required=true) Long cycleID,			
+			@RequestParam(value="cycleName", required=true) String cycleName,			
+			@RequestParam(value="cyclePriority", required=true) int requiredPriority,			
+			Model model) 
+	{
+		Cycle cycle = cycleService.getCycle(cycleID);
+		cycle.setCycleName(cycleName);
+		cycle.setRequiredPriority(requiredPriority);
+		cycleService.update(cycle);
+		return "ok";
+	}
+	
+	
+	@RequestMapping(value = "/addccrule", method = RequestMethod.POST)
+	public @ResponseBody String cycleAddRule(
+			@RequestParam(value="cycleID", required=true) Long cycleID,
+			@RequestParam(value="ccRuleName", required=true) String ccRuleName,			
+			@RequestParam(value="ccRLevel", required=true) String ccRLevel,			
+			@RequestParam(value="ccRRequirementPriority", required=true) int ccRRequirementPriority,
+			@RequestParam(value="ccRtestrunPriorityChoice", required=true) String ccRtestrunPriorityChoice,
+			@RequestParam(value="ccRtestrunPriority", required=true) int ccRtestrunPriority,
+			Model model) 
+	{
+		
+		cycleService.addChangeImpactRule(new ChangeImpactRule(cycleID, ccRuleName,ccRLevel,
+				ccRRequirementPriority, ccRtestrunPriorityChoice,ccRtestrunPriority));		
+		return "ok";
+	}
+	
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public void emptyResult() {

@@ -10,6 +10,7 @@ package ie.cit.cloud.testcenter.service.cycle;
 
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
+import ie.cit.cloud.testcenter.model.ChangeImpactRule;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.Environment;
@@ -29,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
+import javax.validation.ConstraintViolationException;
+
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Peforms business operation on cycle
@@ -217,5 +221,8 @@ public interface CycleService {
 
 	Set<Testplan> getAllTestplans(Long cycleID);
 
-
+	ChangeImpactRule getCodeChangeRule(Long changeImpactRuleID);
+	void addChangeImpactRule(ChangeImpactRule changeImpactRule);
+	void update(ChangeImpactRule changeImpactRule );
+	void removeChangeImpactRule(Long changeImpactRuleID) ;
 }

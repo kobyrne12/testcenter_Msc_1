@@ -11,6 +11,7 @@ package ie.cit.cloud.testcenter.service.cycle;
 import ie.cit.cloud.testcenter.display.ColModelAndNames;
 import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
+import ie.cit.cloud.testcenter.model.ChangeImpactRule;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
 import ie.cit.cloud.testcenter.model.Defect;
@@ -1413,7 +1414,31 @@ public class CycleServiceImpl implements CycleService {
 
 	}
 
+	@Transactional(rollbackFor=NoResultException.class,readOnly=true)
+	public ChangeImpactRule getCodeChangeRule(Long changeImpactRuleID) {
+		try{
+			return cycleRepo.findCodeChangeRuleById(changeImpactRuleID);			
+		}
+		catch(NoResultException nre)			
+		{	
+			return null;
+		}			
+	}	
+	// @Secured("ROLE_ADMIN")
+	@Transactional(rollbackFor=ConstraintViolationException.class)   
+	public void addChangeImpactRule(ChangeImpactRule changeImpactRule) {
+		cycleRepo.createChangeImpactRule(changeImpactRule);			
+	}
 
+	// @Secured("ROLE_ADMIN")
+	public void update(ChangeImpactRule changeImpactRule ) {
+		cycleRepo.updateChangeImpactRule(changeImpactRule);
+	}  
+
+	//  @Secured("ROLE_ADMIN")
+	public void removeChangeImpactRule(Long changeImpactRuleID) {
+		cycleRepo.deleteChangeImpactRule(cycleRepo.getChangeImpactRule(changeImpactRuleID));
+	}
 
 	
 

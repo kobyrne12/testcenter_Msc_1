@@ -206,6 +206,11 @@ public class CompanyController {
 									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("project", project);	
+									model.addAttribute("defects", (projectService.getCascadedDefects(projectID) == null) ? 0 : projectService.getCascadedDefects(projectID).size());	
+									model.addAttribute("sev1", (projectService.getCascadedSev1Defects(projectID) == null) ? 0 : projectService.getCascadedSev1Defects(projectID).size());	
+									model.addAttribute("sev2", (projectService.getCascadedSev2Defects(projectID) == null) ? 0 : projectService.getCascadedSev2Defects(projectID).size());	
+									model.addAttribute("sev3", (projectService.getCascadedSev3Defects(projectID) == null) ? 0 : projectService.getCascadedSev3Defects(projectID).size());	
+									model.addAttribute("sev4", (projectService.getCascadedSev4Defects(projectID) == null) ? 0 : projectService.getCascadedSev4Defects(projectID).size());	
 									return "projectDetails";
 								}
 								else
@@ -266,6 +271,7 @@ public class CompanyController {
 									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("cycle", cycle);
+									model.addAttribute("ccRules", cycle.getChangeImpactRules());
 									return "cycleDetails";
 								}
 								else

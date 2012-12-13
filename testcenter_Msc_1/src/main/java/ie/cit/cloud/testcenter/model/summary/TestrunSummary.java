@@ -32,6 +32,9 @@ public class TestrunSummary
 	private String testcaseName = null;
 	private String testplanName = null;
 
+	private int testrunRequiredPriority = -1;
+	private int testrunRecommendedPriority = -1;
+	
 	private String state = null; //passed/failed...etc	
 	private String levelName = null;	
 	private Double estimatedTime = null; // Draft/Ready For Review / Approved
@@ -660,6 +663,44 @@ public class TestrunSummary
 	 */
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	/**
+	 * @return the testrunRequiredPriority
+	 */
+	public int getTestrunRequiredPriority() 
+	{
+		if(testrunRequiredPriority == -1)
+		{
+			return testrun.getPriority();
+		}		
+		return testrunRequiredPriority;		
+	}
+
+	/**
+	 * @param testrunRequiredPriority the testrunRequiredPriority to set
+	 */
+	public void setTestrunRequiredPriority(int testrunRequiredPriority) {
+		this.testrunRequiredPriority = testrunRequiredPriority;
+	}
+
+	/**
+	 * @return the testrunRecommendedPriority 
+	 */
+	public int getTestrunRecommendedPriority() 
+	{
+		if(testrunRecommendedPriority == -1)
+		{
+			return testrun.getRecommendedPriority();
+		}		
+		return testrunRecommendedPriority;
+	}
+
+	/**
+	 * @param testrunRecommendedPriority the testrunRecommendedPriority to set
+	 */
+	public void setTestrunRecommendedPriority(int testrunRecommendedPriority) {
+		this.testrunRecommendedPriority = testrunRecommendedPriority;
 	}	
 
 

@@ -179,7 +179,7 @@ public class ProjectJSONController {
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
 			Project project = projectService.getProject(projectID); 
-			ProjectSummary projectSummary = new ProjectSummary(project, levelName, projectService, testrunService, defectService);
+			ProjectSummary projectSummary = new ProjectSummary(project, levelName, projectService, testrunService, defectService, cycleService);
 			
 	    	Company company = companyService.getCompany(projectSummary.getCompanyID());
 	    	
@@ -306,7 +306,25 @@ public class ProjectJSONController {
      	return companyService.getAllProjectSummaryForCompany(companyID);     	   	
      }  */
    
-      
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+	public @ResponseBody String updateProject(
+			@RequestParam(value="projectID", required=true) Long projectID,			
+			@RequestParam(value="projectName", required=true) String projectName,			
+			@RequestParam(value="allowedSev1", required=true) int allowedSev1,
+			@RequestParam(value="allowedSev2", required=true) int allowedSev2,
+			@RequestParam(value="allowedSev3", required=true) int allowedSev3,
+			@RequestParam(value="allowedSev4", required=true) int allowedSev4,
+			Model model) 
+	{
+    	Project project = projectService.getProject(projectID);
+    	project.setProjectName(projectName);
+    	project.setAllowedSev1(allowedSev1);
+    	project.setAllowedSev2(allowedSev2);
+    	project.setAllowedSev3(allowedSev3);
+    	project.setAllowedSev4(allowedSev4);
+    	projectService.update(project);
+    	return "ok";
+	}
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public void emptyResult() {

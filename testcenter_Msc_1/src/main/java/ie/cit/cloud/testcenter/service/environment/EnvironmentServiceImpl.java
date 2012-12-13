@@ -442,19 +442,14 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		Collection<GridAttributes> columnModelSet =  new ArrayList<GridAttributes>();	
 
 		colNames.add("ID");	 
-		columnModelSet.add(new GridAttributes("requirementID",10));	
+		columnModelSet.add(new GridAttributes("environmentID",10));	
 
-		colNames.add("Summary");		
-		columnModelSet.add(new GridAttributes("requirementSummary",40));
+		colNames.add("Name");		
+		columnModelSet.add(new GridAttributes("environmentName",40));
 
-		colNames.add("Priority");
-		columnModelSet.add(new GridAttributes("requirementPriority",40));
+		colNames.add("OS");
+		columnModelSet.add(new GridAttributes("environmentOS",40));
 
-		colNames.add("Section");
-		columnModelSet.add(new GridAttributes("requirementSection",40,true));
-
-		colNames.add("Details");
-		columnModelSet.add(new GridAttributes("requirementDetails",true));
 
 		colNames.add("All "+company.getTestrunsDisplayName());
 		columnModelSet.add(new GridAttributes("totalAllTestruns",10,true));		
@@ -483,8 +478,8 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		colNames.add("Sev 4s");
 		columnModelSet.add(new GridAttributes("totalCurrentSev4s",true));
 
-		colNames.add(company.getEnvironmentsDisplayName());
-		columnModelSet.add(new GridAttributes("totalEnvironments",true));	
+		colNames.add(company.getRequirementsDisplayName());
+		columnModelSet.add(new GridAttributes("totalRequirements",true));	
 
 		colNames.add(company.getTestersDisplayName());
 		columnModelSet.add(new GridAttributes("totalTesters",true));

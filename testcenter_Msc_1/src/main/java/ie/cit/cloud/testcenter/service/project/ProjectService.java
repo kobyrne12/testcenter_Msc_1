@@ -195,5 +195,7 @@ public interface ProjectService {
 			String testplanID,String testcaseID, String testrunID, String defectID, 
 			String requirementID, String environmentID, String userID, String levelName);
 
+	String getCurrentCycleName(Long projectID);
+	Cycle getCurrentCycle(Long projectID);
 	
 }

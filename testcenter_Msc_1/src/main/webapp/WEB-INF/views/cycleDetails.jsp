@@ -7,7 +7,7 @@
 	  xmlns:h="http://java.sun.com/jsf/html">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Testcenter - ${project.projectName}</title>
+<title>Testcenter - ${cycle.cycleName}</title>
 	
 	<!-- Needed -->
 		
@@ -437,7 +437,7 @@ $(function()
 						{
 							center__paneSelector:".inner-inner-inner-center",
 							east__paneSelector:	".inner-inner-center-east",								
-							east__size: 470,								
+							east__size: 300,								
 							center__childOptions: 
 							{
 								center__paneSelector:".inner-inner-inner-inner-center",
@@ -467,21 +467,15 @@ $(function()
 			icons:{ "header": "ui-icon-triangle-1-e", "headerSelected": "ui-icon-triangle-1-s"}
 		}); 
 		$("#deleteProject" ).button();
-		var projectName = $("#projectName"),		
-		allowedSev1 = $("#allowedSev1"), 
-		allowedSev2 = $("#allowedSev2"), 
-		allowedSev3 = $("#allowedSev3"), 
-		allowedSev4 = $("#allowedSev4");
+		var cyclePriority = $("#cyclePriority"),cycleName = $("cycleName") ;		
+		
 		$("#applyChanges" ).button().click(function() 
 		{
-			$.post("project/update", 
+			$.post("cycle/update", 
 				{
-					projectID : '${project.projectID}',
-					projectName : projectName.val(),					
-					allowedSev1 : allowedSev1.val(),
-					allowedSev2 : allowedSev2.val(),
-					allowedSev3 : allowedSev3.val(),
-					allowedSev4 : allowedSev4.val()
+					cycleID : '${cycle.cycleID}',	
+					cycleName: cycleName.val(),
+					cyclePriority: cyclePriority.val(),
 				}, 
 				function(result) 
 				{
@@ -502,7 +496,7 @@ $(function()
 		var subGrid = jQuery("#sub"); 
 		subGrid.jqGrid(
 				{
-					url : "project/relatedObjects/${project.projectID}${relatedObjects}",
+					url : "cycle/relatedObjects/${cycle.cycleID}${relatedObjects}",
 					height : '100%',
 					width : 200,
 					datatype : "json",
@@ -564,6 +558,82 @@ $(function()
 					},
 				});
 	});	
+
+	var ccRuleName = $("#ccRuleName"), ccRLevel = $("#ccRLevel"),
+		ccRRequirementPriority = $("#ccRRequirementPriority"), ccRtestrunPriorityChoice = $("#ccRtestrunPriorityChoice"), 
+		ccRtestrunPriority = $("#ccRtestrunPriority"); 
+	var allFields = $([]).add(ccRuleName).add(ccRLevel).add(ccRRequirementPriority).add(ccRtestrunPriorityChoice).add(ccRtestrunPriority);
+	function updateTips(t) {
+		tips.text(t).addClass("ui-state-highlight");
+		/*setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );*/
+	}
+	function checkLength(o, n, min, max) {
+		if (o.val().length > max || o.val().length < min) {
+			o.addClass("ui-state-error");
+			updateTips("Length of " + n + " must be between " + min
+					+ " and " + max + ".");
+			return false;
+		} else {
+			return true;
+		}
+	}
+	$("#dialog-addccRule").dialog(
+			{
+				autoOpen : false,
+				height : 380,
+				width : 510,
+				modal : true,
+				buttons : {
+					"Create" : function() {
+						var bValid = true;
+						allFields.removeClass("ui-state-error");
+						bValid = bValid && checkLength(ccRuleName, "Code Impact Rule Name", 3, 32);							
+						if (bValid) {
+							
+							// Create New Project using Ajax
+							$.post("cycle/addccrule", 
+							{
+								cycleID : "${cycle.cycleID}",
+								ccRuleName : ccRuleName.val(),
+								ccRLevel : ccRLevel.val(),
+								ccRRequirementPriority : ccRRequirementPriority.val(),
+								ccRtestrunPriorityChoice : ccRtestrunPriorityChoice.val(),	
+								ccRtestrunPriority : ccRtestrunPriority.val(),
+							}, function(result) {
+								if (result == 'ok') 
+								{
+									$("#dialog-addccRule").dialog("close");									
+									window.location.reload();
+								} else {
+									updateTips(result);
+								}
+							});
+						}
+					},
+					Cancel : function() {
+						$(this).dialog("close");
+					}
+				},
+		open: function()
+		{
+		
+		},
+		close : function() 
+		{
+			allFields.val("").removeClass("ui-state-error");
+		}
+	});
+
+	$("#addccRule").button().click(function() 
+	{
+		$("#dialog-addccRule").dialog("open");
+	});
+	$("#adddefectRule").button();
+	$("#addTequiremenRule").button();
+	$("#addTestHistoryRule").button();
+		
 });
 //]]>
 </script>
@@ -601,115 +671,94 @@ $(function()
 								</tr>
 								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr">
 								
-									<td role="gridcell" style="text-align:left;" title="${project.projectID}">
-										${company.projectDisplayName} ID
+									<td role="gridcell" style="text-align:left;" title="${cycle.cycleID}">
+										${company.cycleDisplayName} ID
 									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.projectID}">
-										${project.projectID}
+									<td role="gridcell" style="text-align:right;" title="${cycle.cycleID}">
+										${cycle.cycleID}
 									</td>
 								
 								</tr>
 								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary " >
-									<td role="gridcell" style="text-align:left;" title="${company.projectDisplayName} Name">
-										${company.projectDisplayName} Name
+									<td role="gridcell" style="text-align:left;" title="${company.cycleDisplayName} Name">
+										${company.cycleDisplayName} Name
 									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.projectName}">
-										<input type="text" name="projectName" id="projectName"  value="${project.projectName}"/>
+									<td role="gridcell" style="text-align:right;" title="${cycle.cycleName}">
+										<input type="text" name="cycleName" id="cycleName"  value="${cycle.cycleName}"/>
 									</td>								
-								</tr>
-								<c:if test="${not empty project.parentID}"> 
-									<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr  " >
-										<td role="gridcell" style="text-align:left;" title="${company.projectDisplayName} Parent ID ">
-											${company.projectDisplayName} Parent ID
-										</td>
-										<td role="gridcell" style="text-align:right;" title="${project.parentID}">
-											<input type="text" value="${project.parentID}" />						
-										</td>								
-									</tr>
-								</c:if>
+								</tr>	
 								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary " >
-									<td role="gridcell" style="text-align:left;" title="Parent">
-										Parent 
+									<td role="gridcell" style="text-align:left;" title="${company.cycleDisplayName} Name">
+										${company.cycleDisplayName} Required Priority
 									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.projectName}">
-										<c:if test="${project.parent}"> 
-											<img src="images/ok.png" />
-										</c:if>									
+									<td role="gridcell" style="text-align:right;" title="${cycle.cycleName}">
+										<select name="cyclePriority" id="cyclePriority">	
+											<c:choose>
+												<c:when test="${cycle.requiredPriority == 1}">							
+													<option value="1" selected>1</option>	
+												</c:when>
+												<c:otherwise>
+												    <option value="1">1</option>
+											    </c:otherwise>
+											</c:choose>	
+											<c:choose>
+												<c:when test="${cycle.requiredPriority == 2}">							
+													<option value="2" selected>2</option>	
+												</c:when>
+												<c:otherwise>
+												    <option value="2">2</option>
+											    </c:otherwise>
+											</c:choose>	
+											<c:choose>
+												<c:when test="${cycle.requiredPriority == 3}">							
+													<option value="3" selected>3</option>	
+												</c:when>
+												<c:otherwise>
+												    <option value="3">3</option>
+											    </c:otherwise>
+											</c:choose>	
+											<c:choose>
+												<c:when test="${cycle.requiredPriority == 4}">							
+													<option value="4" selected>4</option>	
+												</c:when>
+												<c:otherwise>
+												    <option value="4">4</option>
+											    </c:otherwise>
+											</c:choose>																																		
+										</select>	
 									</td>								
-								</tr>
-								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr" >
-									<td role="gridcell" style="text-align:left;" title="Child">
-										Child 
-									</td>
-									<td role="gridcell" style="text-align:right;" >
-										<c:if test="${project.child}"> 
-											<img src="images/ok.png" />
-										</c:if>									
-									</td>								
-								</tr>								
-								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary" >
-									<td role="gridcell" style="text-align:left;" title="Allowed Sev 1's ">
-										Allowed Sev 1's 
-									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev1}	" >
-										<input type="text" name="allowedSev1" id="allowedSev1" value="${project.allowedSev1}" size="2" style="text-align:right;"/>		
-									</td>								
-								</tr>
-								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr" >
-									<td role="gridcell" style="text-align:left;" title="Allowed Sev 2's ">
-										Allowed Sev 2's 
-									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev2}	" >
-										<input type="text" name="allowedSev2" id="allowedSev2" value="${project.allowedSev2}" size="2" style="text-align:right;"/>				
-									</td>								
-								</tr>
-								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary" >
-									<td role="gridcell" style="text-align:left;" title="Allowed Sev 3's ">
-										Allowed Sev 3's 
-									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev3}	" >
-										<input type="text" name="allowedSev3" id="allowedSev3" value="${project.allowedSev3}" size="2" style="text-align:right;"/>			
-									</td>								
-								</tr>
-								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr" >
-									<td role="gridcell" style="text-align:left;" title="Allowed Sev 4's ">
-										Allowed Sev 4's 
-									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev4}	" >
-										<input type="text" name="allowedSev4" id="allowedSev4" value="${project.allowedSev4}" size="2" style="text-align:right;"/>			
-									</td>								
-								</tr>
-								
+								</tr>		
+																	
 								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary" >
 									<td role="gridcell" style="text-align:left;" title="Creation Date">
 										Creation Date
 									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev3}	" >
-										${project.creationDate}			
+									<td role="gridcell" style="text-align:right;" title="${cycle.creationDate}	" >
+										${cycle.creationDate}			
 									</td>								
 								</tr>
 								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr" >
 									<td role="gridcell" style="text-align:left;" title="Created By">
 										Created By
 									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev4}	" >
-										${project.createdBy}			
+									<td role="gridcell" style="text-align:right;" title="${cycle.createdBy}	" >
+										${cycle.createdBy}			
 									</td>								
 								</tr>
 								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary" >
 									<td role="gridcell" style="text-align:left;" title="Last modified Date">
 										Last modified Date
 									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev3}	" >
-										${project.lastModifiedDate}			
+									<td role="gridcell" style="text-align:right;" title="${cycle.lastModifiedDate}	" >
+										${cycle.lastModifiedDate}			
 									</td>								
 								</tr>
 								<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr" >
 									<td role="gridcell" style="text-align:left;" title="Last modified By">
 										Last modified By
 									</td>
-									<td role="gridcell" style="text-align:right;" title="${project.allowedSev4}	" >
-										${project.lastModifiedBy}			
+									<td role="gridcell" style="text-align:right;" title="${cycle.lastModifiedBy}	" >
+										${cycle.lastModifiedBy}			
 									</td>								
 								</tr>
 							</table>	
@@ -722,314 +771,78 @@ $(function()
 								<p class="infoTips"></p>
 							</div>					
 					</div>
-					<div class="inner-inner-center-east" >
-					
-					<fieldset>
-					<legend>${defectsDisplayName}</legend>					
-					<table width="100%">
-							<tr>
-								<th width="10%" role="columnheader" >
-									<font size="2"></font>									
-								</th>
-								<th width="10%" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" >
-									<div class="ui-jqgrid-sortable">
-										<font size="2">Allowed</font>
-									</div>
-								</th>
-								<th width="10%" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" >
-									<div class="ui-jqgrid-sortable">
-										<font size="2">${defects}</font>
-									</div>
-								</th>
-								<th width="70%" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" >
-									<div class="ui-jqgrid-sortable">
-										<font size="2">State</font>
-									</div>
-								</th>
-							</tr>																				
-							<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr">
-								<td role="gridcell" style="text-align:left;" title="overall" class="ui-state-default ui-th-column ui-th-ltr">
-									<font size="1">Overall</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Total Defects Allowed">
-									<c:set var="sumAllowed" value="${project.allowedSev1 + project.allowedSev2 + project.allowedSev3 + project.allowedSev4}" scope="page" />	
-									<font size="1">${sumAllowed}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Current Total Defects">
-									<c:set var="sumCurrent" value="${sev1 + sev2 + sev3 + sev4}" scope="page" />									
-									<font size="1">${sumCurrent}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Sev 1 State">
-								
-								<c:if test="${sumAllowed > sumCurrent}"> 	
-									<c:set var="totalDefectPercentComplete" value="${(sumCurrent / sumAllowed) * 100}" scope="page" />	
-									<c:set var="totalDefectPercentCompleteColor" value="passedBar" scope="page" />	
-									<c:set var="totalDefectPercentInCompleteColor" value="completeBar" scope="page" />																		
-								</c:if>	
-								<c:if test="${sumCurrent > sumAllowed}"> 	
-									<c:set var="totalDefectPercentComplete" value="${(sumAllowed / sumCurrent ) * 100}" scope="page" />	
-									<c:set var="totalDefectPercentCompleteColor" value="inProgressBar" scope="page" />	
-									<c:set var="totalDefectPercentInCompleteColor" value="failedBar" scope="page" />										
-								</c:if>	
-																
-									<div style='width:100%;height:18px;' class='progressBarDiv' >
-										<div class='${totalDefectPercentCompleteColor}' style='height:18px;width:${totalDefectPercentComplete}%; float: left;' title="${totalDefectPercentComplete} % ">
-											&nbsp; 
-										</div>			
-										<div class='${totalDefectPercentInCompleteColor}' style='height:18px;width:${100 - totalDefectPercentComplete}%;float: right;' title="${100 - totalDefectPercentComplete}% "> 
-											&nbsp;
-										</div>
-									</div>	
-								</td>
-							</tr>						    
-						    <tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary">
-								<td role="gridcell" style="text-align:left;" title="Sev 1" class="ui-state-default ui-th-column ui-th-ltr">
-									<font size="1">Sev 1</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Total Sev 1 Allowed">
-									<font size="1">${project.allowedSev1}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Current Sev 1 Defects">
-									<font size="1">${sev1}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Sev 1 State">
-								
-								<c:if test="${project.allowedSev1 > sev1}"> 	
-									<c:set var="sev1PercentComplete" value="${(sev1 / project.allowedSev1) * 100}" scope="page" />	
-									<c:set var="sev1PercentCompleteColor" value="passedBar" scope="page" />	
-									<c:set var="sev1PercentInCompleteColor" value="completeBar" scope="page" />																		
-								</c:if>	
-								<c:if test="${sev1 > project.allowedSev1}"> 	
-									<c:set var="sev1PercentComplete" value="${(project.allowedSev1 / sev1 ) * 100}" scope="page" />	
-									<c:set var="sev1PercentCompleteColor" value="inProgressBar" scope="page" />	
-									<c:set var="sev1PercentInCompleteColor" value="failedBar" scope="page" />										
-								</c:if>	
-																
-									<div style='width:100%;height:18px;' class='progressBarDiv' >
-										<div class='${sev1PercentCompleteColor}' style='height:18px;width:${sev1PercentComplete}%; float: left;' title="${sev1PercentComplete} % ">
-											&nbsp; 
-										</div>			
-										<div class='${sev1PercentInCompleteColor}' style='height:18px;width:${100 - sev1PercentComplete}%;float: right;' title="${100 - sev1PercentComplete}% "> 
-											&nbsp;
-										</div>
-									</div>	
-								</td>
-							</tr>		
-							<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr">
-								<td role="gridcell" style="text-align:left;" title="Sev 2" class="ui-state-default ui-th-column ui-th-ltr">
-									<font size="1">Sev 2</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Total Sev 2 Allowed">
-									<font size="1">${project.allowedSev2}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Current Sev 2 Defects">
-									<font size="1">${sev2} </font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Sev 2 State">
-								
-								<c:if test="${project.allowedSev2 > sev2}"> 	
-									<c:set var="sev2PercentComplete" value="${(sev2 / project.allowedSev2) * 100}" scope="page" />	
-									<c:set var="sev2PercentCompleteColor" value="passedBar" scope="page" />	
-									<c:set var="sev2PercentInCompleteColor" value="completeBar" scope="page" />																		
-								</c:if>	
-								<c:if test="${sev2 > project.allowedSev2}"> 	
-									<c:set var="sev2PercentComplete" value="${(project.allowedSev2 / sev2 ) * 100}" scope="page" />	
-									<c:set var="sev2PercentCompleteColor" value="inProgressBar" scope="page" />	
-									<c:set var="sev2PercentInCompleteColor" value="failedBar" scope="page" />										
-								</c:if>	
-																
-									<div style='width:100%;height:18px;' class='progressBarDiv' >
-										<div class='${sev2PercentCompleteColor}' style='height:18px;width:${sev2PercentComplete}%; float: left;' title="${sev2PercentComplete} % ">
-											&nbsp; 
-										</div>			
-										<div class='${sev2PercentInCompleteColor}' style='height:18px;width:${100 - sev2PercentComplete}%;float: right;' title="${100 - sev2PercentComplete}% "> 
-											&nbsp;
-										</div>
-									</div>	
-								</td>
-							</tr>				
-							<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary">
-								<td role="gridcell" style="text-align:left;" title="Sev 3" class="ui-state-default ui-th-column ui-th-ltr">
-									<font size="1">Sev 3</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Total Sev 3 Allowed">
-									<font size="1">${project.allowedSev3}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Current Sev 3 Defects">
-									<font size="1">${sev3}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Sev 1 State">
-								
-								<c:if test="${project.allowedSev3 > sev3}"> 	
-									<c:set var="sev3PercentComplete" value="${(sev3 / project.allowedSev3) * 100}" scope="page" />	
-									<c:set var="sev3PercentCompleteColor" value="passedBar" scope="page" />	
-									<c:set var="sev3PercentInCompleteColor" value="completeBar" scope="page" />																		
-								</c:if>	
-								<c:if test="${sev3 > project.allowedSev3}"> 	
-									<c:set var="sev3PercentComplete" value="${(project.allowedSev3 / sev3 ) * 100}" scope="page" />	
-									<c:set var="sev3PercentCompleteColor" value="inProgressBar" scope="page" />	
-									<c:set var="sev3PercentInCompleteColor" value="failedBar" scope="page" />										
-								</c:if>	
-																
-									<div style='width:100%;height:18px;' class='progressBarDiv' >
-										<div class='${sev3PercentCompleteColor}' style='height:18px;width:${sev3PercentComplete}%; float: left;' title="${sev3PercentComplete} % ">
-											&nbsp; 
-										</div>			
-										<div class='${sev3PercentInCompleteColor}' style='height:18px;width:${100 - sev3PercentComplete}%;float: right;' title="${100 - sev3PercentComplete}% "> 
-											&nbsp;
-										</div>
-									</div>	
-								</td>
-							</tr>				
-							<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr">
-								<td role="gridcell" style="text-align:left;" title="Sev 4" class="ui-state-default ui-th-column ui-th-ltr">
-									<font size="1">Sev 4</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Total Sev 4 Allowed">
-									<font size="1">${project.allowedSev4}</font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Current Sev 4 Defects">
-									<font size="1">${sev4} </font>
-								</td>
-								<td role="gridcell" style="text-align:right;" title="Sev 1 State">
-								
-								<c:if test="${project.allowedSev4 > sev4}"> 	
-									<c:set var="sev4PercentComplete" value="${(sev4 / project.allowedSev4) * 100}" scope="page" />	
-									<c:set var="sev4PercentCompleteColor" value="passedBar" scope="page" />	
-									<c:set var="sev4PercentInCompleteColor" value="completeBar" scope="page" />																		
-								</c:if>	
-								<c:if test="${sev4 > project.allowedSev4}"> 	
-									<c:set var="sev4PercentComplete" value="${(project.allowedSev4 / sev4 ) * 100}" scope="page" />	
-									<c:set var="sev4PercentCompleteColor" value="inProgressBar" scope="page" />	
-									<c:set var="sev4PercentInCompleteColor" value="failedBar" scope="page" />										
-								</c:if>	
-																
-									<div style='width:100%;height:18px;' class='progressBarDiv' >
-										<div class='${sev4PercentCompleteColor}' style='height:18px;width:${sev4PercentComplete}%; float: left;' title="${sev4PercentComplete} % ">
-											&nbsp; 
-										</div>			
-										<div class='${sev4PercentInCompleteColor}' style='height:18px;width:${100 - sev4PercentComplete}%;float: right;' title="${100 - sev4PercentComplete}% "> 
-											&nbsp;
-										</div>
-									</div>	
-								</td>
-							</tr>									
-						</table>	
-						</fieldset>	
-						<!-- ********************* Cycles ************************************** -->
+					<div class="inner-inner-center-east" >					
 						<fieldset>
-						<legend>${cyclesDisplayName}</legend>						
+						<legend>Code Change Rules</legend>		
 						<table width="100%">
+						<tr>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								ID
+							</th>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								NAME
+							</th>
+						</tr>						
+						<c:forEach var="ccRule" items="${ccRules}" varStatus="ccRuleIndex" >	
 							<tr>
-								<th width="20" class="ui-state-default ui-th-column ui-th-ltr">
-									<font size="2">ID</font>									
-								</th>
-								<th width="150" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" >
-									<div class="ui-jqgrid-sortable">
-										<font size="2">${company.cycleDisplayName} Name</font>
-									</div>
-								</th>
-								<th width="300" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" >
-									<div class="ui-jqgrid-sortable">
-										<font size="2">State</font>
-									</div>
-								</th>	
-								
+								<td>
+									${ccRule.changeImpactRuleID}
+								</td>
+								<td>
+									${ccRule.changeImpactRuleName}
+								</td>
 							</tr>	
-							
-							<c:set var="cycleTotalTestruns" value="0" scope="page"/>
-							<c:set var="cycleTotalTestrunsComplete" value="0" scope="page"/>							
-							<c:set var="cycleTotalTestrunsPassed" value="0" scope="page"/>
-							<c:set var="cycleTotalTestrunsFailed" value="0" scope="page"/>
-							<c:set var="cycleTotalTestrunsDeferred" value="0" scope="page"/>
-							<c:set var="cycleTotalTestrunsBlocked" value="0" scope="page"/>
-							<c:set var="cycleTotalTestrunsIncomplete" value="0" scope="page"/>
-							<c:set var="cycleTotalTestrunsNotrun" value="0" scope="page"/>
-							<c:set var="cycleTotalTestrunsInprog" value="0" scope="page"/>
-							<c:set var="eachCycleTotalTestruns" value="0" scope="page"/>										
-							<c:set var="eachCycleTotalTestrunsComplete" value="0" scope="page"/>
-																														
-							<c:forEach var="cycle" items="${project.cycles}" varStatus="cycleIndex" >								
-								<c:if test="${cycle.latest == true}"> 	
-									<c:set var="latestCycleID" value="${cycle.cycleID}" scope="page" />
-									<c:set var="latestCycleName" value="${cycle.cycleName}" scope="page" />
-								</c:if>																										
-								
-								<c:forEach var="testrun" items="${cycle.testruns}" varStatus="testrunIndex" >	
-										<c:set var="eachCycleTotalTestruns" value="${eachCycleTotalTestruns + 1}" scope="page"/>
-										
-										<c:choose>
-											<c:when test="${testrun.passed || testrun.failed || testrun.deferred || testrun.blocked}">	
-												<c:if test="${cycle.latest == true}"> 							
-													<c:set var="cycleTotalTestrunsComplete" value="${cycleTotalTestrunsComplete + 1}" scope="page" />													
-												</c:if>
-												<c:set var="eachCycleTotalTestrunsComplete" value="${eachCycleTotalTestrunsComplete + 1}" scope="page"/>
-											</c:when>
-											<c:otherwise>
-												<c:if test="${cycle.latest == true}"> 	
-													<c:set var="cycleTotalTestrunsIncomplete" value="${cycleTotalTestrunsIncomplete + 1}" scope="page" />
-												</c:if>	
-											</c:otherwise>
-										</c:choose>	
-										<c:if test="${cycle.latest == true}"> 	
-										<c:set var="cycleTotalTestruns" value="${cycleTotalTestruns + 1}" scope="page"/>
-										
-										<c:if test="${testrun.passed}"> 
-											<c:set var="cycleTotalTestrunsPassed" value="${cycleTotalTestrunsPassed + 1}" scope="page"/>	
-										</c:if>
-										<c:if test="${testrun.failed}"> 
-											<c:set var="cycleTotalTestrunsFailed" value="${cycleTotalTestrunsFailed + 1}" scope="page"/>	
-										</c:if>
-										<c:if test="${testrun.deferred}"> 
-											<c:set var="cycleTotalTestrunsDeferred" value="${cycleTotalTestrunsDeferred + 1}" scope="page"/>	
-										</c:if>
-										<c:if test="${testrun.blocked}"> 
-											<c:set var="cycleTotalTestrunsBlocked" value="${cycleTotalTestrunsBlocked + 1}" scope="page"/>	
-										</c:if>
-										<c:if test="${testrun.notrun}"> 
-											<c:set var="cycleTotalTestrunsNotrun" value="${cycleTotalTestrunsNotrun + 1}" scope="page"/>	
-										</c:if>
-										<c:if test="${testrun.inprogress}"> 
-											<c:set var="cycleTotalTestrunsInprog" value="${cycleTotalTestrunsInprog + 1}" scope="page"/>	
-										</c:if>
-									</c:if>											
-								</c:forEach>								
-								<c:choose>
-									<c:when test="${cyclecount2.index % 2 == 0}">
-							            <tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr">
-									</c:when>
-							        <c:otherwise>
-							            <tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr ui-priority-secondary" >
-									</c:otherwise>
-								</c:choose>
-									<td role="gridcell" style="text-align:right;" title="${cycle.cycleID}">
-										<font size="1">${cycle.cycleID}</font>
-									</td>
-									<td role="gridcell" style="text-align:left;" title="${cycle.cycleName}">
-										<font size="1">${cycle.cycleName}</font>
-									</td>								
-									<td>
-									<c:set var="percentComplete" value="${(eachCycleTotalTestrunsComplete/eachCycleTotalTestruns) * 100}" scope="page"/>
-								
-									
-										<div style='width:100%;height:18px;display:inline-block;float: left;' class='progressBarDiv' >
-											<div class='completeBar' style='height:18px;width:${percentComplete}%; float: left;' title="${percentComplete} % Complete">
-													&nbsp; 
-											</div>			
-											<div class='notCompleteBar' style='height:18px;width:${ 100 - percentComplete}%;float: right;' title="${100 - percentComplete}% InComplete"> 
-												&nbsp;
-											</div>
-										</div>		
-									</td>									
-								</tr>
-							</c:forEach>
+						</c:forEach>		
+						</table>				
+							<button id="addccRule">Add</button>					
+						</fieldset>		
+						<fieldset>
+						<legend>${company.defectDisplayName} Rules</legend>	
+						<table width="100%">
+						<tr>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								ID
+							</th>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								NAME
+							</th>
+						</tr>	
+						</table>					
+						<button id="adddefectRule">Add</button>					
+						</fieldset>		
+						<fieldset>
+						<legend>${company.requirementDisplayName} Rules </legend>
+						<table width="100%">
+						<tr>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								ID
+							</th>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								NAME
+							</th>
+						</tr>	
 						</table>	
-						</fieldset>			
+							<button id="addTequiremenRule">Add</button>						
+						</fieldset>		
+						<fieldset>
+						<legend>Test History Rules</legend>		
+						<table width="100%">
+						<tr>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								ID
+							</th>
+							<th class="ui-state-default ui-th-column ui-th-ltr">
+								NAME
+							</th>
+						</tr>	
+						</table>		
+							<button id="addTestHistoryRule">Add</button>			
+						</fieldset>							
 					</div>
 				</div>		
 				<div class="inner-inner-bottom" >
 						<fieldset>
-						<legend> ${latestCycleName}</legend>						
+						<legend> ${cycle.cycleName}</legend>						
 						<table width="100%" border="0">
 							<tr>
 								<th class="ui-state-default ui-th-column ui-th-ltr">
@@ -1084,35 +897,35 @@ $(function()
 							<tr role="row" tabindex="0" class="ui-widget-content jqgrow ui-row-ltr">
 									<td role="gridcell" style="text-align:center;" title="">
 										<font size="1">
-											${latestCycleID}
+											${cycle.cycleID}
 										</font>
 									</td>									
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestruns}</font>
+										<font size="1"> </font>
 									</td>
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsComplete}  </font>
+										<font size="1">  </font>
 									</td>
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsPassed}</font>
+										<font size="1"> </font>
 									</td>
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsFailed} </font>
+										<font size="1">  </font>
 									</td>
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsDeferred} </font>
+										<font size="1">  </font>
 									</td>
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsBlocked}</font>
+										<font size="1"> </font>
 									</td>
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsIncomplete}  </font>
+										<font size="1">  </font>
 									</td>	
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsNotrun} </font>
+										<font size="1"> </font>
 									</td>	
 									<td role="gridcell" style="text-align:center;" title="">
-										<font size="1"> ${cycleTotalTestrunsInprog} </font>
+										<font size="1"> </font>
 									</td>	
 								</tr>						
 						</table>	
@@ -1335,5 +1148,59 @@ $(function()
 	</tr>
 </table>
 </div>
+<!--
+	 ******************************************************************************************************************
+	 ************************************           New Code Change Rule             *****************************************
+	 ******************************************************************************************************************
+-->
+	<div id="dialog-addccRule" title="Create new Code Change Rule">
+		<p class="validateTips"></p>
+		<form>
+			<fieldset>
+				<table width="100%" border="0" >
+					<tr>
+						<td colspan="2" valign="top">
+							<fieldset>
+								<legend>
+									Code Change Rule Name
+								</legend>
+								<input type="text" name="ccRuleName" id="ccRuleName"  style="width: 200px; display: inline-block; float: left;" />								
+							</fieldset>	
+							<fieldset>
+								<legend>
+									Code Change Rule 
+								</legend>
+								Code change with 
+								<select name="ccRLevel" id="ccRLevel">												
+									<option value="low">low</option>	
+									<option value="medium">Medium</option>	
+									<option value="high">high</option>																				
+								</select>	
+								impact on Priority
+								<select name="ccRRequirementPriority" id="ccRRequirementPriority">												
+									<option value="1">1</option>	
+									<option value="2">2</option>	
+									<option value="3">3</option>	
+									<option value="4">4</option>																			
+								</select>	
+								Requirements changes associated ${company.testrunDisplayName} 
+								<select name="ccRtestrunPriorityChoice" id="ccRtestrunPriorityChoice">												
+									<option value="1">Priority</option>	
+									<option value="2">Recommended Priority</option>																													
+								</select>	
+								to
+								<select name="ccRtestrunPriority" id="ccRtestrunPriority">												
+									<option value="1">1</option>	
+									<option value="2">2</option>	
+									<option value="3">3</option>	
+									<option value="4">4</option>																			
+								</select>	
+							</fieldset>									
+						</td>
+					</tr>						
+				</table>				
+			</fieldset>
+		</form>
+	</div>
 </body>
 </html>
