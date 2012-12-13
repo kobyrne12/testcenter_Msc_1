@@ -549,12 +549,12 @@ public class TestcaseServiceImpl implements TestcaseService {
 		colNames.add(company.getTestplanDisplayName());
 		columnModelSet.add(new GridAttributes("testplanName"));
 		colNames.add(company.getTestplanDisplayName() + " Section");
-		columnModelSet.add(new GridAttributes("testplanSection"));
+		columnModelSet.add(new GridAttributes("testplanSection",true));
 		
 		colNames.add("Level");
-		columnModelSet.add(new GridAttributes("levelName"));
+		columnModelSet.add(new GridAttributes("levelName",true));
 		colNames.add("Stage");
-		columnModelSet.add(new GridAttributes("stage"));
+		columnModelSet.add(new GridAttributes("stage",true));
 		colNames.add("Est. Time");
 		columnModelSet.add(new GridAttributes("estimatedTime"));
 

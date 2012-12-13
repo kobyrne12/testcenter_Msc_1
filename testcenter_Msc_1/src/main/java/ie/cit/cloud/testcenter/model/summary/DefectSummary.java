@@ -156,7 +156,7 @@ public class DefectSummary
 	/**
 	 * @return the defectID
 	 */
-	public Long defectID() {
+	public Long getDefectID() {
 		return defectID;
 	}
 

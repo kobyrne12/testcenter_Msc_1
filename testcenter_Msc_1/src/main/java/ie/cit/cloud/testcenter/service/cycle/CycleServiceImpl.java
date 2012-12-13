@@ -1158,31 +1158,31 @@ public class CycleServiceImpl implements CycleService {
 		columnModelSet.add(new GridAttributes("cycleName",40));	 
 		
 		colNames.add("State");
-		columnModelSet.add(new GridAttributes("cycleState","setCycleStateBarChart","unSetBarChart", 80));
+		columnModelSet.add(new GridAttributes("cycleState","setCycleStateBarChart","unSetBarChart", 60));
 		
 		colNames.add("Parent");
-		columnModelSet.add(new GridAttributes("parentCycle",10));
+		columnModelSet.add(new GridAttributes("parentCycle",10,true));
 		colNames.add("Child "+ company.getCyclesDisplayName());	
 		columnModelSet.add(new GridAttributes("totalChildCycles",15,true));			
 		colNames.add("Parent "+ company.getCyclesDisplayName());	
 		columnModelSet.add(new GridAttributes("parentCycleName",15,true));	
 
 		colNames.add("Complete");
-		columnModelSet.add(new GridAttributes("totalTestrunsCompleted",10));
+		columnModelSet.add(new GridAttributes("totalTestrunsCompleted",15));
 		colNames.add("Passed");
-		columnModelSet.add(new GridAttributes("totalTestrunsPassed",10));
+		columnModelSet.add(new GridAttributes("totalTestrunsPassed",5));
 		colNames.add("Failed");
-		columnModelSet.add(new GridAttributes("totalTestrunsFailed",10));	
+		columnModelSet.add(new GridAttributes("totalTestrunsFailed",15));	
 		colNames.add("Deferred");
-		columnModelSet.add(new GridAttributes("totalTestrunsDeferred",10));
+		columnModelSet.add(new GridAttributes("totalTestrunsDeferred",15));
 		colNames.add("Blocked");
-		columnModelSet.add(new GridAttributes("totalTestrunsBlocked",10));
+		columnModelSet.add(new GridAttributes("totalTestrunsBlocked",15));
 		colNames.add("Incomplete");
-		columnModelSet.add(new GridAttributes("totalTestrunsInComplete",10));
+		columnModelSet.add(new GridAttributes("totalTestrunsInComplete",15));
 		colNames.add("Not Run");
-		columnModelSet.add(new GridAttributes("totalTestrunsNotRun",10));
+		columnModelSet.add(new GridAttributes("totalTestrunsNotRun",15));
 		colNames.add("In Prog");
-		columnModelSet.add(new GridAttributes("totalTestrunsInProg",10));
+		columnModelSet.add(new GridAttributes("totalTestrunsInProg",15));
 		
 		colNames.add("Req. Priority");
 		columnModelSet.add(new GridAttributes("requiredPriority",10,true));

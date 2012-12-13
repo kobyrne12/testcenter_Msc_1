@@ -683,7 +683,7 @@ public class CycleSummary
 	/**
 	 * @return the totalTestrunsInComplete
 	 */
-	public int getTotalTestrunsInCompleted() 
+	public int getTotalTestrunsInComplete() 
 	{
 		int count = 0;
 		if(totalTestrunsInComplete == -1)
@@ -700,9 +700,9 @@ public class CycleSummary
 		return count;				
 	}
 	/**
-	 * @param totalTestrunsInComplete the totalTestrunsInCompleted to set
+	 * @param totalTestrunsInComplete the totalTestrunsInComplete to set
 	 */
-	public void setTotalTestrunsInCompleted(int totalTestrunsInComplete) {
+	public void setTotalTestrunsInComplete(int totalTestrunsInComplete) {
 		this.totalTestrunsInComplete = totalTestrunsInComplete;
 	}
 	/**

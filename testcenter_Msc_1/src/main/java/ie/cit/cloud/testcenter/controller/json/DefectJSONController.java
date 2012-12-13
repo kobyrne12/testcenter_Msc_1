@@ -16,6 +16,7 @@ import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Defect;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Testrun;
@@ -26,6 +27,9 @@ import ie.cit.cloud.testcenter.model.Requirement;
 import ie.cit.cloud.testcenter.model.summary.CycleList;
 import ie.cit.cloud.testcenter.model.summary.CycleSummary;
 import ie.cit.cloud.testcenter.model.summary.CycleSummaryList;
+import ie.cit.cloud.testcenter.model.summary.DefectList;
+import ie.cit.cloud.testcenter.model.summary.DefectSummary;
+import ie.cit.cloud.testcenter.model.summary.DefectSummaryList;
 import ie.cit.cloud.testcenter.model.summary.ProjectSummary;
 import ie.cit.cloud.testcenter.model.summary.RequirementList;
 import ie.cit.cloud.testcenter.model.summary.TestcaseList;
@@ -62,8 +66,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-@RequestMapping("requirement")
-public class RequirementJSONController {    
+@RequestMapping("defect")
+public class DefectJSONController {    
 	@Autowired
 	private CompanyService companyService; 
 	@Autowired
@@ -85,7 +89,7 @@ public class RequirementJSONController {
 	// All Testplans For a company
 	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody RequirementSummaryList returnRequirements(
+	public @ResponseBody DefectSummaryList returnDefects(
 			@PathVariable Long companyID,
 			@RequestParam(required = false) String projectID,
 			@RequestParam(required = false) String cycleID,
@@ -112,62 +116,62 @@ public class RequirementJSONController {
 			ObjectMapper mapper = new ObjectMapper();    	
 			JqgridFilter jqgridFilter = mapper.readValue(filters, JqgridFilter.class); 
 
-			RequirementSummaryList requirementSummaryList = requirementService.getGridRequirments(companyID, projectID,cycleID, requirementID, testcaseID,
-					requirementID, defectID, requirementID,
+			DefectSummaryList defectSummaryList = defectService.getGridDefects(companyID, projectID,cycleID, testplanID, testcaseID,
+					testrunID, defectID, requirementID,
 					environmentID, userID,level,stage,required);
 
-			Set<RequirementSummary> oldRequirementSummarySet = requirementSummaryList.getRequirements();
-			Set<RequirementSummary> newRequirementSummarySet = new LinkedHashSet<RequirementSummary>();
+			Set<DefectSummary> oldDefectSummarySet = defectSummaryList.getDefects();
+			Set<DefectSummary> newDefectSummarySet = new LinkedHashSet<DefectSummary>();
 
-			for(RequirementSummary oldRequirementSummary : oldRequirementSummarySet)
+			for(DefectSummary oldDefectSummary : oldDefectSummarySet)
 			{
-				boolean requirementNameFound = false; 
-				boolean requirementIDFound = false; 
-				//System.out.println(" ^^^^^^ 3 : " + oldRequirementSummary.getRequirementName());
+				boolean defectNameFound = false; 
+				boolean defectIDFound = false; 
+				//System.out.println(" ^^^^^^ 3 : " + oldDefectSummary.getDefectName());
 				for(Rule rule : jqgridFilter.getRules())
 				{        			
 					//System.out.println(" ^^^^^^ 4 : " + rule.getField());
-					if(rule.getField().equalsIgnoreCase("requirementSummary"))
+					if(rule.getField().equalsIgnoreCase("defectSummary"))
 					{
-						//System.out.println(" ^^^^^^ 5 a : " +oldRequirementSummary.getRequirementName());
-						if(oldRequirementSummary.getRequirementSummary().toLowerCase().contains(rule.getData().toLowerCase()))
+						//System.out.println(" ^^^^^^ 5 a : " +oldDefectSummary.getDefectName());
+						if(oldDefectSummary.getDefectSummary().toLowerCase().contains(rule.getData().toLowerCase()))
 						{
-							requirementNameFound = true;      					
+							defectNameFound = true;      					
 						}
 					}
 					else
 					{
-						requirementNameFound = true;   
+						defectNameFound = true;   
 					}
-					if(rule.getField().equalsIgnoreCase("requirementID"))
+					if(rule.getField().equalsIgnoreCase("defectID"))
 					{
-						System.out.println(" ^^^^^^ 5 a : " +oldRequirementSummary.getRequirementID());
-						if(String.valueOf(oldRequirementSummary.getRequirementID()).toLowerCase().contains(rule.getData().toLowerCase()))
+						System.out.println(" ^^^^^^ 5 a : " +oldDefectSummary.getDefectID());
+						if(String.valueOf(oldDefectSummary.getDefectID()).toLowerCase().contains(rule.getData().toLowerCase()))
 						{        		
-							System.out.println(" ^^^^^^ 5 b : " +oldRequirementSummary.getRequirementID());
-							requirementIDFound = true; 
+							System.out.println(" ^^^^^^ 5 b : " +oldDefectSummary.getDefectID());
+							defectIDFound = true; 
 						}
 					}
 					else
 					{
-						System.out.println(" ^^^^^^ 5 c : " +oldRequirementSummary.getRequirementID());
-						requirementIDFound = true; 
+						System.out.println(" ^^^^^^ 5 c : " +oldDefectSummary.getDefectID());
+						defectIDFound = true; 
 					}
 				}
-				if(requirementNameFound == true && requirementIDFound == true)
+				if(defectNameFound == true && defectIDFound == true)
 				{
-					newRequirementSummarySet.add(oldRequirementSummary);
+					newDefectSummarySet.add(oldDefectSummary);
 				}
 			}
 
-			requirementSummaryList.setRequirements(newRequirementSummarySet);    		
-			return requirementSummaryList;
+			defectSummaryList.setDefects(newDefectSummarySet);    		
+			return defectSummaryList;
 		}
 		else
 		{
-			return requirementService.getGridRequirments(companyID, projectID,
+			return defectService.getGridDefects(companyID, projectID,
 					cycleID, testplanID, testcaseID,
-					requirementID, defectID, requirementID,
+					testrunID, defectID, requirementID,
 					environmentID, userID,level,stage,required);
 		}
 	}     
@@ -176,21 +180,21 @@ public class RequirementJSONController {
 	@RequestMapping(value = "/ColsAndNames/{index}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody ColModelAndNames testArray(@PathVariable("index") Long companyID) {		
-		return requirementService.getColumnModelAndNames(companyID);    	
+		return defectService.getColumnModelAndNames(companyID);    	
 	}     
 
-	// Requirement Related Items
-	@RequestMapping(value = "/relatedObjects/{requirementID}", method = RequestMethod.GET)
+	// Defect Related Items
+	@RequestMapping(value = "/relatedObjects/{defectID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody RelatedObjectList returnRelatedObjects(
-			@PathVariable Long requirementID,    		
+			@PathVariable Long defectID,    		
 			@RequestParam(required = false) String cycleID,
 			@RequestParam(required = false) String testcaseID,// +1 testcases
 			@RequestParam(required = false) String projectID,// +1 testcases    		
 			@RequestParam(required = false) String userID, // +1 testcases
 			@RequestParam(required = false) String environmentID,
 			@RequestParam(required = false) String testrunID,
-			@RequestParam(required = false) String defectID,    		
+			@RequestParam(required = false) String requirementD,    		
 			@RequestParam(required = false) String testplanID,
 			@RequestParam(required = false) String levelName,
 			@RequestParam(required = false) String stage,
@@ -200,70 +204,65 @@ public class RequirementJSONController {
 		Set<RelatedObject> relatedObjectSet =  new LinkedHashSet<RelatedObject>();
 		RelatedObjectList relatedObjectList = new RelatedObjectList();    	
 		try{
-			Requirement requirement = requirementService.getRequirement(requirementID); 			
-			RequirementSummary requirementSummary = new RequirementSummary(requirement,testrunService, 
+			Defect defect = defectService.getDefect(defectID); 			
+			DefectSummary defectSummary = new DefectSummary(defect,testrunService, 
 					defectService,testplanService);
 
-			Company company = companyService.getCompany(requirementSummary.getCompanyID());
+			Company company = companyService.getCompany(defectSummary.getCompanyID());
 			relatedObjectSet.add(new RelatedObject(1,
 					company.getProjectsDisplayName(),
-					Integer.toString(requirementSummary.getTotalProjects()), 
-					requirementID, 
+					Integer.toString(defectSummary.getTotalProjects()), 
+					defectID, 
 					company.getProjectsDisplayName().replace(" ","")));
 			
 			relatedObjectSet.add(new RelatedObject(2,
 					company.getCyclesDisplayName(),
-					Integer.toString(requirementSummary.getTotalCycles()), 
-					requirementID, 
+					Integer.toString(defectSummary.getTotalCycles()), 
+					defectID, 
 					company.getCyclesDisplayName().replace(" ","")));
 			
 			relatedObjectSet.add(new RelatedObject(3,
 					company.getTestplansDisplayName(),
-					Integer.toString(requirementSummary.getTotalTestplans()), 
-					requirementID, 
+					Integer.toString(defectSummary.getTotalTestplans()), 
+					defectID, 
 					company.getTestplansDisplayName().replace(" ","")));	
 			
 			relatedObjectSet.add(new RelatedObject(4,
 					company.getTestcasesDisplayName(),
-					Integer.toString(requirementSummary.getTotalTestcases()), 
-					requirementID, 
-					company.getTestplansDisplayName().replace(" ","")));
+					Integer.toString(defectSummary.getTotalTestcases()), 
+					defectID, 
+					company.getTestcasesDisplayName().replace(" ","")));
 			
 			relatedObjectSet.add(new RelatedObject(5,
 					"All "+ company.getTestrunsDisplayName(),
-					Integer.toString(requirementSummary.getTotalAllTestruns()), 
-					requirementID, 
+					Integer.toString(defectSummary.getTotalAllTestruns()), 
+					defectID, 
 					"all"+company.getTestrunsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(5,
+			relatedObjectSet.add(new RelatedObject(6,
 					"Required "+ company.getTestrunsDisplayName(),
-					Integer.toString(requirementSummary.getTotalRequiredTestruns()), 
-					requirementID, 
+					Integer.toString(defectSummary.getTotalRequiredTestruns()), 
+					defectID, 
 					"required"+ company.getTestrunsDisplayName().replace(" ","")));		
-			relatedObjectSet.add(new RelatedObject(5,
+			relatedObjectSet.add(new RelatedObject(7,
 					"Optional "+ company.getTestrunsDisplayName(),
-					Integer.toString(requirementSummary.getTotalOptionalTestruns()), 
-					requirementID, 
-					"optional"+ company.getTestrunsDisplayName().replace(" ","")));			
-
-			relatedObjectSet.add(new RelatedObject(5,company.getDefectsDisplayName()+"-Total",Integer.toString(requirementSummary.getTotalDefects()), requirementID, company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(6,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(requirementSummary.getTotalCurrentSev1s()), requirementID,company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(requirementSummary.getTotalCurrentSev2s()), requirementID,company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(requirementSummary.getTotalCurrentSev3s()), requirementID,company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(requirementSummary.getTotalCurrentSev4s()), requirementID,company.getDefectsDisplayName().replace(" ","")));
-
-			relatedObjectSet.add(new RelatedObject(10,company.getEnvironmentsDisplayName(),Integer.toString(requirementSummary.getTotalEnvironments()), requirementID, company.getEnvironmentsDisplayName().replace(" ","")));
+					Integer.toString(defectSummary.getTotalOptionalTestruns()), 
+					defectID, 
+					"optional"+ company.getTestrunsDisplayName().replace(" ","")));	
 			
-			relatedObjectSet.add(new RelatedObject(12,company.getTestersDisplayName(),Integer.toString(requirementSummary.getTotalTesters()), requirementID, company.getTestersDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(13,company.getSeniorTestersDisplayName(),Integer.toString(requirementSummary.getTotalSeniorTesters()), requirementID, company.getSeniorTestersDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(14,company.getDevelopersDisplayName(),Integer.toString(requirementSummary.getTotalDevelopers()), requirementID, company.getDevelopersDisplayName().replace(" ",""))); 	
-			relatedObjectSet.add(new RelatedObject(15,company.getSeniorDevelopersDisplayName(),Integer.toString(requirementSummary.getTotalSeniorDevelopers()), requirementID, company.getSeniorDevelopersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(8,company.getRequirementsDisplayName(),Integer.toString(defectSummary.getTotalRequirements()), defectID, company.getRequirementsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(9,company.getEnvironmentsDisplayName(),Integer.toString(defectSummary.getTotalEnvironments()), defectID, company.getEnvironmentsDisplayName().replace(" ","")));
+			
+			relatedObjectSet.add(new RelatedObject(10,company.getTestersDisplayName(),Integer.toString(defectSummary.getTotalTesters()), defectID, company.getTestersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(11,company.getSeniorTestersDisplayName(),Integer.toString(defectSummary.getTotalSeniorTesters()), defectID, company.getSeniorTestersDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(12,company.getDevelopersDisplayName(),Integer.toString(defectSummary.getTotalDevelopers()), defectID, company.getDevelopersDisplayName().replace(" ",""))); 	
+			relatedObjectSet.add(new RelatedObject(13,company.getSeniorDevelopersDisplayName(),Integer.toString(defectSummary.getTotalSeniorDevelopers()), defectID, company.getSeniorDevelopersDisplayName().replace(" ","")));
 
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 
 		}catch(NoResultException e)
 		{
-			relatedObjectSet.add(new RelatedObject(1,"Select a Row to View Details","", requirementID, null));  
+			relatedObjectSet.add(new RelatedObject(1,"Select a Row to View Details","", defectID, null));  
 			relatedObjectList.setRelatedObjects(relatedObjectSet);
 			return relatedObjectList;
 		}    	
@@ -271,15 +270,16 @@ public class RequirementJSONController {
 
 		
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public @ResponseBody String addNewRequirement(
+	public @ResponseBody String addNewDefect(
 			@RequestParam(value="companyID", required=true) Long companyID,
-			@RequestParam(value="requirementSummary", required=true) String requirementSummary,
-			@RequestParam(value="requirementDetails", required=true) String requirementDetails,
-			@RequestParam(value="requirementPriority", required=true) Integer requirementPriority,
+			@RequestParam(value="defectSummary", required=true) String defectSummary,
+			@RequestParam(value="defectDetails", required=true) String defectDetails,
+			@RequestParam(value="defectSeverity", required=true) Integer defectSeverity,
 			Model model) 
 	{
 		try{    					
-			requirementService.addNewRequirement(new Requirement(companyID,requirementSummary,requirementDetails,null,requirementPriority));
+			defectService.addNewDefect(new  Defect(companyID, defectSummary, defectSeverity,
+					defectDetails, null, null));
 			return "ok";   
 		}
 		catch(ConstraintViolationException CVE)
@@ -291,24 +291,44 @@ public class RequirementJSONController {
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST )
 	@ResponseStatus(HttpStatus.NO_CONTENT)	
-	public void deleteRequirement(@RequestParam(value="id", required=true) Long requirementID) 
+	public void deleteDefect(@RequestParam(value="id", required=true) Long defectID) 
 	{		
-		requirementService.remove(requirementID);
+		defectService.remove(defectID);
 	}	
 	
-	@RequestMapping(value = "/getcompanyrequirements/{companyID}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getcompanydefects/{companyID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody RequirementList getCompanyRequirements(@PathVariable("companyID") Long companyID) 
+	public @ResponseBody DefectList getCompanyDefects(@PathVariable("companyID") Long companyID) 
 	{	
-		RequirementList requirementList = new RequirementList();
-		Set<Requirement> requirements = companyService.getCompany(companyID).getRequirements();
-		if(requirements != null && !requirements.isEmpty())
+		DefectList defectList = new DefectList();
+		Set<Defect> defects = companyService.getCompany(companyID).getDefects();
+		if(defects != null && !defects.isEmpty())
 		{
-			requirementList.setRequirements(requirements);
+			defectList.setDefects(defects);
 		}
-		return requirementList; 		
+		return defectList; 		
 	}  
-
+	 
+	@RequestMapping(value = "/addRequirement ", method = RequestMethod.POST)
+	public @ResponseBody String addReqToDefect(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="defectID", required=true) Long defectID,
+			@RequestParam(value="requirementID", required=true) Long requirementID,					
+			Model model) 
+	{
+		Defect defect = defectService.getDefect(defectID);
+		Requirement requirement = requirementService.getRequirement(requirementID);
+		requirement.getDefects().add(defect);
+		defect.getRequirements().add(requirement);
+		defectService.update(defect);
+		requirementService.update(requirement);
+		int req = defect.getRequirementCount();
+		System.out.println(req);
+		int def = requirement.getDefects().size();
+		System.out.println(def);
+		return "ok"; 		
+	}
+	
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public void emptyResult() {

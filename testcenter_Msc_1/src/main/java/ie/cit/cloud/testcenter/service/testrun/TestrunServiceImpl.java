@@ -253,18 +253,6 @@ public class TestrunServiceImpl implements TestrunService {
 		if(testrun.getDefects() != null && !testrun.getDefects().isEmpty())
 		{
 			allDefects.addAll(testrun.getDefects());			
-		}
-		///////////////////////////  ??????????????????
-		if(testrun.getRequirements() != null && !testrun.getRequirements().isEmpty())
-		{
-			for(final Requirement requirement : testrun.getRequirements())
-			{
-				if(requirement.getDefects() != null && !requirement.getDefects().isEmpty())
-				{
-					allDefects.addAll(requirement.getDefects());
-				}	
-			}
-			allDefects.addAll(testrun.getDefects());			
 		}		
 		return allDefects;
 	}
@@ -386,10 +374,10 @@ public class TestrunServiceImpl implements TestrunService {
 		columnModelSet.add(new GridAttributes("state"));
 
 		colNames.add("Level");
-		columnModelSet.add(new GridAttributes("levelName"));
+		columnModelSet.add(new GridAttributes("levelName",true));
 
 		colNames.add("Est. Time");
-		columnModelSet.add(new GridAttributes("estimatedTime",true));
+		columnModelSet.add(new GridAttributes("estimatedTime"));
 
 		colNames.add(company.getDefectsDisplayName());
 		columnModelSet.add(new GridAttributes("totalDefects"));		

@@ -133,6 +133,7 @@ public class CompanyController {
 			model.addAttribute("testcasesDisplayName", company.getTestcasesDisplayName());	
 			model.addAttribute("testplanDisplayName", company.getTestplanDisplayName());	
 			model.addAttribute("testcaseDisplayName", company.getTestcaseDisplayName());
+			
 			if(company.getProjects() == null || company.getProjects().isEmpty())
 			{
 				userpath = "Home>"+company.getProjectsDisplayName();
@@ -184,9 +185,13 @@ public class CompanyController {
 							projectID = Long.valueOf(userPathArray[x+1]);
 							try{
 								Project project = projectService.getProject(projectID);
-								newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getProjectsDisplayName()+"</a> >";
-								newuserpath = newuserpath + ">"+project.getProjectID();
+								newuserpath = newuserpath + ">"+company.getProjectsDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+company.getProjectsDisplayName()+"</font></a> >";
+								newuserpath = newuserpath + ">"+project.getProjectID();								
+								
+								//newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#013953>"+company.getProjectsDisplayName()+"</font></a> >";
+								//newuserpath = newuserpath + ">"+project.getProjectID();
 
 
 								gridUrl = "/summaryList/"+companyID+"?projectID="+projectID;
@@ -195,7 +200,7 @@ public class CompanyController {
 								x++;
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+project.getProjectName();
+									breadCrumb = breadCrumb + "<font color=#666666>"+project.getProjectName()+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
 									model.addAttribute("gridUrl","project"+gridUrl);	
@@ -205,7 +210,7 @@ public class CompanyController {
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+project.getProjectName()+"</a> >";
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+project.getProjectName()+"</font></a> >";
 								}
 							}catch(NoResultException nre)
 							{
@@ -219,8 +224,8 @@ public class CompanyController {
 							{
 								gridUrl = "/summaryList/"+companyID;
 							}
-							newuserpath = newuserpath + ">"+company.getProjectsDisplayName();
-							breadCrumb = breadCrumb + " "+company.getProjectsDisplayName();
+							newuserpath = newuserpath + ">"+company.getProjectsDisplayName().replace(" ","");
+							breadCrumb = breadCrumb + " <font color=#013953>"+company.getProjectsDisplayName()+"</font>";
 
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
@@ -243,11 +248,11 @@ public class CompanyController {
 							Cycle cycle = cycleService.getCycle(cycleID);
 							if(cycle != null)
 							{
-								newuserpath = newuserpath + ">"+company.getCyclesDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getCyclesDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+company.getCyclesDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+company.getCyclesDisplayName()+"</font></a> >";
 
 								newuserpath = newuserpath + ">"+cycle.getCycleID();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+cycle.getCycleName()+"</a> >";
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#539909>"+cycle.getCycleName()+"</font></a> >";
 
 								gridUrl = "/summaryList/"+companyID+"?cycleID="+cycleID;
 								relatedObjects = "?cycleID="+cycleID;	
@@ -255,18 +260,19 @@ public class CompanyController {
 								x++;								
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+cycle.getCycleName();								
+									breadCrumb = breadCrumb + "<font color=#666666>"+cycle.getCycleName()+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "cycle"+gridUrl);
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("cycle", cycle);
 									return "cycleDetails";
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+cycle.getCycleName()+"</a> >";
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+cycle.getCycleName()+"</font></a> >";
 								}
+								
 							}
 							else
 							{
@@ -281,8 +287,8 @@ public class CompanyController {
 								gridUrl = "/summaryList/"+companyID;
 							}							
 
-							newuserpath = newuserpath + ">"+company.getCyclesDisplayName();
-							breadCrumb = breadCrumb + " "+company.getCyclesDisplayName();
+							newuserpath = newuserpath + ">"+company.getCyclesDisplayName().replace(" ","");
+							breadCrumb = breadCrumb + " <font color=#013953>"+company.getCyclesDisplayName()+"</font>";
 
 							if(allCompanyProjects == true)
 							{
@@ -325,31 +331,32 @@ public class CompanyController {
 							Testplan testplan = testplanService.getTestplan(testplanID);
 							if(testplan != null)
 							{
-								newuserpath = newuserpath + ">"+company.getTestplansDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestplansDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+company.getTestplansDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+company.getTestplansDisplayName()+"</font></a> >";
 
 								newuserpath = newuserpath + ">"+testplanID;
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testplan.getTestplanName()+"</a> >";
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#539909>"+testplan.getTestplanName()+"</font></a> >";
 
 								gridUrl = "/summaryList/"+companyID+"?testplanID="+testplanID;
 								relatedObjects = "?testplanID="+testplanID;							
 
 								allCompanyTestplans = false;
-								x++;
+								x++;								
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+testplan.getTestplanName();								
+									breadCrumb = breadCrumb + " <font color=#666666>"+testplan.getTestplanName()+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "testplan"+gridUrl);
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("testplan", testplan);
 									return "testplanDetails";
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testplan.getTestplanName()+"</a> >";
-								}								
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+testplan.getTestplanName()+"</font></a> >";
+								}
+															
 							}
 							else
 							{
@@ -363,8 +370,8 @@ public class CompanyController {
 							{
 								gridUrl = "/summaryList/"+companyID;
 							}							
-							newuserpath = newuserpath + ">"+company.getTestplansDisplayName();
-							breadCrumb = breadCrumb + " "+company.getTestplansDisplayName();
+							newuserpath = newuserpath + ">"+company.getTestplansDisplayName().replace(" ","");
+							breadCrumb = breadCrumb + " <font color=#666666>"+company.getTestplansDisplayName()+"</font>";
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "testplan"+gridUrl);
@@ -414,31 +421,32 @@ public class CompanyController {
 							Testcase testcase = testcaseService.getTestcase(testcaseID);
 							if(testcase != null)
 							{
-								newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getTestcasesDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+company.getTestcasesDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+company.getTestcasesDisplayName()+"</font></a> >";
 
 								newuserpath = newuserpath + ">"+testcaseID;
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testcaseID+"</a> >";
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#539909>"+testcaseID+"</font></a> >";
 
 								gridUrl = "/summaryList/"+companyID+"?testcaseID="+testcaseID;
 								relatedObjects = "?testcaseID="+testcaseID;					
 
 								//allCompanyProjects = false;
-								x++;
+								x++;								
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+testcaseID;								
+									breadCrumb = breadCrumb + " <font color=#666666>"+testcaseID+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "testcase"+gridUrl);
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("testcase", testcase);
 									return "testcaseDetails";
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testcaseID+"</a> >";
-								}								
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+testcaseID+"</font></a> >";
+								}
+															
 							}
 							else
 							{
@@ -452,24 +460,15 @@ public class CompanyController {
 							{
 								gridUrl = "/summaryList/"+companyID;
 							}							
-							newuserpath = newuserpath + ">"+company.getTestcasesDisplayName();
-							breadCrumb = breadCrumb + " "+company.getTestcasesDisplayName();
+							newuserpath = newuserpath + ">"+company.getTestcasesDisplayName().replace(" ","");
+							breadCrumb = breadCrumb + " <font color=#666666>"+company.getTestcasesDisplayName()+"</font>";
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "testcase"+gridUrl);
 							model.addAttribute("relatedObjects", relatedObjects);	
 							model.addAttribute("allCompanyProjects", allCompanyProjects);
 							model.addAttribute("allCompanyTestplans", allCompanyTestplans);
-							if(allCompanyProjects == true)
-							{
-								model.addAttribute("projects", company.getProjects());
-							}
-							else
-							{
-								Project project = projectService.getProject(projectID);
-								model.addAttribute("projectID", projectID);	
-								model.addAttribute("projects", project);
-							}	
+							model.addAttribute("projects", company.getProjects());
 							if(allCompanyTestplans == true)
 							{
 								model.addAttribute("testplans", company.getTestplans());
@@ -518,29 +517,30 @@ public class CompanyController {
 							try{
 								Testrun testrun = testrunService.getTestrun(testrunID);
 
-								newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+required+" "+company.getTestrunsDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+company.getTestrunsDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+required+" "+company.getTestrunsDisplayName()+"</font></a> >";
 								newuserpath = newuserpath + ">"+testrun.getTestrunID();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testrun.getTestrunName()+"</a> >";
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#539909>"+testrun.getTestrunName()+"</font></a> >";
 
 								gridUrl = "/summaryList/"+companyID+"?required="+required+"&testrunID="+testrunID;
 								relatedObjects = "?required="+required+"&testrunID="+testrunID;
 								allCompanyProjects = false;
-								x++;
+								x++;								
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+testrunID;								
+									breadCrumb = breadCrumb + " <font color=#666666>"+testrun.getTestrunName()+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "testrun"+gridUrl);
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("testrun", testrun);
 									return "testrunDetails";
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+testrunID+"</a> >";
-								}								
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+testrun.getTestrunName()+"</font></a> >";
+								}
+																
 							}catch(NoResultException nre)
 							{
 								model.addAttribute("userpath", userpath);
@@ -577,8 +577,8 @@ public class CompanyController {
 								relatedObjects = "?required="+required;
 							}
 
-							newuserpath = newuserpath + ">"+company.getTestrunsDisplayName();
-							breadCrumb = breadCrumb + " "+required+" "+company.getTestrunsDisplayName();
+							newuserpath = newuserpath + ">"+company.getTestrunsDisplayName().replace(" ","");
+							breadCrumb = breadCrumb + " <font color=#666666>"+required+" "+company.getTestrunsDisplayName()+"</font>";
 							Set<Project> companyProjects = company.getProjects();
 							model.addAttribute("projects", companyProjects);
 							model.addAttribute("required", required);
@@ -603,31 +603,31 @@ public class CompanyController {
 							Requirement requirement = requirementService.getRequirement(requirementID);
 							if(requirement != null)
 							{
-								newuserpath = newuserpath + ">"+company.getRequirementsDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getRequirementsDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+company.getRequirementsDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+company.getRequirementsDisplayName()+"</font></a> >";
 
 								newuserpath = newuserpath + ">"+requirementID;
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+requirementID+"</a> >";
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#539909>"+requirementID+"</font></a> >";
 
 								gridUrl = "/summaryList/"+companyID+"?requirementID="+requirementID;
 								relatedObjects = "?requirementID="+requirementID;					
 
 								//allCompanyProjects = false;
-								x++;
+								x++;															
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+requirementID;								
+									breadCrumb = breadCrumb + " <font color=#666666>"+requirementID+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "requirement"+gridUrl);
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("requirement", requirement);
 									return "requirementDetails";
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+requirementID+"</a> >";
-								}								
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+requirementID+"</font></a> >";
+								}
 							}
 							else
 							{
@@ -642,7 +642,7 @@ public class CompanyController {
 								gridUrl = "/summaryList/"+companyID;
 							}							
 							newuserpath = newuserpath + ">"+company.getRequirementsDisplayName();
-							breadCrumb = breadCrumb + " "+company.getRequirementsDisplayName();
+							breadCrumb = breadCrumb + " <font color=#666666>"+company.getRequirementsDisplayName()+"</font>";
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "requirement"+gridUrl);
@@ -663,31 +663,31 @@ public class CompanyController {
 							Defect defect = defectService.getDefect(defectID);
 							if(defect != null)
 							{
-								newuserpath = newuserpath + ">"+company.getDefectsDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getDefectsDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+company.getDefectsDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+company.getDefectsDisplayName()+"</font></a> >";
 
 								newuserpath = newuserpath + ">"+defectID;
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+defectID+"</a> >";
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#539909>"+defectID+"</font></a> >";
 
 								gridUrl = "/summaryList/"+companyID+"?defectID="+defectID;
 								relatedObjects = "?defectID="+defectID;					
 
 								//allCompanyProjects = false;
-								x++;
+								x++;							
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+defectID;								
+									breadCrumb = breadCrumb + " <font color=#666666>"+defectID+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "defect"+gridUrl);
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("defect", defect);
 									return "defectDetails";
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+defectID+"</a> >";
-								}								
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+defectID+"</font></a> >";
+								}														
 							}
 							else
 							{
@@ -701,12 +701,13 @@ public class CompanyController {
 							{
 								gridUrl = "/summaryList/"+companyID;
 							}							
-							newuserpath = newuserpath + ">"+company.getDefectsDisplayName();
-							breadCrumb = breadCrumb + " "+company.getDefectsDisplayName();
+							newuserpath = newuserpath + ">"+company.getDefectsDisplayName().replace(" ","");
+							breadCrumb = breadCrumb + " <font color=#666666>"+company.getDefectsDisplayName()+"</font>";
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "defect"+gridUrl);
-							model.addAttribute("relatedObjects", relatedObjects);													
+							model.addAttribute("relatedObjects", relatedObjects);	
+							model.addAttribute("projects", company.getProjects());	
 							return "defects";						
 						}
 					}
@@ -722,31 +723,31 @@ public class CompanyController {
 							Environment environment = environmentService.getEnvironment(environmentID);
 							if(environment != null)
 							{
-								newuserpath = newuserpath + ">"+company.getEnvironmentsDisplayName();
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+company.getEnvironmentsDisplayName()+"</a> >";
+								newuserpath = newuserpath + ">"+company.getEnvironmentsDisplayName().replace(" ","");
+								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#013953>"+company.getEnvironmentsDisplayName()+"</font></a> >";
 
 								newuserpath = newuserpath + ">"+environmentID;
-								breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+environmentID+"</a> >";
+								//breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'><font color=#539909>"+environmentID+"</font></a> >";
 
 								gridUrl = "/summaryList/"+companyID+"?environmentID="+environmentID;
 								relatedObjects = "?environmentID="+environmentID;					
 
 								//allCompanyProjects = false;
-								x++;
+								x++;								
 								if(x == (userPathArray.length - 1))
 								{// there is a details view in the userpath i.e //Home>Projects>5	
-									breadCrumb = breadCrumb + " "+environmentID;								
+									breadCrumb = breadCrumb + " <font color=#666666>"+environmentID+"</font>";
 									model.addAttribute("userpath", newuserpath);
 									model.addAttribute("breadCrumb", breadCrumb);
-									model.addAttribute("gridUrl", "environment"+gridUrl);
+									model.addAttribute("gridUrl","project"+gridUrl);	
 									model.addAttribute("relatedObjects", relatedObjects);	
 									model.addAttribute("environment", environment);
 									return "environmentDetails";
 								}
 								else
 								{
-									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'>"+environmentID+"</a> >";
-								}								
+									breadCrumb = breadCrumb + " <a href='?userpath="+newuserpath+"'> <font color=#539909>"+environmentID+"</font></a> >";
+								}
 							}
 							else
 							{
@@ -760,12 +761,13 @@ public class CompanyController {
 							{
 								gridUrl = "/summaryList/"+companyID;
 							}							
-							newuserpath = newuserpath + ">"+company.getEnvironmentsDisplayName();
-							breadCrumb = breadCrumb + " "+company.getEnvironmentsDisplayName();
+							newuserpath = newuserpath + ">"+company.getEnvironmentsDisplayName().replace(" ","");
+							breadCrumb = breadCrumb + " <font color=#666666>"+company.getEnvironmentsDisplayName()+"</font>";
 							model.addAttribute("userpath", newuserpath);
 							model.addAttribute("breadCrumb", breadCrumb);
 							model.addAttribute("gridUrl", "environment"+gridUrl);
-							model.addAttribute("relatedObjects", relatedObjects);													
+							model.addAttribute("relatedObjects", relatedObjects);	
+							model.addAttribute("projects", company.getProjects());	
 							return "environments";						
 						}
 					}

@@ -18,6 +18,9 @@ import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Requirement;
@@ -34,7 +37,9 @@ import ie.cit.cloud.testcenter.model.summary.TestrunList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.environment.EnvironmentService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testplan.TestplanService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
@@ -73,7 +78,11 @@ public class TestcaseJSONController {
 	private TestrunService testrunService;
 	@Autowired
 	private DefectService defectService;
-
+	@Autowired
+	private RequirementService requirementService;
+	
+	@Autowired
+	private EnvironmentService environmentService;
 
 	// All Testcases For a company
 	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
@@ -231,10 +240,10 @@ public class TestcaseJSONController {
 					"optional"+company.getTestrunsDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Total",Integer.toString(testcaseSummary.getTotalDefects()), testcaseID, company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testcaseSummary.getTotalCurrentSev1s()), testcaseID,"sev1"));
-			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testcaseSummary.getTotalCurrentSev2s()), testcaseID,"sev2"));
-			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testcaseSummary.getTotalCurrentSev3s()), testcaseID,"sev3"));
-			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testcaseSummary.getTotalCurrentSev4s()), testcaseID,"sev4"));
+			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testcaseSummary.getTotalCurrentSev1s()), testcaseID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testcaseSummary.getTotalCurrentSev2s()), testcaseID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testcaseSummary.getTotalCurrentSev3s()), testcaseID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testcaseSummary.getTotalCurrentSev4s()), testcaseID,company.getDefectsDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(12,company.getEnvironmentsDisplayName(),Integer.toString(testcaseSummary.getTotalEnvironments()), testcaseID, company.getEnvironmentsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(13,company.getRequirementsDisplayName(),Integer.toString(testcaseSummary.getTotalRequirements()), testcaseID, company.getRequirementsDisplayName().replace(" ","")));
@@ -262,7 +271,7 @@ public class TestcaseJSONController {
 	public @ResponseBody String addNewTestcase(
 			@RequestParam(value="companyID", required=true) Long companyID,
 			@RequestParam(value="testplanID", required=true) Long testplanID,
-			@RequestParam(value="projectID", defaultValue="") String projectID,					
+			//@RequestParam(value="projectID", defaultValue="") String projectID,					
 			@RequestParam(value="testcaseName", required=true) String testcaseName,			
 			@RequestParam(value="testcaseSummary", defaultValue="") String testcaseSummary,	
 			@RequestParam(value="testcasePreCondition", defaultValue="") String testcasePreCondition,	
@@ -302,28 +311,6 @@ public class TestcaseJSONController {
 						System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
 						return CVE.getConstraintViolations().toString();
 					}
-
-					//		    		System.out.println(e);
-					//		    		return "ERROR :: Could not add Test Case :"+testcaseName; 
-					//		    	}
-					//					if(!projectID.isEmpty())
-					//					{
-					//						Project project = projectService.getProject(Long.valueOf(projectID));
-					//						if(project == null)
-					//						{
-					//							return "ERROR :: Could not find project :"+ projectID; 
-					//						}				    	
-					//						try
-					//						{
-					//							project.getTestplans().
-					//							project.getTestcases().add(testcase);     
-					//							projectService.update(project);  	
-					//						}
-					//						catch(Exception e)
-					//						{
-					//							return "ERROR :: Could not add Test Case :"+testcaseName+" To project :"+ projectID; 
-					//						}					
-					//					}
 					return "ok";  
 				}
 				else
@@ -363,10 +350,219 @@ public class TestcaseJSONController {
 		}
 		return testrunList; 		
 	}  
-
+	@RequestMapping(value = "/addDefect", method = RequestMethod.POST)
+	public @ResponseBody String addDefectToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testcaseID", required=true) Long testcaseID,
+			@RequestParam(value="defectID", required=true) Long defectID,					
+			Model model) 
+	{
+		Company company = companyService.getCompany(companyID);
+		Testcase testcase = testcaseService.getTestcase(testcaseID);
+		if(testcase == null)
+		{
+			return "Could Not Locate "+ company.getTestcaseDisplayName()+" : "+ testcaseID; 
+		}
+		else
+		{
+			Set<Testrun> testcaseTesruns = testcase.getTestruns();
+			if(testcaseTesruns == null || testcaseTesruns.isEmpty())
+			{
+				return company.getTestcaseDisplayName() + " Has no " + company.getTestrunsDisplayName() +
+						" - Add "+company.getTestcaseDisplayName() +" To " + company.getCycleDisplayName() + 
+						" to create a " + company.getTestrunDisplayName();
+			}
+			for(final Testrun testrun : testcaseTesruns)
+			{				
+				Defect defect = defectService.getDefect(defectID);
+				testrun.getDefects().add(defect);
+				testrunService.update(testrun);					
+			}
+			return "ok"; 	
+		}		
+	}
+	@RequestMapping(value = "/addRequirement", method = RequestMethod.POST)
+	public @ResponseBody String addRequirementToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testcaseID", required=true) Long testcaseID,
+			@RequestParam(value="requirementID", required=true) Long requirementID,					
+			Model model) 
+	{
+		Company company = companyService.getCompany(companyID);
+		Testcase testcase = testcaseService.getTestcase(testcaseID);
+		if(testcase == null)
+		{
+			return "Could Not Locate "+ company.getTestcaseDisplayName()+" : "+ testcaseID; 
+		}
+		else
+		{
+			Set<Testrun> testcaseTesruns = testcase.getTestruns();
+			if(testcaseTesruns == null || testcaseTesruns.isEmpty())
+			{
+				return company.getTestcaseDisplayName() + " Has no " + company.getTestrunsDisplayName() +
+						" - Add "+company.getTestcaseDisplayName() +" To " + company.getCycleDisplayName() + 
+						" to create a " + company.getTestrunDisplayName();
+			}
+			for(final Testrun testrun : testcaseTesruns)
+			{				
+				Requirement requirement = requirementService.getRequirement(requirementID);
+				testrun.getRequirements().add(requirement);
+				testrunService.update(testrun);					
+			}
+			return "ok"; 	
+		}		
+	}
+	
+	@RequestMapping(value = "/addEnvironment", method = RequestMethod.POST)
+	public @ResponseBody String addEnvironmentToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testcaseID", required=true) Long testcaseID,
+			@RequestParam(value="environmentID", required=true) Long environmentID,					
+			Model model) 
+	{
+		Company company = companyService.getCompany(companyID);
+		Testcase testcase = testcaseService.getTestcase(testcaseID);
+		if(testcase == null)
+		{
+			return "Could Not Locate "+ company.getTestcaseDisplayName()+" : "+ testcaseID; 
+		}
+		else
+		{
+			Set<Testrun> testcaseTesruns = testcase.getTestruns();
+			if(testcaseTesruns == null || testcaseTesruns.isEmpty())
+			{
+				return company.getTestcaseDisplayName() + " Has no " + company.getTestrunsDisplayName() +
+						" - Add "+company.getTestcaseDisplayName() +" To " + company.getCycleDisplayName() + 
+						" to create a " + company.getTestrunDisplayName();
+			}
+			for(final Testrun testrun : testcaseTesruns)
+			{				
+				Environment environment = environmentService.getEnvironment(environmentID);
+				testrun.getEnvironments().add(environment);
+				testrunService.update(testrun);		
+			}
+			return "ok"; 	
+		}				
+	}
+	
+	@RequestMapping(value = "/Run", method = RequestMethod.POST)
+	public @ResponseBody String runTestcase(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="cycleID", required=true) Long cycleID,
+			@RequestParam(value="testcaseID", required=true) Long testcaseID,
+			@RequestParam(value="testrunState", required=true) String testrunState,					
+			Model model) 
+	{
+		boolean testRunUpdatedOk = false;
+		Company company = companyService.getCompany(companyID);
+		Testcase testcase = testcaseService.getTestcase(testcaseID);
+		if(testcase == null)
+		{
+			return "Could Not Locate "+ company.getTestcaseDisplayName()+" : "+ testcaseID; 
+		}
+		Cycle cycle = cycleService.getCycle(cycleID);
+		if(cycle == null)
+		{
+			return "Could not find  "+company.getCycleDisplayName()+" with ID  : " + cycleID ;
+		}	
+		Set<Testrun> testcaseTestruns = testcase.getTestruns();
+		if(testcaseTestruns != null && !testcaseTestruns.isEmpty())
+		{// look for cycle 
+			for(Testrun testrun : testcaseTestruns)
+			{
+				if(testrun.getCycleID() == cycleID)
+				{
+					testRunUpdatedOk = setTestrunState(testrun,testrunState);
+					
+				}
+			}
+			if(testRunUpdatedOk)
+			{
+				return "ok"; 
+			}
+			else
+			{
+				return company.getTestcaseDisplayName() + " Did Not update!"; 
+			}
+			
+		}
+		else
+		{
+			//Create new testrun			
+			Long lastrunID = testcaseService.getLastTestRunID(testcaseID);			
+			Testrun testrun = new Testrun(testcase.getTestcaseName(), testcaseID, cycleID,
+					testcase.getEstimatedTime(), testcase.getTestrunLevel(),
+					lastrunID,"CURRENT_TESTER","TESTCASE_SENIOR_TESTER");
+			try{    					
+				testrunService.addNewTestrun(testrun);				
+			}
+			catch(ConstraintViolationException CVE)
+			{   			
+				System.out.println("ConstraintViolations - : "+CVE.getConstraintViolations()); 				
+				return CVE.getConstraintViolations().toString();
+			}	
+			
+			try{    					
+				cycle.getTestruns().add(testrun);
+				cycleService.update(cycle);			
+			}
+			catch(ConstraintViolationException CVE)
+			{   					
+				return "Error Adding "+company.getTestrunDisplayName()+" to "+company.getCycleDisplayName();
+			}	
+			try{    					
+				testcase.getTestruns().add(testrun);
+				testcaseService.update(testcase);			
+			}
+			catch(ConstraintViolationException CVE)
+			{   					
+				return "Error Adding "+company.getTestrunDisplayName()+" to "+company.getTestcaseDisplayName();
+			}	
+			setTestrunState(testrun,testrunState);
+			return "ok"; 
+		}		
+	}
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public void emptyResult() {
 		// no code needed
 	}
+	public boolean setTestrunState(Testrun testrun,String testrunState)
+	{
+	
+		if(testrunState.equalsIgnoreCase("passed"))
+		{testrun.setPassed(true);}
+		else{testrun.setPassed(false);}
+		
+		if(testrunState.equalsIgnoreCase("failed"))
+		{testrun.setFailed(true);}
+		else{testrun.setFailed(false);}
+		
+		if(testrunState.equalsIgnoreCase("deferred"))
+		{testrun.setDeferred(true);}
+		else{testrun.setDeferred(false);}
+		
+		if(testrunState.equalsIgnoreCase("blocked"))
+		{testrun.setBlocked(true);}
+		else{testrun.setBlocked(false);}
+		
+		if(testrunState.equalsIgnoreCase("inprog"))
+		{testrun.setInprogress(true);}
+		else{testrun.setInprogress(false);}
+		
+		if(testrunState.equalsIgnoreCase("notrun"))
+		{testrun.setNotrun(true);}
+		else{testrun.setNotrun(false);}
+		
+		try{
+			testrunService.update(testrun);
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		
+	}
+	
 }

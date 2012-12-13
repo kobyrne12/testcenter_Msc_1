@@ -546,61 +546,86 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 		if (projectID != null && !projectID.isEmpty()) 
 		{	
 			Set<Environment> projectEnvironments = projectService.getCascadedEnvironments(Long.valueOf(projectID));
-			if(projectEnvironments != null && !projectEnvironments.isEmpty())
+			if(projectEnvironments == null || projectEnvironments.isEmpty())
+			{
+				environments.clear();
+			}	
+			else
 			{
 				environments.retainAll(projectEnvironments);
-			}					
+			}
 		}
 		if(environments == null || environments.isEmpty()){return null;}
 
 		if (cycleID != null && !cycleID.isEmpty()) 
 		{	
 			Set<Environment> cycleEnvironments = cycleService.getCascadedEnvironments(Long.valueOf(cycleID));
-			if(cycleEnvironments != null && !cycleEnvironments.isEmpty())
+			
+			if(cycleEnvironments == null || cycleEnvironments.isEmpty())
+			{
+				environments.clear();
+			}	
+			else
 			{
 				environments.retainAll(cycleEnvironments);
-			}					
+			}
 		}
 		if(environments == null || environments.isEmpty()){return null;}
 
 		if (testplanID != null && !testplanID.isEmpty()) 
 		{	
 			Set<Environment> testplanEnvironments = testplanService.getEnvironments(Long.valueOf(testplanID));
-			if(testplanEnvironments != null && !testplanEnvironments.isEmpty())
+			if(testplanEnvironments == null || testplanEnvironments.isEmpty())
+			{
+				environments.clear();
+			}	
+			else
 			{
 				environments.retainAll(testplanEnvironments);
-			}					
+			}
 		}
 		if(environments == null || environments.isEmpty()){return null;}
 
 		if (testcaseID != null && !testcaseID.isEmpty()) 
 		{	
 			Set<Environment> testcaseEnvironments = testcaseService.getEnvironments(Long.valueOf(testcaseID));
-			if(testcaseEnvironments != null && !testcaseEnvironments.isEmpty())
+			if(testcaseEnvironments == null || testcaseEnvironments.isEmpty())
+			{
+				environments.clear();
+			}	
+			else
 			{
 				environments.retainAll(testcaseEnvironments);
-			}					
+			}
 		}
 		if(environments == null || environments.isEmpty()){return null;}
 
 		if (requirementID != null && !requirementID.isEmpty()) 
 		{	
 			Set<Environment> requirementEnvironments = requirementService.getEnvironments(Long.valueOf(requirementID));
-			if(requirementEnvironments != null && !requirementEnvironments.isEmpty())
+			if(requirementEnvironments == null || requirementEnvironments.isEmpty())
+			{
+				environments.clear();
+			}	
+			else
 			{
 				environments.retainAll(requirementEnvironments);
-			}					
+			}
 		}
 		if(environments == null || environments.isEmpty()){return null;}
 		
 		if (defectID != null && !defectID.isEmpty()) 
 		{	
 			Set<Environment> defectEnvironments = defectService.getCascadedEnvironments(Long.valueOf(defectID));
+			
 			if(defectEnvironments == null || defectEnvironments.isEmpty())
 			{
-				return null;
-			}
-			environments.addAll(defectEnvironments);			
+				environments.clear();
+			}	
+			else
+			{
+				environments.retainAll(defectEnvironments);
+			}					
 		}		
 		if(environments == null || environments.isEmpty()){return null;}
 		

@@ -434,7 +434,7 @@ $(function()
 					{					    
 						var projRow = subGrid.getRowData(rowId);
 						//alert("1 : "+projRow.relatedObjectPathName);												
-						window.location =  '?userpath=${userpath}>'+ projRow.relatedObjectPathID+'>'+projRow.relatedObjectPathName;
+						window.location =  '?userpath=${userpath}>'+projRow.relatedObjectPathName;
 					},
 				});
 	});	

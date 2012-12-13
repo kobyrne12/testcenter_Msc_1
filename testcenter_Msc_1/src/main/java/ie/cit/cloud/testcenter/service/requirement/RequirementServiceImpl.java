@@ -559,50 +559,70 @@ public class RequirementServiceImpl implements RequirementService {
 		if (projectID != null && !projectID.isEmpty()) 
 		{	
 			Set<Requirement> projectRequirements = projectService.getCascadedRequirements(Long.valueOf(projectID));
-			if(projectRequirements != null && !projectRequirements.isEmpty())
+			if(projectRequirements == null || projectRequirements.isEmpty())
+			{
+				requirements.clear();
+			}	
+			else
 			{
 				requirements.retainAll(projectRequirements);
-			}					
+			}
 		}
 		if(requirements == null || requirements.isEmpty()){return null;}
 		
 		if (cycleID != null && !cycleID.isEmpty()) 
 		{	
 			Set<Requirement> cycleRequirements = cycleService.getCascadedRequirements(Long.valueOf(cycleID));
-			if(cycleRequirements != null && !cycleRequirements.isEmpty())
+			if(cycleRequirements == null || cycleRequirements.isEmpty())
+			{
+				requirements.clear();
+			}	
+			else
 			{
 				requirements.retainAll(cycleRequirements);
-			}					
+			}
 		}
 		if(requirements == null || requirements.isEmpty()){return null;}
 		
 		if (testplanID != null && !testplanID.isEmpty()) 
 		{	
 			Set<Requirement> testplanRequirements = testplanService.getRequirements(Long.valueOf(testplanID));
-			if(testplanRequirements != null && !testplanRequirements.isEmpty())
+			if(testplanRequirements == null || testplanRequirements.isEmpty())
+			{
+				requirements.clear();
+			}	
+			else
 			{
 				requirements.retainAll(testplanRequirements);
-			}					
+			}
 		}
 		if(requirements == null || requirements.isEmpty()){return null;}
 		
 		if (testcaseID != null && !testcaseID.isEmpty()) 
 		{	
 			Set<Requirement> testcaseRequirements = testcaseService.getRequirements(Long.valueOf(testcaseID));
-			if(testcaseRequirements != null && !testcaseRequirements.isEmpty())
+			if(testcaseRequirements == null || testcaseRequirements.isEmpty())
+			{
+				requirements.clear();
+			}	
+			else
 			{
 				requirements.retainAll(testcaseRequirements);
-			}					
+			}
 		}
 		if(requirements == null || requirements.isEmpty()){return null;}
 		
 		if (environmentID != null && !environmentID.isEmpty()) 
 		{	
 			Set<Requirement> environmentRequirements = environmentService.getRequirements(Long.valueOf(environmentID));
-			if(environmentRequirements != null && !environmentRequirements.isEmpty())
+			if(environmentRequirements == null || environmentRequirements.isEmpty())
+			{
+				requirements.clear();
+			}	
+			else
 			{
 				requirements.retainAll(environmentRequirements);
-			}					
+			}
 		}
 		if(requirements == null || requirements.isEmpty()){return null;}		
 

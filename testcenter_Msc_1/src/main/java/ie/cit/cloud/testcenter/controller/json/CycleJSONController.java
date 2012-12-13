@@ -143,16 +143,16 @@ public class CycleJSONController {
 			relatedObjectSet.add(new RelatedObject(6,"All "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalAllTestruns()), cycleID, "all"+company.getTestrunsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(7,"Required "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalRequiredTestruns()), cycleID, "required"+company.getTestrunsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(8,"Optional "+ company.getTestrunsDisplayName(),Integer.toString(cycleSummary.getTotalOptionalTestruns()), cycleID, "optional"+company.getTestrunsDisplayName().replace(" ","")));
-
-			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 1",Long.toString(cycleSummary.getTotalCurrentSev1s()), cycleID, "sev1"));
-			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 2",Long.toString(cycleSummary.getTotalCurrentSev2s()), cycleID, "sev2"));
-			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 3",Long.toString(cycleSummary.getTotalCurrentSev3s()), cycleID, "sev3"));
-			relatedObjectSet.add(new RelatedObject(12,company.getDefectsDisplayName()+"-Sev 4",Long.toString(cycleSummary.getTotalCurrentSev4s()), cycleID, "sev4"));
+			
+			relatedObjectSet.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Total",Long.toString(cycleSummary.getTotalDefects()), cycleID, company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 1",Long.toString(cycleSummary.getTotalCurrentSev1s()), cycleID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 2",Long.toString(cycleSummary.getTotalCurrentSev2s()), cycleID, company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 3",Long.toString(cycleSummary.getTotalCurrentSev3s()), cycleID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(12,company.getDefectsDisplayName()+"-Sev 4",Long.toString(cycleSummary.getTotalCurrentSev4s()), cycleID, company.getDefectsDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(13,company.getEnvironmentsDisplayName(),String.valueOf(cycleSummary.getTotalEnvironments()), cycleID, company.getEnvironmentsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(14,company.getRequirementsDisplayName(),String.valueOf(cycleSummary.getTotalRequirements()), cycleID,company.getRequirementsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Total",Long.toString(cycleSummary.getTotalDefects()), cycleID, company.getDefectsDisplayName().replace(" ","")));
-
+			
 			relatedObjectSet.add(new RelatedObject(16,company.getTestersDisplayName(),String.valueOf(cycleSummary.getTotalTesters()), cycleID, company.getTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(17,company.getSeniorTestersDisplayName(),String.valueOf(cycleSummary.getTotalSeniorTesters()), cycleID,company.getSeniorTestersDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(18,company.getDevelopersDisplayName(),String.valueOf(cycleSummary.getTotalDevelopers()), cycleID,company.getDevelopersDisplayName().replace(" ","")));
@@ -182,7 +182,8 @@ public class CycleJSONController {
 			@RequestParam(value="projectID", required=true) Long projectID,
 			@RequestParam(value="cycleName", required=true) String cycleName,
 			@RequestParam(value="cycleStartDate", required=true) String cycleStartDate,
-			@RequestParam(value="cycleEndDate", required=true) String cycleEndDate,			
+			@RequestParam(value="cycleEndDate", required=true) String cycleEndDate,	
+			@RequestParam(value="requiredPriority", required=true) Integer requiredPriority,	
 			Model model) 
 	{
 		System.out.println("************|||||||| ---: Received Ajax Request to create new Cycle");
@@ -203,7 +204,21 @@ public class CycleJSONController {
 		{
 			try{    
 				int projectPosition = cycleService.getMaxProjectPosNum(projectID) + 1;					
-				cycleService.addNewCycle(new Cycle(cycleName,projectID,1,projectPosition,"START_DATE","END_DATE"));
+				cycleService.addNewCycle(new Cycle(cycleName,projectID,requiredPriority,projectPosition,cycleStartDate,cycleEndDate));
+				//Set All other Cycles latest to false
+				Set<Cycle> projectCycles = projectService.getProject(projectID).getCycles();
+				if(projectCycles == null || projectCycles.isEmpty())
+				{
+					return "Could Not reset"; 
+				}
+				for(Cycle cycle : projectCycles)
+				{
+					if(!cycle.getCycleName().equalsIgnoreCase(cycleName))
+					{
+						cycle.setLatest(false);
+						cycleService.update(cycle);
+					}
+				}
 				return "ok";   
 			}
 			catch(ConstraintViolationException CVE)

@@ -596,50 +596,71 @@ public class DefectServiceImpl implements DefectService {
 		if (projectID != null && !projectID.isEmpty()) 
 		{	
 			Set<Defect> projectDefects = projectService.getCascadedDefects(Long.valueOf(projectID));
-			if(projectDefects != null && !projectDefects.isEmpty())
+			if(projectDefects == null || projectDefects.isEmpty())
+			{
+				defects.clear();
+			}	
+			else
 			{
 				defects.retainAll(projectDefects);
-			}					
+			}
 		}
 		if(defects == null || defects.isEmpty()){return null;}
 
 		if (cycleID != null && !cycleID.isEmpty()) 
 		{	
 			Set<Defect> cycleDefects = cycleService.getCascadedDefects(Long.valueOf(cycleID));
-			if(cycleDefects != null && !cycleDefects.isEmpty())
+			if(cycleDefects == null || cycleDefects.isEmpty())
+			{
+				defects.clear();
+			}	
+			else
 			{
 				defects.retainAll(cycleDefects);
-			}					
+			}
+			
 		}
 		if(defects == null || defects.isEmpty()){return null;}
 
 		if (testplanID != null && !testplanID.isEmpty()) 
 		{	
 			Set<Defect> testplanDefects = testplanService.getCascadedAllDefects(Long.valueOf(testplanID));
-			if(testplanDefects != null && !testplanDefects.isEmpty())
+			if(testplanDefects == null || testplanDefects.isEmpty())
+			{
+				defects.clear();
+			}	
+			else
 			{
 				defects.retainAll(testplanDefects);
-			}					
+			}
 		}
 		if(defects == null || defects.isEmpty()){return null;}
 
 		if (testcaseID != null && !testcaseID.isEmpty()) 
 		{	
 			Set<Defect> testcaseDefects = testcaseService.getCascadedAllDefects(Long.valueOf(testcaseID));
-			if(testcaseDefects != null && !testcaseDefects.isEmpty())
+			if(testcaseDefects == null || testcaseDefects.isEmpty())
+			{
+				defects.clear();
+			}	
+			else
 			{
 				defects.retainAll(testcaseDefects);
-			}					
+			}
 		}
 		if(defects == null || defects.isEmpty()){return null;}
 
 		if (environmentID != null && !environmentID.isEmpty()) 
 		{	
 			Set<Defect> environmentDefects = environmentService.getCascadedAllDefects(Long.valueOf(environmentID));
-			if(environmentDefects != null && !environmentDefects.isEmpty())
+			if(environmentDefects == null || environmentDefects.isEmpty())
+			{
+				defects.clear();
+			}	
+			else
 			{
 				defects.retainAll(environmentDefects);
-			}					
+			}
 		}
 		if(defects == null || defects.isEmpty()){return null;}		
 

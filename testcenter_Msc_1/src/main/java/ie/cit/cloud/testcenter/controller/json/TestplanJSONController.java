@@ -14,8 +14,12 @@ import ie.cit.cloud.testcenter.display.GridAttributes;
 import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
+import ie.cit.cloud.testcenter.model.Requirement;
+import ie.cit.cloud.testcenter.model.Testrun;
 import ie.cit.cloud.testcenter.model.JqgridFilter.Rule;
 import ie.cit.cloud.testcenter.model.Testcase;
 import ie.cit.cloud.testcenter.model.Testplan;
@@ -31,7 +35,9 @@ import ie.cit.cloud.testcenter.model.summary.TestplanSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.environment.EnvironmentService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
+import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
 import ie.cit.cloud.testcenter.service.testplan.TestplanService;
 import ie.cit.cloud.testcenter.service.testrun.TestrunService;
@@ -67,7 +73,11 @@ public class TestplanJSONController {
 	@Autowired
 	private TestrunService testrunService;
 	@Autowired
-	private DefectService defectService;
+	private DefectService defectService;	  
+	@Autowired
+	private RequirementService requirementService;	
+	@Autowired
+	private EnvironmentService environmentService;
 
 
 	// All Testplans For a company
@@ -227,10 +237,10 @@ public class TestplanJSONController {
 					"optional"+company.getTestrunsDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Total",Integer.toString(testplanSummary.getTotalDefects()), testplanID, company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testplanSummary.getTotalCurrentSev1s()), testplanID,"sev1"));
-			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testplanSummary.getTotalCurrentSev2s()), testplanID,"sev2"));
-			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testplanSummary.getTotalCurrentSev3s()), testplanID,"sev3"));
-			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testplanSummary.getTotalCurrentSev4s()), testplanID,"sev4"));
+			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testplanSummary.getTotalCurrentSev1s()), testplanID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testplanSummary.getTotalCurrentSev2s()), testplanID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(10,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testplanSummary.getTotalCurrentSev3s()), testplanID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testplanSummary.getTotalCurrentSev4s()), testplanID,company.getDefectsDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(12,company.getEnvironmentsDisplayName(),Integer.toString(testplanSummary.getTotalEnvironments()), testplanID, company.getEnvironmentsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(13,company.getRequirementsDisplayName(),Integer.toString(testplanSummary.getTotalRequirements()), testplanID, company.getRequirementsDisplayName().replace(" ","")));
@@ -465,7 +475,7 @@ public class TestplanJSONController {
 		return "Could Not Add to " + relatedItem;  
 
 	}
-	
+
 	@RequestMapping(value = "/gettestplantestcases/{testplanID}", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody TestcaseList getCycleTestplans(@PathVariable("testplanID") Long testplanID) 
@@ -480,6 +490,144 @@ public class TestplanJSONController {
 		return testcaseList; 	
 	}  
 
+	///////////////////////////////////////////////
+	@RequestMapping(value = "/addRequirement", method = RequestMethod.POST)
+	public @ResponseBody String addReqToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testplanID", required=true) Long testplanID,
+			@RequestParam(value="requirementID", required=true) Long requirementID,					
+			Model model) 
+	{	
+		boolean foundTestrun = false;
+		Company company = companyService.getCompany(companyID);
+		Testplan testplan = testplanService.getTestplan(testplanID);
+		if(testplan == null)
+		{
+			return "Could Not Locate "+ company.getTestplanDisplayName()+" : "+ testplanID; 
+		}
+		Set<Testcase> testplanTestcases = testplan.getTestcases();
+		if(testplanTestcases == null || testplanTestcases.isEmpty())
+		{
+			return testplan.getTestplanName() + " Has no " + company.getTestcasesDisplayName() +
+					" - Add "+company.getTestcasesDisplayName() +" To " + testplan.getTestplanName() ;
+		}
+		for(final Testcase testcase : testplanTestcases)
+		{	
+			Set<Testrun> testcaseTesruns = testcase.getTestruns();
+			if(testcaseTesruns != null && !testcaseTesruns.isEmpty())
+			{
+				for(final Testrun testrun : testcaseTesruns)
+				{			
+					foundTestrun = true;
+					Requirement requirement = requirementService.getRequirement(requirementID);
+					testrun.getRequirements().add(requirement);
+					testrunService.update(testrun);			
+				}	
+			}
+		}
+		if(foundTestrun)
+		{
+			return "ok"; 
+		}
+		else
+		{
+			return testplan.getTestplanName()  + " Has no " + company.getTestrunsDisplayName() +
+					" - Add "+company.getTestcasesDisplayName() +" To a " + company.getCycleDisplayName() + 
+					" to create a " + company.getTestrunDisplayName();
+		}
+	}
+
+	@RequestMapping(value = "/addDefect", method = RequestMethod.POST)
+	public @ResponseBody String addDefectToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testplanID", required=true) Long testplanID,
+			@RequestParam(value="defectID", required=true) Long defectID,					
+			Model model) 
+	{	
+		boolean foundTestrun = false;		
+		Company company = companyService.getCompany(companyID);
+		Testplan testplan = testplanService.getTestplan(testplanID);
+		if(testplan == null)
+		{
+			return "Could Not Locate "+ company.getTestplanDisplayName()+" : "+ testplanID; 
+		}
+		Set<Testcase> testplanTestcases = testplan.getTestcases();
+		if(testplanTestcases == null || testplanTestcases.isEmpty())
+		{
+			return testplan.getTestplanName() + " Has no " + company.getTestcasesDisplayName() +
+					" - Add "+company.getTestcasesDisplayName() +" To " + testplan.getTestplanName();
+		}
+		for(final Testcase testcase : testplanTestcases)
+		{	
+			Set<Testrun> testcaseTesruns = testcase.getTestruns();
+			if(testcaseTesruns != null && !testcaseTesruns.isEmpty())
+			{
+				for(final Testrun testrun : testcaseTesruns)
+				{		
+					foundTestrun = true;
+					Defect defect = defectService.getDefect(defectID);
+					testrun.getDefects().add(defect);
+					testrunService.update(testrun);		
+				}	
+			}
+		}	
+		if(foundTestrun)
+		{
+			return "ok"; 
+		}
+		else
+		{
+			return testplan.getTestplanName()  + " Has no " + company.getTestrunsDisplayName() +
+					" - Add "+company.getTestcasesDisplayName() +" To a " + company.getCycleDisplayName() + 
+					" to create a " + company.getTestrunDisplayName();
+		}	
+	}
+
+	@RequestMapping(value = "/addEnvironment", method = RequestMethod.POST)
+	public @ResponseBody String addEnvironmentToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testplanID", required=true) Long testplanID,
+			@RequestParam(value="environmentID", required=true) Long environmentID,					
+			Model model) 
+	{
+		boolean foundTestrun = false;
+		Company company = companyService.getCompany(companyID);
+		Testplan testplan = testplanService.getTestplan(testplanID);
+		if(testplan == null)
+		{
+			return "Could Not Locate "+ company.getTestplanDisplayName()+" : "+ testplanID; 
+		}
+		Set<Testcase> testplanTestcases = testplan.getTestcases();
+		if(testplanTestcases == null || testplanTestcases.isEmpty())
+		{
+			return testplan.getTestplanName() + " Has no " + company.getTestcasesDisplayName() +
+					" - Add "+company.getTestcasesDisplayName() +" To " + testplan.getTestplanName();
+		}
+		for(final Testcase testcase : testplanTestcases)
+		{	
+			Set<Testrun> testcaseTesruns = testcase.getTestruns();
+			if(testcaseTesruns != null && !testcaseTesruns.isEmpty())
+			{
+				for(final Testrun testrun : testcaseTesruns)
+				{	
+					foundTestrun = true;
+					Environment environment = environmentService.getEnvironment(environmentID);
+					testrun.getEnvironments().add(environment);
+					testrunService.update(testrun);		
+				}	
+			}
+		}	
+		if(foundTestrun)
+		{
+			return "ok"; 
+		}
+		else
+		{
+			return testplan.getTestplanName()  + " Has no " + company.getTestrunsDisplayName() +
+					" - Add "+company.getTestcasesDisplayName() +" To a " + company.getCycleDisplayName() + 
+					" to create a " + company.getTestrunDisplayName();
+		}		
+	}
 
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)

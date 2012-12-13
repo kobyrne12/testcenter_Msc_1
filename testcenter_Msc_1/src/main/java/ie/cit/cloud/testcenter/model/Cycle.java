@@ -19,15 +19,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 @Entity
 @Table(name = "Cycle")
@@ -51,6 +49,9 @@ public class Cycle {
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Set<Testrun> testruns = new HashSet<Testrun>();   
 
+	@Basic    
+	private boolean latest;  
+	
 	@Basic    
 	private Long parentID;
 	@Basic    
@@ -115,7 +116,7 @@ public class Cycle {
 			String cycleStartDate, String cycleEndDate)
 	{	
 		this(cycleName,projectID,null,null,false,false,requiredPriority,projectPosition,cycleStartDate,cycleEndDate,
-				null,null,null,null,"DATE","USER","DATE","USER");	
+				null,null,null,null,"DATE","USER","DATE","USER",true);	
 	}
 
 
@@ -147,7 +148,7 @@ public class Cycle {
 			Set<DefectRule> defectRules,
 			Set<RequirementRule> requirementRules,
 			Set<TestHistoryRule> testhistoryRules, String creationDate,
-			String createdBy, String lastModifiedDate, String lastModifiedBy) {
+			String createdBy, String lastModifiedDate, String lastModifiedBy,boolean latest) {
 		this.cycleName = cycleName;
 		this.projectID = projectID;
 		this.testruns = testruns;
@@ -166,6 +167,7 @@ public class Cycle {
 		this.createdBy = createdBy;
 		this.lastModifiedDate = lastModifiedDate;
 		this.lastModifiedBy = lastModifiedBy;
+		this.latest = latest;
 	}
 
 	/**
@@ -460,6 +462,18 @@ public class Cycle {
 	//			return false;
 	//		}
 	//	} 
+	/**
+	 * @return the latest
+	 */
+	public boolean isLatest() {
+		return latest;
+	}
+	/**
+	 * @param latest the latest to set
+	 */
+	public void setLatest(boolean latest) {
+		this.latest = latest;
+	}
 
 	
 }

@@ -16,6 +16,8 @@ import ie.cit.cloud.testcenter.display.RelatedObject;
 import ie.cit.cloud.testcenter.display.RelatedObjectList;
 import ie.cit.cloud.testcenter.model.Company;
 import ie.cit.cloud.testcenter.model.Cycle;
+import ie.cit.cloud.testcenter.model.Defect;
+import ie.cit.cloud.testcenter.model.Environment;
 import ie.cit.cloud.testcenter.model.JqgridFilter;
 import ie.cit.cloud.testcenter.model.Project;
 import ie.cit.cloud.testcenter.model.Requirement;
@@ -38,6 +40,7 @@ import ie.cit.cloud.testcenter.model.summary.TestrunSummaryList;
 import ie.cit.cloud.testcenter.service.company.CompanyService;
 import ie.cit.cloud.testcenter.service.cycle.CycleService;
 import ie.cit.cloud.testcenter.service.defect.DefectService;
+import ie.cit.cloud.testcenter.service.environment.EnvironmentService;
 import ie.cit.cloud.testcenter.service.project.ProjectService;
 import ie.cit.cloud.testcenter.service.requirement.RequirementService;
 import ie.cit.cloud.testcenter.service.testcase.TestcaseService;
@@ -76,7 +79,8 @@ public class TestrunJSONController {
 	private TestrunService testrunService;
 	@Autowired
 	private DefectService defectService;
-
+	@Autowired
+	private EnvironmentService environmentService;
 
 	// All Testplans For a company
 	@RequestMapping(value = "/summaryList/{companyID}", method = RequestMethod.GET)
@@ -224,10 +228,10 @@ public class TestrunJSONController {
 					company.getTestcaseDisplayName().replace(" ","")));				
 
 			relatedObjectSet.add(new RelatedObject(5,company.getDefectsDisplayName()+"-Total",Integer.toString(testrunSummary.getTotalDefects()), testrunID, company.getDefectsDisplayName().replace(" ","")));
-			relatedObjectSet.add(new RelatedObject(6,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testrunSummary.getTotalCurrentSev1s()), testrunID,"sev1"));
-			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testrunSummary.getTotalCurrentSev2s()), testrunID,"sev2"));
-			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testrunSummary.getTotalCurrentSev3s()), testrunID,"sev3"));
-			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testrunSummary.getTotalCurrentSev4s()), testrunID,"sev4"));
+			relatedObjectSet.add(new RelatedObject(6,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(testrunSummary.getTotalCurrentSev1s()), testrunID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(7,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(testrunSummary.getTotalCurrentSev2s()), testrunID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(8,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(testrunSummary.getTotalCurrentSev3s()), testrunID,company.getDefectsDisplayName().replace(" ","")));
+			relatedObjectSet.add(new RelatedObject(9,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(testrunSummary.getTotalCurrentSev4s()), testrunID,company.getDefectsDisplayName().replace(" ","")));
 
 			relatedObjectSet.add(new RelatedObject(10,company.getEnvironmentsDisplayName(),Integer.toString(testrunSummary.getTotalEnvironments()), testrunID, company.getEnvironmentsDisplayName().replace(" ","")));
 			relatedObjectSet.add(new RelatedObject(11,company.getRequirementsDisplayName(),Integer.toString(testrunSummary.getTotalRequirements()), testrunID, company.getRequirementsDisplayName().replace(" ","")));
@@ -308,7 +312,7 @@ public class TestrunJSONController {
 		testrunService.remove(testrunID);
 	}	
 	
-	@RequestMapping(value = "/addRequirement ", method = RequestMethod.POST)
+	@RequestMapping(value = "/addRequirement", method = RequestMethod.POST)
 	public @ResponseBody String addReqToTestrun(
 			@RequestParam(value="companyID", required=true) Long companyID,
 			@RequestParam(value="testrunID", required=true) Long testrunID,
@@ -321,10 +325,95 @@ public class TestrunJSONController {
 		testrunService.update(testrun);
 		return "ok"; 		
 	}
-
+	
+	@RequestMapping(value = "/addDefect", method = RequestMethod.POST)
+	public @ResponseBody String addDefectToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testrunID", required=true) Long testrunID,
+			@RequestParam(value="defectID", required=true) Long defectID,					
+			Model model) 
+	{
+		Testrun testrun = testrunService.getTestrun(testrunID);
+		Defect defect = defectService.getDefect(defectID);
+		testrun.getDefects().add(defect);
+		testrunService.update(testrun);
+		return "ok"; 		
+	}
+	
+	@RequestMapping(value = "/addEnvironment", method = RequestMethod.POST)
+	public @ResponseBody String addEnvironmentToTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,
+			@RequestParam(value="testrunID", required=true) Long testrunID,
+			@RequestParam(value="environmentID", required=true) Long environmentID,					
+			Model model) 
+	{
+		Testrun testrun = testrunService.getTestrun(testrunID);
+		Environment environment = environmentService.getEnvironment(environmentID);
+		testrun.getEnvironments().add(environment);
+		testrunService.update(testrun);
+		return "ok"; 		
+	}
+	@RequestMapping(value = "/Run", method = RequestMethod.POST)
+	public @ResponseBody String runTestrun(
+			@RequestParam(value="companyID", required=true) Long companyID,			
+			@RequestParam(value="testrunID", required=true) Long testrunID,
+			@RequestParam(value="testrunState", required=true) String testrunState,					
+			Model model) 
+	{
+		Testrun testrun = testrunService.getTestrun(testrunID);
+		if(testrun == null)
+		{
+			return "Could not Find";
+		}
+		if(setTestrunState(testrun,testrunState))
+		{
+			return "ok";
+		}
+		else
+		{
+			return "Could Not Update";
+		}
+	}
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public void emptyResult() {
 		// no code needed
+	}
+	public boolean setTestrunState(Testrun testrun,String testrunState)
+	{
+	
+		if(testrunState.equalsIgnoreCase("passed"))
+		{testrun.setPassed(true);}
+		else{testrun.setPassed(false);}
+		
+		if(testrunState.equalsIgnoreCase("failed"))
+		{testrun.setFailed(true);}
+		else{testrun.setFailed(false);}
+		
+		if(testrunState.equalsIgnoreCase("deferred"))
+		{testrun.setDeferred(true);}
+		else{testrun.setDeferred(false);}
+		
+		if(testrunState.equalsIgnoreCase("blocked"))
+		{testrun.setBlocked(true);}
+		else{testrun.setBlocked(false);}
+		
+		if(testrunState.equalsIgnoreCase("inprog"))
+		{testrun.setInprogress(true);}
+		else{testrun.setInprogress(false);}
+		
+		if(testrunState.equalsIgnoreCase("notrun"))
+		{testrun.setNotrun(true);}
+		else{testrun.setNotrun(false);}
+		
+		try{
+			testrunService.update(testrun);
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		
 	}
 }

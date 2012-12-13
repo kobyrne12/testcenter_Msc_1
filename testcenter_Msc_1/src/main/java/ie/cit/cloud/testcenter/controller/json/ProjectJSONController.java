@@ -205,10 +205,10 @@ public class ProjectJSONController {
 	    	relatedObjectSet.add(new RelatedObject(10,company.getRequirementsDisplayName(),Integer.toString(projectSummary.getTotalRequirements()), projectID, company.getRequirementsDisplayName().replace(" ","")));
 	    	
 	    	relatedObjectSet.add(new RelatedObject(11,company.getDefectsDisplayName()+"-Total",Integer.toString(projectSummary.getTotalDefects()), projectID, company.getDefectsDisplayName().replace(" ","")));
-	    	relatedObjectSet.add(new RelatedObject(12,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(projectSummary.getTotalCurrentSev1s()), projectID,"sev1"));
-	    	relatedObjectSet.add(new RelatedObject(13,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(projectSummary.getTotalCurrentSev2s()), projectID,"sev2"));
-	    	relatedObjectSet.add(new RelatedObject(14,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(projectSummary.getTotalCurrentSev3s()), projectID,"sev3"));
-	    	relatedObjectSet.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(projectSummary.getTotalCurrentSev4s()), projectID,"sev4"));
+	    	relatedObjectSet.add(new RelatedObject(12,company.getDefectsDisplayName()+"-Sev 1",Integer.toString(projectSummary.getTotalCurrentSev1s()), projectID,company.getDefectsDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(13,company.getDefectsDisplayName()+"-Sev 2",Integer.toString(projectSummary.getTotalCurrentSev2s()), projectID,company.getDefectsDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(14,company.getDefectsDisplayName()+"-Sev 3",Integer.toString(projectSummary.getTotalCurrentSev3s()), projectID,company.getDefectsDisplayName().replace(" ","")));
+	    	relatedObjectSet.add(new RelatedObject(15,company.getDefectsDisplayName()+"-Sev 4",Integer.toString(projectSummary.getTotalCurrentSev4s()), projectID,company.getDefectsDisplayName().replace(" ","")));
 	    	
 	    	relatedObjectSet.add(new RelatedObject(16,company.getTestersDisplayName(),Integer.toString(projectSummary.getTotalTesters()), projectID, company.getTestersDisplayName().replace(" ","")));
 	    	relatedObjectSet.add(new RelatedObject(17,company.getSeniorTestersDisplayName(),Integer.toString(projectSummary.getTotalSeniorTesters()), projectID, company.getSeniorTestersDisplayName().replace(" ","")));
