@@ -42,6 +42,7 @@ public class CompanyServiceImpl implements CompanyService {
 	
 	@Autowired
     @Qualifier("hibernateCompanyRespository")
+	public
     CompanyRepository repo;   
 	
 	@Autowired   
